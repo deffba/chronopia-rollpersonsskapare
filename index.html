@@ -81,7 +81,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .kort { background: var(--yta); border: 1px solid var(--linje); border-radius: 10px; box-shadow: var(--skugga); }
 #arbetsyta { padding: 24px clamp(16px, 3vw, 32px); display: grid; gap: 22px; min-width: 0; }
 #arbetsyta:focus { outline: none; }
-.steg-huvud { display: grid; gap: 4px; padding-bottom: 14px; border-bottom: 1px solid var(--linje); }
+.steg-huvud { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--linje); }
+.steg-titel { display: grid; gap: 4px; min-width: 0; }
+.steg-potter { display: flex; gap: 8px; margin: 0; flex-shrink: 0; }
+.steg-potter > div { display: grid; justify-items: end; padding: 6px 10px; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--bg); }
+.steg-potter dt { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--dampad); }
+.steg-potter dd { margin: 0; font: 1.5rem/1.1 var(--rubrik); font-variant-numeric: tabular-nums; color: var(--accent-text); }
+.steg-potter .over { border-color: var(--fel); background: var(--fel-svag); }
+.steg-potter .over dd { color: var(--fel); }
 .eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; font-weight: 700; color: var(--accent-text); }
 .steg-innehall { display: grid; gap: 16px; min-width: 0; }
 .steg-fot { display: flex; justify-content: space-between; gap: 12px; padding-top: 14px; border-top: 1px solid var(--linje); }
@@ -133,7 +140,7 @@ input.tal.bred { width: 6rem; }
 .tabell .fel { color: var(--fel); }
 .tabell tr.markerad { background: var(--accent-svag); }
 .fardighetstabell td:first-child { min-width: 12rem; }
-.bniva { display: inline-block; margin-left: 6px; font-size: .78rem; color: var(--accent-text); font-weight: 700; }
+.bniva { display: inline-block; min-width: 2.2em; text-align: left; margin-left: 6px; font-size: .78rem; color: var(--accent-text); font-weight: 700; }
 .pris { font: 600 .8rem var(--sans); color: var(--dampad); letter-spacing: 0; }
 .stegare { display: flex; align-items: center; gap: 8px; }
 .stegare span { min-width: 4.5rem; text-align: center; font-size: .9rem; }
@@ -228,8 +235,10 @@ input.namnfalt:focus { border-color: var(--accent); outline: none; }
 .yrkeslista > li > .fbeskr { flex-basis: 100%; margin: -4px 0 0; }
 .varning { border: 1px solid var(--accent); border-left-width: 4px; background: var(--accent-svag); color: var(--text); border-radius: var(--rad); padding: 10px 12px; font-size: .92rem; }
 .varning strong { color: var(--accent-text); }
-.kryss { display: flex; gap: 8px; align-items: center; font-size: .95rem; cursor: pointer; }
-.kryss input { width: 18px; height: 18px; accent-color: var(--accent); }
+.tal.upp { color: var(--ok); font-weight: 700; }
+.tal.ner { color: var(--fel); font-weight: 700; }
+.delval-med-text { display: grid; gap: 4px; }
+option.grupprubrik { font-weight: 700; }
 .kostnadstabell th, .kostnadstabell td { padding: 4px 7px; }
 .steg-knapp:disabled { opacity: .45; cursor: not-allowed; }
 .steg-knapp:disabled:hover { background: none; }
