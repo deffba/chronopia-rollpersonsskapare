@@ -240,6 +240,13 @@ input.namnfalt {
 input.namnfalt:hover { border-color: var(--linje); }
 input.namnfalt:focus { border-color: var(--accent); outline: none; }
 .namnfalt::placeholder { color: var(--text); opacity: 1; }
+.namnfalt:focus::placeholder { color: transparent; }
+/* "Ny rollperson" och bekräftelsetexten ligger i samma ruta, så knappen behåller sin bredd */
+#ny { display: inline-grid; }
+#ny > span { grid-area: 1 / 1; text-align: center; }
+#ny .ny-bekrafta, #ny.bekrafta .ny-vanlig { visibility: hidden; }
+#ny.bekrafta .ny-bekrafta { visibility: visible; }
+#ny.bekrafta, [data-stil="klassisk"] #ny.bekrafta { background: var(--fel); border-color: var(--fel); color: #fff; }
 .fast { padding: 6px 9px; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--yta-2); font-size: .95rem; }
 .delvalhjalp { flex-basis: 100%; max-width: 68ch; }
 .felrad { color: var(--fel); }
@@ -362,7 +369,7 @@ option.grupprubrik { font-weight: 700; }
       <button type="button" data-stil="klassisk" aria-pressed="false">Klassisk</button>
     </div>
     <span id="bp-topp" aria-live="polite"></span>
-    <button type="button" class="knapp" id="ny">Ny rollperson</button>
+    <button type="button" class="knapp" id="ny"><span class="ny-vanlig">Ny rollperson</span><span class="ny-bekrafta" aria-live="polite">Tryck igen för att börja om (5)</span></button>
     <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
   </div>
 </header>

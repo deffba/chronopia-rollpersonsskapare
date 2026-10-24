@@ -152,7 +152,8 @@ function kontrolleraVal(regler, rp, varden, fel) {
       const namn = sprak?.namn ?? val;
       if (!sprak) fel.push(`Okänt språk: ${val}`);
       else if (id === "lasa-skriva" && (sprak.skriftsprak === false || sprak.endastTala)) fel.push(`${namn} har inget skriftspråk (s. 66)`);
-      else if (yrkesnycklar.has(nyckel) && sprak.aldrigYrke) fel.push(`${namn} kan aldrig vara yrkesfärdighet (s. 70)`);
+      else if (yrkesnycklar.has(nyckel) && sprak.aldrigYrke) fel.push(`${namn} kan aldrig vara yrkesfärdighet (s. 64)`);
+      else if (yrkesnycklar.has(nyckel) && sprak.endastPrimarFor && sprak.endastPrimarFor !== rp.ras) fel.push(`${namn} kan bara vara yrkesfärdighet för ${sprak.endastPrimarFor === "wongos" ? "wongoser" : sprak.endastPrimarFor} (s. 64)`);
       const modersmal = id === "tala" ? rp.modersmal?.tala : rp.modersmal?.lasaSkriva;
       if (yrkesnycklar.has(nyckel) && modersmal?.includes(val)) fel.push(`${namn} är redan modersmål och kan inte väljas som främmande språk (s. 66, 70)`);
     }
@@ -344,13 +345,16 @@ export function raknaRollperson(regler, indata) {
   const behoverSlag = !yrke.magiker && (skolor.length > 0 || rp.extraYrkesfardigheter.some((k) => fardighetAv(regler, k)?.typ === "magiskola"));
   const magiformaga = { chans: Math.ceil((ge.varden.INT + ge.varden.PSY) / 2), behovs: behoverSlag, slag: rp.magiformaga?.slag ?? null, mod: sf.magiformaga };
   magiformaga.lyckat = magiformaga.slag !== null && magiformaga.slag + magiformaga.mod <= magiformaga.chans;
+  // Slaget görs först när INT och PSY är bestämda, så ett saknat eller misslyckat slag är inte ett regelbrott
+  // i sig utan något som återstår: slaget ska göras, eller magiskolan bytas ut.
+  const vantar = [];
   if (behoverSlag && !magiformaga.lyckat) {
-    fel.push(magiformaga.slag === null ? "Magiskolor kräver ett magiförmågeslag (s. 106)" : "Magiförmågeslaget misslyckades, så rollpersonen kan inte lära sig magi (s. 106)");
+    vantar.push(magiformaga.slag === null ? "Magiskolor kräver ett magiförmågeslag (s. 106)" : "Magiförmågeslaget misslyckades, så rollpersonen kan inte lära sig magi (s. 106)");
   }
 
   return {
     ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, harledda, slag, magiformaga,
-    sarskildFormaga: sf.formaga, saknas: sf.saknas,
+    sarskildFormaga: sf.formaga, saknas: sf.saknas, vantar,
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
@@ -366,6 +370,9 @@ function takFor(regler, rp, nyckel, f, varden, fvHittills) {
     tak = Math.min(tak, Math.max(0, ...ls));
   }
   if (f.typ === "magiskola" && yrkeAv(regler, rp.yrke).skolTak) tak = Math.min(tak, varden.INT);
+  // Drakonitiska kan aldrig bli högre än FV 5 för andra än drakoniter (s. 64)
+  const sprak = regler.fardigheter.sprak.find((x) => x.id === nyckel.split(":")[1]);
+  if (f.id === "tala" && sprak?.maxFvAndra && rp.ras !== "drakonit") tak = Math.min(tak, sprak.maxFvAndra);
   return tak + (rp.sarskildaFormagor?.takBonus?.[nyckel] ?? 0);
 }
 
