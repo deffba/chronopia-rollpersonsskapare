@@ -85,6 +85,23 @@ RASER = [
         [{"sprak": "wongosiska", "fv": 16}, {"sprak": "chronos", "fv": 5}], ["chronos", "wongosiska"], [],
         startbonus=[{"fardighet": "kopsla", "bc": 5}]),
 ]
+# Egna korta sammanfattningar av rasbeskrivningarna (s. 14–16)
+RASBESKRIVNING = {
+    "dimalv": "Ur-alverna som stadsalver och ljusalver härstammar från. Starkare och kraftigare än andra alver, ofta med stor magisk kraft och visdom. I människornas stad Chronopia passar de illa in; de är illa omtyckta och ser själva ner på stadens dekadenta invånare.",
+    "drakonit": "Liknar stora ödlor eller krokodiler som går på två ben, med vaggande gång och svängande svans. Större och starkare än människor och ofta duktiga krigare. I Chronopia lever de för sig själva i en egen stadsdel och tål inte att någon kommenterar deras utseende.",
+    "dvarg": "Korta, kraftigt byggda och ofta långskäggiga. Deras städer ligger under jorden, där de bryter guld, ädelstenar och svart gas. Duktiga krigare, hantverkare, ingenjörer och advokater, men sällan magiker. Dvärgiskan skiljer sig så mycket från människospråken att de flesta dvärgar har svårt med språk.",
+    "goblin": "Komiska, småvuxna och klent byggda, med grönaktig och vårtig hy. Ses som korkade och lättlurade och lever ofta som rövare, tjuvar, tiggare eller gycklare. De håller sig borta från gatorna, vilket fått folk att tro att de är rädda för solen.",
+    "halvalv": "Halvt människa, halvt alv: kortare än alver och klenare än människor, men ofta med sällsynta magiska gåvor. Många ser dem med misstänksamhet. De som inte blir magiker blir ofta tjuvar eller lönnmördare.",
+    "hoglandare": "Ett storvuxet, stolt och hästburet människofolk från de otillgängliga högländerna i norr, härdat av årtusenden av krig för sitt land. De handlar mycket med dvärgarna, och de som syns i Chronopia är oftast äventyrare eller köpmän man inte lurar i första taget.",
+    "ljusalv": "Långa, spensliga alver från skogarna kring staden, där de bor i väldiga städer uppe i trädkronorna. Uppsluppna och lekfulla, men ogillar inkräktare och främlingar, och kan verka grymma och egoistiska. I staden är de oftast pälsjägare, gycklare eller äventyrare.",
+    "manniska": "I Chronopia samlas människor från hela världen och alla kulturer: köpmän, legoknektar, äventyrare, magiker, lärda, sjöfarare och upptäcktsresande, i alla storlekar och sorter.",
+    "orch": "Kraftiga och krumryggade, med ovanligt långa armar. Stora och starka men sällan särskilt kloka; de som inte slavar i dvärgarnas gruvor blir ofta krigare. Stadsborna ser dem som bråkiga och våldsamma, och alla orcher är mycket snåla.",
+    "stadsalv": "Antingen födda i staden eller inflyttade för tusentals år sedan. Ofantligt förmögna, med pengar som de gärna slösar på vin och nöjen och vinner tillbaka genom bankverksamhet och handel. De är stadens överklass och ser människor som tjänstefolk.",
+    "troll": "Syns på håll, en meter högre än resten av folkmassan. Trots muskler och längd är de oftast vänliga och godtrogna, ja lite för vänliga och lättlurade. Men den som till slut lyckas reta upp ett troll gör det sällan igen. Arbetar ofta som dörrvakter, gladiatorer, legosoldater och vagnsdragare.",
+    "wongos": "Kortvuxna, med gulaktig hy, breda munnar, platta ansikten och stora trubbiga hörntänder som ger ett barnsligt och komiskt intryck. Trots det är de respekterade köpmän och mästerliga förhandlare, och de långa livet och alla handelsresor gör dem ofta visa.",
+}
+for r in RASER:
+    r["beskrivning"] = RASBESKRIVNING[r["id"]]
 skriv("raser", RASER)
 
 # ---------------------------------------------------------------- ålder (s. 16–17, 34)

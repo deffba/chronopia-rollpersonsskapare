@@ -117,16 +117,28 @@ textarea { width: 100%; resize: vertical; }
 input.tal { width: 4.5rem; text-align: right; font-variant-numeric: tabular-nums; }
 input.tal.bred { width: 6rem; }
 
-.raskort-rutnat { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.raskort-rutnat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%;
+  transition: width .4s ease, gap .4s ease; }
 .raskort {
   display: grid; gap: 2px; text-align: left; padding: 12px; border-radius: 8px; border: 1px solid var(--linje);
-  background: var(--bg); cursor: pointer;
+  background: var(--bg); cursor: pointer; min-width: 0; transition: padding .4s ease, background-color .2s, border-color .2s;
 }
 .raskort:hover { border-color: var(--accent); }
 .raskort.valt { border-color: var(--accent); background: var(--accent-svag); box-shadow: inset 0 0 0 1px var(--accent); }
-.raskort-namn { font: 1.2rem var(--rubrik); }
+.raskort-namn { font: 1.2rem var(--rubrik); transition: font-size .4s ease; overflow-wrap: anywhere; }
+.raskort-info { display: grid; grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows .4s ease, opacity .25s ease; }
+.raskort-info > div { overflow: hidden; display: grid; gap: 2px; }
 .raskort-bp { font-weight: 700; color: var(--accent-text); font-size: .85rem; }
 .raskort-mod { font-size: .82rem; color: var(--dampad); font-variant-numeric: tabular-nums; }
+/* Förminskat läge när en ras är vald: bara namnen, i samma 3 × 4-rutnät */
+.raskort-rutnat.liten { width: min(100%, 360px); gap: 6px; }
+.raskort-rutnat.liten .raskort { padding: 5px 8px; gap: 0; }
+.raskort-rutnat.liten .raskort-namn { font-size: .95rem; }
+.raskort-rutnat.liten .raskort-info { grid-template-rows: 0fr; opacity: 0; }
+.rasval-huvud { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.raslore { font-style: italic; color: var(--dampad); max-width: 65ch; margin: 4px 0 8px; }
+@media (prefers-reduced-motion: reduce) { .raskort-rutnat, .raskort, .raskort-namn, .raskort-info { transition: none; } }
+@media (max-width: 520px) { .raskort-rutnat:not(.liten) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .rutor { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .punkter { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
 
