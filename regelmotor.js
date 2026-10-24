@@ -4,6 +4,9 @@
 
 export const GRUNDEGENSKAPER = ["STY", "FYS", "SMI", "INT", "PSY", "KAR"];
 
+// Ett påbörjat val, t.ex. "vapen:" innan vapnet är valt eller "tva-vapen:Dolk+" innan det andra vapnet är valt.
+export const paborjad = (nyckel) => !nyckel || nyckel.endsWith(":") || nyckel.endsWith("+");
+
 // Slår upp i en tabell av [övre gräns, värde]; null som gräns betyder "och uppåt".
 export function slaUpp(tabell, varde) {
   for (const [grans, ...resten] of tabell) {
@@ -111,7 +114,9 @@ export function raknaHarledda(regler, v, { kpFaktor = 1, forflyttningBonus = 0 }
 export function raknaSlag(regler, rp, ras, yrke, alderEff) {
   const t = regler.slag;
   const svardshand = rp.svardshand.overstyrd ?? slaUpp(t.svardshand.tabell, rp.svardshand.slag + rp.svardshand.bp);
-  const ssResultat = rp.socialtStand.slag + rp.socialtStand.bp + (ras.slagbonus.socialtStand ?? 0);
+  // Med SL:s tillåtelse kan ståndet väljas i stället för att slås; då räknas lägsta värdet för det ståndet
+  const ssResultat = rp.socialtStand.valt ? standsvarde(t.socialtStand.tabell, rp.socialtStand.valt)
+    : rp.socialtStand.slag + rp.socialtStand.bp + (ras.slagbonus.socialtStand ?? 0);
   const [stand, klass] = slaUpp(t.socialtStand.tabell, ssResultat);
   const skBonus = (ras.slagbonus.startkapital ?? 0) + (yrke.slagbonus?.startkapital ?? 0);
   const tak = ssResultat + (yrke.kapitaltak ?? t.startkapital.tak);
@@ -119,6 +124,45 @@ export function raknaSlag(regler, rp, ras, yrke, alderEff) {
     rp.startkapital.slag + rp.startkapital.bp + Math.ceil(rp.socialtStand.bp / 2) + skBonus, tak);
   const silver = slaUpp(t.startkapital.tabell, skResultat) * alderEff.kapital + (rp.arv ?? 0);
   return { svardshand, socialtStand: stand, standsklass: klass, ssResultat, skResultat, startkapital: silver };
+}
+
+// Lägsta slagresultat som ger ett visst socialt stånd.
+export function standsvarde(tabell, namn) {
+  const i = tabell.findIndex(([, n]) => n === namn);
+  if (i === -1) return 0;
+  return i === 0 ? tabell[0][0] : tabell[i - 1][0] + 1;
+}
+
+// Måste vapnet hållas med två händer av den här rollpersonen? (s. 72, 89–90)
+export function tvahandsvapen(regler, namn, varden) {
+  const vapen = regler.vapen.narstrid.find((x) => x.namn === namn);
+  if (!vapen) return true;
+  if (vapen.enHandOmStoOverKrav) return !(varden.STO > vapen.styKrav && !["Trästav", "Långspjut"].includes(namn));
+  return Boolean(regler.vapen.styBeroendeGrupper[vapen.grupp]) && vapen.styKrav > varden.STY;
+}
+
+// Regler för vad som får väljas som språk, vapenkombination och yrkesfärdighet (s. 66–71).
+function kontrolleraVal(regler, rp, varden, fel) {
+  const yrkesnycklar = new Set([...rp.yrkesfardigheter, ...rp.extraYrkesfardigheter]);
+  for (const nyckel of new Set([...yrkesnycklar, ...Object.keys(rp.fardigheter)])) {
+    const [id, val] = nyckel.split(":");
+    if (!val || paborjad(nyckel)) continue;
+    if (id === "tala" || id === "lasa-skriva") {
+      const sprak = regler.fardigheter.sprak.find((x) => x.id === val);
+      const namn = sprak?.namn ?? val;
+      if (!sprak) fel.push(`Okänt språk: ${val}`);
+      else if (id === "lasa-skriva" && (sprak.skriftsprak === false || sprak.endastTala)) fel.push(`${namn} har inget skriftspråk (s. 66)`);
+      else if (yrkesnycklar.has(nyckel) && sprak.aldrigYrke) fel.push(`${namn} kan aldrig vara yrkesfärdighet (s. 70)`);
+      const modersmal = id === "tala" ? rp.modersmal?.tala : rp.modersmal?.lasaSkriva;
+      if (yrkesnycklar.has(nyckel) && modersmal?.includes(val)) fel.push(`${namn} är redan modersmål och kan inte väljas som främmande språk (s. 66, 70)`);
+    }
+    if (id === "tva-vapen") {
+      const vapen = val.split("+");
+      if (vapen.length !== 2 || vapen.some((v) => !regler.vapen.narstrid.some((x) => x.namn === v))) fel.push(`Två vapen gäller två närstridsvapen (s. 71)`);
+      else if (vapen.some((v) => tvahandsvapen(regler, v, varden))) fel.push(`Två vapen kan inte kombineras med tvåhandsvapen (s. 71)`);
+    }
+  }
+  if (rp.valfri && fardighetAv(regler, rp.valfri)?.typ === "primar") fel.push("Den valfria yrkesfärdigheten kan inte vara en primär färdighet (s. 18)");
 }
 
 const BC = (regler, varde) => slaUpp(regler.fardigheter.baschans, varde);
@@ -282,9 +326,11 @@ export function raknaRollperson(regler, indata) {
   }
   if (epSpenderat > epStart) fel.push(`${epSpenderat - epStart} EP för mycket har spenderats (s. 34)`);
 
+  kontrolleraVal(regler, rp, ge.varden, fel);
+
   // Samma yrkesfärdighet kan inte väljas två gånger (s. 18, 27)
   const sedda = new Set();
-  for (const k of [...rp.yrkesfardigheter, ...rp.extraYrkesfardigheter].filter((x) => x && !x.endsWith(":"))) {
+  for (const k of [...rp.yrkesfardigheter, ...rp.extraYrkesfardigheter].filter((x) => paborjad(x) === false)) {
     if (sedda.has(k)) fel.push(`${namnFor(regler, fardighetAv(regler, k), k)} är redan yrkesfärdighet (s. 27)`);
     sedda.add(k);
   }
@@ -370,7 +416,7 @@ export function sarskildFormaga(regler, rp) {
       let nycklar = [...(del.fasta ?? [])];
       if (del.valj) {
         // En nyckel som slutar på ":" är ett påbörjat val (t.ex. "vapen:" innan vapnet är valt)
-        const valda = [].concat(val ?? []).filter((k) => k && !k.endsWith(":"));
+        const valda = [].concat(val ?? []).filter((k) => paborjad(k) === false);
         if (valda.length < del.valj) svar.saknas.push(`Välj ${del.valj - valda.length} färdighet${del.valj - valda.length > 1 ? "er" : ""} för ${formaga.namn}`);
         if (valda.length > del.valj || new Set(valda).size !== valda.length) svar.fel.push(`${formaga.namn}: välj ${del.valj} olika färdigheter (s. 30–32)`);
         for (const k of valda) {

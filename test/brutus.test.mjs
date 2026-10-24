@@ -102,3 +102,17 @@ test("särskild förmåga kan bara gälla tillåtna färdigheter (s. 30)", () =>
   // Hobbyist gäller sekundära färdigheter, inte primära
   assert.match(felFor({ sarskildaFormagor: { bp: 1, slag: 23, val: [["rida"]] } }).join(), /Hobbyist/);
 });
+
+test("modersmål kan inte väljas som främmande språk, och Två vapen kan inte ha tvåhandsvapen (s. 66–71)", () => {
+  assert.match(felFor({ yrkesfardigheter: [...brutus.yrkesfardigheter, "tala:hoglandska"] }).join(), /modersmål/);
+  const yrkesfardigheter = brutus.yrkesfardigheter.map((k) => (k.startsWith("tva-vapen") ? "tva-vapen:Tvåhandssvärd+Dolk" : k));
+  const fardigheter = { ...brutus.fardigheter, "tva-vapen:Tvåhandssvärd+Dolk": 3 };
+  delete fardigheter["tva-vapen:Bredsvärd+Dolk"];
+  assert.match(felFor({ yrkesfardigheter, fardigheter }).join(), /tvåhandsvapen/);
+});
+
+test("valt socialt stånd räknas som lägsta slagresultatet för ståndet (s. 33)", () => {
+  const r = raknaRollperson(allaRegler, { ...structuredClone(brutus), socialtStand: { bp: 0, slag: null, valt: "Lågadel" } });
+  assert.equal(r.slag.socialtStand, "Lågadel");
+  assert.equal(r.slag.ssResultat, 30);
+});

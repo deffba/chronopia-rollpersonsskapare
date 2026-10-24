@@ -190,7 +190,34 @@ details.fakta > *:not(summary) { margin-top: 10px; }
   background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 8px; box-shadow: var(--skugga);
   max-width: min(560px, calc(100vw - 32px)); font-size: .92rem; z-index: 20;
 }
-#exportruta { width: 100%; max-width: 1480px; display: block; margin: 12px auto 0; font: .8rem/1.4 ui-monospace, monospace; }
+#exportruta { width: 100%; display: block; font: .8rem/1.4 ui-monospace, monospace; }
+
+/* info-cirklar och deras förklaringsruta */
+.info {
+  display: inline-grid; place-items: center; width: 15px; height: 15px; margin-left: 5px; padding: 0; vertical-align: 1px;
+  border: 1px solid var(--linje); border-radius: 50%; background: none; color: var(--dampad);
+  font: italic 700 10px/1 Georgia, serif; text-transform: none; letter-spacing: 0; cursor: help;
+}
+.info:hover, .info:focus-visible { border-color: var(--accent); color: var(--accent-text); }
+#tips {
+  position: fixed; z-index: 30; padding: 10px 12px; border-radius: 8px; background: var(--text); color: var(--bg);
+  font: 400 .85rem/1.45 var(--sans); text-transform: none; letter-spacing: 0; box-shadow: var(--skugga); pointer-events: none;
+}
+
+.tabell tr.valbar { cursor: pointer; }
+.tabell tr.valbar:hover { background: var(--yta-2); }
+.radknapp { background: none; border: 0; padding: 0; font: inherit; color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+input.namnfalt {
+  width: 100%; min-width: 0; text-align: center; font: 1.7rem/1.15 var(--rubrik); background: none; border: 1px dashed transparent; border-radius: var(--rad); padding: 2px 6px; color: var(--text);
+}
+input.namnfalt:hover { border-color: var(--linje); }
+input.namnfalt:focus { border-color: var(--accent); outline: none; }
+.namnfalt::placeholder { color: var(--text); opacity: 1; }
+.fast { padding: 6px 9px; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--yta-2); font-size: .95rem; }
+.delvalhjalp { flex-basis: 100%; max-width: 68ch; }
+.felrad { color: var(--fel); }
+.steg-knapp:disabled { opacity: .45; cursor: not-allowed; }
+.steg-knapp:disabled:hover { background: none; }
 </style>
 
 <header class="topp">
@@ -201,7 +228,6 @@ details.fakta > *:not(summary) { margin-top: 10px; }
   <div class="topp-verktyg">
     <span id="bp-topp" aria-live="polite"></span>
     <button type="button" class="knapp" id="ny">Ny rollperson</button>
-    <button type="button" class="knapp" id="exportera">Kopiera som JSON</button>
     <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
   </div>
 </header>
@@ -217,7 +243,6 @@ details.fakta > *:not(summary) { margin-top: 10px; }
   <main id="arbetsyta" class="kort" tabindex="-1"><p>Läser in reglerna …</p></main>
   <aside class="sida-formular kort" id="formular" aria-label="Rollformulär"></aside>
 </div>
-<textarea id="exportruta" rows="8" hidden aria-label="Rollpersonen som JSON"></textarea>
 <div id="notis" role="status" hidden></div>
 
 <script type="module" src="app.js"></script>
