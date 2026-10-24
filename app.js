@@ -396,19 +396,21 @@ function stegRas() {
   return [
     el("div", { class: "rasval-huvud" }, rutnat,
       rasLiten ? el("button", { type: "button", class: "knapp liten", "aria-label": "Visa alla raser med detaljer",
-        onclick: () => { rasLiten = false; rasAnimera = true; rita(); } }, "⤢ Visa alla detaljer") : null),
+        onclick: () => { rasLiten = false; rasAnimera = true; rita(); } }, "Visa mer …") : null),
+    el("div", { class: "rasinfo" },
+      el("h3", { class: "rasrubrik" }, valt.namn),
+      rasLiten && valt.beskrivning ? el("p", { class: "raslore" }, valt.beskrivning, " (s. 14–16)") : null),
     el("div", { class: "rutor" },
-      el("div", {}, el("h3", {}, "Särskilt för ", valt.namn),
-        rasLiten && valt.beskrivning ? el("p", { class: "raslore" }, valt.beskrivning, " (s. 14–16)") : null,
+      el("div", {}, el("h4", {}, "Särskilt för ", valt.namn.toLowerCase()),
         el("ul", { class: "punkter" },
           valt.formagor.map((t) => el("li", {}, t)),
-          valt.primara.length ? el("li", {}, "Extra primära färdigheter: ", valt.primara.map((p) => (typeof p === "string" ? fardighetAv(R, p).namn : `valfri ${p.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`)).join(", ")) : null,
+          valt.primara.length ? el("li", {}, "Extra primära färdigheter: ", valt.primara.map((p) => (typeof p === "string" ? (p.split(":")[1] ?? fardighetAv(R, p).namn) : `valfri ${p.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`)).join(", ")) : null,
           valt.sekundara.length ? el("li", {}, "Sekundära för rasen: ", valt.sekundara.map((p) => fardighetAv(R, p).namn).join(", ")) : null,
           valt.startbonus.map((b) => el("li", {}, `+${b.bc} på BC i ${fardighetAv(R, b.fardighet).namn}`)),
           Object.entries(valt.slagbonus).map(([k, v]) => el("li", {}, `+${v} på slaget för ${k === "socialtStand" ? "socialt stånd" : "startkapital"}`)),
           el("li", {}, "Talar: ", sprak(valt.talaModersmal)),
           el("li", {}, "Läser och skriver: ", sprak(valt.lasaSkrivaModersmal)))),
-      extra.length ? el("div", {}, extra) : null),
+      extra.length ? el("div", { class: "rasval-extra" }, extra) : null),
   ];
 }
 

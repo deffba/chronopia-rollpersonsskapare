@@ -64,7 +64,7 @@ RASER = [
     ras("ljusalv", "Ljusalv", 30, [-1, 0, 3, 1, 0, 2], [10, 20, 15], ALV_ALDER,
         [{"sprak": "alviska", "fv": 16}, {"sprak": "chronos", "fv": 16}], ["alviska", "chronos"],
         ["Mörkersyn", "Dör aldrig av ålder, blir aldrig sjuk"],
-        primara=["langbage"], sekundara=["rida"], startbonus=[{"fardighet": "klattra", "bc": 5}]),
+        primara=["vapen:Långbåge"], sekundara=["rida"], startbonus=[{"fardighet": "klattra", "bc": 5}]),
     ras("manniska", "Människa", 15, [0, 0, 0, 0, 0, 0], [8, 18, 13],
         [[16, 20], [21, 45], [46, 60], [61, 70], [71, 100]],
         [{"sprak": "chronos", "fv": 16}], ["chronos"], []),
