@@ -80,6 +80,8 @@ let aktivtSteg = "ras";
 let giltig; // senaste rollperson som följer alla regler
 let nySekundar = ""; // påbörjat val av ny sekundär färdighet
 let provar = false;
+let rasLiten = false; // rasrutorna är förminskade sedan en ras valts
+let rasAnimera = false; // nästa ritning ska animera mellan stort och litet läge
 let andrat = {}; // färdigheter och grundegenskaper som en automatisk fördelning höjde ("upp") eller sänkte ("ner")
 let behallAndrat = false; // sant medan tal() letar efter närmaste tillåtna värde
 
@@ -363,12 +365,23 @@ function stegRas() {
   const valt = rasAv(R, rp.ras);
   const kort = R.raser.map((r) => el("button", {
     type: "button", class: "raskort" + (r.id === rp.ras ? " valt" : ""), "aria-pressed": r.id === rp.ras ? "true" : "false",
-    onclick: () => { rp.ras = r.id; rp.rasval = []; rp.stoSteg = 0; uppdatera(); },
+    onclick: () => {
+      if (r.id !== rp.ras) { rp.ras = r.id; rp.rasval = []; rp.stoSteg = 0; }
+      if (!rasLiten) { rasLiten = true; rasAnimera = true; }
+      uppdatera();
+    },
   },
   el("span", { class: "raskort-namn" }, r.namn),
-  el("span", { class: "raskort-bp" }, `${r.bp} BP`),
-  el("span", { class: "raskort-mod" }, GRUNDEGENSKAPER.filter((g) => r.mod[g]).map((g) => `${g} ${r.mod[g] > 0 ? "+" : "−"}${Math.abs(r.mod[g])}`).join(" · ") || "Inga modifikationer"),
-  el("span", { class: "raskort-mod" }, `STO ${r.sto.min}–${r.sto.max} (normalt ${r.sto.normal})`)));
+  el("span", { class: "raskort-info", "aria-hidden": rasLiten ? "true" : null }, el("div", {},
+    el("span", { class: "raskort-bp" }, `${r.bp} BP`),
+    el("span", { class: "raskort-mod" }, GRUNDEGENSKAPER.filter((g) => r.mod[g]).map((g) => `${g} ${r.mod[g] > 0 ? "+" : "−"}${Math.abs(r.mod[g])}`).join(" · ") || "Inga modifikationer"),
+    el("span", { class: "raskort-mod" }, `STO ${r.sto.min}–${r.sto.max} (normalt ${r.sto.normal})`)))));
+  // Rutnätet ritas i förra läget och byter klass i nästa bildruta, så att övergången animeras
+  const rutnat = el("div", { class: "raskort-rutnat" + ((rasAnimera ? !rasLiten : rasLiten) ? " liten" : "") }, kort);
+  if (rasAnimera) {
+    rasAnimera = false;
+    requestAnimationFrame(() => { void rutnat.offsetWidth; rutnat.classList.toggle("liten", rasLiten); });
+  }
 
   const extra = [];
   if (valt.primara.some((p) => p.valfri === "vapen")) {
@@ -381,9 +394,12 @@ function stegRas() {
   }
   const sprak = (lista) => lista.map((x) => R.fardigheter.sprak.find((s) => s.id === (x.sprak ?? x))?.namn ?? x).join(", ") || "inget skriftspråk";
   return [
-    el("div", { class: "raskort-rutnat" }, kort),
+    el("div", { class: "rasval-huvud" }, rutnat,
+      rasLiten ? el("button", { type: "button", class: "knapp liten", "aria-label": "Visa alla raser med detaljer",
+        onclick: () => { rasLiten = false; rasAnimera = true; rita(); } }, "⤢ Visa alla detaljer") : null),
     el("div", { class: "rutor" },
       el("div", {}, el("h3", {}, "Särskilt för ", valt.namn),
+        rasLiten && valt.beskrivning ? el("p", { class: "raslore" }, valt.beskrivning, " (s. 14–16)") : null,
         el("ul", { class: "punkter" },
           valt.formagor.map((t) => el("li", {}, t)),
           valt.primara.length ? el("li", {}, "Extra primära färdigheter: ", valt.primara.map((p) => (typeof p === "string" ? fardighetAv(R, p).namn : `valfri ${p.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`)).join(", ")) : null,
