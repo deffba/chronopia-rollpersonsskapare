@@ -396,7 +396,7 @@ function stegRas() {
   return [
     el("div", { class: "rasval-huvud" }, rutnat,
       rasLiten ? el("button", { type: "button", class: "knapp liten", "aria-label": "Visa alla raser med detaljer",
-        onclick: () => { rasLiten = false; rasAnimera = true; rita(); } }, "Visa mer …") : null),
+        onclick: () => { rasLiten = false; rasAnimera = true; rita(); } }, "⤢ Visa mer …") : null),
     el("div", { class: "rasinfo" },
       el("h3", { class: "rasrubrik" }, valt.namn),
       rasLiten && valt.beskrivning ? el("p", { class: "raslore" }, valt.beskrivning, " (s. 14–16)") : null),
