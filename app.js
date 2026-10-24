@@ -77,6 +77,7 @@ const TOM = () => ({
 let R; // regeldata
 let rp; // rollpersonen (spelarens val)
 let aktivtSteg = "ras";
+let langst = 0; // längsta steg spelaren har kommit till; senare steg är släckta i sidomenyn
 let giltig; // senaste rollperson som följer alla regler
 let nySekundar = ""; // påbörjat val av ny sekundär färdighet
 let provar = false;
@@ -102,7 +103,7 @@ const slaT = (antal, sidor) => Array.from({ length: antal }, () => 1 + Math.floo
 const sm = (n) => n.toLocaleString("sv-SE") + " sm";
 
 function spara() {
-  try { localStorage.setItem(LAGRING, JSON.stringify({ rp, aktivtSteg })); } catch { /* lagring är frivillig */ }
+  try { localStorage.setItem(LAGRING, JSON.stringify({ rp, aktivtSteg, langst })); } catch { /* lagring är frivillig */ }
 }
 
 const rakna = () => raknaRollperson(R, motorIndata());
@@ -976,6 +977,7 @@ function importera(text) {
       rp = fore;
       throw new Error(`den bryter mot reglerna (${fel[0]})`);
     }
+    langst = STEG.length - 1; // en inläst rollperson är redan genomgången
     visaNotis(`${rp.namn || "Rollpersonen"} är inläst.`);
     uppdatera();
   } catch (e) {
@@ -997,10 +999,12 @@ function rita() {
   const grans = forstaOfardiga(res);
   // Står man på ett steg bortom gränsen (t.ex. efter att ha ändrat yrke) flyttas man tillbaka
   if (STEG.findIndex((s) => s.id === aktivtSteg) > grans) aktivtSteg = STEG[grans].id;
+  langst = Math.max(langst, STEG.findIndex((s) => s.id === aktivtSteg));
+  const oppna = Math.min(grans, langst);
   const rail = $("#steg");
   rail.replaceChildren(...STEG.map((s, i) => el("li", {},
     el("button", { type: "button", class: "steg-knapp" + (s.id === aktivtSteg ? " aktiv" : ""), "aria-current": s.id === aktivtSteg ? "step" : null,
-      disabled: i > grans, title: i > grans ? "Gör klart de tidigare stegen först" : null,
+      disabled: i > oppna, title: i > oppna ? "Gör klart de tidigare stegen först" : null,
       onclick: () => { aktivtSteg = s.id; uppdatera(); $("#arbetsyta").focus({ preventScroll: true }); } },
     el("span", { class: "steg-nr" }, i + 1), el("span", { class: "steg-namn" }, s.namn),
     s.bp ? el("span", { class: "steg-bp" }, bpForSteg(s.id, res)) : null))));
@@ -1051,11 +1055,13 @@ async function start() {
   try { sparad = JSON.parse(localStorage.getItem(LAGRING) ?? "null"); } catch { /* ingen sparad rollperson */ }
   rp = sparad?.rp ? { ...TOM(), ...sparad.rp } : TOM();
   aktivtSteg = sparad?.aktivtSteg ?? "ras";
+  langst = sparad?.langst ?? Math.max(0, STEG.findIndex((s) => s.id === aktivtSteg));
   try {
     if (rakna().fel.length) throw new Error("ogiltig");
   } catch {
     rp = TOM();
     aktivtSteg = "ras";
+    langst = 0;
   }
   giltig = structuredClone(rp);
   const lardomar = el("datalist", { id: "lardomar" }, LARDOMSFORSLAG.map((t) => el("option", { value: t })));
@@ -1069,7 +1075,7 @@ async function start() {
       return;
     }
     $("#ny").dataset.bekrafta = ""; $("#ny").textContent = "Ny rollperson";
-    rp = TOM(); aktivtSteg = "ras"; nySekundar = ""; uppdatera();
+    rp = TOM(); aktivtSteg = "ras"; langst = 0; nySekundar = ""; uppdatera();
   });
   $("#importfil").addEventListener("change", async (e) => { const fil = e.target.files[0]; if (fil) importera(await fil.text()); e.target.value = ""; });
   document.addEventListener("paste", (e) => {
