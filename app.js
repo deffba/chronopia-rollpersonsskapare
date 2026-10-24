@@ -81,8 +81,6 @@ let langst = 0; // längsta steg spelaren har kommit till; senare steg är släc
 let giltig; // senaste rollperson som följer alla regler
 let nySekundar = ""; // påbörjat val av ny sekundär färdighet
 let provar = false;
-let rasLiten = false; // rasrutorna är förminskade sedan en ras valts
-let rasAnimera = false; // nästa ritning ska animera mellan stort och litet läge
 // Innan en ras är vald räknar motorn som för en människa, men ingen ras visas som vald
 const rasId = () => rp.ras || "manniska";
 
@@ -370,28 +368,13 @@ function stegRas() {
   const kort = R.raser.map((r) => el("button", {
     type: "button", class: "raskort" + (r.id === rp.ras ? " valt" : ""), "aria-pressed": r.id === rp.ras ? "true" : "false",
     onclick: () => {
-      // Ett tryck på den valda rasen avmarkerar den och visar alla raser igen
-      const avmarkera = r.id === rp.ras;
-      rp.ras = avmarkera ? "" : r.id; rp.rasval = []; rp.stoSteg = 0;
-      if (rasLiten === avmarkera) { rasLiten = !avmarkera; rasAnimera = true; }
+      // Ett tryck på den valda rasen avmarkerar den
+      rp.ras = r.id === rp.ras ? "" : r.id; rp.rasval = []; rp.stoSteg = 0;
       uppdatera();
     },
   },
-  el("span", { class: "raskort-namn" }, r.namn),
-  el("span", { class: "raskort-info", "aria-hidden": rasLiten ? "true" : null }, el("div", {},
-    el("span", { class: "raskort-bp" }, `${r.bp} BP`),
-    el("span", { class: "raskort-mod" }, GRUNDEGENSKAPER.filter((g) => r.mod[g]).map((g) => `${g} ${r.mod[g] > 0 ? "+" : "−"}${Math.abs(r.mod[g])}`).join(" · ") || "Inga modifikationer"),
-    el("span", { class: "raskort-mod" }, `STO ${r.sto.min}–${r.sto.max} (normalt ${r.sto.normal})`)))));
-  // Rutnätet ritas i förra läget och byter klass i nästa bildruta, så att övergången animeras
-  const rutnat = el("div", { class: "raskort-rutnat" + ((rasAnimera ? !rasLiten : rasLiten) ? " liten" : "") }, kort);
-  if (rasAnimera) {
-    rasAnimera = false;
-    requestAnimationFrame(() => { void rutnat.offsetWidth; rutnat.classList.toggle("liten", rasLiten); });
-  }
-
-  const huvud = el("div", { class: "rasval-huvud" }, rutnat,
-    rasLiten ? el("button", { type: "button", class: "knapp liten", "aria-label": "Visa alla raser med detaljer",
-      onclick: () => { rasLiten = false; rasAnimera = true; rita(); } }, "⤢ Visa mer …") : null);
+  el("span", { class: "raskort-namn" }, r.namn)));
+  const huvud = el("div", { class: "raskort-rutnat liten" }, kort);
   if (!valt) return [huvud, el("p", { class: "hjalp" }, "Välj rollpersonens ras genom att klicka på ett av korten.")];
   const extra = [];
   if (valt.primara.some((p) => p.valfri === "vapen")) {
@@ -407,7 +390,11 @@ function stegRas() {
     huvud,
     el("div", { class: "rasinfo" },
       el("h3", { class: "rasrubrik" }, valt.namn),
-      rasLiten && valt.beskrivning ? el("p", { class: "raslore" }, valt.beskrivning, " (s. 14–16)") : null),
+      valt.beskrivning ? el("p", { class: "raslore" }, valt.beskrivning, " (s. 14–16)") : null,
+      el("dl", { class: "rasdata" },
+        el("div", {}, el("dt", {}, "BP"), el("dd", {}, valt.bp)),
+        el("div", {}, el("dt", {}, "Grundegenskaper"), el("dd", {}, GRUNDEGENSKAPER.filter((g) => valt.mod[g]).map((g) => `${g} ${valt.mod[g] > 0 ? "+" : "−"}${Math.abs(valt.mod[g])}`).join(" · ") || "Inga modifikationer")),
+        el("div", {}, el("dt", {}, "STO"), el("dd", {}, `${valt.sto.min}–${valt.sto.max} (normalt ${valt.sto.normal})`)))),
     el("div", { class: "rutor" },
       el("div", {}, el("h4", {}, "Särskilt för ", valt.namn.toLowerCase()),
         el("ul", { class: "punkter" },
@@ -1059,7 +1046,6 @@ function rita() {
       index > 0 ? el("button", { type: "button", class: "knapp", onclick: () => { aktivtSteg = STEG[index - 1].id; uppdatera(); } }, `← ${STEG[index - 1].namn}`) : el("span"),
       index < STEG.length - 1 ? el("button", { type: "button", class: "knapp primar", disabled: index + 1 > grans, onclick: () => { aktivtSteg = STEG[index + 1].id; uppdatera(); } }, `${STEG[index + 1].namn} →`) : el("span")));
   $("#formular").replaceChildren(rollformular(res));
-  $("#bp-topp").textContent = `${res.bp.kvar} BP · ${res.ep.kvar} EP`;
 }
 
 function bpForSteg(id, res) {
@@ -1113,7 +1099,7 @@ async function start() {
       return;
     }
     avbryt();
-    rp = TOM(); aktivtSteg = "ras"; langst = 0; nySekundar = ""; rasLiten = false; rasAnimera = false; uppdatera();
+    rp = TOM(); aktivtSteg = "ras"; langst = 0; nySekundar = ""; uppdatera();
   });
   $("#importfil").addEventListener("change", async (e) => { const fil = e.target.files[0]; if (fil) importera(await fil.text()); e.target.value = ""; });
   document.addEventListener("paste", (e) => {
