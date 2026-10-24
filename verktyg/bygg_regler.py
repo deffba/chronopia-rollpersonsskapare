@@ -6,6 +6,7 @@ Kör: python3 bygg_regler.py <utkatalog>
 import json
 import os
 import sys
+from beskrivningar import BESKRIVNINGAR
 
 UT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "regler")
 os.makedirs(UT, exist_ok=True)
@@ -234,6 +235,7 @@ FARDIGHETER = [
 for d in FARDIGHETER:
     if d["id"] == "lappläsning":
         d["id"] = "lapplasning"
+    d["beskrivning"] = BESKRIVNINGAR[d["id"]]
 skriv("fardigheter", {
     "lista": FARDIGHETER,
     "kostnad": {"primar": 2, "yrke": 3, "sekundar": 5, "magiskolaSekundar": 20},  # EP per FV, s. 35
