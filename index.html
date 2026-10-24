@@ -165,6 +165,10 @@ details.fakta > *:not(summary) { margin-top: 10px; }
 .matare > span { display: block; height: 100%; background: var(--accent); }
 .fellista { border: 1px solid var(--fel); background: var(--fel-svag); color: var(--text); border-radius: 8px; padding: 10px 12px; font-size: .88rem; }
 .fellista strong { color: var(--fel); }
+.saknaslista { border: 1px solid var(--linje); background: var(--bg); border-radius: 8px; padding: 10px 12px; font-size: .88rem; }
+.saknaslista strong { color: var(--accent-text); }
+.saknaslista ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; }
+.klar { color: var(--ok); font-weight: 600; text-align: center; }
 .fellista ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; }
 .egenskaper { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 0; }
 .egenskaper > div { text-align: center; border: 1px solid var(--linje); border-radius: 6px; padding: 6px 0; background: var(--bg); }
@@ -196,7 +200,6 @@ details.fakta > *:not(summary) { margin-top: 10px; }
   </div>
   <div class="topp-verktyg">
     <span id="bp-topp" aria-live="polite"></span>
-    <button type="button" class="knapp" id="exempel">Visa bokens exempel</button>
     <button type="button" class="knapp" id="ny">Ny rollperson</button>
     <button type="button" class="knapp" id="exportera">Kopiera som JSON</button>
     <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>

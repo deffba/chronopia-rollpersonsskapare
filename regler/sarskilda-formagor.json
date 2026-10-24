@@ -6,7 +6,15 @@
     ],
     "namn": "Talang",
     "effekt": "+1 FV i valfri sekundär färdighet (ej magi).",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 1,
+        "valj": 1,
+        "bland": "sekundar-ej-magi"
+      }
+    ]
   },
   {
     "slag": [
@@ -15,7 +23,15 @@
     ],
     "namn": "Berest",
     "effekt": "+2 FV i två Geografi-färdigheter.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 2,
+        "valj": 2,
+        "bland": "geografi"
+      }
+    ]
   },
   {
     "slag": [
@@ -24,7 +40,16 @@
     ],
     "namn": "Musikalisk",
     "effekt": "FV 15 i Spela ett valfritt instrument.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 15,
+        "valj": 1,
+        "bland": "spela-instrument",
+        "minst": true
+      }
+    ]
   },
   {
     "slag": [
@@ -33,7 +58,17 @@
     ],
     "namn": "Sjöfarare",
     "effekt": "+2 FV i Sjökunnighet och Navigera.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 2,
+        "fasta": [
+          "sjokunnighet",
+          "navigera"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -42,7 +77,16 @@
     ],
     "namn": "Akrobat",
     "effekt": "+3 FV i Akrobatik.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "fasta": [
+          "akrobatik"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -60,7 +104,18 @@
     ],
     "namn": "Örtkunnig",
     "effekt": "+3 FV i Örtkunskap, Giftkunskap och Drogkunskap.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "fasta": [
+          "ortkunskap",
+          "giftkunskap",
+          "drogkunskap"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -78,7 +133,17 @@
     ],
     "namn": "Konstnärlig",
     "effekt": "+3 FV i Förfalskning och Målning.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "fasta": [
+          "forfalskning",
+          "malning"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -96,7 +161,16 @@
     ],
     "namn": "Spänstig",
     "effekt": "+3 FV i Hoppa.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "fasta": [
+          "hoppa"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -105,7 +179,15 @@
     ],
     "namn": "Byråkrat",
     "effekt": "+3 FV i Administration.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "valj": 1,
+        "bland": "administration"
+      }
+    ]
   },
   {
     "slag": [
@@ -114,7 +196,18 @@
     ],
     "namn": "Spelare",
     "effekt": "+3 FV i Schack & brädspel eller i Hasardspel.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "valj": 1,
+        "bland": [
+          "schack",
+          "hasardspel"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -123,7 +216,22 @@
     ],
     "namn": "Stora öron",
     "effekt": "−2 KAR, +5 FV i Lyssna.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "egenskap",
+        "mod": {
+          "KAR": -2
+        }
+      },
+      {
+        "typ": "fv",
+        "fv": 5,
+        "fasta": [
+          "lyssna"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -132,7 +240,16 @@
     ],
     "namn": "Slagskämpe",
     "effekt": "+3 FV i Slagsmål.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "fasta": [
+          "slagsmal"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -150,7 +267,15 @@
     ],
     "namn": "Händig",
     "effekt": "+3 FV i ett valfritt hantverk.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "valj": 1,
+        "bland": "hantverk"
+      }
+    ]
   },
   {
     "slag": [
@@ -159,7 +284,16 @@
     ],
     "namn": "Skarpt öga",
     "effekt": "+3 FV i Värdera.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "fasta": [
+          "vardera"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -168,7 +302,13 @@
     ],
     "namn": "Snabbfotad",
     "effekt": "Förflyttning +1.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "forflyttning",
+        "varde": 1
+      }
+    ]
   },
   {
     "slag": [
@@ -177,7 +317,15 @@
     ],
     "namn": "Tvåhandskämpe",
     "effekt": "+3 FV i Två vapen.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "valj": 1,
+        "bland": "tva-vapen"
+      }
+    ]
   },
   {
     "slag": [
@@ -186,7 +334,16 @@
     ],
     "namn": "Hobbyist",
     "effekt": "FV 3 i en valfri sekundär färdighet (ej magi), som får läras redan från start.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "valj": 1,
+        "bland": "sekundar-ej-magi",
+        "minst": true
+      }
+    ]
   },
   {
     "slag": [
@@ -204,7 +361,16 @@
     ],
     "namn": "Begåvad",
     "effekt": "+2 FV i valfri färdighet (ej magi); taket höjs också med 2.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 2,
+        "valj": 1,
+        "bland": "alla-ej-magi",
+        "tak": true
+      }
+    ]
   },
   {
     "slag": [
@@ -213,7 +379,16 @@
     ],
     "namn": "Ljudlös",
     "effekt": "+2 FV i Smyga.",
-    "sida": 30
+    "sida": 30,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 2,
+        "fasta": [
+          "smyga"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -258,7 +433,16 @@
     ],
     "namn": "Vacker röst",
     "effekt": "+3 KAR när man talar, +3 FV i Sjunga.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 3,
+        "fasta": [
+          "sjunga"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -267,7 +451,17 @@
     ],
     "namn": "Vaksam",
     "effekt": "+1 FV i Upptäcka fara och Finna dolda ting.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 1,
+        "fasta": [
+          "upptacka-fara",
+          "finna-dolda-ting"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -276,7 +470,16 @@
     ],
     "namn": "Beläst",
     "effekt": "FV 10 i en valfri lärdomsfärdighet.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 10,
+        "valj": 1,
+        "bland": "lardom",
+        "minst": true
+      }
+    ]
   },
   {
     "slag": [
@@ -294,7 +497,13 @@
     ],
     "namn": "Magikänsla",
     "effekt": "+5 CL i Känna magi; −5 på magiförmågeslaget.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "magiformaga",
+        "varde": -5
+      }
+    ]
   },
   {
     "slag": [
@@ -303,7 +512,16 @@
     ],
     "namn": "Språkbegåvad",
     "effekt": "FV 20 i Tala och Läsa/Skriva ett valfritt språk.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 20,
+        "valj": 1,
+        "bland": "sprak",
+        "minst": true
+      }
+    ]
   },
   {
     "slag": [
@@ -312,7 +530,16 @@
     ],
     "namn": "Mångsidig",
     "effekt": "Två valfria sekundära färdigheter (ej magi) blir yrkesfärdigheter.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 0,
+        "valj": 2,
+        "bland": "sekundar-ej-magi",
+        "status": "yrke"
+      }
+    ]
   },
   {
     "slag": [
@@ -330,7 +557,17 @@
     ],
     "namn": "Uppmärksam",
     "effekt": "+2 FV i Finna dolda ting och Upptäcka fara.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 2,
+        "fasta": [
+          "finna-dolda-ting",
+          "upptacka-fara"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -357,7 +594,13 @@
     ],
     "namn": "Arv",
     "effekt": "Ärver 10 000 sm till startkapitalet.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "kapital",
+        "varde": 10000
+      }
+    ]
   },
   {
     "slag": [
@@ -366,7 +609,15 @@
     ],
     "namn": "Vapentalang",
     "effekt": "+5 FV i en valfri vapenfärdighet.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 5,
+        "valj": 1,
+        "bland": "vapen"
+      }
+    ]
   },
   {
     "slag": [
@@ -384,7 +635,13 @@
     ],
     "namn": "Dubbelhänt",
     "effekt": "Se Svärdshand.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "svardshand",
+        "varde": "Dubbelhänt"
+      }
+    ]
   },
   {
     "slag": [
@@ -420,7 +677,17 @@
     ],
     "namn": "Bärsärk",
     "effekt": "+5 FV i Bärsärkagång, som blir primär färdighet.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 5,
+        "fasta": [
+          "barsarkagang"
+        ],
+        "status": "primar"
+      }
+    ]
   },
   {
     "slag": [
@@ -438,7 +705,17 @@
     ],
     "namn": "Skarpsinnig",
     "effekt": "+5 FV i Upptäcka fara och Finna dolda ting.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 5,
+        "fasta": [
+          "upptacka-fara",
+          "finna-dolda-ting"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -447,7 +724,16 @@
     ],
     "namn": "Ryttare",
     "effekt": "+10 FV i Rida; kastas aldrig av.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 10,
+        "fasta": [
+          "rida"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -456,7 +742,13 @@
     ],
     "namn": "Ambidextriös",
     "effekt": "Se Svärdshand.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "svardshand",
+        "varde": "Ambidextriös"
+      }
+    ]
   },
   {
     "slag": [
@@ -465,7 +757,17 @@
     ],
     "namn": "Vapenmästare",
     "effekt": "En vapenfärdighet blir primär och får FV 10 gratis.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 10,
+        "valj": 1,
+        "bland": "vapen",
+        "minst": true,
+        "status": "primar"
+      }
+    ]
   },
   {
     "slag": [
@@ -483,7 +785,17 @@
     ],
     "namn": "Skarpa sinnen",
     "effekt": "+5 FV i Upptäcka fara och Lyssna.",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "fv",
+        "fv": 5,
+        "fasta": [
+          "upptacka-fara",
+          "lyssna"
+        ]
+      }
+    ]
   },
   {
     "slag": [
@@ -528,7 +840,13 @@
     ],
     "namn": "Tålig",
     "effekt": "Total KP ×1,5 (även kroppsdelarna).",
-    "sida": 31
+    "sida": 31,
+    "regel": [
+      {
+        "typ": "kpFaktor",
+        "varde": 1.5
+      }
+    ]
   },
   {
     "slag": [
@@ -699,6 +1017,11 @@
     ],
     "namn": "Höjd grundegenskap",
     "effekt": "+1 på tre olika grundegenskaper eller +2 på en.",
-    "sida": 32
+    "sida": 32,
+    "regel": [
+      {
+        "typ": "egenskapVal"
+      }
+    ]
   }
 ]
