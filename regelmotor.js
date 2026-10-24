@@ -151,6 +151,9 @@ export function grundegenskapFor(regler, nyckel, varden) {
 export function status(regler, rp, nyckel) {
   const f = fardighetAv(regler, nyckel);
   const ras = rasAv(regler, rp.ras);
+  const andrad = rp.sarskildaFormagor?.status?.[nyckel];
+  if (andrad === "primar") return "primar";
+  if (andrad === "yrke") return "yrke";
   if (rp.yrkesfardigheter.includes(nyckel) || rp.extraYrkesfardigheter.includes(nyckel)) return "yrke";
   const id = f.id;
   const val = nyckel.split(":")[1];
@@ -200,6 +203,7 @@ export function startvarde(regler, rp, nyckel, varden, stand, fvHittills) {
     } else if (b.fardighet === nyckel || b.fardighet === f.id) start += b.bc;
   }
   for (const s of rp.sarskildaFormagor?.fvBonus ?? []) if (s.fardighet === nyckel) start += s.fv;
+  for (const s of rp.sarskildaFormagor?.fvMinst ?? []) if (s.fardighet === nyckel) start = Math.max(start, s.fv);
 
   // Vapengrupp: minst halva bästa FV i gruppen (s. 71)
   if (f.id === "vapen") {
@@ -229,10 +233,12 @@ export function epKostnad(regler, st, fardighet, start, mal) {
 }
 
 // Räknar fram hela rollpersonen och alla regelbrott.
-export function raknaRollperson(regler, rp) {
+export function raknaRollperson(regler, indata) {
+  const sf = sarskildFormaga(regler, indata);
+  const rp = { ...indata, ...sf.tillagg };
   const ras = rasAv(regler, rp.ras);
   const yrke = yrkeAv(regler, rp.yrke);
-  const fel = [];
+  const fel = [...sf.fel];
   const alderEff = alderseffekter(regler, rp.alder);
 
   const bpStart = regler.grundegenskaper.startBP + alderEff.bp + (yrke.extraBP?.antal ?? 0);
@@ -276,8 +282,25 @@ export function raknaRollperson(regler, rp) {
   }
   if (epSpenderat > epStart) fel.push(`${epSpenderat - epStart} EP för mycket har spenderats (s. 34)`);
 
+  // Samma yrkesfärdighet kan inte väljas två gånger (s. 18, 27)
+  const sedda = new Set();
+  for (const k of [...rp.yrkesfardigheter, ...rp.extraYrkesfardigheter].filter((x) => x && !x.endsWith(":"))) {
+    if (sedda.has(k)) fel.push(`${namnFor(regler, fardighetAv(regler, k), k)} är redan yrkesfärdighet (s. 27)`);
+    sedda.add(k);
+  }
+
+  // Magiskolor utanför magikeryrkena kräver ett lyckat magiförmågeslag (s. 27, 106)
+  const skolor = Object.keys(rp.fardigheter).filter((k) => fardighetAv(regler, k)?.typ === "magiskola");
+  const behoverSlag = !yrke.magiker && (skolor.length > 0 || rp.extraYrkesfardigheter.some((k) => fardighetAv(regler, k)?.typ === "magiskola"));
+  const magiformaga = { chans: Math.ceil((ge.varden.INT + ge.varden.PSY) / 2), behovs: behoverSlag, slag: rp.magiformaga?.slag ?? null, mod: sf.magiformaga };
+  magiformaga.lyckat = magiformaga.slag !== null && magiformaga.slag + magiformaga.mod <= magiformaga.chans;
+  if (behoverSlag && !magiformaga.lyckat) {
+    fel.push(magiformaga.slag === null ? "Magiskolor kräver ett magiförmågeslag (s. 106)" : "Magiförmågeslaget misslyckades, så rollpersonen kan inte lära sig magi (s. 106)");
+  }
+
   return {
-    ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, harledda, slag,
+    ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, harledda, slag, magiformaga,
+    sarskildFormaga: sf.formaga, saknas: sf.saknas,
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
@@ -306,4 +329,87 @@ export function namnFor(regler, f, nyckel) {
   if (f.id === "lardom") return val;
   if (f.id === "kanna-magi") return `Känna ${val}`;
   return `${f.namn} (${val})`;
+}
+
+// Färdigheter som räknas som magi och därför inte får väljas för "ej magi" (s. 30–31).
+const MAGI = ["kanna-magi", "magisk-kanalisering", "magistudier"];
+const arMagi = (f) => f.typ === "magiskola" || MAGI.includes(f.id);
+
+// Kan färdigheten väljas för en särskild förmåga med gruppen "bland"?
+export function passarBland(regler, rp, nyckel, bland) {
+  const f = fardighetAv(regler, nyckel);
+  if (!f) return false;
+  if (f.perVal && !nyckel.split(":")[1]) return false;
+  if (Array.isArray(bland)) return bland.includes(f.id);
+  if (bland === "alla-ej-magi") return !arMagi(f);
+  if (bland === "sekundar-ej-magi") return !arMagi(f) && status(regler, rp, nyckel) === "sekundar";
+  if (bland === "sprak") return f.id === "tala";
+  return f.id === bland;
+}
+
+// Vilken särskild förmåga rollpersonen har och vad den ger, utifrån spelarens val (s. 30–32).
+// rp.sarskildaFormagor.val[i] är valen för förmågans i:te effekt.
+export function sarskildFormaga(regler, rp) {
+  const s = rp.sarskildaFormagor ?? {};
+  const svar = { formaga: null, fel: [], saknas: [], magiformaga: 0, tillagg: {} };
+  if (!s.bp || s.slag === null || s.slag === undefined) return svar;
+  const summa = s.slag + s.bp;
+  const formaga = regler["sarskilda-formagor"].find(({ slag: [fran, till] }) => summa >= fran && (till === null || summa <= till));
+  svar.formaga = formaga;
+  const fvBonus = [];
+  const fvMinst = [];
+  const takBonus = {};
+  const andrad = {};
+  const egenskapsbonus = {};
+  let harledda = { kpFaktor: 1, forflyttningBonus: 0 };
+  let arv = 0;
+  let svardshand;
+  (formaga.regel ?? []).forEach((del, i) => {
+    const val = s.val?.[i];
+    if (del.typ === "fv") {
+      let nycklar = [...(del.fasta ?? [])];
+      if (del.valj) {
+        // En nyckel som slutar på ":" är ett påbörjat val (t.ex. "vapen:" innan vapnet är valt)
+        const valda = [].concat(val ?? []).filter((k) => k && !k.endsWith(":"));
+        if (valda.length < del.valj) svar.saknas.push(`Välj ${del.valj - valda.length} färdighet${del.valj - valda.length > 1 ? "er" : ""} för ${formaga.namn}`);
+        if (valda.length > del.valj || new Set(valda).size !== valda.length) svar.fel.push(`${formaga.namn}: välj ${del.valj} olika färdigheter (s. 30–32)`);
+        for (const k of valda) {
+          if (!passarBland(regler, rp, k, del.bland)) svar.fel.push(`${formaga.namn} gäller inte ${k.split(":")[1] ?? fardighetAv(regler, k)?.namn ?? k} (s. 30–32)`);
+        }
+        nycklar.push(...valda);
+      }
+      if (del.bland === "sprak") {
+        nycklar = nycklar.flatMap((k) => {
+          const sprak = regler.fardigheter.sprak.find((x) => x.id === k.split(":")[1]);
+          return sprak?.skriftsprak === false || sprak?.endastTala ? [k] : [k, `lasa-skriva:${k.split(":")[1]}`];
+        });
+      }
+      for (const k of nycklar) {
+        if (del.fv) (del.minst ? fvMinst : fvBonus).push({ fardighet: k, fv: del.fv });
+        if (del.tak) takBonus[k] = (takBonus[k] ?? 0) + del.fv;
+        if (del.status) andrad[k] = del.status;
+      }
+    } else if (del.typ === "egenskap") {
+      for (const [g, m] of Object.entries(del.mod)) egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + m;
+    } else if (del.typ === "egenskapVal") {
+      const lage = val?.lage;
+      const valda = (val?.egenskaper ?? []).filter(Boolean);
+      const antal = lage === "en" ? 1 : 3;
+      if (!lage || valda.length < antal) svar.saknas.push(`Välj grundegenskaper för ${formaga.namn}`);
+      if (valda.length > antal || new Set(valda).size !== valda.length || valda.some((g) => !GRUNDEGENSKAPER.includes(g))) {
+        svar.fel.push(`${formaga.namn}: +1 på tre olika grundegenskaper eller +2 på en (s. 32)`);
+      }
+      for (const g of valda) egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + (lage === "en" ? 2 : 1);
+    } else if (del.typ === "forflyttning") harledda = { ...harledda, forflyttningBonus: del.varde };
+    else if (del.typ === "kpFaktor") harledda = { ...harledda, kpFaktor: del.varde };
+    else if (del.typ === "kapital") arv = del.varde;
+    else if (del.typ === "svardshand") svardshand = del.varde;
+    else if (del.typ === "magiformaga") svar.magiformaga = del.varde;
+  });
+  svar.tillagg = {
+    sarskildaFormagor: { ...s, fvBonus, fvMinst, takBonus, status: andrad },
+    egenskapsbonus, harleddaJustering: harledda, arv,
+    svardshand: { ...rp.svardshand, overstyrd: svardshand },
+  };
+  return svar;
 }

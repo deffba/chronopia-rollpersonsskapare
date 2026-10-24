@@ -451,6 +451,66 @@ SF = [
 ]
 
 
+# Maskinläsbara effekter, så att gränssnittet kan erbjuda just de val förmågan ger.
+# fv: lägg till FV; minst: startvärdet blir minst FV; status: färdigheten byter status;
+# valj/bland: spelaren väljer så många färdigheter ur en grupp; fasta: färdigheterna är givna.
+def fv(n, *fasta, valj=0, bland=None, minst=False, tak=False, status=None):
+    d = {"typ": "fv", "fv": n}
+    if fasta:
+        d["fasta"] = list(fasta)
+    if valj:
+        d["valj"] = valj
+        d["bland"] = bland
+    if minst:
+        d["minst"] = True
+    if tak:
+        d["tak"] = True
+    if status:
+        d["status"] = status
+    return d
+
+
+SF_REGLER = {
+    "Talang": [fv(1, valj=1, bland="sekundar-ej-magi")],
+    "Berest": [fv(2, valj=2, bland="geografi")],
+    "Musikalisk": [fv(15, valj=1, bland="spela-instrument", minst=True)],
+    "Sjöfarare": [fv(2, "sjokunnighet", "navigera")],
+    "Akrobat": [fv(3, "akrobatik")],
+    "Örtkunnig": [fv(3, "ortkunskap", "giftkunskap", "drogkunskap")],
+    "Konstnärlig": [fv(3, "forfalskning", "malning")],
+    "Spänstig": [fv(3, "hoppa")],
+    "Byråkrat": [fv(3, valj=1, bland="administration")],
+    "Spelare": [fv(3, valj=1, bland=["schack", "hasardspel"])],
+    "Stora öron": [{"typ": "egenskap", "mod": {"KAR": -2}}, fv(5, "lyssna")],
+    "Slagskämpe": [fv(3, "slagsmal")],
+    "Händig": [fv(3, valj=1, bland="hantverk")],
+    "Skarpt öga": [fv(3, "vardera")],
+    "Snabbfotad": [{"typ": "forflyttning", "varde": 1}],
+    "Tvåhandskämpe": [fv(3, valj=1, bland="tva-vapen")],
+    "Hobbyist": [fv(3, valj=1, bland="sekundar-ej-magi", minst=True)],
+    "Begåvad": [fv(2, valj=1, bland="alla-ej-magi", tak=True)],
+    "Ljudlös": [fv(2, "smyga")],
+    "Vacker röst": [fv(3, "sjunga")],
+    "Vaksam": [fv(1, "upptacka-fara", "finna-dolda-ting")],
+    "Beläst": [fv(10, valj=1, bland="lardom", minst=True)],
+    "Språkbegåvad": [fv(20, valj=1, bland="sprak", minst=True)],
+    "Mångsidig": [fv(0, valj=2, bland="sekundar-ej-magi", status="yrke")],
+    "Uppmärksam": [fv(2, "finna-dolda-ting", "upptacka-fara")],
+    "Arv": [{"typ": "kapital", "varde": 10000}],
+    "Vapentalang": [fv(5, valj=1, bland="vapen")],
+    "Dubbelhänt": [{"typ": "svardshand", "varde": "Dubbelhänt"}],
+    "Bärsärk": [fv(5, "barsarkagang", status="primar")],
+    "Skarpsinnig": [fv(5, "upptacka-fara", "finna-dolda-ting")],
+    "Ryttare": [fv(10, "rida")],
+    "Ambidextriös": [{"typ": "svardshand", "varde": "Ambidextriös"}],
+    "Vapenmästare": [fv(10, valj=1, bland="vapen", minst=True, status="primar")],
+    "Skarpa sinnen": [fv(5, "upptacka-fara", "lyssna")],
+    "Magikänsla": [{"typ": "magiformaga", "varde": -5}],
+    "Tålig": [{"typ": "kpFaktor", "varde": 1.5}],
+    "Höjd grundegenskap": [{"typ": "egenskapVal"}],
+}
+
+
 def intervall(s):
     if s.endswith("+"):
         return [int(s[:-1]), None]
@@ -459,8 +519,10 @@ def intervall(s):
 
 
 skriv("sarskilda-formagor", [
-    {"slag": intervall(s), "namn": n, "effekt": e, "sida": 30 if intervall(s)[0] <= 28 else (31 if intervall(s)[0] <= 68 else 32)}
+    {"slag": intervall(s), "namn": n, "effekt": e, "sida": 30 if intervall(s)[0] <= 28 else (31 if intervall(s)[0] <= 68 else 32),
+     **({"regel": SF_REGLER[n]} if n in SF_REGLER else {})}
     for s, n, e in SF])
+assert not set(SF_REGLER) - {n for _, n, _ in SF}, set(SF_REGLER) - {n for _, n, _ in SF}
 
 # ---------------------------------------------------------------- vapen (s. 72, 90–91, 94)
 def v(namn, skada, sty, langd, vikt, bv, pris, grupp, stjarna=False, **extra):

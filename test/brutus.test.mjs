@@ -23,7 +23,7 @@ const brutus = {
   modersmal: { tala: ["hoglandska"], lasaSkriva: ["hoglandska"] },
   grundvarden: { STY: 14, FYS: 14, SMI: 16, INT: 7, PSY: 6, KAR: 10 },
   stoSteg: 1,
-  sarskildaFormagor: { bp: 1, slag: 23, fvBonus: [{ fardighet: "lasdyrkning", fv: 3 }] },
+  sarskildaFormagor: { bp: 1, slag: 23, val: [["lasdyrkning"]] },
   svardshand: { bp: 0, slag: 9 },
   socialtStand: { bp: 3, slag: 9 },
   startkapital: { bp: 0, slag: 11 },
@@ -37,7 +37,7 @@ const brutus = {
   },
 };
 
-const r = raknaRollperson(regler, brutus);
+const r = raknaRollperson({ ...regler, "sarskilda-formagor": las("sarskilda-formagor") }, brutus);
 const fv = (n) => r.fardigheter.find((f) => f.nyckel === n);
 
 test("inga regelbrott", () => assert.deepEqual(r.fel, []));
@@ -80,4 +80,25 @@ test("startvärden och EP som i boken (s. 34–38)", () => {
   // Boken spenderar exakt 200 EP; med husregeln 5 EP per överblivet BP finns 25 EP kvar.
   assert.equal(r.ep.spenderat, 200);
   assert.equal(r.ep.start, 225);
+});
+
+// Regelbrott som gränssnittet ska stoppa
+const allaRegler = { ...regler, "sarskilda-formagor": las("sarskilda-formagor") };
+const felFor = (andring) => raknaRollperson(allaRegler, { ...structuredClone(brutus), ...andring }).fel;
+
+test("dubblerad yrkesfärdighet är ett regelbrott (s. 27)", () => {
+  assert.equal(felFor({ extraYrkesfardigheter: ["bluffa", "muta"] }).length > 0, true);
+});
+
+test("magiskola utan lyckat magiförmågeslag är ett regelbrott (s. 106)", () => {
+  const fardigheter = { ...brutus.fardigheter, animism: 1 };
+  assert.match(felFor({ fardigheter }).join(), /magiförmågeslag/);
+  // INT 8 + PSY 8 ger chansen 8
+  assert.match(felFor({ fardigheter, magiformaga: { slag: 9 } }).join(), /misslyckades/);
+  assert.equal(felFor({ fardigheter, magiformaga: { slag: 8 } }).some((f) => f.includes("magi")), false);
+});
+
+test("särskild förmåga kan bara gälla tillåtna färdigheter (s. 30)", () => {
+  // Hobbyist gäller sekundära färdigheter, inte primära
+  assert.match(felFor({ sarskildaFormagor: { bp: 1, slag: 23, val: [["rida"]] } }).join(), /Hobbyist/);
 });
