@@ -1,6 +1,6 @@
 // Gränssnittet för Chronopia-rollpersonsskaparen. All regellogik finns i regelmotor.js.
 import {
-  GRUNDEGENSKAPER, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor,
+  GRUNDEGENSKAPER, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor, tvahandsvapen,
   paborjad, standsvarde, vapengrupp, passarBland,
 } from "./regelmotor.js";
 
@@ -67,7 +67,7 @@ const LARDOMSFORSLAG = ["Kunskap om magi", "Kunskap om religion", "Kunskap om de
 const SKOLOR = [["animism", "Animism"], ["elementarmagi", "Elementarmagi"], ["mentalism", "Mentalism"]];
 
 const TOM = () => ({
-  namn: "", spelare: "", kon: "", ras: "manniska", alder: 21, yrke: "krigare", yrkesval: {}, valfri: "",
+  namn: "", spelare: "", kon: "", ras: "", alder: 21, yrke: "krigare", yrkesval: {}, valfri: "",
   extraYrkesfardigheter: [], rasval: [], grundvarden: { STY: 10, FYS: 10, SMI: 10, INT: 10, PSY: 10, KAR: 10 },
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
@@ -83,6 +83,8 @@ let nySekundar = ""; // påbörjat val av ny sekundär färdighet
 let provar = false;
 let rasLiten = false; // rasrutorna är förminskade sedan en ras valts
 let rasAnimera = false; // nästa ritning ska animera mellan stort och litet läge
+// Innan en ras är vald räknar motorn som för en människa, men ingen ras visas som vald
+const rasId = () => rp.ras || "manniska";
 
 const $ = (sel, rot = document) => rot.querySelector(sel);
 const el = (tagg, attr = {}, ...barn) => {
@@ -151,7 +153,7 @@ function yrkesNycklar() {
 }
 
 function modersmal() {
-  const ras = rasAv(R, rp.ras);
+  const ras = rasAv(R, rasId());
   return {
     tala: ras.talaModersmal.map((x) => x.sprak),
     lasaSkriva: ras.lasaSkrivaModersmal.map((x) => (typeof x === "string" ? x : x.sprak)),
@@ -159,7 +161,7 @@ function modersmal() {
 }
 
 function allaNycklar(yrkesfardigheter) {
-  const ras = rasAv(R, rp.ras);
+  const ras = rasAv(R, rasId());
   const yrke = yrkeAv(R, rp.yrke);
   const m = modersmal();
   const mangd = new Set();
@@ -172,7 +174,7 @@ function allaNycklar(yrkesfardigheter) {
   for (const k of yrkesfardigheter) mangd.add(k);
   for (const k of rp.extraYrkesfardigheter) mangd.add(k);
   for (const k of rp.sekundara) mangd.add(k);
-  const sf = sfFor(R, { ...rp, yrkesfardigheter, extraYrkesfardigheter: rp.extraYrkesfardigheter }).tillagg.sarskildaFormagor;
+  const sf = sfFor(R, { ...rp, ras: rasId(), yrkesfardigheter, extraYrkesfardigheter: rp.extraYrkesfardigheter }).tillagg.sarskildaFormagor;
   for (const b of [...(sf?.fvBonus ?? []), ...(sf?.fvMinst ?? [])]) mangd.add(b.fardighet);
   if (yrke.magiker) {
     mangd.add("lardom:Kunskap om magi");
@@ -186,14 +188,14 @@ function motorIndata() {
   const fardigheter = {};
   for (const k of allaNycklar(yrkesfardigheter)) fardigheter[k] = rp.fardigheter[k] ?? 0;
   return {
-    ...rp, yrkesfardigheter, fardigheter, modersmal: modersmal(),
+    ...rp, ras: rasId(), yrkesfardigheter, fardigheter, modersmal: modersmal(),
     svardshand: { ...rp.svardshand, slag: rp.svardshand.slag ?? 0 },
     socialtStand: { ...rp.socialtStand, slag: rp.socialtStand.slag ?? 0 },
     startkapital: { ...rp.startkapital, slag: rp.startkapital.slag ?? 0 },
   };
 }
 
-const sarskildFormaga = () => sfFor(R, { ...rp, yrkesfardigheter: yrkesNycklar() }).formaga;
+const sarskildFormaga = () => sfFor(R, { ...rp, ras: rasId(), yrkesfardigheter: yrkesNycklar() }).formaga;
 
 // ------------------------------------------------------------ små kontroller
 // Talfält: ett otillåtet värde ersätts med det närmaste tillåtna mellan det nya och det gamla.
@@ -252,11 +254,13 @@ function valKnappar(id, varde, alternativ, onchange) {
 }
 
 // Vapnen ordnade i bokens vapengrupper (s. 72). Gruppen beror på STY, så ett tungt svärd hamnar bland tvåhandsvapnen.
-function vapenGrupper(barastNarstrid = false) {
+function vapenGrupper(enhandsNarstrid = false) {
   const v = R.vapen;
-  const lista = barastNarstrid ? v.narstrid.filter((x) => x.grupp !== "slagsmal")
+  const varden = rakna().grundegenskaper;
+  // Två vapen: bara närstridsvapen som rollpersonen kan hålla med en hand (s. 71–72)
+  const lista = enhandsNarstrid ? v.narstrid.filter((x) => x.grupp !== "slagsmal" && !tvahandsvapen(R, x.namn, varden))
     : [...v.narstrid.filter((x) => x.grupp !== "slagsmal"), ...v.projektil, ...v.kast, ...v.skoldar];
-  const sty = rakna().grundegenskaper.STY;
+  const sty = varden.STY;
   const grupper = new Map(R.vapen.grupper.map((g) => [g.id, []]));
   for (const x of lista) grupper.get(vapengrupp(R, x.namn, sty))?.push([x.namn, x.namn]);
   return R.vapen.grupper.filter((g) => grupper.get(g.id).length).map((g) => [g.namn, grupper.get(g.id)]);
@@ -362,12 +366,14 @@ function fardighetsVal(idPrefix, nyckel, onchange, filter = () => true, val = {}
 
 // ------------------------------------------------------------ stegen
 function stegRas() {
-  const valt = rasAv(R, rp.ras);
+  const valt = rp.ras ? rasAv(R, rp.ras) : null;
   const kort = R.raser.map((r) => el("button", {
     type: "button", class: "raskort" + (r.id === rp.ras ? " valt" : ""), "aria-pressed": r.id === rp.ras ? "true" : "false",
     onclick: () => {
-      if (r.id !== rp.ras) { rp.ras = r.id; rp.rasval = []; rp.stoSteg = 0; }
-      if (!rasLiten) { rasLiten = true; rasAnimera = true; }
+      // Ett tryck på den valda rasen avmarkerar den och visar alla raser igen
+      const avmarkera = r.id === rp.ras;
+      rp.ras = avmarkera ? "" : r.id; rp.rasval = []; rp.stoSteg = 0;
+      if (rasLiten === avmarkera) { rasLiten = !avmarkera; rasAnimera = true; }
       uppdatera();
     },
   },
@@ -383,6 +389,10 @@ function stegRas() {
     requestAnimationFrame(() => { void rutnat.offsetWidth; rutnat.classList.toggle("liten", rasLiten); });
   }
 
+  const huvud = el("div", { class: "rasval-huvud" }, rutnat,
+    rasLiten ? el("button", { type: "button", class: "knapp liten", "aria-label": "Visa alla raser med detaljer",
+      onclick: () => { rasLiten = false; rasAnimera = true; rita(); } }, "⤢ Visa mer …") : null);
+  if (!valt) return [huvud, el("p", { class: "hjalp" }, "Välj rollpersonens ras genom att klicka på ett av korten.")];
   const extra = [];
   if (valt.primara.some((p) => p.valfri === "vapen")) {
     extra.push(falt("Valfri vapenfärdighet som primär (s. 71)",
@@ -394,9 +404,7 @@ function stegRas() {
   }
   const sprak = (lista) => lista.map((x) => R.fardigheter.sprak.find((s) => s.id === (x.sprak ?? x))?.namn ?? x).join(", ") || "inget skriftspråk";
   return [
-    el("div", { class: "rasval-huvud" }, rutnat,
-      rasLiten ? el("button", { type: "button", class: "knapp liten", "aria-label": "Visa alla raser med detaljer",
-        onclick: () => { rasLiten = false; rasAnimera = true; rita(); } }, "⤢ Visa mer …") : null),
+    huvud,
     el("div", { class: "rasinfo" },
       el("h3", { class: "rasrubrik" }, valt.namn),
       rasLiten && valt.beskrivning ? el("p", { class: "raslore" }, valt.beskrivning, " (s. 14–16)") : null),
@@ -415,7 +423,7 @@ function stegRas() {
 }
 
 function stegAlder() {
-  const ras = rasAv(R, rp.ras);
+  const ras = rasAv(R, rasId());
   const kat = alderskategori(R, ras, rp.alder);
   const eff = R.alder.effekter[kat];
   const efter = R.alder.efterAr.find((r) => r.max === null || rp.alder <= r.max);
@@ -522,7 +530,7 @@ function stegKon() {
 }
 
 function stegEgenskaper(res) {
-  const ras = rasAv(R, rp.ras);
+  const ras = rasAv(R, rasId());
   const aldersmod = R.alder.effekter[res.alderskategori];
   const kostnad = R.grundegenskaper.kostnad;
   const rader = GRUNDEGENSKAPER.map((g) => el("tr", {},
@@ -612,7 +620,7 @@ function stegFormagor() {
     `${s.slag} + ${s.bp} = ${s.slag + s.bp}: ${sf?.namn}. ${sf?.effekt} (s. ${sf?.sida})`;
   // Byts förmågan ut gäller inte de gamla valen längre
   const nollstall = () => {
-    const ny = sfFor(R, { ...rp, yrkesfardigheter: yrkesNycklar() }).formaga;
+    const ny = sfFor(R, { ...rp, ras: rasId(), yrkesfardigheter: yrkesNycklar() }).formaga;
     if (ny?.namn !== rp.sarskildaFormagor.formaga) rp.sarskildaFormagor.val = [];
     rp.sarskildaFormagor.formaga = ny?.namn;
   };
@@ -691,7 +699,7 @@ function stegSvardshand(res) {
 }
 
 function stegStand(res) {
-  const ras = rasAv(R, rp.ras);
+  const ras = rasAv(R, rasId());
   const bonus = ras.slagbonus.socialtStand ?? 0;
   const tabell = R.slag.socialtStand.tabell;
   if (rp.socialtStand.valt) {
@@ -785,7 +793,7 @@ function rollformular(res) {
     el("div", { class: "formular-huvud" },
       el("h2", {}, el("input", { id: "formular-namn", class: "namnfalt", type: "text", value: rp.namn, placeholder: "Namnlös rollperson", "aria-label": "Rollpersonens namn",
         onchange: (e) => { rp.namn = e.target.value; uppdatera(); } })),
-      el("p", {}, [res.ras.namn, res.yrke.namn, `${rp.alder} år`, rp.kon].filter(Boolean).join(" · "))),
+      el("p", {}, [rp.ras ? res.ras.namn : null, res.yrke.namn, `${rp.alder} år`, rp.kon].filter(Boolean).join(" · "))),
     el("div", { class: "potter" },
       el("div", { class: "pott" + (res.bp.kvar < 0 ? " over" : "") }, el("span", { class: "etikett" }, "BP kvar", info("BP")),
         el("span", { class: "pott-tal" }, res.bp.kvar), el("span", { class: "matare" }, el("span", { style: `width:${bpProcent}%` })),
@@ -819,8 +827,9 @@ function rollformular(res) {
 function saknasPerSteg(res) {
   const lista = Object.fromEntries(STEG.map((st) => [st.id, []]));
   const yrke = yrkeAv(R, rp.yrke);
-  const ras = rasAv(R, rp.ras);
+  const ras = rasAv(R, rasId());
   const klar = (v) => !paborjad(v ?? "");
+  if (!rp.ras) lista.ras.push("Ras");
   const valfriRas = ras.primara.find((p) => p.valfri);
   if (valfriRas && !rp.rasval.some(klar)) lista.ras.push(`Rasens valfria ${valfriRas.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`);
   yrke.fardigheter.forEach((post, i) => {
@@ -1095,16 +1104,16 @@ async function start() {
     if (!nedrakning) {
       let kvar = 5;
       ny.classList.add("bekrafta");
-      bekraftaText.textContent = `Tryck igen för att börja om (${kvar})`;
+      bekraftaText.textContent = `Bekräfta (${kvar})`;
       nedrakning = setInterval(() => {
         kvar -= 1;
         if (kvar <= 0) avbryt();
-        else bekraftaText.textContent = `Tryck igen för att börja om (${kvar})`;
+        else bekraftaText.textContent = `Bekräfta (${kvar})`;
       }, 1000);
       return;
     }
     avbryt();
-    rp = TOM(); aktivtSteg = "ras"; langst = 0; nySekundar = ""; uppdatera();
+    rp = TOM(); aktivtSteg = "ras"; langst = 0; nySekundar = ""; rasLiten = false; rasAnimera = false; uppdatera();
   });
   $("#importfil").addEventListener("change", async (e) => { const fil = e.target.files[0]; if (fil) importera(await fil.text()); e.target.value = ""; });
   document.addEventListener("paste", (e) => {
