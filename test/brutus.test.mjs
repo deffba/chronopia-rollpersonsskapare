@@ -1,0 +1,83 @@
+// Kontroll mot bokens exempel: Peters högländare Brutus (s. 14–38).
+// Kör: node --test test/brutus.test.mjs
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { raknaRollperson } from "../regelmotor.js";
+
+const katalog = new URL("../regler/", import.meta.url);
+const las = (n) => JSON.parse(readFileSync(new URL(n + ".json", katalog), "utf8"));
+const regler = {
+  raser: las("raser"), alder: las("alder"), grundegenskaper: las("grundegenskaper"),
+  fardigheter: las("fardigheter"), yrken: las("yrken"), slag: las("slag"), vapen: las("vapen"),
+};
+
+const brutus = {
+  ras: "hoglandare", alder: 50, yrke: "krigare",
+  yrkesfardigheter: [
+    "dra-vapen", "hantverk:Smide", "muta", "tala:chronos", "tva-vapen:Bredsvärd+Dolk",
+    "undre-varlden:Chronopia", "vapen:Tvåhandssvärd", "vapen:Bredsvärd",
+    "vapen:Vanlig sköld (trekantig)", "vapen:Långbåge"],
+  extraYrkesfardigheter: ["bluffa", "stjala-foremal"],
+  rasval: ["vapen:Tvåhandsyxa"],
+  modersmal: { tala: ["hoglandska"], lasaSkriva: ["hoglandska"] },
+  grundvarden: { STY: 14, FYS: 14, SMI: 16, INT: 7, PSY: 6, KAR: 10 },
+  stoSteg: 1,
+  sarskildaFormagor: { bp: 1, slag: 23, fvBonus: [{ fardighet: "lasdyrkning", fv: 3 }] },
+  svardshand: { bp: 0, slag: 9 },
+  socialtStand: { bp: 3, slag: 9 },
+  startkapital: { bp: 0, slag: 11 },
+  fardigheter: {
+    "vapen:Tvåhandsyxa": 16, bluffa: 5, "dra-vapen": 7, muta: 2, "hantverk:Smide": 6,
+    "stjala-foremal": 6, "tala:chronos": 5, "tva-vapen:Bredsvärd+Dolk": 3, "undre-varlden:Chronopia": 6,
+    "vapen:Tvåhandssvärd": 10, "vapen:Vanlig sköld (trekantig)": 7, "vapen:Bredsvärd": 7, "vapen:Långbåge": 6,
+    "finna-dolda-ting": 6, "forsta-hjalpen": 1, "gomma-sig": 5, hoppa: 4, klattra: 4, kopsla: 4,
+    "lasa-skriva:hoglandska": 11, rida: 8, sjunga: 2, slagsmal: 6, smyga: 6, spara: 1,
+    "upptacka-fara": 7, vardera: 2, overtala: 3, lasdyrkning: 6, "tala:hoglandska": 16, lyssna: 1,
+  },
+};
+
+const r = raknaRollperson(regler, brutus);
+const fv = (n) => r.fardigheter.find((f) => f.nyckel === n);
+
+test("inga regelbrott", () => assert.deepEqual(r.fel, []));
+
+test("grundegenskaper efter ras och ålder (s. 28)", () => {
+  assert.equal(r.alderskategori, "medelalders");
+  assert.deepEqual(r.grundegenskaper, { STY: 16, FYS: 15, SMI: 15, INT: 8, PSY: 8, KAR: 10, STO: 17 });
+});
+
+test("BP: 130 start, 5 kvar (s. 17–33)", () => {
+  assert.equal(r.bp.start, 130);
+  assert.equal(r.bp.utgifter.extraYrkesfardigheter, 12);
+  assert.equal(r.bp.utgifter.grundegenskaper, 79);
+  assert.equal(r.bp.kvar, 5);
+});
+
+test("härledda värden (s. 29)", () => {
+  assert.equal(r.harledda.totalKP, 16);
+  assert.equal(r.harledda.skadebonus, "+1T4");
+  assert.equal(r.harledda.forflyttning, 11);
+});
+
+test("svärdshand, socialt stånd och startkapital (s. 32–33)", () => {
+  assert.equal(r.slag.svardshand, "Höger");
+  assert.equal(r.slag.socialtStand, "Högre medelklass");
+  assert.equal(r.slag.skResultat, 13);
+  assert.equal(r.slag.startkapital, 6000);
+});
+
+test("startvärden och EP som i boken (s. 34–38)", () => {
+  assert.equal(fv("vapen:Tvåhandsyxa").ep, 26);
+  assert.equal(fv("vapen:Tvåhandssvärd").start, 8);
+  assert.equal(fv("vapen:Tvåhandssvärd").ep, 6);
+  assert.equal(fv("lasa-skriva:hoglandska").start, 11);
+  assert.equal(fv("tala:hoglandska").start, 16);
+  assert.equal(fv("rida").start, 8);
+  assert.equal(fv("lasdyrkning").status, "sekundar");
+  assert.equal(fv("lasdyrkning").ep, 15);
+  assert.equal(fv("bluffa").status, "yrke");
+  // Boken spenderar exakt 200 EP; med husregeln 5 EP per överblivet BP finns 25 EP kvar.
+  assert.equal(r.ep.spenderat, 200);
+  assert.equal(r.ep.start, 225);
+});

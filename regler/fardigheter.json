@@ -1,0 +1,942 @@
+{
+  "lista": [
+    {
+      "id": "bluffa",
+      "namn": "Bluffa",
+      "grundegenskap": "KAR",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 48
+    },
+    {
+      "id": "finna-dolda-ting",
+      "namn": "Finna dolda ting",
+      "grundegenskap": "PSY",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 48
+    },
+    {
+      "id": "forsta-hjalpen",
+      "namn": "Första hjälpen",
+      "grundegenskap": "INT",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 49
+    },
+    {
+      "id": "gomma-sig",
+      "namn": "Gömma sig",
+      "grundegenskap": "INT",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 49
+    },
+    {
+      "id": "hoppa",
+      "namn": "Hoppa",
+      "grundegenskap": "SMI",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 49
+    },
+    {
+      "id": "klattra",
+      "namn": "Klättra",
+      "grundegenskap": "SMI",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 50
+    },
+    {
+      "id": "kopsla",
+      "namn": "Köpslå",
+      "grundegenskap": "KAR",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 50
+    },
+    {
+      "id": "lyssna",
+      "namn": "Lyssna",
+      "grundegenskap": "INT",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 51
+    },
+    {
+      "id": "rida",
+      "namn": "Rida",
+      "grundegenskap": "SMI",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 52
+    },
+    {
+      "id": "sjunga",
+      "namn": "Sjunga",
+      "grundegenskap": "KAR",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 52
+    },
+    {
+      "id": "slagsmal",
+      "namn": "Slagsmål",
+      "grundegenskap": "STY",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 52
+    },
+    {
+      "id": "smyga",
+      "namn": "Smyga",
+      "grundegenskap": "SMI",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 52
+    },
+    {
+      "id": "spara",
+      "namn": "Spåra",
+      "grundegenskap": "INT",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 53
+    },
+    {
+      "id": "stjala-foremal",
+      "namn": "Stjäla föremål",
+      "grundegenskap": "SMI",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 54
+    },
+    {
+      "id": "upptacka-fara",
+      "namn": "Upptäcka fara",
+      "grundegenskap": "PSY",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 54
+    },
+    {
+      "id": "vardera",
+      "namn": "Värdera",
+      "grundegenskap": "INT",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 55
+    },
+    {
+      "id": "overtala",
+      "namn": "Övertala",
+      "grundegenskap": "KAR",
+      "typ": "primar",
+      "kategoriB": false,
+      "sida": 55
+    },
+    {
+      "id": "tala",
+      "namn": "Tala",
+      "grundegenskap": "INT",
+      "typ": "sprak",
+      "kategoriB": true,
+      "sida": 70,
+      "perVal": "sprak"
+    },
+    {
+      "id": "lasa-skriva",
+      "namn": "Läsa/Skriva",
+      "grundegenskap": "INT",
+      "typ": "sprak",
+      "kategoriB": true,
+      "sida": 64,
+      "perVal": "sprak"
+    },
+    {
+      "id": "animism",
+      "namn": "Animism",
+      "grundegenskap": "INT",
+      "typ": "magiskola",
+      "kategoriB": false,
+      "sida": 107
+    },
+    {
+      "id": "elementarmagi",
+      "namn": "Elementarmagi",
+      "grundegenskap": "INT",
+      "typ": "magiskola",
+      "kategoriB": false,
+      "sida": 107
+    },
+    {
+      "id": "mentalism",
+      "namn": "Mentalism",
+      "grundegenskap": "INT",
+      "typ": "magiskola",
+      "kategoriB": false,
+      "sida": 107
+    },
+    {
+      "id": "administration",
+      "namn": "Administration",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 56,
+      "perVal": "stad",
+      "gruppYrke": true
+    },
+    {
+      "id": "akrobatik",
+      "namn": "Akrobatik",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 56
+    },
+    {
+      "id": "alkemi",
+      "namn": "Alkemi",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 56,
+      "tak": "lasa-skriva"
+    },
+    {
+      "id": "astrologi",
+      "namn": "Astrologi",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 57
+    },
+    {
+      "id": "avvapna",
+      "namn": "Avväpna",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 57
+    },
+    {
+      "id": "buktala",
+      "namn": "Buktala",
+      "grundegenskap": "PSY",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 57
+    },
+    {
+      "id": "barsarkagang",
+      "namn": "Bärsärkagång",
+      "grundegenskap": "PSY",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 57
+    },
+    {
+      "id": "dans",
+      "namn": "Dans",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 57
+    },
+    {
+      "id": "djurhelning",
+      "namn": "Djurhelning",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 58,
+      "perVal": "djur",
+      "gruppYrke": true
+    },
+    {
+      "id": "djurtraning",
+      "namn": "Djurträning",
+      "grundegenskap": "PSY",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 58,
+      "perVal": "djur",
+      "gruppYrke": true
+    },
+    {
+      "id": "dra-vapen",
+      "namn": "Dra vapen",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 58,
+      "tak": "vapen"
+    },
+    {
+      "id": "drogkunskap",
+      "namn": "Drogkunskap",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 58
+    },
+    {
+      "id": "forfalskning",
+      "namn": "Förfalskning",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 58
+    },
+    {
+      "id": "geografi",
+      "namn": "Geografi",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 59,
+      "perVal": "kontinent",
+      "gruppYrke": true
+    },
+    {
+      "id": "geologi",
+      "namn": "Geologi",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 59
+    },
+    {
+      "id": "giftkunskap",
+      "namn": "Giftkunskap",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 59
+    },
+    {
+      "id": "gyckelkonster",
+      "namn": "Gyckelkonster",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 59
+    },
+    {
+      "id": "hantera-fallor",
+      "namn": "Hantera fällor",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 59
+    },
+    {
+      "id": "hantverk",
+      "namn": "Hantverk",
+      "grundegenskap": "varierar",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 59,
+      "perVal": "hantverk",
+      "gruppYrke": true
+    },
+    {
+      "id": "hasardspel",
+      "namn": "Hasardspel",
+      "grundegenskap": "PSY",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 60
+    },
+    {
+      "id": "heraldik",
+      "namn": "Heraldik",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 61
+    },
+    {
+      "id": "historia",
+      "namn": "Historia",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 61,
+      "tak": "lasa-skriva"
+    },
+    {
+      "id": "hypnotisera",
+      "namn": "Hypnotisera",
+      "grundegenskap": "PSY",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 61,
+      "tak": "PSY"
+    },
+    {
+      "id": "knopar",
+      "namn": "Knopar",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 62
+    },
+    {
+      "id": "kulturkannedom",
+      "namn": "Kulturkännedom",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 62,
+      "perVal": "kultur",
+      "gruppYrke": true
+    },
+    {
+      "id": "kanna-magi",
+      "namn": "Känna magi",
+      "grundegenskap": "PSY",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 62,
+      "perVal": "skola"
+    },
+    {
+      "id": "lasdyrkning",
+      "namn": "Låsdyrkning",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 62
+    },
+    {
+      "id": "lakekonst",
+      "namn": "Läkekonst",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 63
+    },
+    {
+      "id": "lapplasning",
+      "namn": "Läppläsning",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 63
+    },
+    {
+      "id": "lardom",
+      "namn": "Lärdomsfärdighet",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 63,
+      "perVal": "amne",
+      "tak": "lasa-skriva"
+    },
+    {
+      "id": "magisk-kanalisering",
+      "namn": "Magisk kanalisering",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 65
+    },
+    {
+      "id": "magistudier",
+      "namn": "Magistudier",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 65,
+      "tak": "lasa-skriva"
+    },
+    {
+      "id": "massage",
+      "namn": "Massage",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 65
+    },
+    {
+      "id": "muta",
+      "namn": "Muta",
+      "grundegenskap": "KAR",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 65
+    },
+    {
+      "id": "malning",
+      "namn": "Målning",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 66
+    },
+    {
+      "id": "navigera",
+      "namn": "Navigera",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 66
+    },
+    {
+      "id": "orientering",
+      "namn": "Orientering",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 66
+    },
+    {
+      "id": "rida-flygande-djur",
+      "namn": "Rida flygande djur",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 66
+    },
+    {
+      "id": "rakning",
+      "namn": "Räkning",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 66
+    },
+    {
+      "id": "schack",
+      "namn": "Schack & brädspel",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 67
+    },
+    {
+      "id": "simma",
+      "namn": "Simma",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 67
+    },
+    {
+      "id": "sjokunnighet",
+      "namn": "Sjökunnighet",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 67
+    },
+    {
+      "id": "skadespeleri",
+      "namn": "Skådespeleri",
+      "grundegenskap": "KAR",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 67
+    },
+    {
+      "id": "spela-instrument",
+      "namn": "Spela instrument",
+      "grundegenskap": "KAR",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 68,
+      "perVal": "instrument",
+      "gruppYrke": true
+    },
+    {
+      "id": "spa-vader",
+      "namn": "Spå väder",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 68
+    },
+    {
+      "id": "stridskonster",
+      "namn": "Stridskonster",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 68,
+      "perVal": "stil"
+    },
+    {
+      "id": "tva-vapen",
+      "namn": "Två vapen",
+      "grundegenskap": "varierar",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 70,
+      "perVal": "kombination",
+      "tak": "tva-vapen"
+    },
+    {
+      "id": "undre-varlden",
+      "namn": "Undre världen",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 71,
+      "perVal": "stad",
+      "gruppYrke": true
+    },
+    {
+      "id": "vapen",
+      "namn": "Vapenfärdighet",
+      "grundegenskap": "varierar",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 71,
+      "perVal": "vapen"
+    },
+    {
+      "id": "zoologi",
+      "namn": "Zoologi",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 71
+    },
+    {
+      "id": "ortkunskap",
+      "namn": "Örtkunskap",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 72
+    },
+    {
+      "id": "overlevnad",
+      "namn": "Överlevnad",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 72
+    }
+  ],
+  "kostnad": {
+    "primar": 2,
+    "yrke": 3,
+    "sekundar": 5,
+    "magiskolaSekundar": 20
+  },
+  "baschans": [
+    [
+      3,
+      0
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      12,
+      2
+    ],
+    [
+      16,
+      3
+    ],
+    [
+      20,
+      4
+    ],
+    [
+      null,
+      5
+    ]
+  ],
+  "bNivaer": [
+    [
+      0,
+      "B0"
+    ],
+    [
+      4,
+      "B1"
+    ],
+    [
+      10,
+      "B2"
+    ],
+    [
+      15,
+      "B3"
+    ],
+    [
+      19,
+      "B4"
+    ],
+    [
+      null,
+      "B5"
+    ]
+  ],
+  "besvarjelseKostnad": {
+    "sv": [
+      [
+        3,
+        2
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        9,
+        4
+      ],
+      [
+        12,
+        5
+      ],
+      [
+        15,
+        6
+      ],
+      [
+        18,
+        7
+      ],
+      [
+        21,
+        8
+      ]
+    ],
+    "darefterPer3": 1
+  },
+  "lasaSkrivaModersmalBC": {
+    "overklass": [
+      20,
+      16
+    ],
+    "hogreMedelklass": [
+      16,
+      11
+    ],
+    "lagreMedelklass": [
+      11,
+      5
+    ],
+    "hogreUnderklass": [
+      5,
+      1
+    ],
+    "ovriga": [
+      1,
+      0
+    ]
+  },
+  "talaModersmalFV": {
+    "overklass": 20,
+    "ovriga": 16
+  },
+  "sprak": [
+    {
+      "id": "chronos",
+      "namn": "Chronos"
+    },
+    {
+      "id": "alviska",
+      "namn": "Alviska"
+    },
+    {
+      "id": "dvargiska",
+      "namn": "Dvärgspråket",
+      "not": "Hålls hemligt"
+    },
+    {
+      "id": "orchiska",
+      "namn": "Orchiska",
+      "skriftsprak": false
+    },
+    {
+      "id": "wongosiska",
+      "namn": "Wongosiska",
+      "endastPrimarFor": "wongos"
+    },
+    {
+      "id": "hoglandska",
+      "namn": "Högländska"
+    },
+    {
+      "id": "drakonitiska",
+      "namn": "Drakonitiska",
+      "maxFvAndra": 5
+    },
+    {
+      "id": "uraldriga",
+      "namn": "Uråldriga språk",
+      "aldrigYrke": true
+    },
+    {
+      "id": "draksprak",
+      "namn": "Drakspråk",
+      "aldrigYrke": true
+    },
+    {
+      "id": "lonnmordartecken",
+      "namn": "Lönnmördargillets hemliga teckenspråk",
+      "endastTala": true
+    }
+  ],
+  "hantverk": [
+    [
+      "Smide",
+      "STY"
+    ],
+    [
+      "Sömnad",
+      "SMI"
+    ],
+    [
+      "Snickeri",
+      "SMI"
+    ],
+    [
+      "Stenhuggning",
+      "SMI"
+    ],
+    [
+      "Garvning",
+      "INT"
+    ],
+    [
+      "Guldsmide",
+      "SMI"
+    ],
+    [
+      "Juvelsnideri",
+      "SMI"
+    ],
+    [
+      "Hovslageri",
+      "SMI"
+    ],
+    [
+      "Gjutning",
+      "INT"
+    ],
+    [
+      "Träsnideri",
+      "SMI"
+    ],
+    [
+      "Tygfärgning",
+      "INT"
+    ],
+    [
+      "Läderarbete",
+      "SMI"
+    ]
+  ],
+  "stridskonstTekniker": [
+    [
+      "Avväpning",
+      1.0
+    ],
+    [
+      "Bakåtspark",
+      0.5
+    ],
+    [
+      "Bedövningsslag†",
+      1.0
+    ],
+    [
+      "Blind strid",
+      2.0
+    ],
+    [
+      "Dubbelslag",
+      1.0
+    ],
+    [
+      "Dubbelspark",
+      1.5
+    ],
+    [
+      "Fallteknik/rullningar",
+      0.5
+    ],
+    [
+      "Fint",
+      0.5
+    ],
+    [
+      "Hoppspark",
+      1.0
+    ],
+    [
+      "Högt kast†",
+      1.0
+    ],
+    [
+      "Initiativbonus",
+      0.5
+    ],
+    [
+      "Krosslag",
+      1.0
+    ],
+    [
+      "Liggande/knästående strid",
+      1.0
+    ],
+    [
+      "Lågt kast†",
+      0.5
+    ],
+    [
+      "Låsning/nerdragning†",
+      1.0
+    ],
+    [
+      "Normalt slag",
+      0.5
+    ],
+    [
+      "Normal spark",
+      0.5
+    ],
+    [
+      "Obeväpnad parering av vapen",
+      0.5
+    ],
+    [
+      "Rundspark",
+      1.0
+    ],
+    [
+      "Stålsättning",
+      1.0
+    ],
+    [
+      "Uppresning",
+      0.5
+    ],
+    [
+      "Vidvinkelsyn",
+      1.0
+    ]
+  ],
+  "sida": [
+    34,
+    35,
+    36,
+    40,
+    43,
+    52,
+    54,
+    68
+  ]
+}

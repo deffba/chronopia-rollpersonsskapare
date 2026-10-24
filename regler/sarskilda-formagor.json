@@ -1,0 +1,704 @@
+[
+  {
+    "slag": [
+      3,
+      4
+    ],
+    "namn": "Talang",
+    "effekt": "+1 FV i valfri sekundär färdighet (ej magi).",
+    "sida": 30
+  },
+  {
+    "slag": [
+      5,
+      5
+    ],
+    "namn": "Berest",
+    "effekt": "+2 FV i två Geografi-färdigheter.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      6,
+      6
+    ],
+    "namn": "Musikalisk",
+    "effekt": "FV 15 i Spela ett valfritt instrument.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      7,
+      7
+    ],
+    "namn": "Sjöfarare",
+    "effekt": "+2 FV i Sjökunnighet och Navigera.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      8,
+      8
+    ],
+    "namn": "Akrobat",
+    "effekt": "+3 FV i Akrobatik.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      9,
+      9
+    ],
+    "namn": "Kanalisator",
+    "effekt": "+5 CL i Magisk kanalisering.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      10,
+      10
+    ],
+    "namn": "Örtkunnig",
+    "effekt": "+3 FV i Örtkunskap, Giftkunskap och Drogkunskap.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      11,
+      11
+    ],
+    "namn": "Räknehuvud",
+    "effekt": "+5 FV i Räkning.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      12,
+      12
+    ],
+    "namn": "Konstnärlig",
+    "effekt": "+3 FV i Förfalskning och Målning.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      13,
+      13
+    ],
+    "namn": "Hypnotisk blick",
+    "effekt": "+5 CL i Hypnotisera.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      14,
+      14
+    ],
+    "namn": "Spänstig",
+    "effekt": "+3 FV i Hoppa.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      15,
+      15
+    ],
+    "namn": "Byråkrat",
+    "effekt": "+3 FV i Administration.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      16,
+      16
+    ],
+    "namn": "Spelare",
+    "effekt": "+3 FV i Schack & brädspel eller i Hasardspel.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      17,
+      17
+    ],
+    "namn": "Stora öron",
+    "effekt": "−2 KAR, +5 FV i Lyssna.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      18,
+      18
+    ],
+    "namn": "Slagskämpe",
+    "effekt": "+3 FV i Slagsmål.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      19,
+      19
+    ],
+    "namn": "Gourmand",
+    "effekt": "Kännare av mat och dryck.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      20,
+      20
+    ],
+    "namn": "Händig",
+    "effekt": "+3 FV i ett valfritt hantverk.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      21,
+      21
+    ],
+    "namn": "Skarpt öga",
+    "effekt": "+3 FV i Värdera.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      22,
+      22
+    ],
+    "namn": "Snabbfotad",
+    "effekt": "Förflyttning +1.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      23,
+      23
+    ],
+    "namn": "Tvåhandskämpe",
+    "effekt": "+3 FV i Två vapen.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      24,
+      24
+    ],
+    "namn": "Hobbyist",
+    "effekt": "FV 3 i en valfri sekundär färdighet (ej magi), som får läras redan från start.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      25,
+      25
+    ],
+    "namn": "Klättrare",
+    "effekt": "+3 CL i Klättra.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      26,
+      26
+    ],
+    "namn": "Begåvad",
+    "effekt": "+2 FV i valfri färdighet (ej magi); taket höjs också med 2.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      27,
+      27
+    ],
+    "namn": "Ljudlös",
+    "effekt": "+2 FV i Smyga.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      28,
+      28
+    ],
+    "namn": "Charmig",
+    "effekt": "+5 KAR mot motsatt kön av samma ras.",
+    "sida": 30
+  },
+  {
+    "slag": [
+      29,
+      29
+    ],
+    "namn": "Absolut gehör",
+    "effekt": "Grundkostnaden för Spela instrument och Sjunga är 1.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      30,
+      30
+    ],
+    "namn": "Övertalare",
+    "effekt": "+3 CL i Övertala och Muta.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      31,
+      31
+    ],
+    "namn": "Ögonmått",
+    "effekt": "Kan bedöma avstånd och storlekar exakt.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      32,
+      32
+    ],
+    "namn": "Vacker röst",
+    "effekt": "+3 KAR när man talar, +3 FV i Sjunga.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      33,
+      33
+    ],
+    "namn": "Vaksam",
+    "effekt": "+1 FV i Upptäcka fara och Finna dolda ting.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      34,
+      34
+    ],
+    "namn": "Beläst",
+    "effekt": "FV 10 i en valfri lärdomsfärdighet.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      35,
+      35
+    ],
+    "namn": "Tidskänsla",
+    "effekt": "Vet alltid ungefär vad klockan är.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      36,
+      36
+    ],
+    "namn": "Magikänsla",
+    "effekt": "+5 CL i Känna magi; −5 på magiförmågeslaget.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      37,
+      37
+    ],
+    "namn": "Språkbegåvad",
+    "effekt": "FV 20 i Tala och Läsa/Skriva ett valfritt språk.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      38,
+      38
+    ],
+    "namn": "Mångsidig",
+    "effekt": "Två valfria sekundära färdigheter (ej magi) blir yrkesfärdigheter.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      39,
+      39
+    ],
+    "namn": "Skarpskytt",
+    "effekt": "+25 % räckvidd med projektilvapen.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      40,
+      40
+    ],
+    "namn": "Uppmärksam",
+    "effekt": "+2 FV i Finna dolda ting och Upptäcka fara.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      41,
+      41
+    ],
+    "namn": "Gott rykte",
+    "effekt": "Gott rykte (25 %).",
+    "sida": 31
+  },
+  {
+    "slag": [
+      42,
+      42
+    ],
+    "namn": "Vapenvan",
+    "effekt": "+1 CL i alla vapenfärdigheter.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      43,
+      43
+    ],
+    "namn": "Arv",
+    "effekt": "Ärver 10 000 sm till startkapitalet.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      44,
+      44
+    ],
+    "namn": "Vapentalang",
+    "effekt": "+5 FV i en valfri vapenfärdighet.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      45,
+      45
+    ],
+    "namn": "Olikfärgade ögon",
+    "effekt": "KAR ±10 gentemot 1T3 raser.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      46,
+      46
+    ],
+    "namn": "Dubbelhänt",
+    "effekt": "Se Svärdshand.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      47,
+      47
+    ],
+    "namn": "Nekrologi",
+    "effekt": "Äger ett nekrologiskt föremål.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      48,
+      48
+    ],
+    "namn": "Snabb",
+    "effekt": "+3 på alla initiativslag.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      49,
+      49
+    ],
+    "namn": "Arvsklenod",
+    "effekt": "Magiskt vapen: +1 CL på attack, +1 skada.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      50,
+      50
+    ],
+    "namn": "Bärsärk",
+    "effekt": "+5 FV i Bärsärkagång, som blir primär färdighet.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      51,
+      51
+    ],
+    "namn": "Balans",
+    "effekt": "+5 SMI vid balansslag.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      52,
+      52
+    ],
+    "namn": "Skarpsinnig",
+    "effekt": "+5 FV i Upptäcka fara och Finna dolda ting.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      53,
+      53
+    ],
+    "namn": "Ryttare",
+    "effekt": "+10 FV i Rida; kastas aldrig av.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      54,
+      54
+    ],
+    "namn": "Ambidextriös",
+    "effekt": "Se Svärdshand.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      55,
+      55
+    ],
+    "namn": "Vapenmästare",
+    "effekt": "En vapenfärdighet blir primär och får FV 10 gratis.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      56,
+      56
+    ],
+    "namn": "Djurvän",
+    "effekt": "Djur är vänligt inställda.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      57,
+      57
+    ],
+    "namn": "Skarpa sinnen",
+    "effekt": "+5 FV i Upptäcka fara och Lyssna.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      58,
+      58
+    ],
+    "namn": "Turgubbe",
+    "effekt": "+1 CL per PSY-poäng, högst +1.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      59,
+      59
+    ],
+    "namn": "Magisk empati",
+    "effekt": "Magisk empati.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      60,
+      60
+    ],
+    "namn": "Mörkersyn",
+    "effekt": "Mörkersyn.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      61,
+      61
+    ],
+    "namn": "Infrasyn",
+    "effekt": "Infrasyn.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      62,
+      62
+    ],
+    "namn": "Tålig",
+    "effekt": "Total KP ×1,5 (även kroppsdelarna).",
+    "sida": 31
+  },
+  {
+    "slag": [
+      63,
+      63
+    ],
+    "namn": "Snabbslående",
+    "effekt": "Snabbslående.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      64,
+      64
+    ],
+    "namn": "Baneman",
+    "effekt": "+5 CL mot en ras eller ett folk.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      65,
+      65
+    ],
+    "namn": "God kroppskontroll",
+    "effekt": "God kroppskontroll.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      66,
+      66
+    ],
+    "namn": "Järnnäve",
+    "effekt": "Maximal skada obeväpnad.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      67,
+      67
+    ],
+    "namn": "Orädd",
+    "effekt": "−5 på Skräcktabellen.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      68,
+      68
+    ],
+    "namn": "Viljestark",
+    "effekt": "+5 PSY vid PSY mot PSY på Motståndstabellen.",
+    "sida": 31
+  },
+  {
+    "slag": [
+      69,
+      69
+    ],
+    "namn": "Härdad",
+    "effekt": "+5 FYS vid motståndsslag mot elementen.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      70,
+      70
+    ],
+    "namn": "Gudarnas gunstling",
+    "effekt": "25 % chans att få tillbaka KP.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      71,
+      71
+    ],
+    "namn": "Gott läkekött",
+    "effekt": "Läker dubbelt så fort.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      72,
+      72
+    ],
+    "namn": "God mental kontroll",
+    "effekt": "PSY återhämtas på halva tiden (icke-magiker: räkna som 73).",
+    "sida": 32
+  },
+  {
+    "slag": [
+      73,
+      73
+    ],
+    "namn": "Hjälte",
+    "effekt": "Se Hjältarnas Handbok; annars hitta på en bedrift, lägg upp till 10 BP till och slå om med +30.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      74,
+      74
+    ],
+    "namn": "Kluven personlighet",
+    "effekt": "En extra yrkesförmåga från valfritt yrke.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      75,
+      75
+    ],
+    "namn": "God känsla för yrket",
+    "effekt": "Halverad inlärningskostnad för besvärjelser och yrkesfärdigheter (avrunda uppåt).",
+    "sida": 32
+  },
+  {
+    "slag": [
+      76,
+      76
+    ],
+    "namn": "Familiaris",
+    "effekt": "Se Magikerns Handbok; annars ett djur med Tillkalla/Tala med/Kontrollera varelse.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      77,
+      77
+    ],
+    "namn": "Hamnbytare",
+    "effekt": "Kan byta hamn till ett av 1T6 djur.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      78,
+      78
+    ],
+    "namn": "Snabb uppfattningsförmåga",
+    "effekt": "+5 CL på parering i närstrid; kan parera projektiler.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      79,
+      79
+    ],
+    "namn": "God PSY-potential",
+    "effekt": "−5 på slaget för att höja PSY.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      80,
+      80
+    ],
+    "namn": "Vild magi",
+    "effekt": "Se Magikerns Handbok s. 52; annars en besvärjelse med FV = PSY.",
+    "sida": 32
+  },
+  {
+    "slag": [
+      81,
+      null
+    ],
+    "namn": "Höjd grundegenskap",
+    "effekt": "+1 på tre olika grundegenskaper eller +2 på en.",
+    "sida": 32
+  }
+]

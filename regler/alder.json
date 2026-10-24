@@ -1,0 +1,121 @@
+{
+  "kategorier": [
+    {
+      "id": "ung",
+      "namn": "Ung"
+    },
+    {
+      "id": "vuxen",
+      "namn": "Vuxen"
+    },
+    {
+      "id": "medelalders",
+      "namn": "Medelålders"
+    },
+    {
+      "id": "gammal",
+      "namn": "Gammal"
+    },
+    {
+      "id": "uraldrig",
+      "namn": "Uråldrig"
+    }
+  ],
+  "effekter": {
+    "ung": {
+      "STY": -1,
+      "FYS": 2,
+      "SMI": 2,
+      "INT": 0,
+      "PSY": -3,
+      "KAR": 0
+    },
+    "vuxen": {
+      "STY": 0,
+      "FYS": 0,
+      "SMI": 0,
+      "INT": 0,
+      "PSY": 0,
+      "KAR": 0
+    },
+    "medelalders": {
+      "STY": 0,
+      "FYS": -1,
+      "SMI": -1,
+      "INT": 1,
+      "PSY": 2,
+      "KAR": 0
+    },
+    "gammal": {
+      "STY": -2,
+      "FYS": -4,
+      "SMI": -2,
+      "INT": 2,
+      "PSY": 5,
+      "KAR": 2
+    },
+    "uraldrig": {
+      "STY": -4,
+      "FYS": -8,
+      "SMI": -4,
+      "INT": 4,
+      "PSY": 7,
+      "KAR": 2
+    }
+  },
+  "efterAr": [
+    {
+      "max": 20,
+      "bp": 0,
+      "kapital": 0.5,
+      "ep": 150
+    },
+    {
+      "max": 45,
+      "bp": 0,
+      "kapital": 1,
+      "ep": 175
+    },
+    {
+      "max": 60,
+      "bp": 5,
+      "kapital": 2,
+      "ep": 200
+    },
+    {
+      "max": 80,
+      "bp": 10,
+      "kapital": 3,
+      "ep": 225
+    },
+    {
+      "max": 200,
+      "bp": 15,
+      "kapital": 4,
+      "ep": 250
+    },
+    {
+      "max": 1000,
+      "bp": 20,
+      "kapital": 5,
+      "ep": 300
+    },
+    {
+      "max": 5000,
+      "bp": 30,
+      "kapital": 6,
+      "ep": 400
+    },
+    {
+      "max": null,
+      "bp": 50,
+      "kapital": 7,
+      "ep": 500
+    }
+  ],
+  "sida": [
+    16,
+    17,
+    34
+  ]
+}

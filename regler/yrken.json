@@ -1,0 +1,595 @@
+{
+  "lista": [
+    {
+      "id": "animist",
+      "namn": "Animist",
+      "sida": 19,
+      "yrkesformaga": "Behöver inget magiförmågeslag för att lära sig magiskolor.",
+      "fardigheter": [
+        "animism",
+        {
+          "valEn": [
+            "djurhelning",
+            "djurtraning",
+            "zoologi"
+          ]
+        },
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        "lakekonst",
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 1
+        },
+        "magistudier",
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi"
+      ],
+      "magiker": true
+    },
+    {
+      "id": "bard",
+      "namn": "Bard",
+      "sida": 19,
+      "yrkesformaga": "Känner alltid till det senaste skvallret (SL avgör).",
+      "fardigheter": [
+        {
+          "valEn": [
+            "akrobatik",
+            "administration"
+          ]
+        },
+        {
+          "valEn": [
+            "geografi",
+            {
+              "fardighet": "hantverk",
+              "antal": 1
+            }
+          ]
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 1
+        },
+        "spela-instrument",
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": []
+    },
+    {
+      "id": "elementarmagiker",
+      "namn": "Elementarmagiker",
+      "sida": 20,
+      "yrkesformaga": "Behöver inget magiförmågeslag för att lära sig magiskolor.",
+      "fardigheter": [
+        {
+          "valEn": [
+            "alkemi",
+            "astrologi"
+          ]
+        },
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        "elementarmagi",
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 1
+        },
+        "magisk-kanalisering",
+        "magistudier",
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi"
+      ],
+      "magiker": true
+    },
+    {
+      "id": "gladiator",
+      "namn": "Gladiator",
+      "sida": 20,
+      "yrkesformaga": "+5 på initiativet i dueller man mot man. Börjar med 0 dödspoäng.",
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        "stridskonster",
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 5
+        }
+      ],
+      "valfri": true,
+      "automatiska": []
+    },
+    {
+      "id": "gycklare",
+      "namn": "Gycklare",
+      "sida": 21,
+      "yrkesformaga": "Svälter aldrig; tjänar 1T10 kopparstycken i timmen på att uppträda.",
+      "fardigheter": [
+        "akrobatik",
+        "buktala",
+        "dans",
+        "gyckelkonster",
+        "lasdyrkning",
+        "skadespeleri",
+        "spela-instrument",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": []
+    },
+    {
+      "id": "hantverkare",
+      "namn": "Hantverkare",
+      "sida": 21,
+      "yrkesformaga": "+3 i Köpslå och Värdera vid start; +10 på FV i ett av sina tre hantverk.",
+      "fardigheter": [
+        "administration",
+        {
+          "fardighet": "hantverk",
+          "antal": 3
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 1
+        },
+        "rakning",
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startbonus": [
+        {
+          "fardighet": "kopsla",
+          "bc": 3
+        },
+        {
+          "fardighet": "vardera",
+          "bc": 3
+        },
+        {
+          "fardighet": "hantverk",
+          "bc": 10,
+          "valEttAv": "yrkesHantverk"
+        }
+      ]
+    },
+    {
+      "id": "krigare",
+      "namn": "Krigare",
+      "sida": 22,
+      "yrkesformaga": "+3 på alla initiativslag i strid.",
+      "fardigheter": [
+        "dra-vapen",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "muta",
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        "tva-vapen",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": []
+    },
+    {
+      "id": "kopman",
+      "namn": "Köpman",
+      "sida": 22,
+      "yrkesformaga": "+5 i Köpslå och Värdera vid start; +5 på slaget för startkapital.",
+      "fardigheter": [
+        "administration",
+        "geografi",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "kulturkannedom",
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 1
+        },
+        "muta",
+        "rakning",
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startbonus": [
+        {
+          "fardighet": "kopsla",
+          "bc": 5
+        },
+        {
+          "fardighet": "vardera",
+          "bc": 5
+        }
+      ],
+      "slagbonus": {
+        "startkapital": 5
+      },
+      "kapitaltak": 15
+    },
+    {
+      "id": "lard-man",
+      "namn": "Lärd man",
+      "sida": 23,
+      "yrkesformaga": "Alla lärdomsfärdigheter är yrkesfärdigheter.",
+      "fardigheter": [
+        "administration",
+        "geografi",
+        "historia",
+        "kulturkannedom",
+        {
+          "fardighet": "lardom",
+          "antal": null
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 2
+        },
+        {
+          "fardighet": "tala",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": []
+    },
+    {
+      "id": "lonnmordare",
+      "namn": "Lönnmördare",
+      "sida": 23,
+      "yrkesformaga": "Lönnmord: lyckat Smyga mot misslyckat Upptäcka fara ger dubbel (perfekt: fyrdubbel) vapenskada utan SB.",
+      "fardigheter": [
+        "akrobatik",
+        {
+          "valEn": [
+            "forfalskning",
+            "undre-varlden"
+          ]
+        },
+        "giftkunskap",
+        "hantera-fallor",
+        "lasdyrkning",
+        "muta",
+        "skadespeleri",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": []
+    },
+    {
+      "id": "mentalist",
+      "namn": "Mentalist",
+      "sida": 24,
+      "yrkesformaga": "Behöver inget magiförmågeslag för att lära sig magiskolor.",
+      "fardigheter": [
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        "hypnotisera",
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 1
+        },
+        "magistudier",
+        "mentalism",
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi"
+      ],
+      "magiker": true
+    },
+    {
+      "id": "munk",
+      "namn": "Munk",
+      "sida": 24,
+      "yrkesformaga": "Meditation: varje SR ger +1 FV i en färdighet (högst dubbla FV) för ett slag inom en minut.",
+      "fardigheter": [
+        "administration",
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "lakekonst",
+        {
+          "fardighet": "lardom",
+          "antal": 2,
+          "maste": [
+            "Kunskap om religion"
+          ]
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 1
+        },
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": []
+    },
+    {
+      "id": "paladin",
+      "namn": "Paladin",
+      "sida": 25,
+      "yrkesformaga": "50 extra BP som kulten bestämmer över; måste lyda order.",
+      "fardigheter": [
+        "giftkunskap",
+        "hantera-fallor",
+        "lasdyrkning",
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om religion"
+          ]
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 1
+        },
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "extraBP": {
+        "antal": 50,
+        "styrsAv": "kulten (SL)"
+      }
+    },
+    {
+      "id": "resenar",
+      "namn": "Resenär",
+      "sida": 25,
+      "yrkesformaga": "+5 på FYS, STO eller STY vid motståndsslag mot elementarbesvärjelser och naturens element.",
+      "fardigheter": [
+        "geografi",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        {
+          "valEn": [
+            "hasardspel",
+            "knopar"
+          ]
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 1
+        },
+        {
+          "valEn": [
+            "navigera",
+            "orientering"
+          ]
+        },
+        {
+          "valEn": [
+            "rida-flygande-djur",
+            "simma"
+          ]
+        },
+        {
+          "valEn": [
+            "sjokunnighet",
+            "overlevnad"
+          ]
+        },
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": []
+    },
+    {
+      "id": "tjuv",
+      "namn": "Tjuv",
+      "sida": 26,
+      "yrkesformaga": "Kan lägga PSY-poäng för +1 CL vardera (högst +3) på ett färdighetsslag, två gånger mellan sömn.",
+      "fardigheter": [
+        "akrobatik",
+        "forfalskning",
+        "hantera-fallor",
+        "lasdyrkning",
+        "muta",
+        "skadespeleri",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": []
+    },
+    {
+      "id": "arkemagiker",
+      "namn": "Ärkemagiker",
+      "sida": 26,
+      "yrkesformaga": "Behöver inget magiförmågeslag; FV i en magiskola aldrig över INT.",
+      "fardigheter": [
+        "animism",
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        "elementarmagi",
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        {
+          "fardighet": "lasa-skriva",
+          "antal": 2
+        },
+        "magistudier",
+        "mentalism",
+        {
+          "fardighet": "tala",
+          "antal": 2
+        }
+      ],
+      "valfri": false,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi"
+      ],
+      "magiker": true,
+      "skolTak": "INT"
+    }
+  ],
+  "extraYrkesfardigheter": {
+    "forsta": 5,
+    "andra": 7,
+    "darefter": 10,
+    "magiskola": 20
+  },
+  "sida": [
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27
+  ]
+}
