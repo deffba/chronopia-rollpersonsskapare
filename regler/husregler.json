@@ -1,0 +1,142 @@
+[
+  {
+    "id": "primara-fran-s40",
+    "sida": [
+      40,
+      57,
+      62
+    ],
+    "beslut": "Primära färdigheter enligt s. 40, plus Bärsärkagång för troll och Känna magi för magiker."
+  },
+  {
+    "id": "kopsla-vardera-bc",
+    "sida": [
+      21,
+      22,
+      40,
+      51,
+      55
+    ],
+    "beslut": "Köpman/Wongos/Hantverkare får bonusen som +BC vid start, inte som CL (Niclas 2026-10-24)."
+  },
+  {
+    "id": "magisk-kanalisering-int",
+    "sida": [
+      41,
+      65
+    ],
+    "beslut": "Grundegenskap INT enligt beskrivningen (Niclas 2026-10-24)."
+  },
+  {
+    "id": "dimalv-alder",
+    "sida": [
+      16
+    ],
+    "beslut": "Dimalver använder ljusalvernas ålderskategorier (Niclas 2026-10-24)."
+  },
+  {
+    "id": "dimalv-sprak",
+    "sida": [
+      51,
+      54
+    ],
+    "beslut": "Dimalver talar alviska och Chronos (Niclas 2026-10-24)."
+  },
+  {
+    "id": "troll-sty",
+    "sida": [
+      14,
+      27
+    ],
+    "beslut": "Troll får +6 STY enligt rastabellen."
+  },
+  {
+    "id": "krigare-s22",
+    "sida": [
+      18,
+      22
+    ],
+    "beslut": "Krigare: +3 initiativ och Muta enligt s. 22."
+  },
+  {
+    "id": "hantverkare-plus10",
+    "sida": [
+      21,
+      60
+    ],
+    "beslut": "+10 på BC i ett av hantverkarens tre hantverk."
+  },
+  {
+    "id": "aldersgranser",
+    "sida": [
+      16,
+      17,
+      34
+    ],
+    "beslut": "Nedre kategorin slutar året före nästa börjar; Dvärg vuxen 41–150."
+  },
+  {
+    "id": "kapitaltak-efter-bonus",
+    "sida": [
+      33
+    ],
+    "beslut": "Taket (socialt stånd +10/+15) gäller summan efter bonusar."
+  },
+  {
+    "id": "over-bp-till-ep",
+    "sida": [
+      34
+    ],
+    "beslut": "Varje överblivet BP ger 5 EP."
+  },
+  {
+    "id": "lasa-skriva-tak",
+    "sida": [
+      56,
+      61,
+      64,
+      65
+    ],
+    "beslut": "Tak mot Läsa/Skriva använder högsta L/S-FV."
+  },
+  {
+    "id": "chronos-lagre",
+    "sida": [
+      52,
+      54
+    ],
+    "beslut": "Tala Chronos FV 5 för drakonit/orch/wongos; drakoniters L/S Chronos två B-nivåer under modersmålets BC."
+  },
+  {
+    "id": "sf-fore-harledda",
+    "sida": [
+      30,
+      31,
+      32
+    ],
+    "beslut": "Särskilda förmågor räknas in innan KP, SB och färdigheter räknas ut."
+  },
+  {
+    "id": "paladin-bp",
+    "sida": [
+      25
+    ],
+    "beslut": "Paladinens 50 BP visas som separat pott som SL styr."
+  },
+  {
+    "id": "pavise-skold",
+    "sida": [
+      72,
+      94
+    ],
+    "beslut": "Pavise räknas till vapengruppen Sköldar."
+  },
+  {
+    "id": "vapen-utan-grupp",
+    "sida": [
+      72,
+      90
+    ],
+    "beslut": "Vapen som s. 72 inte nämner: Korpnäbb och Hjälmkrossare = krossvapen, Kroksabel = svärd, Skäggyxa = yxa, Partisan och Glav = stångvapen."
+  }
+]

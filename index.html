@@ -1,0 +1,220 @@
+<meta charset="utf-8">
+<title>Chronopia rollpersonsskapare</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Skapa rollpersoner till Chronopia (Drakar och Demoner) steg för steg enligt kapitlet Rollpersonen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root {
+  --bg: #e9e7e2; --yta: #f6f5f1; --yta-2: #dfdcd5; --linje: #c5c0b5; --text: #22231f; --dampad: #5d5d55;
+  --accent: #8a6420; --accent-text: #6e4f17; --accent-svag: #efe2c6; --fel: #9c2f24; --fel-svag: #f5dcd6;
+  --ok: #3f6b45; --skugga: 0 1px 0 rgba(30, 28, 22, .06), 0 6px 24px -12px rgba(30, 28, 22, .25);
+  --rubrik: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --serif: "IM Fell English", "Iowan Old Style", Georgia, serif;
+  --sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --rad: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17181a; --yta: #202225; --yta-2: #2a2c30; --linje: #3b3d42; --text: #e6e2d8; --dampad: #a29e93;
+    --accent: #c99a4a; --accent-text: #d9ae62; --accent-svag: #3a2f1c; --fel: #e7867a; --fel-svag: #3e2522;
+    --ok: #8fc095; --skugga: 0 1px 0 rgba(0, 0, 0, .3), 0 8px 28px -14px rgba(0, 0, 0, .7); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17181a; --yta: #202225; --yta-2: #2a2c30; --linje: #3b3d42; --text: #e6e2d8; --dampad: #a29e93;
+  --accent: #c99a4a; --accent-text: #d9ae62; --accent-svag: #3a2f1c; --fel: #e7867a; --fel-svag: #3e2522;
+  --ok: #8fc095; --skugga: 0 1px 0 rgba(0, 0, 0, .3), 0 8px 28px -14px rgba(0, 0, 0, .7); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--text); font: 16px/1.5 var(--sans);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: 400; }
+h1 { font: 1.6rem/1.1 var(--rubrik); letter-spacing: .02em; }
+h2 { font: 1.9rem/1.15 var(--rubrik); }
+h3 { font: 1.15rem/1.3 var(--rubrik); letter-spacing: .02em; margin-top: .5rem; display: flex; gap: .75rem; align-items: baseline; }
+p { margin: 0; max-width: 68ch; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.topp {
+  display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between;
+  padding-block: 18px; border-bottom: 1px solid var(--linje); margin-bottom: 20px; max-width: 1480px; margin-inline: auto;
+}
+.topp .undertitel { color: var(--dampad); font: italic .95rem var(--serif); }
+.topp-verktyg { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+#bp-topp { font: 600 .9rem var(--sans); font-variant-numeric: tabular-nums; color: var(--accent-text); padding-inline: 8px; }
+
+.layout {
+  display: grid; gap: 20px; max-width: 1480px; margin-inline: auto;
+  grid-template-columns: 220px minmax(0, 1fr) minmax(300px, 380px); align-items: start;
+}
+@media (max-width: 1180px) { .layout { grid-template-columns: 200px minmax(0, 1fr); } .sida-formular { grid-column: 1 / -1; } }
+@media (max-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+.stegrail { position: sticky; top: 16px; }
+@media (max-width: 760px) { .stegrail { position: static; } }
+#steg { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: s; }
+@media (max-width: 760px) { #steg { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); } }
+.steg-knapp {
+  width: 100%; display: grid; grid-template-columns: 26px 1fr auto; gap: 8px; align-items: center; text-align: left;
+  padding: 7px 10px; border: 1px solid transparent; border-radius: var(--rad); background: none; cursor: pointer; color: var(--text);
+}
+.steg-knapp:hover { background: var(--yta-2); }
+.steg-knapp.aktiv { background: var(--yta); border-color: var(--linje); box-shadow: var(--skugga); }
+.steg-nr {
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: .95rem var(--rubrik);
+  border: 1px solid var(--linje); color: var(--dampad);
+}
+.aktiv .steg-nr { background: var(--accent); border-color: var(--accent); color: var(--yta); }
+.steg-namn { font-size: .95rem; line-height: 1.2; }
+.steg-bp { font-size: .78rem; color: var(--dampad); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.husregler { margin-top: 20px; font-size: .85rem; color: var(--dampad); }
+.husregler summary { cursor: pointer; font: 1rem var(--rubrik); color: var(--text); }
+.husregler ul { padding-left: 18px; display: grid; gap: 6px; margin: 10px 0 0; }
+
+.kort { background: var(--yta); border: 1px solid var(--linje); border-radius: 10px; box-shadow: var(--skugga); }
+#arbetsyta { padding: 24px clamp(16px, 3vw, 32px); display: grid; gap: 22px; min-width: 0; }
+#arbetsyta:focus { outline: none; }
+.steg-huvud { display: grid; gap: 4px; padding-bottom: 14px; border-bottom: 1px solid var(--linje); }
+.eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; font-weight: 700; color: var(--accent-text); }
+.steg-innehall { display: grid; gap: 16px; min-width: 0; }
+.steg-fot { display: flex; justify-content: space-between; gap: 12px; padding-top: 14px; border-top: 1px solid var(--linje); }
+
+.knapp {
+  border: 1px solid var(--linje); background: var(--yta); border-radius: var(--rad); padding: 7px 14px; cursor: pointer;
+  font-weight: 600; font-size: .92rem; white-space: nowrap;
+}
+.knapp:hover { border-color: var(--accent); }
+.knapp:disabled { opacity: .45; cursor: not-allowed; }
+.knapp.primar { background: var(--accent); border-color: var(--accent); color: var(--yta); }
+.knapp.liten { padding: 3px 10px; font-size: .85rem; }
+.lank { background: none; border: 0; color: var(--accent-text); text-decoration: underline; cursor: pointer; font-size: .8rem; margin-left: 8px; padding: 0; }
+.filknapp { position: relative; overflow: hidden; }
+.filknapp input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+.rad { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: end; }
+.falt { display: grid; gap: 4px; min-width: 0; }
+.etikett { font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--dampad); }
+.hjalp { font-size: .85rem; color: var(--dampad); }
+input[type="text"], input[type="number"], select, textarea {
+  background: var(--bg); border: 1px solid var(--linje); border-radius: var(--rad); padding: 6px 9px; min-width: 0; max-width: 100%;
+}
+input[type="text"], select { min-width: 12rem; }
+textarea { width: 100%; resize: vertical; }
+input.tal { width: 4.5rem; text-align: right; font-variant-numeric: tabular-nums; }
+input.tal.bred { width: 6rem; }
+
+.raskort-rutnat { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.raskort {
+  display: grid; gap: 2px; text-align: left; padding: 12px; border-radius: 8px; border: 1px solid var(--linje);
+  background: var(--bg); cursor: pointer;
+}
+.raskort:hover { border-color: var(--accent); }
+.raskort.valt { border-color: var(--accent); background: var(--accent-svag); box-shadow: inset 0 0 0 1px var(--accent); }
+.raskort-namn { font: 1.2rem var(--rubrik); }
+.raskort-bp { font-weight: 700; color: var(--accent-text); font-size: .85rem; }
+.raskort-mod { font-size: .82rem; color: var(--dampad); font-variant-numeric: tabular-nums; }
+.rutor { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.punkter { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+
+.tabellram { overflow-x: auto; border: 1px solid var(--linje); border-radius: 8px; }
+.tabell { border-collapse: collapse; width: 100%; font-size: .92rem; font-variant-numeric: tabular-nums; }
+.tabell th, .tabell td { padding: 6px 10px; border-bottom: 1px solid var(--linje); text-align: left; vertical-align: middle; }
+.tabell thead th { font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--dampad); background: var(--yta-2); }
+.tabell tbody tr:last-child > * { border-bottom: 0; }
+.tabell .num { text-align: right; }
+.tabell .stor { font: 1.25rem var(--rubrik); }
+.tabell .fel { color: var(--fel); }
+.tabell tr.markerad { background: var(--accent-svag); }
+.fardighetstabell td:first-child { min-width: 12rem; }
+.bniva { display: inline-block; margin-left: 6px; font-size: .78rem; color: var(--accent-text); font-weight: 700; }
+.pris { font: 600 .8rem var(--sans); color: var(--dampad); letter-spacing: 0; }
+.stegare { display: flex; align-items: center; gap: 8px; }
+.stegare span { min-width: 4.5rem; text-align: center; font-size: .9rem; }
+
+.yrkeslista { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.yrkeslista > li { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 12px; background: var(--bg); border-radius: 8px; border: 1px solid var(--linje); }
+.fnamn { font-weight: 600; min-width: 11rem; }
+.yrkesformaga { padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--accent-svag); border-radius: 0 8px 8px 0; }
+.sida { color: var(--dampad); font-size: .85em; white-space: nowrap; }
+.summering { font: italic 1.08rem/1.45 var(--serif); padding: 10px 0 0; }
+.notis { color: var(--accent-text); font-weight: 600; }
+details.fakta summary { cursor: pointer; color: var(--accent-text); font-weight: 600; }
+details.fakta > *:not(summary) { margin-top: 10px; }
+.mono { font-variant-numeric: tabular-nums; font-size: .9rem; }
+
+/* rollformuläret */
+.sida-formular { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; }
+@media (max-width: 1180px) { .sida-formular { position: static; max-height: none; } }
+.formular { padding: 20px; display: grid; gap: 16px; }
+.formular-huvud { text-align: center; padding-bottom: 12px; border-bottom: 3px double var(--linje); }
+.formular-huvud h2 { font-size: 1.7rem; }
+.formular-huvud p { color: var(--dampad); font-size: .9rem; margin-inline: auto; }
+.potter { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pott { display: grid; gap: 4px; padding: 10px 12px; border-radius: 8px; background: var(--bg); border: 1px solid var(--linje); }
+.pott-tal { font: 2rem/1 var(--rubrik); font-variant-numeric: tabular-nums; }
+.pott.over { border-color: var(--fel); background: var(--fel-svag); }
+.pott.over .pott-tal { color: var(--fel); }
+.matare { height: 4px; border-radius: 2px; background: var(--yta-2); overflow: hidden; }
+.matare > span { display: block; height: 100%; background: var(--accent); }
+.fellista { border: 1px solid var(--fel); background: var(--fel-svag); color: var(--text); border-radius: 8px; padding: 10px 12px; font-size: .88rem; }
+.fellista strong { color: var(--fel); }
+.fellista ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; }
+.egenskaper { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 0; }
+.egenskaper > div { text-align: center; border: 1px solid var(--linje); border-radius: 6px; padding: 6px 0; background: var(--bg); }
+.egenskaper dt { font-size: .7rem; font-weight: 700; letter-spacing: .06em; color: var(--dampad); }
+.egenskaper dd { margin: 0; font: 1.35rem var(--rubrik); font-variant-numeric: tabular-nums; }
+.nyckelvarden { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; margin: 0; font-size: .9rem; }
+.nyckelvarden > div { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dotted var(--linje); padding-bottom: 3px; }
+.nyckelvarden dt { color: var(--dampad); }
+.nyckelvarden dd { margin: 0; font-weight: 600; text-align: right; }
+.kroppsdelar, .fardighetsrader { list-style: none; margin: 0; padding: 0; display: grid; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.kroppsdelar { grid-template-columns: 1fr 1fr; gap: 2px 14px; }
+.kroppsdelar li, .fardighetsrader li { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dotted var(--linje); padding: 2px 0; }
+.fardighetsrader li.yrke span:first-child { font-weight: 600; }
+.fardighetsrader li.sekundar span:first-child { font-style: italic; }
+.formular .num { text-align: right; }
+
+#notis {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 8px; box-shadow: var(--skugga);
+  max-width: min(560px, calc(100vw - 32px)); font-size: .92rem; z-index: 20;
+}
+#exportruta { width: 100%; max-width: 1480px; display: block; margin: 12px auto 0; font: .8rem/1.4 ui-monospace, monospace; }
+</style>
+
+<header class="topp">
+  <div>
+    <h1>Chronopia rollpersonsskapare</h1>
+    <p class="undertitel">Drakar och Demoner, kapitlet Rollpersonen (s. 8–38)</p>
+  </div>
+  <div class="topp-verktyg">
+    <span id="bp-topp" aria-live="polite"></span>
+    <button type="button" class="knapp" id="exempel">Visa bokens exempel</button>
+    <button type="button" class="knapp" id="ny">Ny rollperson</button>
+    <button type="button" class="knapp" id="exportera">Kopiera som JSON</button>
+    <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="stegrail" aria-label="Steg">
+    <ol id="steg"></ol>
+    <details class="husregler">
+      <summary>Husregler och tolkningar</summary>
+      <ul id="husregler"></ul>
+    </details>
+  </nav>
+  <main id="arbetsyta" class="kort" tabindex="-1"><p>Läser in reglerna …</p></main>
+  <aside class="sida-formular kort" id="formular" aria-label="Rollformulär"></aside>
+</div>
+<textarea id="exportruta" rows="8" hidden aria-label="Rollpersonen som JSON"></textarea>
+<div id="notis" role="status" hidden></div>
+
+<script type="module" src="app.js"></script>

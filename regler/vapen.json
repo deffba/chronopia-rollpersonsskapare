@@ -1,0 +1,666 @@
+{
+  "grupper": [
+    {
+      "id": "dolkar",
+      "namn": "Dolkar",
+      "grundegenskap": "SMI"
+    },
+    {
+      "id": "enhandssvard",
+      "namn": "Enhandssvärd",
+      "grundegenskap": "STY"
+    },
+    {
+      "id": "enhandskross",
+      "namn": "Enhands krossvapen",
+      "grundegenskap": "STY"
+    },
+    {
+      "id": "enhandsyxor",
+      "namn": "Enhandsyxor",
+      "grundegenskap": "STY"
+    },
+    {
+      "id": "tvahandsvapen",
+      "namn": "Tvåhandsvapen",
+      "grundegenskap": "STY"
+    },
+    {
+      "id": "stickvapen",
+      "namn": "Stickvapen",
+      "grundegenskap": "STY"
+    },
+    {
+      "id": "kattingvapen",
+      "namn": "Kättingvapen",
+      "grundegenskap": "SMI"
+    },
+    {
+      "id": "stangvapen",
+      "namn": "Stångvapen",
+      "grundegenskap": "STY"
+    },
+    {
+      "id": "bagar",
+      "namn": "Bågar",
+      "grundegenskap": "SMI"
+    },
+    {
+      "id": "armborst",
+      "namn": "Armborst",
+      "grundegenskap": "SMI"
+    },
+    {
+      "id": "slunga",
+      "namn": "Slunga",
+      "grundegenskap": "SMI"
+    },
+    {
+      "id": "kastvapen",
+      "namn": "Kastvapen",
+      "grundegenskap": "SMI"
+    },
+    {
+      "id": "piska",
+      "namn": "Piska",
+      "grundegenskap": "SMI"
+    },
+    {
+      "id": "skoldar",
+      "namn": "Sköldar",
+      "grundegenskap": "SMI"
+    },
+    {
+      "id": "blasror",
+      "namn": "Blåsrör",
+      "grundegenskap": "SMI"
+    }
+  ],
+  "styBeroendeGrupper": {
+    "svard": "enhandssvard",
+    "kross": "enhandskross",
+    "yxor": "enhandsyxor"
+  },
+  "narstrid": [
+    {
+      "namn": "Knogjärn el. stålhätta",
+      "skada": "+1",
+      "styKrav": 1,
+      "langd": 0,
+      "vikt": 0.5,
+      "bv": null,
+      "pris": 20,
+      "grupp": "slagsmal",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Parerdolk",
+      "skada": "1T4+1",
+      "styKrav": 1,
+      "langd": 0,
+      "vikt": 0.5,
+      "bv": 13,
+      "pris": 80,
+      "grupp": "dolkar",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Dolk",
+      "skada": "1T4+1",
+      "styKrav": 1,
+      "langd": 0,
+      "vikt": 0.5,
+      "bv": 9,
+      "pris": 70,
+      "grupp": "dolkar",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Klubba",
+      "skada": "1T6",
+      "styKrav": 5,
+      "langd": 0,
+      "vikt": 1,
+      "bv": 7,
+      "pris": 20,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Spikklubba",
+      "skada": "1T6+1",
+      "styKrav": 5,
+      "langd": 0,
+      "vikt": 1,
+      "bv": 7,
+      "pris": 30,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Kortsvärd",
+      "skada": "1T6+1",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 15,
+      "pris": 400,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Kortspjut",
+      "skada": "1T6",
+      "styKrav": 7,
+      "langd": 1,
+      "vikt": 2,
+      "bv": 11,
+      "pris": 90,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": false,
+      "somTrastav": true
+    },
+    {
+      "namn": "Trästav",
+      "skada": "1T6",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 7,
+      "pris": 100,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "aldrigEnHand": true
+    },
+    {
+      "namn": "Korpnäbb",
+      "skada": "1T8",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 15,
+      "pris": 600,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Kroksabel",
+      "skada": "1T8+2",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 15,
+      "pris": 650,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Piska",
+      "skada": "1T2",
+      "styKrav": 9,
+      "langd": 1,
+      "vikt": 3,
+      "bv": 3,
+      "pris": 120,
+      "grupp": "piska",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Handyxa",
+      "skada": "1T6+1",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 11,
+      "pris": 60,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Hjälmkrossare",
+      "skada": "1T8+1",
+      "styKrav": 11,
+      "langd": 0,
+      "vikt": 4,
+      "bv": 15,
+      "pris": 700,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Stridshammare",
+      "skada": "1T6+2",
+      "styKrav": 11,
+      "langd": 0,
+      "vikt": 4,
+      "bv": 15,
+      "pris": 850,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Stridsyxa",
+      "skada": "1T8+2",
+      "styKrav": 11,
+      "langd": 0,
+      "vikt": 4,
+      "bv": 11,
+      "pris": 450,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Långspjut",
+      "skada": "1T10",
+      "styKrav": 11,
+      "langd": 2,
+      "vikt": 4,
+      "bv": 11,
+      "pris": 300,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true,
+      "aldrigEnHand": true,
+      "somTrastav": true
+    },
+    {
+      "namn": "Bredsvärd",
+      "skada": "1T8+1",
+      "styKrav": 13,
+      "langd": 0,
+      "vikt": 4.5,
+      "bv": 15,
+      "pris": 1000,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Stridsgissel",
+      "skada": "1T10",
+      "styKrav": 13,
+      "langd": 0,
+      "vikt": 4.5,
+      "bv": 11,
+      "pris": 1250,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Morgonstjärna",
+      "skada": "1T8+2",
+      "styKrav": 13,
+      "langd": 0,
+      "vikt": 4.5,
+      "bv": 11,
+      "pris": 1500,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Treudd",
+      "skada": "3T6-2",
+      "styKrav": 15,
+      "langd": 1,
+      "vikt": 5,
+      "bv": 11,
+      "pris": 1000,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Bastardsvärd",
+      "skada": "1T10+1",
+      "styKrav": 17,
+      "langd": 0,
+      "vikt": 5.5,
+      "bv": 15,
+      "pris": 2500,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Stor träklubba",
+      "skada": "2T4",
+      "styKrav": 21,
+      "langd": 0,
+      "vikt": 6,
+      "bv": 11,
+      "pris": 50,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Stor spikklubba",
+      "skada": "2T4+1",
+      "styKrav": 21,
+      "langd": 0,
+      "vikt": 6,
+      "bv": 11,
+      "pris": 70,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Stridsslaga",
+      "skada": "1T10+1",
+      "styKrav": 25,
+      "langd": 0,
+      "vikt": 6.5,
+      "bv": 11,
+      "pris": 1500,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Skäggyxa",
+      "skada": "2T8+1",
+      "styKrav": 25,
+      "langd": 0,
+      "vikt": 6.5,
+      "bv": 11,
+      "pris": 1100,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false
+    },
+    {
+      "namn": "Pik",
+      "skada": "2T8-1",
+      "styKrav": 25,
+      "langd": 3,
+      "vikt": 6.5,
+      "bv": 11,
+      "pris": 1900,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true
+    },
+    {
+      "namn": "Lans",
+      "skada": "2T8",
+      "styKrav": 25,
+      "langd": 2,
+      "vikt": 6.5,
+      "bv": 15,
+      "pris": 650,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true,
+      "anmarkning": "Tornerlans kan användas med en hand till häst."
+    },
+    {
+      "namn": "Partisan",
+      "skada": "2T8+2",
+      "styKrav": 27,
+      "langd": 1,
+      "vikt": 7,
+      "bv": 11,
+      "pris": 1400,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "somTrastav": true
+    },
+    {
+      "namn": "Spetum",
+      "skada": "2T8+1",
+      "styKrav": 27,
+      "langd": 1,
+      "vikt": 7,
+      "bv": 11,
+      "pris": 1250,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true,
+      "somTrastav": true
+    },
+    {
+      "namn": "Glav",
+      "skada": "2T10",
+      "styKrav": 27,
+      "langd": 1,
+      "vikt": 7,
+      "bv": 11,
+      "pris": 1600,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "somTrastav": true
+    },
+    {
+      "namn": "Pålyxa",
+      "skada": "3T6",
+      "styKrav": 29,
+      "langd": 1,
+      "vikt": 7.5,
+      "bv": 11,
+      "pris": 1150,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "somTrastav": true
+    },
+    {
+      "namn": "Hillebard",
+      "skada": "3T6+1",
+      "styKrav": 29,
+      "langd": 1,
+      "vikt": 7.5,
+      "bv": 11,
+      "pris": 1900,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "somTrastav": true
+    },
+    {
+      "namn": "Tvåhandsyxa",
+      "skada": "2T10+1",
+      "styKrav": 31,
+      "langd": 1,
+      "vikt": 8,
+      "bv": 11,
+      "pris": 1900,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": true
+    },
+    {
+      "namn": "Tvåhandssvärd",
+      "skada": "2T10+2",
+      "styKrav": 31,
+      "langd": 1,
+      "vikt": 8,
+      "bv": 15,
+      "pris": 3500,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": true
+    }
+  ],
+  "projektil": [
+    {
+      "namn": "Liten båge",
+      "skada": "1T4+1",
+      "styKrav": 10,
+      "rackvidd": "135 m",
+      "vikt": 1.5,
+      "pris": 150,
+      "grupp": "bagar",
+      "tvaHander": true
+    },
+    {
+      "namn": "Kortbåge",
+      "skada": "1T6+1",
+      "styKrav": 18,
+      "rackvidd": "135 m",
+      "vikt": 2,
+      "pris": 400,
+      "grupp": "bagar",
+      "tvaHander": true
+    },
+    {
+      "namn": "Långbåge",
+      "skada": "1T8+1",
+      "styKrav": 30,
+      "rackvidd": "180 m",
+      "vikt": 3,
+      "pris": 700,
+      "grupp": "bagar",
+      "tvaHander": true
+    },
+    {
+      "namn": "Sammansatt båge",
+      "skada": "1T10+1",
+      "styKrav": 30,
+      "rackvidd": "180 m",
+      "vikt": 3.5,
+      "pris": 1000,
+      "grupp": "bagar",
+      "tvaHander": true
+    },
+    {
+      "namn": "Slunga",
+      "skada": "1T6",
+      "styKrav": 10,
+      "rackvidd": "90 m",
+      "vikt": 0.5,
+      "pris": 40,
+      "grupp": "slunga",
+      "tvaHander": false
+    },
+    {
+      "namn": "Stavslunga",
+      "skada": "1T8",
+      "styKrav": 22,
+      "rackvidd": "120 m",
+      "vikt": 2,
+      "pris": 80,
+      "grupp": "slunga",
+      "tvaHander": true
+    },
+    {
+      "namn": "Blåsrör",
+      "skada": "spec.",
+      "styKrav": 2,
+      "rackvidd": "20 m",
+      "vikt": 0.5,
+      "pris": 80,
+      "grupp": "blasror",
+      "tvaHander": true
+    },
+    {
+      "namn": "Lätt armborst",
+      "skada": "2T4+2",
+      "styKrav": 26,
+      "rackvidd": "150 m",
+      "vikt": 5,
+      "pris": 1300,
+      "grupp": "armborst",
+      "tvaHander": true
+    },
+    {
+      "namn": "Tungt armborst",
+      "skada": "2T6+2",
+      "styKrav": 28,
+      "rackvidd": "225 m",
+      "vikt": 6,
+      "pris": 2250,
+      "grupp": "armborst",
+      "tvaHander": true
+    },
+    {
+      "namn": "Arbalest",
+      "skada": "3T6+3",
+      "styKrav": 32,
+      "rackvidd": "250 m",
+      "vikt": 8,
+      "pris": 4000,
+      "grupp": "armborst",
+      "tvaHander": true
+    }
+  ],
+  "kast": [
+    {
+      "namn": "Kastspjut",
+      "skada": "1T6+1",
+      "styKrav": 11,
+      "vikt": 1,
+      "pris": 120,
+      "rackvidd": "STY rutor",
+      "grupp": "kastvapen"
+    },
+    {
+      "namn": "Kastkniv",
+      "skada": "1T4+1",
+      "styKrav": 9,
+      "vikt": 0.5,
+      "pris": 100,
+      "rackvidd": "STY rutor",
+      "grupp": "kastvapen"
+    },
+    {
+      "namn": "Kastyxa",
+      "skada": "1T6+2",
+      "styKrav": 9,
+      "vikt": 3,
+      "pris": 90,
+      "rackvidd": "STY rutor",
+      "grupp": "kastvapen"
+    }
+  ],
+  "skoldar": [
+    {
+      "namn": "Targ (bucklare)",
+      "styKrav": 1,
+      "bv": 9,
+      "vikt": 1,
+      "pris": 500,
+      "grupp": "skoldar"
+    },
+    {
+      "namn": "Rundsköld, liten",
+      "styKrav": 3,
+      "bv": 9,
+      "vikt": 2,
+      "pris": 650,
+      "grupp": "skoldar"
+    },
+    {
+      "namn": "Rundsköld, stor",
+      "styKrav": 11,
+      "bv": 11,
+      "vikt": 7,
+      "pris": 1000,
+      "grupp": "skoldar"
+    },
+    {
+      "namn": "Långsköld (normandisk)",
+      "styKrav": 7,
+      "bv": 11,
+      "vikt": 6,
+      "pris": 900,
+      "grupp": "skoldar"
+    },
+    {
+      "namn": "Vanlig sköld (trekantig)",
+      "styKrav": 7,
+      "bv": 11,
+      "vikt": 6,
+      "pris": 850,
+      "grupp": "skoldar"
+    },
+    {
+      "namn": "Scutata (romersk sköld)",
+      "styKrav": 7,
+      "bv": 13,
+      "vikt": 8,
+      "pris": 1100,
+      "grupp": "skoldar"
+    },
+    {
+      "namn": "Pavise (bågskyttesköld)",
+      "styKrav": 18,
+      "bv": 11,
+      "vikt": 16,
+      "pris": 900,
+      "grupp": "skoldar"
+    }
+  ],
+  "sida": [
+    72,
+    89,
+    90,
+    91,
+    94
+  ]
+}

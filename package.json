@@ -1,0 +1,8 @@
+{
+  "name": "chronopia-rollpersonsskapare",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/brutus.test.mjs"
+  }
+}

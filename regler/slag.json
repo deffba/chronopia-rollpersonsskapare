@@ -1,0 +1,140 @@
+{
+  "svardshand": {
+    "tarning": "2T6",
+    "tabell": [
+      [
+        11,
+        "Höger"
+      ],
+      [
+        14,
+        "Vänster"
+      ],
+      [
+        18,
+        "Dubbelhänt"
+      ],
+      [
+        null,
+        "Ambidextriös"
+      ]
+    ],
+    "sida": 32
+  },
+  "socialtStand": {
+    "tarning": "2T6",
+    "sida": 33,
+    "tabell": [
+      [
+        2,
+        "Egendomslös",
+        "ovriga"
+      ],
+      [
+        4,
+        "Lägre underklass",
+        "ovriga"
+      ],
+      [
+        7,
+        "Högre underklass",
+        "hogreUnderklass"
+      ],
+      [
+        11,
+        "Lägre medelklass",
+        "lagreMedelklass"
+      ],
+      [
+        16,
+        "Högre medelklass",
+        "hogreMedelklass"
+      ],
+      [
+        22,
+        "Lägre överklass",
+        "overklass"
+      ],
+      [
+        29,
+        "Högre överklass",
+        "overklass"
+      ],
+      [
+        37,
+        "Lågadel",
+        "overklass"
+      ],
+      [
+        null,
+        "Högadel",
+        "overklass"
+      ]
+    ]
+  },
+  "startkapital": {
+    "tarning": "2T6",
+    "sida": 33,
+    "tak": 10,
+    "tabell": [
+      [
+        2,
+        250
+      ],
+      [
+        4,
+        500
+      ],
+      [
+        7,
+        750
+      ],
+      [
+        11,
+        1500
+      ],
+      [
+        16,
+        3000
+      ],
+      [
+        22,
+        5000
+      ],
+      [
+        29,
+        10000
+      ],
+      [
+        37,
+        20000
+      ],
+      [
+        46,
+        35000
+      ],
+      [
+        56,
+        50000
+      ],
+      [
+        null,
+        100000
+      ]
+    ]
+  },
+  "sarskildaFormagor": {
+    "tarning": "2T20",
+    "maxBP": 40,
+    "sida": [
+      30,
+      31,
+      32
+    ]
+  },
+  "magiformaga": {
+    "tarning": "1T100",
+    "regel": "högst (INT+PSY)/2, avrundat uppåt",
+    "sida": 106
+  }
+}

@@ -1,0 +1,806 @@
+[
+  {
+    "id": "dimalv",
+    "namn": "Dimalv",
+    "bp": 65,
+    "mod": {
+      "STY": 1,
+      "FYS": 1,
+      "SMI": 2,
+      "INT": 3,
+      "PSY": 5,
+      "KAR": 1
+    },
+    "sto": {
+      "min": 10,
+      "max": 20,
+      "normal": 15
+    },
+    "alder": {
+      "ung": [
+        16,
+        200
+      ],
+      "vuxen": [
+        201,
+        800
+      ],
+      "medelalders": [
+        801,
+        3000
+      ],
+      "gammal": [
+        3001,
+        7000
+      ],
+      "uraldrig": [
+        7001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "chronos",
+      "alviska"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder, blir aldrig sjuk"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 10,
+      "startkapital": 10
+    },
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "drakonit",
+    "namn": "Drakonit",
+    "bp": 20,
+    "mod": {
+      "STY": 2,
+      "FYS": 0,
+      "SMI": 0,
+      "INT": 0,
+      "PSY": 1,
+      "KAR": 0
+    },
+    "sto": {
+      "min": 10,
+      "max": 18,
+      "normal": 14
+    },
+    "alder": {
+      "ung": [
+        30,
+        50
+      ],
+      "vuxen": [
+        51,
+        70
+      ],
+      "medelalders": [
+        71,
+        90
+      ],
+      "gammal": [
+        91,
+        110
+      ],
+      "uraldrig": [
+        111,
+        150
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "drakonitiska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 5
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "drakonitiska",
+      {
+        "sprak": "chronos",
+        "bNivaLagre": 2
+      }
+    ],
+    "formagor": [],
+    "primara": [
+      "simma"
+    ],
+    "sekundara": [
+      "rida"
+    ],
+    "startbonus": [],
+    "slagbonus": {},
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "dvarg",
+    "namn": "Dvärg",
+    "bp": 20,
+    "mod": {
+      "STY": 3,
+      "FYS": 2,
+      "SMI": 0,
+      "INT": 0,
+      "PSY": 2,
+      "KAR": 0
+    },
+    "sto": {
+      "min": 7,
+      "max": 11,
+      "normal": 9
+    },
+    "alder": {
+      "ung": [
+        25,
+        40
+      ],
+      "vuxen": [
+        41,
+        150
+      ],
+      "medelalders": [
+        151,
+        250
+      ],
+      "gammal": [
+        251,
+        400
+      ],
+      "uraldrig": [
+        401,
+        600
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "dvargiska",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "dvargiska"
+    ],
+    "formagor": [
+      "Infrasyn"
+    ],
+    "primara": [
+      "geologi",
+      {
+        "valfri": "hantverk"
+      }
+    ],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "startkapital": 4
+    },
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "goblin",
+    "namn": "Goblin",
+    "bp": 0,
+    "mod": {
+      "STY": -2,
+      "FYS": 2,
+      "SMI": 2,
+      "INT": -2,
+      "PSY": -2,
+      "KAR": -2
+    },
+    "sto": {
+      "min": 6,
+      "max": 10,
+      "normal": 8
+    },
+    "alder": {
+      "ung": [
+        8,
+        15
+      ],
+      "vuxen": [
+        16,
+        25
+      ],
+      "medelalders": [
+        26,
+        35
+      ],
+      "gammal": [
+        36,
+        45
+      ],
+      "uraldrig": [
+        46,
+        65
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [],
+    "formagor": [
+      "Mörkersyn"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {},
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "halvalv",
+    "namn": "Halvalv",
+    "bp": 20,
+    "mod": {
+      "STY": -1,
+      "FYS": -1,
+      "SMI": 2,
+      "INT": 0,
+      "PSY": 3,
+      "KAR": 1
+    },
+    "sto": {
+      "min": 8,
+      "max": 18,
+      "normal": 13
+    },
+    "alder": {
+      "ung": [
+        30,
+        40
+      ],
+      "vuxen": [
+        41,
+        70
+      ],
+      "medelalders": [
+        71,
+        100
+      ],
+      "gammal": [
+        101,
+        130
+      ],
+      "uraldrig": [
+        131,
+        300
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "chronos",
+      "alviska"
+    ],
+    "formagor": [],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {},
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "hoglandare",
+    "namn": "Högländare",
+    "bp": 30,
+    "mod": {
+      "STY": 2,
+      "FYS": 2,
+      "SMI": 0,
+      "INT": 0,
+      "PSY": 0,
+      "KAR": 0
+    },
+    "sto": {
+      "min": 11,
+      "max": 21,
+      "normal": 16
+    },
+    "alder": {
+      "ung": [
+        15,
+        20
+      ],
+      "vuxen": [
+        21,
+        45
+      ],
+      "medelalders": [
+        46,
+        60
+      ],
+      "gammal": [
+        61,
+        70
+      ],
+      "uraldrig": [
+        71,
+        125
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "hoglandska",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "hoglandska"
+    ],
+    "formagor": [],
+    "primara": [
+      {
+        "valfri": "vapen"
+      }
+    ],
+    "sekundara": [
+      "bluffa",
+      "stjala-foremal"
+    ],
+    "startbonus": [
+      {
+        "fardighet": "rida",
+        "bc": 5
+      }
+    ],
+    "slagbonus": {},
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "ljusalv",
+    "namn": "Ljusalv",
+    "bp": 30,
+    "mod": {
+      "STY": -1,
+      "FYS": 0,
+      "SMI": 3,
+      "INT": 1,
+      "PSY": 0,
+      "KAR": 2
+    },
+    "sto": {
+      "min": 10,
+      "max": 20,
+      "normal": 15
+    },
+    "alder": {
+      "ung": [
+        16,
+        200
+      ],
+      "vuxen": [
+        201,
+        800
+      ],
+      "medelalders": [
+        801,
+        3000
+      ],
+      "gammal": [
+        3001,
+        7000
+      ],
+      "uraldrig": [
+        7001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder, blir aldrig sjuk"
+    ],
+    "primara": [
+      "langbage"
+    ],
+    "sekundara": [
+      "rida"
+    ],
+    "startbonus": [
+      {
+        "fardighet": "klattra",
+        "bc": 5
+      }
+    ],
+    "slagbonus": {},
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "manniska",
+    "namn": "Människa",
+    "bp": 15,
+    "mod": {
+      "STY": 0,
+      "FYS": 0,
+      "SMI": 0,
+      "INT": 0,
+      "PSY": 0,
+      "KAR": 0
+    },
+    "sto": {
+      "min": 8,
+      "max": 18,
+      "normal": 13
+    },
+    "alder": {
+      "ung": [
+        16,
+        20
+      ],
+      "vuxen": [
+        21,
+        45
+      ],
+      "medelalders": [
+        46,
+        60
+      ],
+      "gammal": [
+        61,
+        70
+      ],
+      "uraldrig": [
+        71,
+        100
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "chronos"
+    ],
+    "formagor": [],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {},
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "orch",
+    "namn": "Orch",
+    "bp": 10,
+    "mod": {
+      "STY": 3,
+      "FYS": 3,
+      "SMI": -1,
+      "INT": -1,
+      "PSY": -2,
+      "KAR": -1
+    },
+    "sto": {
+      "min": 6,
+      "max": 16,
+      "normal": 11
+    },
+    "alder": {
+      "ung": [
+        12,
+        18
+      ],
+      "vuxen": [
+        19,
+        30
+      ],
+      "medelalders": [
+        31,
+        40
+      ],
+      "gammal": [
+        41,
+        50
+      ],
+      "uraldrig": [
+        51,
+        75
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "orchiska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 5
+      }
+    ],
+    "lasaSkrivaModersmal": [],
+    "formagor": [
+      "Infrasyn"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {},
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "stadsalv",
+    "namn": "Stadsalv",
+    "bp": 25,
+    "mod": {
+      "STY": 0,
+      "FYS": -1,
+      "SMI": 1,
+      "INT": 0,
+      "PSY": 1,
+      "KAR": 2
+    },
+    "sto": {
+      "min": 12,
+      "max": 18,
+      "normal": 15
+    },
+    "alder": {
+      "ung": [
+        16,
+        150
+      ],
+      "vuxen": [
+        151,
+        750
+      ],
+      "medelalders": [
+        751,
+        2500
+      ],
+      "gammal": [
+        2501,
+        5000
+      ],
+      "uraldrig": [
+        5001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder eller sjukdom, men kan bli sjuk"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 15,
+      "startkapital": 15
+    },
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "troll",
+    "namn": "Troll",
+    "bp": 30,
+    "mod": {
+      "STY": 6,
+      "FYS": 5,
+      "SMI": -3,
+      "INT": -3,
+      "PSY": -2,
+      "KAR": -2
+    },
+    "sto": {
+      "min": 16,
+      "max": 24,
+      "normal": 20
+    },
+    "alder": {
+      "ung": [
+        15,
+        18
+      ],
+      "vuxen": [
+        19,
+        30
+      ],
+      "medelalders": [
+        31,
+        40
+      ],
+      "gammal": [
+        41,
+        50
+      ],
+      "uraldrig": [
+        51,
+        75
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [],
+    "formagor": [],
+    "primara": [
+      "barsarkagang"
+    ],
+    "sekundara": [],
+    "startbonus": [
+      {
+        "fardighet": "barsarkagang",
+        "bc": 5
+      }
+    ],
+    "slagbonus": {},
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  },
+  {
+    "id": "wongos",
+    "namn": "Wongos",
+    "bp": 0,
+    "mod": {
+      "STY": -2,
+      "FYS": 2,
+      "SMI": 0,
+      "INT": 0,
+      "PSY": 0,
+      "KAR": 0
+    },
+    "sto": {
+      "min": 6,
+      "max": 10,
+      "normal": 8
+    },
+    "alder": {
+      "ung": [
+        20,
+        30
+      ],
+      "vuxen": [
+        31,
+        60
+      ],
+      "medelalders": [
+        61,
+        75
+      ],
+      "gammal": [
+        76,
+        100
+      ],
+      "uraldrig": [
+        101,
+        150
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "wongosiska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 5
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "chronos",
+      "wongosiska"
+    ],
+    "formagor": [],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [
+      {
+        "fardighet": "kopsla",
+        "bc": 5
+      }
+    ],
+    "slagbonus": {},
+    "sida": [
+      14,
+      15,
+      16
+    ]
+  }
+]
