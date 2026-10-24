@@ -47,12 +47,13 @@ p { margin: 0; max-width: 68ch; }
 button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+/* Två rader: titeln överst, sedan stilväxeln till vänster och knapparna till höger */
 .topp {
-  display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between;
+  display: flex; flex-wrap: wrap; gap: 14px 16px; align-items: center;
   padding-block: 18px; border-bottom: 1px solid var(--linje); margin-bottom: 20px; max-width: 1480px; margin-inline: auto;
 }
+.topp h1 { flex-basis: 100%; font-size: 2.6rem; }
 .topp-verktyg { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; margin-left: auto; }
-#bp-topp { font: 600 .9rem var(--sans); font-variant-numeric: tabular-nums; color: var(--accent-text); padding-inline: 8px; min-width: 11em; text-align: right; white-space: nowrap; }
 
 .layout {
   display: grid; gap: 20px; max-width: 1480px; margin-inline: auto;
@@ -130,23 +131,18 @@ input.tal.bred { width: 6rem; }
 .raskort:hover { border-color: var(--accent); }
 .raskort.valt { border-color: var(--accent); background: var(--accent-svag); box-shadow: inset 0 0 0 1px var(--accent); }
 .raskort-namn { font: 1.2rem var(--rubrik); transition: font-size .4s ease; overflow-wrap: anywhere; }
-.raskort-info { display: grid; grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows .4s ease, opacity .25s ease; }
-.raskort-info > div { overflow: hidden; display: grid; gap: 2px; }
-.raskort-bp { font-weight: 700; color: var(--accent-text); font-size: .85rem; }
-.raskort-mod { font-size: .82rem; color: var(--dampad); font-variant-numeric: tabular-nums; }
-/* Förminskat läge när en ras är vald: bara namnen, i samma 3 × 4-rutnät */
+/* Rasrutorna visar bara namnen i ett 3 × 4-rutnät; siffrorna står i rutan under */
 .raskort-rutnat.liten { width: min(100%, 360px); gap: 6px; }
 .raskort-rutnat.liten .raskort { padding: 5px 8px; gap: 0; }
 .raskort-rutnat.liten .raskort-namn { font-size: .95rem; }
-.raskort-rutnat.liten .raskort-info { grid-template-rows: 0fr; opacity: 0; }
-.rasval-huvud { display: grid; justify-items: start; gap: 8px; }
 .rasinfo { display: grid; gap: 2px; }
 .rasrubrik { font: 1.6rem/1.1 var(--rubrik); margin: 4px 0 0; }
 .rutor h4 { font: 1.15rem/1.3 var(--rubrik); letter-spacing: .02em; margin: .5rem 0 0; }
 .rasval-extra { padding-top: calc(1.15rem * 1.3 + .5rem + 1em); }
+.rasdata { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 8px 0 0; padding: 10px 14px; justify-self: start; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--accent-svag); }
+.rasdata dt { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--dampad); }
+.rasdata dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
 .raslore { font-style: italic; color: var(--dampad); max-width: 65ch; margin: 4px 0 8px; }
-@media (prefers-reduced-motion: reduce) { .raskort-rutnat, .raskort, .raskort-namn, .raskort-info { transition: none; } }
-@media (max-width: 520px) { .raskort-rutnat:not(.liten) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .rutor { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .punkter { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
 
@@ -296,8 +292,8 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] .steg-knapp.aktiv { box-shadow: var(--skugga); }
 /* Text som ligger direkt på den mörka stenen */
 [data-stil="klassisk"] .topp { border-bottom: 3px double #6b5a54; }
-[data-stil="klassisk"] .topp h1 { color: var(--sten-text); font: 700 1.7rem/1.1 var(--rubrik); letter-spacing: .04em; }
-[data-stil="klassisk"] #bp-topp { color: #d9c6bf; font: 500 .9rem var(--ui); letter-spacing: .08em; }
+[data-stil="klassisk"] .topp h1 { color: var(--sten-text); font: 700 2.7rem/1.1 var(--rubrik); letter-spacing: .04em; }
+@media (max-width: 520px) { .topp h1, [data-stil="klassisk"] .topp h1 { font-size: 1.7rem; overflow-wrap: anywhere; } }
 [data-stil="klassisk"] .steg-knapp { color: var(--sten-text); border-radius: 3px; }
 [data-stil="klassisk"] .steg-knapp:hover { background: rgba(255, 255, 255, .07); }
 [data-stil="klassisk"] .steg-knapp.aktiv { color: var(--text); }
@@ -360,15 +356,12 @@ option.grupprubrik { font-weight: 700; }
 </style>
 
 <header class="topp">
-  <div>
-    <h1>Chronopia rollpersonsskapare</h1>
+  <h1>Chronopia rollpersonsskapare</h1>
+  <div class="stilval" role="group" aria-label="Utseende">
+    <button type="button" data-stil="modern" aria-pressed="true">Modern</button>
+    <button type="button" data-stil="klassisk" aria-pressed="false">Klassisk</button>
   </div>
   <div class="topp-verktyg">
-    <div class="stilval" role="group" aria-label="Utseende">
-      <button type="button" data-stil="modern" aria-pressed="true">Modern</button>
-      <button type="button" data-stil="klassisk" aria-pressed="false">Klassisk</button>
-    </div>
-    <span id="bp-topp" aria-live="polite"></span>
     <button type="button" class="knapp" id="ny"><span class="ny-vanlig">Ny rollperson</span><span class="ny-bekrafta" aria-live="polite">Bekräfta (5)</span></button>
     <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
   </div>
