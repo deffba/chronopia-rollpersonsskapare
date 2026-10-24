@@ -244,13 +244,13 @@ function valLista(id, varde, alternativ, onchange, tomText = "Välj …") {
 }
 
 // Få alternativ visas som knappar i stället för en rullgardin. Det valda lyser, de andra stryks
-// över men går att klicka på för att byta.
+// över men går att klicka på för att byta. Ett nytt klick på det valda gör valet ogjort.
 function valKnappar(id, varde, alternativ, onchange) {
   const valt = alternativ.some(([v]) => v === varde);
   return el("div", { id, class: "valknappar" + (valt ? " gjort" : ""), role: "group" },
     alternativ.map(([v, t]) => el("button", {
       type: "button", class: "valknapp" + (v === varde ? " vald" : valt ? " bortvald" : ""), "aria-pressed": v === varde ? "true" : "false",
-      "data-varde": v, onclick: () => { if (v !== varde) onchange(v); },
+      "data-varde": v, onclick: () => onchange(v === varde ? "" : v), // ett klick på det valda tar bort valet
     }, t)));
 }
 
