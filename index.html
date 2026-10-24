@@ -216,6 +216,21 @@ input.namnfalt:focus { border-color: var(--accent); outline: none; }
 .fast { padding: 6px 9px; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--yta-2); font-size: .95rem; }
 .delvalhjalp { flex-basis: 100%; max-width: 68ch; }
 .felrad { color: var(--fel); }
+.valknappar { display: flex; flex-wrap: wrap; gap: 6px; }
+.valknapp { font: inherit; font-size: .95rem; font-weight: 700; padding: 6px 12px; border-radius: var(--rad); cursor: pointer;
+  border: 1px solid var(--accent); background: var(--accent-svag); color: var(--accent-text); }
+.valknapp:hover { border-color: var(--accent-text); }
+.valknapp.vald { background: var(--accent); border-color: var(--accent); color: var(--yta); }
+.valknapp.vald::before { content: "✓ "; }
+.valknapp.bortvald { font-weight: 400; background: transparent; border-color: var(--linje); color: var(--dampad); text-decoration: line-through; opacity: .75; }
+.valknapp.bortvald:hover { opacity: 1; text-decoration: none; border-color: var(--accent); }
+.fbeskr { margin: 2px 0 6px; color: var(--dampad); font-size: .88rem; max-width: 65ch; }
+.yrkeslista > li > .fbeskr { flex-basis: 100%; margin: -4px 0 0; }
+.varning { border: 1px solid var(--accent); border-left-width: 4px; background: var(--accent-svag); color: var(--text); border-radius: var(--rad); padding: 10px 12px; font-size: .92rem; }
+.varning strong { color: var(--accent-text); }
+.kryss { display: flex; gap: 8px; align-items: center; font-size: .95rem; cursor: pointer; }
+.kryss input { width: 18px; height: 18px; accent-color: var(--accent); }
+.kostnadstabell th, .kostnadstabell td { padding: 4px 7px; }
 .steg-knapp:disabled { opacity: .45; cursor: not-allowed; }
 .steg-knapp:disabled:hover { background: none; }
 </style>
