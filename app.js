@@ -1083,6 +1083,17 @@ async function start() {
     const text = e.clipboardData.getData("text");
     if (text.trim().startsWith("{")) importera(text);
   });
+  // Växeln mellan utseendena Modern och Klassisk; valet sparas i webbläsaren
+  const visaStil = () => document.querySelectorAll(".stilval button").forEach((k) => {
+    k.setAttribute("aria-pressed", String((document.documentElement.dataset.stil ?? "modern") === k.dataset.stil));
+  });
+  document.querySelectorAll(".stilval button").forEach((k) => k.addEventListener("click", () => {
+    if (k.dataset.stil === "klassisk") document.documentElement.dataset.stil = "klassisk";
+    else delete document.documentElement.dataset.stil;
+    try { localStorage.setItem("chronopia-stil", k.dataset.stil); } catch { /* frivilligt */ }
+    visaStil();
+  }));
+  visaStil();
   // Info-cirklarnas förklaringar visas i en gemensam ruta
   const tips = el("div", { id: "tips", role: "tooltip", hidden: true });
   document.body.append(tips);

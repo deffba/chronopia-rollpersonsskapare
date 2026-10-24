@@ -4,7 +4,11 @@
 <meta name="description" content="Skapa rollpersoner till Chronopia (Drakar och Demoner) steg för steg enligt kapitlet Rollpersonen.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&family=Oswald:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap">
+<script>
+  // Valt utseende sätts innan sidan ritas, så att det inte blinkar till
+  try { if (localStorage.getItem("chronopia-stil") === "klassisk") document.documentElement.dataset.stil = "klassisk"; } catch { /* frivilligt */ }
+</script>
 <style>
 :root {
   --bg: #e9e7e2; --yta: #f6f5f1; --yta-2: #dfdcd5; --linje: #c5c0b5; --text: #22231f; --dampad: #5d5d55;
@@ -257,6 +261,94 @@ option.grupprubrik { font-weight: 700; }
 .kostnadstabell th, .kostnadstabell td { padding: 4px 7px; }
 .steg-knapp:disabled { opacity: .45; cursor: not-allowed; }
 .steg-knapp:disabled:hover { background: none; }
+
+/* ---------------------------------------------------------------- utseendet "Klassisk"
+   Efter regelboken: ljusgrå marmorsidor, malvabruna rubrikband och en mörk stenram.
+   Ser likadant ut i ljust och mörkt läge. Bara färger, typsnitt, linjer och ytor ändras. */
+:root[data-stil="klassisk"] {
+  --bg: #ddd7d4; --yta: #ece8e5; --yta-2: #d0c7c3; --linje: #a08f89; --text: #241d1b; --dampad: #5b4c48;
+  --accent: #6d5751; --accent-text: #5a433d; --accent-svag: #dccfca; --fel: #8e2a1f; --fel-svag: #f0d8d2;
+  --ok: #2f5c37; --skugga: 0 4px 15px rgba(0, 0, 0, .4);
+  --rubrik: "Cinzel", "Trajan Pro", Georgia, serif;
+  --serif: "EB Garamond", "Sabon", Garamond, Georgia, serif;
+  --sans: "EB Garamond", "Sabon", Garamond, Georgia, serif;
+  --ui: "Oswald", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --sten: #2b2422; --sten-text: #e6dfdb; --sten-dampad: #b3a7a2; --band: #75605a; --band-text: #f3eeeb;
+  --korn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E"); --marmor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1100' height='1100'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .018' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .34 0 0 0 0 .33 0 0 0 -.55 .38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23m%29'/%3E%3C/svg%3E"); --ljuskorn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .2 0 0 0 0 .2 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  color-scheme: light;
+}
+[data-stil="klassisk"] body {
+  background: var(--korn), radial-gradient(ellipse at 30% 0%, #3b322e, var(--sten) 70%) fixed;
+  font-size: 17px;
+}
+[data-stil="klassisk"] .kort, [data-stil="klassisk"] .steg-knapp.aktiv {
+  background: var(--marmor), var(--ljuskorn), var(--yta); border: 1px solid #4a3a35; border-radius: 3px;
+  box-shadow: inset 0 0 0 4px var(--yta), inset 0 0 0 5px var(--linje), var(--skugga);
+}
+[data-stil="klassisk"] .steg-knapp.aktiv { box-shadow: var(--skugga); }
+/* Text som ligger direkt på den mörka stenen */
+[data-stil="klassisk"] .topp { border-bottom: 3px double #6b5a54; }
+[data-stil="klassisk"] .topp h1 { color: var(--sten-text); font: 700 1.7rem/1.1 var(--rubrik); letter-spacing: .04em; }
+[data-stil="klassisk"] #bp-topp { color: #d9c6bf; font: 500 .9rem var(--ui); letter-spacing: .08em; }
+[data-stil="klassisk"] .steg-knapp { color: var(--sten-text); border-radius: 3px; }
+[data-stil="klassisk"] .steg-knapp:hover { background: rgba(255, 255, 255, .07); }
+[data-stil="klassisk"] .steg-knapp.aktiv { color: var(--text); }
+[data-stil="klassisk"] .steg-nr { border-color: #8c7a74; color: var(--sten-dampad); font-family: var(--rubrik); }
+[data-stil="klassisk"] .aktiv .steg-nr { background: var(--band); border-color: var(--band); color: var(--band-text); }
+[data-stil="klassisk"] .steg-bp { color: var(--sten-dampad); font-family: var(--ui); letter-spacing: .04em; }
+[data-stil="klassisk"] .steg-knapp.aktiv .steg-bp { color: var(--dampad); }
+[data-stil="klassisk"] .husregler { color: var(--sten-dampad); }
+[data-stil="klassisk"] .husregler summary { color: var(--sten-text); }
+/* Typografi */
+[data-stil="klassisk"] h2 { font: 700 1.9rem/1.15 "Cinzel Decorative", var(--rubrik); color: var(--accent-text); }
+[data-stil="klassisk"] h3, [data-stil="klassisk"] .rutor h4 {
+  font: 600 1rem/1.3 var(--ui); text-transform: uppercase; letter-spacing: 2px; color: var(--accent-text);
+}
+[data-stil="klassisk"] .rasrubrik { font: 700 1.6rem/1.1 var(--rubrik); color: var(--accent-text); }
+[data-stil="klassisk"] .eyebrow, [data-stil="klassisk"] .etikett, [data-stil="klassisk"] .steg-potter dt,
+[data-stil="klassisk"] .egenskaper dt, [data-stil="klassisk"] .pott .etikett, [data-stil="klassisk"] .pris {
+  font-family: var(--ui); font-weight: 500; letter-spacing: 1.5px;
+}
+[data-stil="klassisk"] .knapp, [data-stil="klassisk"] .valknapp {
+  font-family: var(--ui); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; border-radius: 2px;
+}
+[data-stil="klassisk"] .knapp { border-color: #7d6a64; background: var(--yta); }
+[data-stil="klassisk"] .knapp.primar { background: var(--band); border-color: #4a3a35; color: var(--band-text); }
+[data-stil="klassisk"] .knapp.primar:hover { background: #5e4a44; }
+[data-stil="klassisk"] .summering, [data-stil="klassisk"] .raslore { font-family: var(--serif); }
+/* Rubrikband och dubbla linjer som i boken */
+[data-stil="klassisk"] .steg-huvud { border-top: 3px double var(--linje); border-bottom: 3px double var(--linje); padding-top: 12px; }
+[data-stil="klassisk"] .formular-huvud { border-bottom: 3px double var(--linje); }
+[data-stil="klassisk"] .tabellram { border: 1px solid #4a3a35; border-radius: 0; }
+[data-stil="klassisk"] .tabell thead th {
+  background: var(--band); color: var(--band-text); font: 500 .8rem var(--ui); letter-spacing: 1.5px; border-bottom: 1px solid #4a3a35;
+}
+[data-stil="klassisk"] .tabell thead .info { border-color: rgba(255, 255, 255, .5); color: var(--band-text); }
+[data-stil="klassisk"] .tabell tbody tr:nth-child(even) { background: rgba(109, 87, 81, .1); }
+[data-stil="klassisk"] .tabell .stor, [data-stil="klassisk"] .egenskaper dd, [data-stil="klassisk"] .pott-tal,
+[data-stil="klassisk"] .steg-potter dd { font-family: var(--rubrik); font-weight: 600; }
+/* Tunna, skarpa ramar runt rutor, formulär och värden */
+[data-stil="klassisk"] input[type="text"], [data-stil="klassisk"] input[type="number"], [data-stil="klassisk"] select,
+[data-stil="klassisk"] textarea { border-radius: 2px; border-color: #8c7a74; background: #f4f1ef; }
+[data-stil="klassisk"] .yrkeslista > li, [data-stil="klassisk"] .raskort, [data-stil="klassisk"] .pott,
+[data-stil="klassisk"] .egenskaper > div, [data-stil="klassisk"] .saknaslista, [data-stil="klassisk"] .steg-potter > div,
+[data-stil="klassisk"] .varning, [data-stil="klassisk"] .fast { border-radius: 2px; border-color: #8c7a74; }
+[data-stil="klassisk"] .raskort-namn { font: 600 1rem/1.2 var(--rubrik); }
+[data-stil="klassisk"] .raskort-rutnat.liten .raskort-namn { font-size: .8rem; }
+[data-stil="klassisk"] input.namnfalt { background: none; border-color: transparent; font: 700 1.6rem/1.15 var(--rubrik); }
+[data-stil="klassisk"] input.namnfalt:hover { border-color: var(--linje); }
+[data-stil="klassisk"] .yrkesformaga { border-radius: 0; }
+[data-stil="klassisk"] #notis, [data-stil="klassisk"] #tips { background: var(--sten); color: var(--sten-text); border: 1px solid #6b5a54; border-radius: 2px; }
+
+/* Växeln mellan utseendena */
+.stilval { display: inline-flex; border: 1px solid var(--linje); border-radius: var(--rad); overflow: hidden; }
+.stilval button { border: 0; background: var(--yta); color: var(--dampad); padding: 6px 12px; font-size: .85rem; font-weight: 600; cursor: pointer; }
+.stilval button + button { border-left: 1px solid var(--linje); }
+.stilval button[aria-pressed="true"] { background: var(--accent); color: var(--yta); }
+[data-stil="klassisk"] .stilval { border-color: #6b5a54; border-radius: 2px; }
+[data-stil="klassisk"] .stilval button { font: 500 .8rem var(--ui); text-transform: uppercase; letter-spacing: 1px; background: #3a312e; color: var(--sten-dampad); }
+[data-stil="klassisk"] .stilval button + button { border-left-color: #6b5a54; }
+[data-stil="klassisk"] .stilval button[aria-pressed="true"] { background: var(--band); color: var(--band-text); }
 </style>
 
 <header class="topp">
@@ -264,6 +356,10 @@ option.grupprubrik { font-weight: 700; }
     <h1>Chronopia rollpersonsskapare</h1>
   </div>
   <div class="topp-verktyg">
+    <div class="stilval" role="group" aria-label="Utseende">
+      <button type="button" data-stil="modern" aria-pressed="true">Modern</button>
+      <button type="button" data-stil="klassisk" aria-pressed="false">Klassisk</button>
+    </div>
     <span id="bp-topp" aria-live="polite"></span>
     <button type="button" class="knapp" id="ny">Ny rollperson</button>
     <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
