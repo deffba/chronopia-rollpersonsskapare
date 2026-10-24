@@ -90,12 +90,18 @@ test("dubblerad yrkesfärdighet är ett regelbrott (s. 27)", () => {
   assert.equal(felFor({ extraYrkesfardigheter: ["bluffa", "muta"] }).length > 0, true);
 });
 
-test("magiskola utan lyckat magiförmågeslag är ett regelbrott (s. 106)", () => {
+test("magiskola utan lyckat magiförmågeslag gör rollpersonen ofärdig (s. 106)", () => {
   const fardigheter = { ...brutus.fardigheter, animism: 1 };
-  assert.match(felFor({ fardigheter }).join(), /magiförmågeslag/);
+  const vantarFor = (andring) => raknaRollperson(allaRegler, { ...structuredClone(brutus), ...andring }).vantar;
+  assert.match(vantarFor({ fardigheter }).join(), /magiförmågeslag/);
   // INT 8 + PSY 8 ger chansen 8
-  assert.match(felFor({ fardigheter, magiformaga: { slag: 9 } }).join(), /misslyckades/);
-  assert.equal(felFor({ fardigheter, magiformaga: { slag: 8 } }).some((f) => f.includes("magi")), false);
+  assert.match(vantarFor({ fardigheter, magiformaga: { slag: 9 } }).join(), /misslyckades/);
+  assert.equal(vantarFor({ fardigheter, magiformaga: { slag: 8 } }).length, 0);
+});
+
+test("drakonitiska högst FV 5 och wongosiska bara yrke för wongoser (s. 64)", () => {
+  assert.match(felFor({ fardigheter: { ...brutus.fardigheter, "tala:drakonitiska": 6 } }).join(), /högst FV 5/);
+  assert.match(felFor({ extraYrkesfardigheter: ["tala:wongosiska"] }).join(), /wongoser/);
 });
 
 test("särskild förmåga kan bara gälla tillåtna färdigheter (s. 30)", () => {

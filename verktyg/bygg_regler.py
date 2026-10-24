@@ -618,7 +618,7 @@ skriv("vapen", {
     "grupper": [  # s. 72
         {"id": "dolkar", "namn": "Dolkar", "grundegenskap": "SMI"},
         {"id": "enhandssvard", "namn": "Enhandssvärd", "grundegenskap": "STY"},
-        {"id": "enhandskross", "namn": "Enhands krossvapen", "grundegenskap": "STY"},
+        {"id": "enhandskross", "namn": "Enhandskrossvapen", "grundegenskap": "STY"},
         {"id": "enhandsyxor", "namn": "Enhandsyxor", "grundegenskap": "STY"},
         {"id": "tvahandsvapen", "namn": "Tvåhandsvapen", "grundegenskap": "STY"},
         {"id": "stickvapen", "namn": "Stickvapen", "grundegenskap": "STY"},
