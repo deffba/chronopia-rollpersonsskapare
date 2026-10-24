@@ -1,7 +1,7 @@
 // Gränssnittet för Chronopia-rollpersonsskaparen. All regellogik finns i regelmotor.js.
 import {
   GRUNDEGENSKAPER, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor,
-  paborjad, standsvarde, vapengrupp,
+  paborjad, standsvarde, vapengrupp, passarBland,
 } from "./regelmotor.js";
 
 const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler"];
@@ -597,7 +597,11 @@ function valjFardighet(id, bland, varde, onchange) {
     return delvalKontroll(id, bland, varde?.split(":")[1], (v) => onchange(v ? `${bland}:${v}` : ""));
   }
   const magi = (f) => f.typ === "magiskola" || ["kanna-magi", "magisk-kanalisering", "magistudier"].includes(f.id);
-  return fardighetsVal(id, varde, onchange, (f) => !magi(f) && f.typ !== "sprak");
+  // Visa bara färdigheter som kan gälla: t.ex. inte en färdighet som redan är primär eller yrkesfärdighet när
+  // förmågan kräver en sekundär. Färdigheter som lärs per stad, språk osv. prövas med ett påhittat delval.
+  const indata = motorIndata();
+  const kan = (f) => passarBland(R, indata, f.perVal ? `${f.id}:\u0000prov` : f.id, bland);
+  return fardighetsVal(id, varde, onchange, (f) => !magi(f) && f.typ !== "sprak" && kan(f));
 }
 
 function stegFormagor() {
