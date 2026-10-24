@@ -237,6 +237,20 @@ for d in FARDIGHETER:
         d["id"] = "lapplasning"
     d["beskrivning"] = BESKRIVNINGAR[d["id"]]
 skriv("fardigheter", {
+    "hantverkBeskrivning": {  # egna korta beskrivningar; boken listar bara namnen (s. 59)
+        "Smide": "Att smida verktyg, vapen och rustningar av järn och stål.",
+        "Sömnad": "Att sy kläder, tält, segel och annat av tyg.",
+        "Snickeri": "Att bygga möbler, dörrar, kistor och hus av trä.",
+        "Stenhuggning": "Att hugga och foga sten till byggnader, statyer och gravstenar.",
+        "Garvning": "Att bereda djurhudar till läder och päls.",
+        "Guldsmide": "Att forma smycken och prydnader av guld, silver och andra ädla metaller.",
+        "Juvelsnideri": "Att slipa ädelstenar och fatta dem i smycken.",
+        "Hovslageri": "Att sko hästar och andra riddjur och sköta deras hovar.",
+        "Gjutning": "Att gjuta föremål av metall, till exempel klockor, kittlar och statyer.",
+        "Träsnideri": "Att snida i trä, till exempel pilar, bågar, skålar och utsmyckningar.",
+        "Tygfärgning": "Att färga tyg och garn med växtfärger och andra färgämnen.",
+        "Läderarbete": "Att tillverka skor, sadlar, bälten och läderrustningar.",
+    },
     "lista": FARDIGHETER,
     "kostnad": {"primar": 2, "yrke": 3, "sekundar": 5, "magiskolaSekundar": 20},  # EP per FV, s. 35
     "baschans": [[3, 0], [8, 1], [12, 2], [16, 3], [20, 4], [None, 5]],  # s. 34

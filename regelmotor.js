@@ -159,7 +159,11 @@ function kontrolleraVal(regler, rp, varden, fel) {
     if (id === "tva-vapen") {
       const vapen = val.split("+");
       if (vapen.length !== 2 || vapen.some((v) => !regler.vapen.narstrid.some((x) => x.namn === v))) fel.push(`Två vapen gäller två närstridsvapen (s. 71)`);
-      else if (vapen.some((v) => tvahandsvapen(regler, v, varden))) fel.push(`Två vapen kan inte kombineras med tvåhandsvapen (s. 71)`);
+      else {
+        const tvahands = vapen.find((v) => tvahandsvapen(regler, v, varden));
+        const krav = regler.vapen.narstrid.find((x) => x.namn === tvahands)?.styKrav;
+        if (tvahands) fel.push(`${tvahands} är ett tvåhandsvapen för en rollperson med STY ${varden.STY} (STY-krav ${krav}) och kan inte ingå i Två vapen (s. 71–72)`);
+      }
     }
   }
   if (rp.valfri && fardighetAv(regler, rp.valfri)?.typ === "primar") fel.push("Den valfria yrkesfärdigheten kan inte vara en primär färdighet (s. 18)");
