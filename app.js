@@ -1234,7 +1234,8 @@ function rollformular(res) {
         el("span", { class: "hjalp" }, `av ${res.ep.start}`))),
     saknas(res).length ? el("div", { class: "saknaslista", role: "status" }, el("strong", {}, "Kvar att välja"), el("ul", {}, saknas(res).map((f) => el("li", {}, f))))
       : el("p", { class: "klar" }, "Rollpersonen är klar."),
-    el("dl", { class: "egenskaper" }, [...GRUNDEGENSKAPER, "STO"].map((k) => el("div", {}, el("dt", {}, k, info(k)), el("dd", {}, g[k])))),
+    // Förkortning och värde centrerade; infoikonen längst ned i rutan
+    el("dl", { class: "egenskaper" }, [...GRUNDEGENSKAPER, "STO"].map((k) => el("div", {}, el("dt", {}, k), el("dd", {}, g[k]), el("dd", { class: "egenskap-info" }, info(k))))),
     el("dl", { class: "nyckelvarden" },
       el("div", {}, el("dt", {}, "Kroppspoäng", info("KP")), el("dd", {}, h.totalKP)),
       el("div", {}, el("dt", {}, "Skadebonus", info("SB")), el("dd", {}, h.skadebonus)),
