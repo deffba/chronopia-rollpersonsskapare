@@ -155,3 +155,22 @@ test("utrustning betalas med startkapitalet; startpaketets vapen är enkelt och 
   assert.match(rk({ startpaket: { valt: true, vapen: "Tvåhandssvärd" } }).fel.join(), /högst 100 sm/);
   assert.equal(rk({ startpaket: { valt: true, vapen: "Dolk" } }).fel.length, 0);
 });
+
+test("för låga slutvärden efter ålder är inget regelbrott, men måste lagas", () => {
+  const r = raknaRollperson(allaRegler, { ...structuredClone(brutus), ras: "halvalv", alder: 300, modersmal: { tala: [], lasaSkriva: [] },
+    grundvarden: { STY: 10, FYS: 10, SMI: 10, INT: 10, PSY: 10, KAR: 10 }, fardigheter: {}, rasval: [] });
+  assert.equal(r.grundegenskaper.FYS, 10 - 1 - 8);
+  assert.ok(!r.fel.some((f) => /minst 3/.test(f)));
+  assert.match(r.forLagaEgenskaper.join(), /FYS blir 1/);
+});
+
+test("bärförmåga: kläder räknas inte, rustning väger hälften (s. 100)", () => {
+  const rk = (andring) => raknaRollperson(allaRegler, { ...structuredClone(brutus), ...andring });
+  const kladd = rk({ utrustning: { Byxor: 1, Mantel: 1 } }).utrustning;
+  assert.equal(kladd.borda, 0);
+  assert.equal(kladd.belastning, null);
+  const tung = rk({ utrustning: { "Trätunna (100 liter)": 2, "Hauberk: Ringbrynja": 1 } }).utrustning;
+  assert.equal(tung.barformaga, 16);
+  assert.equal(tung.borda, 28 + 16);
+  assert.equal(tung.belastning.mod, -2);
+});
