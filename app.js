@@ -3,6 +3,8 @@ import {
   GRUNDEGENSKAPER, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor, tvahandsvapen,
   paborjad, standsvarde, vapengrupp, passarBland, skolFV, besvarjelsePris, kanAnvandaVapen, varukatalog,
 } from "./regelmotor.js";
+import { rollformularSidor, delaRegelsidor } from "./formular.js";
+import { tillFil, franFil, TOMT_SPEL } from "./sparformat.js";
 
 const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning"];
 const LAGRING = "chronopia-rollperson-v2";
@@ -82,7 +84,10 @@ const TOM = () => ({
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
   magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
+  spel: TOMT_SPEL(),
 });
+// En sparad rollperson kompletteras med fält som har tillkommit sedan den sparades
+const fyllUt = (data) => ({ ...TOM(), ...data, spel: { ...TOMT_SPEL(), ...(data.spel ?? {}) } });
 
 let R; // regeldata
 let rp; // rollpersonen (spelarens val)
@@ -95,6 +100,9 @@ let magiByte = null; // platsen där en magiskola byts ut efter ett misslyckat m
 let autoAnvand = { egenskaper: false, fardigheter: false }; // Återställ visas bara efter en automatisk fördelning
 let ritatSteg = null; // steget som visades senast; byts det skrollas sidan upp
 let sparadVidStart = null; // rollpersonen från förra besöket; sidan börjar ändå alltid med en ny
+let vy = "steg"; // "steg" eller "formular" (rollformuläret för utskrift)
+let blacksnal = false; // rollformuläret utan färgade ytor
+let medRegler = false; // rollformuläret med sidorna Färdigheterna i korthet
 // Innan en ras är vald räknar motorn som för en människa, men ingen ras visas som vald
 const rasId = () => rp.ras || "manniska";
 
@@ -1418,13 +1426,17 @@ function filnamn() {
   return `${(rp.namn || "rollperson").trim().replace(/[^\p{L}\p{N}]+/gu, "-").toLowerCase()}.json`;
 }
 
+const filtext = () => JSON.stringify(tillFil(rp), null, 2);
+
 function stegExport(res) {
-  const text = JSON.stringify(rp, null, 2);
+  const text = filtext();
   return [
     el("p", { class: "summering" }, `${rp.namn} är klar: ${res.ras.namn.toLowerCase()}, ${res.yrke.namn.toLowerCase()}, ${rp.alder} år.`),
     el("p", {}, "Spara rollpersonen som en JSON-fil. Filen kan läsas in igen med knappen Läs in fil högst upp, till exempel för att fortsätta på en annan dator."),
+    el("p", {}, "Rollformuläret ser ut som bokens (s. 11–12) och kan skrivas ut eller sparas som PDF. Det du skriver i det under spel, som erf och pengar, sparas i samma fil."),
     el("div", { class: "rad" },
-      el("button", { type: "button", class: "knapp primar", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
+      el("button", { type: "button", class: "knapp primar", onclick: visaFormular }, "Visa rollformuläret"),
+      el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
       el("button", { type: "button", class: "knapp", onclick: () => kopiera(text) }, "Kopiera JSON")),
     el("details", { class: "fakta" }, el("summary", {}, "Visa JSON"),
       el("textarea", { id: "exportruta", rows: 12, readonly: true, "aria-label": "Rollpersonen som JSON" }, text)),
@@ -1432,7 +1444,7 @@ function stegExport(res) {
 }
 
 function laddaNer() {
-  const url = URL.createObjectURL(new Blob([JSON.stringify(rp, null, 2)], { type: "application/json" }));
+  const url = URL.createObjectURL(new Blob([filtext()], { type: "application/json" }));
   const a = el("a", { href: url, download: filnamn() });
   document.body.append(a);
   a.click();
@@ -1450,10 +1462,9 @@ function kopiera(text) {
 // ------------------------------------------------------------ export och import
 function importera(text) {
   try {
-    const data = JSON.parse(text);
-    if (!data.ras || !data.grundvarden) throw new Error("saknar ras eller grundegenskaper");
+    const data = franFil(JSON.parse(text));
     const fore = rp;
-    rp = { ...TOM(), ...data };
+    rp = fyllUt(data);
     const fel = rakna().fel;
     if (fel.length) {
       rp = fore;
@@ -1478,6 +1489,10 @@ function visaNotis(text) {
 // ------------------------------------------------------------ ritning
 function rita() {
   const res = raknaRollperson(R, motorIndata());
+  $(".layout").style.display = vy === "formular" ? "none" : "";
+  $("#rf-vy").hidden = vy !== "formular";
+  $("#visa-formular").setAttribute("aria-pressed", String(vy === "formular"));
+  if (vy === "formular") { ritaFormularVy(res); return; }
   const STEG = synligaSteg(res); // stegen som visas just nu
   const grans = forstaOfardiga(res);
   if (!STEG.some((s) => s.id === aktivtSteg)) aktivtSteg = "fardigheter"; // ett dolt steg lämnas
@@ -1527,6 +1542,44 @@ function rita() {
   nyssSlaget = null;
 }
 
+// ------------------------------------------------------------ rollformuläret för utskrift (formular.js)
+function visaFormular() {
+  vy = "formular";
+  rita();
+  window.scrollTo(0, 0);
+}
+
+// Det som skrivs i rollformuläret påverkar inga regler, så det sparas utan att sidan ritas om
+// (då skulle fältet man klickar på härnäst försvinna under muspekaren).
+function sparaFormular() {
+  giltig = structuredClone(rp);
+  spara();
+}
+
+function ritaFormularVy(res) {
+  const vyEl = $("#rf-vy");
+  vyEl.classList.toggle("rf-blacksnal", blacksnal);
+  const kvar = saknas(res);
+  vyEl.replaceChildren(
+    el("div", { class: "rf-verktyg" },
+      el("button", { type: "button", class: "knapp", onclick: () => { vy = "steg"; rita(); } }, "← Tillbaka till stegen"),
+      el("button", { type: "button", class: "knapp primar", onclick: () => window.print() }, "Skriv ut eller spara som PDF"),
+      el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
+      el("label", {}, el("input", { type: "checkbox", id: "blacksnal", checked: blacksnal,
+        onchange: (e) => { blacksnal = e.target.checked; vyEl.classList.toggle("rf-blacksnal", blacksnal); } }), "Spara bläck"),
+      el("label", {}, el("input", { type: "checkbox", id: "med-regler", checked: medRegler,
+        onchange: (e) => { medRegler = e.target.checked; rita(); } }), "Ta med färdigheterna i korthet"),
+      el("p", { class: "hjalp" }, "Skriv direkt i de gula fälten. Det sparas i rollpersonen och följer med när du laddar ner filen. ",
+        "Grundegenskaper, FV och KP ändras i stegen. Välj A4 och skala 100 % när du skriver ut.")),
+    ...(kvar.length ? [el("div", { class: "saknaslista rf-ofardig" }, el("strong", {}, "Rollpersonen är inte klar än"), el("ul", {}, kvar.map((t) => el("li", {}, t))))] : []),
+    el("div", { class: "rf-sidor" }, rollformularSidor({ R, rp, res, el, sakNamn, andrat: sparaFormular, medRegler })));
+  if (medRegler) {
+    delaRegelsidor(vyEl, el);
+    // Texternas höjd beror på typsnitten, så sidorna delas om när de har laddats
+    document.fonts?.ready.then(() => { if (vy === "formular" && medRegler) delaRegelsidor(vyEl, el); });
+  }
+}
+
 // Vid stegbyte glider sidan snabbt upp till toppen i stället för att hoppa dit
 function skrollaUpp() {
   const fran = window.scrollY;
@@ -1560,7 +1613,7 @@ async function start() {
   try {
     const sparad = JSON.parse(localStorage.getItem(LAGRING) ?? "null");
     if (sparad?.rp?.ras) {
-      rp = { ...TOM(), ...sparad.rp };
+      rp = fyllUt(sparad.rp);
       if (!rakna().fel.length) sparadVidStart = { rp, aktivtSteg: sparad.aktivtSteg ?? "ras", langst: sparad.langst ?? 0 };
     }
   } catch { /* ingen sparad rollperson */ }
@@ -1589,7 +1642,11 @@ async function start() {
       return;
     }
     avbryt();
-    rp = TOM(); aktivtSteg = "ras"; langst = 0; nySekundar = ""; magiByte = null; autoAnvand = { egenskaper: false, fardigheter: false }; utrustningsFilter = ""; uppdatera();
+    rp = TOM(); aktivtSteg = "ras"; langst = 0; vy = "steg"; nySekundar = ""; magiByte = null; autoAnvand = { egenskaper: false, fardigheter: false }; utrustningsFilter = ""; uppdatera();
+  });
+  $("#visa-formular").addEventListener("click", () => {
+    $("#menypanel").hidden = true; $("#menyknapp").setAttribute("aria-expanded", "false");
+    if (vy === "formular") { vy = "steg"; rita(); } else visaFormular();
   });
   $("#importfil").addEventListener("change", async (e) => { const fil = e.target.files[0]; if (fil) importera(await fil.text()); e.target.value = ""; });
   document.addEventListener("paste", (e) => {
