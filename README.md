@@ -4,7 +4,7 @@ En rollpersonsskapare för Chronopia (Drakar och Demoner). Den följer kapitlet 
 
 ## Rollformulär och sparade filer
 
-Knappen Rollformulär visar rollpersonen på ett formulär i samma layout som bokens (s. 11–12), plus en tredje sida med förmågornas hela texter och anteckningar, och om man vill sidor med rollpersonens färdigheter i korthet. Det skrivs ut på A4 med webbläsarens Skriv ut, eller sparas som PDF därifrån. Under spel kan man skriva direkt i formuläret: erf (osparade erfarenhetspoäng per färdighet), hjältepoäng, pengar, egen utrustning och anteckningar. Det sparas i rollpersonen.
+Knappen Rollformulär visar rollpersonen på ett formulär i samma layout som bokens (s. 11–12). En tredje sida läggs till bara om något inte får plats, och om man vill även sidor med rollpersonens färdigheter i korthet. Det skrivs ut på A4 med webbläsarens Skriv ut, eller sparas som PDF därifrån. Under spel kan man skriva direkt i formuläret: erf (osparade erfarenhetspoäng per färdighet), hjältepoäng, pengar, egen utrustning samt utseende och bakgrund. Det sparas i rollpersonen.
 
 Rollpersonen sparas som en JSON-fil med formatnamn och versionsnummer (`sparformat.js`), så att den kan läsas in igen här eller i en kommande uppdaterare. Filer från före versionsnumret läses också in.
 
