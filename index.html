@@ -208,6 +208,28 @@ details.fakta > *:not(summary) { margin-top: 10px; }
 .fardighetsrader li.sekundar span:first-child { font-style: italic; }
 .formular .num { text-align: right; }
 
+.stridskonst { display: grid; gap: 8px; margin-top: 8px; }
+.teknikrutnat { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 4px 16px; }
+.teknik { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
+.teknik .teknikpris { margin-left: auto; color: var(--dampad); font-variant-numeric: tabular-nums; }
+/* Tärningsslag: snurr medan slaget rullas, sedan en studs och en kort markering av resultatet */
+.tarningsknapp { display: inline-flex; align-items: center; gap: 8px; }
+.tarning { width: 1.25em; height: 1.25em; flex: none; }
+.tarningsknapp.rullar { opacity: 1; cursor: progress; }
+.tarningsknapp.rullar .tarning { animation: rulla 2.5s cubic-bezier(.15, .7, .3, 1) both; }
+@keyframes rulla {
+  0% { transform: rotate(0) scale(1); }
+  10% { transform: rotate(160deg) scale(1.15) translateY(-2px); }
+  70% { transform: rotate(1260deg) scale(1.05); }
+  100% { transform: rotate(1440deg) scale(1); }
+}
+.slagrad { display: flex; align-items: center; gap: 6px; }
+.slagrad .tarning { color: var(--accent-text); }
+.slagrad.nytt .tarning { animation: bop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+.summering.nytt, .slagrad.nytt { animation: markera 1.8s ease-out both; border-radius: var(--rad); }
+@keyframes bop { 0% { transform: scale(.4) rotate(-30deg); } 60% { transform: scale(1.35) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
+@keyframes markera { 0% { background: var(--accent-svag); box-shadow: 0 0 0 6px var(--accent-svag); } 100% { background: transparent; box-shadow: 0 0 0 6px transparent; } }
+@media (prefers-reduced-motion: reduce) { .tarningsknapp.rullar .tarning, .slagrad.nytt .tarning { animation: none; } }
 /* Dialog mitt på skärmen; sidan bakom mörkas och kan inte rullas */
 body.dialog-oppen { overflow: hidden; }
 .dialog-bakgrund { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgb(0 0 0 / .55); }

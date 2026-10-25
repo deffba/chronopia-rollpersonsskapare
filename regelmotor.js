@@ -273,12 +273,21 @@ function sankaBNiva(regler, fv, steg) {
 }
 
 // EP-kostnad för att gå från start till mål (s. 35–36).
-export function epKostnad(regler, st, fardighet, start, mal) {
-  if (mal <= start) return 0;
+// EP per FV-steg (s. 34–35). Stridskonster kostar summan av de valda teknikernas grundkostnad,
+// avrundad uppåt, och 2 till om stilen inte är yrkesfärdighet (s. 68).
+export function epPerFV(regler, st, fardighet, tekniker = []) {
   const k = regler.fardigheter.kostnad;
-  let per = st === "primar" ? k.primar : st === "yrke" ? k.yrke : k.sekundar;
-  if (fardighet.typ === "magiskola" && st === "sekundar") per = k.magiskolaSekundar;
-  return (mal - start) * per;
+  if (fardighet.id === "stridskonster") {
+    const summa = tekniker.reduce((a, t) => a + (regler.fardigheter.stridskonstTekniker.find(([n]) => n === t)?.[1] ?? 0), 0);
+    return Math.ceil(summa) + (st === "yrke" ? 0 : 2);
+  }
+  if (fardighet.typ === "magiskola" && st === "sekundar") return k.magiskolaSekundar;
+  return st === "primar" ? k.primar : st === "yrke" ? k.yrke : k.sekundar;
+}
+
+export function epKostnad(regler, st, fardighet, start, mal, tekniker) {
+  if (mal <= start) return 0;
+  return (mal - start) * epPerFV(regler, st, fardighet, tekniker);
 }
 
 // Räknar fram hela rollpersonen och alla regelbrott.
@@ -324,10 +333,17 @@ export function raknaRollperson(regler, indata) {
     const egenskap = grundegenskapFor(regler, nyckel, ge.varden);
     const tak = Math.max(start, takFor(regler, rp, nyckel, f, ge.varden, fvHittills));
     if (mal > tak) fel.push(`${namnFor(regler, f, nyckel)}: högst FV ${tak} vid start (s. 35)`);
-    const ep = epKostnad(regler, st, f, start, mal);
+    const tekniker = f.id === "stridskonster" ? (rp.stridskonstTekniker?.[nyckel] ?? []) : undefined;
+    if (tekniker) {
+      const okanda = tekniker.filter((t) => !regler.fardigheter.stridskonstTekniker.some(([n]) => n === t));
+      if (okanda.length) fel.push(`Okänd stridskonstteknik: ${okanda.join(", ")}`);
+      if (mal > start && !tekniker.length) fel.push(`${namnFor(regler, f, nyckel)}: välj stilens tekniker innan FV höjs (s. 68)`);
+    }
+    const ep = epKostnad(regler, st, f, start, mal, tekniker);
     epSpenderat += ep;
     fvHittills[nyckel] = Math.max(mal, start);
-    fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, start, fv: Math.max(mal, start), ep, kategoriB: f.kategoriB });
+    fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, start, fv: Math.max(mal, start), ep,
+      epPerFV: epPerFV(regler, st, f, tekniker), kategoriB: f.kategoriB, ...(tekniker ? { tekniker } : {}) });
   }
   if (epSpenderat > epStart) fel.push(`${epSpenderat - epStart} EP för mycket har spenderats (s. 34)`);
 

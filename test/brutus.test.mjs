@@ -104,6 +104,17 @@ test("drakonitiska högst FV 5 och wongosiska bara yrke för wongoser (s. 64)", 
   assert.match(felFor({ extraYrkesfardigheter: ["tala:wongosiska"] }).join(), /wongoser/);
 });
 
+test("stridskonster kostar teknikernas grundkostnad, +2 som sekundär (s. 68)", () => {
+  const hogland = ["Normalt slag", "Normal spark", "Uppresning", "Krosslag"]; // 2,5 → 3
+  const rk = (andring) => raknaRollperson(allaRegler, { ...structuredClone(brutus), ...andring });
+  const fardigheter = { ...brutus.fardigheter, "stridskonster:Högländarkross": 2 };
+  const sek = rk({ sekundara: ["stridskonster:Högländarkross"], fardigheter, stridskonstTekniker: { "stridskonster:Högländarkross": hogland } });
+  assert.equal(sek.fardigheter.find((f) => f.nyckel === "stridskonster:Högländarkross").epPerFV, 5);
+  const yrk = rk({ extraYrkesfardigheter: ["bluffa", "stjala-foremal", "stridskonster:Högländarkross"], fardigheter, stridskonstTekniker: { "stridskonster:Högländarkross": hogland } });
+  assert.equal(yrk.fardigheter.find((f) => f.nyckel === "stridskonster:Högländarkross").epPerFV, 3);
+  assert.match(rk({ fardigheter }).fel.join(), /välj stilens tekniker/);
+});
+
 test("särskild förmåga kan bara gälla tillåtna färdigheter (s. 30)", () => {
   // Hobbyist gäller sekundära färdigheter, inte primära
   assert.match(felFor({ sarskildaFormagor: { bp: 1, slag: 23, val: [["rida"]] } }).join(), /Hobbyist/);
