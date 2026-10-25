@@ -480,13 +480,17 @@ function raknaUtrustning(regler, rp, varden, startkapital, fel) {
     }
   }
   if (kostnad > startkapital) fel.push(`Inköpen kostar ${kostnad} sm men startkapitalet är ${startkapital} sm (s. 38)`);
-  // Bärförmåga (s. 100): STY kg utan nackdelar. Kläder räknas inte, en buren rustning väger hälften.
+  return { kostnad, kvar: startkapital - kostnad, ...bordaFor(regler, saker, varden), saker };
+}
+
+// Bärförmåga (s. 100): STY kg utan nackdelar. Kläder räknas inte, en buren rustning väger hälften.
+export function bordaFor(regler, saker, varden) {
   const vikt = saker.reduce((a, x) => a + x.vikt, 0);
   const borda = saker.reduce((a, x) => a + (x.kategori === "Kläder" ? 0 : x.kategori === "Rustning" ? x.vikt / 2 : x.vikt), 0);
   const barformaga = varden.STY;
   const belastning = borda <= barformaga ? null
-    : U.barformaga.find((r) => borda <= barformaga * r.gange) ?? { gange: null, mod: null, text: "Rollpersonen orkar inte bära så mycket." };
-  return { kostnad, kvar: startkapital - kostnad, vikt: Math.round(vikt * 10) / 10, borda: Math.round(borda * 10) / 10, barformaga, belastning, saker };
+    : regler.utrustning.barformaga.find((r) => borda <= barformaga * r.gange) ?? { gange: null, mod: null, text: "Rollpersonen orkar inte bära så mycket." };
+  return { vikt: Math.round(vikt * 10) / 10, borda: Math.round(borda * 10) / 10, barformaga, belastning };
 }
 
 function takFor(regler, rp, nyckel, f, varden, fvHittills) {
