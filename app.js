@@ -247,7 +247,7 @@ function tal(id, varde, onchange, { min, max, steg = 1, bred } = {}) {
 function falt(etikett, kontroll, hjalp) {
   // En grupp valknappar får inte ligga i en label: ett klick på etiketten skulle välja första knappen
   // Detsamma gäller tärningsrutan: ett klick på etiketten skulle slå
-  return el(kontroll?.classList?.contains("valknappar") || kontroll?.tagName === "BUTTON" ? "div" : "label", { class: "falt" }, el("span", { class: "etikett" }, etikett), kontroll, hjalp ? el("span", { class: "hjalp" }, hjalp) : null);
+  return el(kontroll?.classList?.contains("valknappar") || kontroll?.classList?.contains("tarningsknapp") ? "div" : "label", { class: "falt" }, el("span", { class: "etikett" }, etikett), kontroll, hjalp ? el("span", { class: "hjalp" }, hjalp) : null);
 }
 
 function valLista(id, varde, alternativ, onchange, tomText = "Välj …") {
@@ -668,11 +668,17 @@ function slagKontroll(id, etikett, text, min, max, satt, slumpa) {
   return { slagfalt: falt(etikett, b.falt), knapp: b.knapp };
 }
 const inteSlaget = () => (manuellaSlag ? "Skriv in slaget och bekräfta det." : "Slå tärningen.");
-// Låst fält som visar ett gjort val (lagda BP, slaget); slaget tonar in när det nyss har landat
-const lastFalt = (id, varde, nytt = false) => el("input", { type: "text", id, class: "tal last" + (nytt ? " nytt" : ""), value: varde, readonly: true, "aria-readonly": "true" });
+// Låst fält som visar ett gjort val (lagda BP, bonus). Tal visas i ett sifferfält precis som innan det låstes,
+// så att siffran inte flyttar sig.
+const lastFalt = (id, varde) => el("input", { type: typeof varde === "number" ? "number" : "text", id, class: "tal last", value: varde, readonly: true, "aria-readonly": "true", tabindex: -1 });
+// Tärningsrutan när slaget har landat: tärningen ligger kvar på samma plats och slaget står bredvid den
+const landatSlag = (id, varde) => el("div", { class: "knapp tarningsknapp i-falt landad" + (nyssSlaget === id ? " nytt" : ""), id: `${id}-slag`, "data-varde": varde },
+  tarningsIkon(), el("span", { class: "slagvarde" }, varde));
 // Resultatet under slaget; det lyser upp när tärningen nyss har landat
 const resultat = (id, text) => el("div", { class: "resultat" },
   el("span", { class: "etikett" }, "Resultat"), el("p", { class: "summering" + (nyssSlaget === id ? " nytt" : "") }, text));
+
+const bpFaltet = (etikett, kontroll) => { const f = falt(etikett, kontroll); f.classList.add("bp-falt"); return f; };
 
 // bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget; de visas som punkter och summeras i ett eget fält
 function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, bonusar = []) {
@@ -688,18 +694,18 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
       el("p", {}, hjalp),
       bonuslista,
       el("div", { class: "rad" },
-        falt("BP lagda", lastFalt(`${id}-bp`, s.bp)),
-        falt(`Slag (${tarning})`, lastFalt(`${id}-slag`, s.slag, nyssSlaget === id)),
+        bpFaltet("BP lagda", lastFalt(`${id}-bp`, s.bp)),
+        falt(`Slag (${tarning})`, landatSlag(id, s.slag)),
         bonusfalt),
       resultat(id, tolkning),
     ];
   }
   const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => satt("slag", v), () => slaT(n, sidor));
-  const bpFalt = rullar === id ? lastFalt(`${id}-bp`, s.bp) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
+  const bpFalt = rullar === id ? lastFalt(`${id}-bp`, s.bp ?? 0) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
   return [
     el("p", {}, hjalp),
     bonuslista,
-    el("div", { class: "rad" }, falt("BP att lägga", bpFalt), slagfalt, bonusfalt, knapp),
+    el("div", { class: "rad" }, bpFaltet("BP att lägga", bpFalt), slagfalt, bonusfalt, knapp),
     el("p", { class: "summering" }, tolkning),
   ];
 }
@@ -851,7 +857,7 @@ function magiformagaKontroll(res) {
     el("p", {}, `Slå 1T100. Slaget${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)}` : ""} måste bli högst ${m.chans}, det vill säga (INT+PSY)/2 avrundat uppåt (s. 106). Det görs en gång.`),
     m.slag === null ? magiRad(m, satt)
       : el("div", { class: "rad" },
-        falt("Slag (1T100)", lastFalt("magiformaga-slag", m.slag, nyssSlaget === "magiformaga")),
+        falt("Slag (1T100)", landatSlag("magiformaga", m.slag)),
         m.mod ? falt("Modifikation", lastFalt("magiformaga-mod", fmtMod(m.mod))) : null),
     m.slag !== null ? resultat("magiformaga", `${m.slag}${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)} = ${m.slag + m.mod}` : ""} ${m.lyckat ? "≤" : ">"} ${m.chans}: ${m.lyckat ? "Lyckat. Rollpersonen kan lära sig magi." : "Misslyckat. Rollpersonen kan inte lära sig magi."}`) : null));
 }
