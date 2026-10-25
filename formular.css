@@ -8,6 +8,9 @@
 .rf-verktyg { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; padding: 16px; }
 .rf-verktyg .hjalp { flex-basis: 100%; text-align: center; margin: 0; }
 .rf-verktyg label { display: inline-flex; gap: 6px; align-items: center; }
+/* Klassisk har mörk stenbakgrund runt formuläret */
+[data-stil="klassisk"] .rf-verktyg label { color: var(--sten-text); }
+[data-stil="klassisk"] .rf-verktyg .hjalp { color: var(--sten-dampad); }
 .rf-ofardig { max-width: 210mm; margin: 0 auto 12px; }
 .rf-sidor { display: grid; justify-content: center; gap: 24px; padding: 0 16px 40px; overflow-x: auto; }
 
@@ -183,8 +186,8 @@
 .rf-regel-namn strong { font: 600 8.4pt "Oswald", sans-serif; color: var(--rf-band); letter-spacing: .02em; }
 .rf-regel-namn span { font: 400 7pt "Source Sans 3", sans-serif; color: var(--rf-etikett); white-space: nowrap; }
 .rf-regel-egen { font: 600 7.4pt "Source Sans 3", sans-serif; color: var(--rf-text); margin-top: .4mm !important; }
-.rf-regel-rubrik { margin: 1mm 0 2mm; padding: 1mm 1.6mm; background: var(--rf-band); color: var(--rf-band-text); font: 600 9pt "Oswald", sans-serif; }
-.rf-blacksnal .rf-regel-rubrik { background: #fff; color: var(--rf-band); border: .3mm solid var(--rf-linje); }
+.rf-vy h3.rf-regel-rubrik { text-transform: none; letter-spacing: normal; margin: 1mm 0 2mm; padding: 1mm 1.6mm; background: var(--rf-band); color: var(--rf-band-text); font: 600 9pt "Oswald", sans-serif; }
+.rf-vy.rf-blacksnal h3.rf-regel-rubrik { background: #fff; color: var(--rf-band); border: .3mm solid var(--rf-linje); }
 .rf-blacksnal .rf-nr.ljus { color: var(--rf-nr); }
 
 @media print {
