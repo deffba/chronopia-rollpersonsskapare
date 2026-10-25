@@ -4,7 +4,7 @@
 import { GRUNDEGENSKAPER, slaUpp, fardighetAv } from "./regelmotor.js";
 
 // Rader per lista. Får inte allt plats fortsätter listan på sida 3.
-const RADER = { formagor: 5, primar: 25, yrke: 12, sprak: 10, sekundar: 30, vapen: 7, besvarjelser: 23, utrustning: 9 };
+const RADER = { formagor: 5, primar: 25, yrke: 12, sprak: 12, sekundar: 32, vapen: 7, besvarjelser: 23, utrustning: 9 };
 const NAMN = { STY: "Styrka", FYS: "Fysik", SMI: "Smidighet", INT: "Intelligens", PSY: "Psyke", KAR: "Karisma", STO: "Storlek" };
 const STATUSNAMN = { primar: "Primär", yrke: "Yrke", sekundar: "Sekundär" };
 
@@ -51,7 +51,8 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
 
   // ------------------------------------------------------------ indelning
   const idFor = (f) => fardighetAv(R, f.nyckel)?.id;
-  const synliga = res.fardigheter.filter((f) => f.fv > 0 || f.status === "yrke");
+  // Alla färdigheter rollpersonen har, även de med FV 0 (t.ex. en nyss vald sekundär färdighet)
+  const synliga = res.fardigheter;
   const arVapen = (f) => idFor(f) === "vapen";
   const arSprak = (f) => ["tala", "lasa-skriva"].includes(idFor(f));
   const grupp = (status) => synliga.filter((f) => f.status === status && !arVapen(f) && !arSprak(f));
@@ -93,7 +94,6 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
               el("span", { class: "rf-cell rf-tal stor" }, g[k])))),
           lista("rf-fardigheter", rubrik("Primära färdigheter", ["erf", "FV"], 15), listor.primar.map(fardighetsrad), RADER.primar)),
         el("div", { class: "rf-hoger" },
-          falt("Utseende", null, el("span", { class: "rf-varde liten" }, [[h.langd, h.vikt].filter(Boolean).join(", "), rp.anteckningar].filter(Boolean).join(". ")), "rf-utseende"),
           el("div", { class: "rf-hoger-kolumner" },
             el("div", { class: "rf-mitt" },
               el("div", { class: "rf-lista rf-formagor" }, rubrik("Särskilda förmågor", [], 14),
@@ -216,7 +216,8 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
         el("span", { class: "rf-cell" }, arSprak(f) ? "Språk" : STATUSNAMN[f.status]),
         el("span", { class: "rf-cell rf-erf" + (f.kategoriB ? " b" : "") }, arSprak(f) ? null : erfFalt(f.nyckel, f.namn)),
         el("span", { class: "rf-cell rf-tal" }, f.fv)))) : null,
-      textblock("Utseende och bakgrund", el("textarea", { class: "rf-in rf-textyta", rows: 6, "aria-label": "Utseende och bakgrund",
+      textblock("Utseende och bakgrund", [h.langd, h.vikt].some(Boolean) ? el("p", {}, el("strong", {}, "Längd och vikt: "), [h.langd, h.vikt].filter(Boolean).join(", ")) : null,
+        el("textarea", { class: "rf-in rf-textyta", rows: 6, "aria-label": "Utseende och bakgrund",
         onchange: (e) => { rp.anteckningar = e.target.value; andrat(); } }, rp.anteckningar)),
       el("div", { class: "rf-block rf-anteckningar" }, rubrik("Anteckningar"), el("textarea", { class: "rf-in rf-textyta linjerad", "aria-label": "Anteckningar",
         onchange: (e) => { spel.anteckningar = e.target.value; andrat(); } }, spel.anteckningar)),
