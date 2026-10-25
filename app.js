@@ -1090,7 +1090,7 @@ function stegUtrustning(res) {
           el("span", {}, antal(x.namn)),
           el("button", { type: "button", class: "knapp liten", disabled: x.pris > u.kvar, "aria-label": `En ${x.namn} till`, onclick: () => andra(x.namn, 1) }, "+"))))))),
     u.saker.length ? [el("h3", {}, "Packning"), el("ul", { class: "packning" }, u.saker.map((x) =>
-      el("li", {}, el("span", {}, x.antal > 1 ? `${x.namn} (x${x.antal})` : x.namn), el("span", { class: "num hjalp" }, x.gratis ? "gratis" : sm(x.pris * x.antal)))))] : null,
+      el("li", {}, el("span", {}, sakNamn(x)), el("span", { class: "num hjalp" }, x.gratis ? "gratis" : sm(x.pris * x.antal)))))] : null,
   ];
 }
 
@@ -1135,9 +1135,16 @@ function rollformular(res) {
     res.besvarjelser.length ? [el("h3", {}, "Besvärjelser"), el("ul", { class: "fardighetsrader" }, kolumnrubrik("Besvärjelse", "FV"), res.besvarjelser.map((b) =>
       el("li", {}, el("span", {}, b.namn), el("span", { class: "num" }, b.fv))))] : null,
     res.utrustning.saker.length ? [el("h3", {}, "Utrustning"), el("ul", { class: "fardighetsrader" }, kolumnrubrik("Sak", "Vikt"), res.utrustning.saker.map((x) =>
-      el("li", {}, el("span", {}, x.antal > 1 ? `${x.namn} (x${x.antal})` : x.namn), el("span", { class: "num" }, x.vikt ? `${kg(x.vikt)} kg` : "–")))),
+      el("li", {}, el("span", {}, sakNamn(x)), el("span", { class: "num" }, x.vikt ? `${kg(x.vikt)} kg` : "–")))),
     el("p", {}, `Pengar kvar: ${sm(res.utrustning.kvar)}. Bördan är ${kg(res.utrustning.borda)} av ${res.utrustning.barformaga} kg (kläder räknas inte, buren rustning till hälften).`)] : null,
   );
+}
+
+// Saker som säljs i förpackningar, som "Pilar (10 st)", visas med det totala antalet: två förpackningar blir "Pilar (x20)"
+function sakNamn(x) {
+  const m = x.namn.match(/^(.*) \((?:(.*), )?(\d[\d ]*) st\)$/);
+  if (m) return `${m[1]} (${m[2] ? `${m[2]}, ` : ""}x${Number(m[3].replace(/ /g, "")) * x.antal})`;
+  return x.antal > 1 ? medNiva(x.namn, `x${x.antal}`) : x.namn; // "Trätunna (100 liter, x2)"
 }
 
 // B-nivån skrivs i parentes efter namnet, eller i namnets egen parentes: "Kulturkännedom (Dvärgar, B3)"
