@@ -209,6 +209,17 @@ details.fakta > *:not(summary) { margin-top: 10px; }
 .formular .num { text-align: right; }
 
 .stridskonst { display: grid; gap: 8px; margin-top: 8px; }
+/* Besvärjelser och utrustning */
+.tabell tr.vald td { background: var(--accent-svag); }
+.besvarjelsetabell td:first-child, .varutabell td:first-child { min-width: 12em; }
+.kryss { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.kryss input { margin-top: .3em; }
+.flikar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.varutabell .antal { white-space: nowrap; }
+.varutabell .antal > span { display: inline-block; min-width: 2ch; text-align: center; margin-inline: 6px; font-variant-numeric: tabular-nums; }
+.utrustning-summa { justify-content: flex-start; margin: 8px 0 12px; }
+.packning { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; max-width: 34em; }
+.packning li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dotted var(--linje); padding: 2px 0; }
 .teknikrutnat { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 4px 16px; }
 .teknik { display: flex; align-items: center; gap: 6px; padding: 3px 0; }
 .teknik label { display: flex; align-items: center; gap: 8px; cursor: pointer; }

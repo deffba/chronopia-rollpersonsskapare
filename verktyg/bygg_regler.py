@@ -7,6 +7,8 @@ import json
 import os
 import sys
 from beskrivningar import BESKRIVNINGAR
+import besvarjelser
+import utrustning
 
 UT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "regler")
 os.makedirs(UT, exist_ok=True)
@@ -668,6 +670,10 @@ skriv("vapen", {
     "sida": [72, 89, 90, 91, 94],
 })
 
+# ---------------------------------------------------------------- besvärjelser och utrustning
+skriv("besvarjelser", besvarjelser.bygg())
+skriv("utrustning", utrustning.bygg())
+
 # ---------------------------------------------------------------- husregler (dokumenterade tolkningar)
 skriv("husregler", [
     {"id": "primara-fran-s40", "sida": [40, 57, 62], "beslut": "Primära färdigheter enligt s. 40, plus Bärsärkagång för troll och Känna magi för magiker."},
@@ -681,6 +687,7 @@ skriv("husregler", [
     {"id": "aldersgranser", "sida": [16, 17, 34], "beslut": "Nedre kategorin slutar året före nästa börjar; Dvärg vuxen 41–150."},
     {"id": "kapitaltak-efter-bonus", "sida": [33], "beslut": "Taket (socialt stånd +10/+15) gäller summan efter bonusar."},
     {"id": "over-bp-till-ep", "sida": [34], "beslut": "Varje överblivet BP ger 5 EP."},
+    {"id": "startpaket", "sida": [38], "beslut": "Frivilligt startpaket utan kostnad: ryggsäck, skjorta, byxor, bälte, läderskor och ett vapen för högst 100 sm som rollpersonen kan använda (Niclas 2026-10-25)."},
     {"id": "lasa-skriva-tak", "sida": [56, 61, 64, 65], "beslut": "Tak mot Läsa/Skriva använder högsta L/S-FV."},
     {"id": "chronos-lagre", "sida": [52, 54], "beslut": "Tala Chronos FV 5 för drakonit/orch/wongos; drakoniters L/S Chronos två B-nivåer under modersmålets BC."},
     {"id": "sf-fore-harledda", "sida": [30, 31, 32], "beslut": "Särskilda förmågor räknas in innan KP, SB och färdigheter räknas ut."},

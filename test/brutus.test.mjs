@@ -3,13 +3,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { raknaRollperson } from "../regelmotor.js";
+import { raknaRollperson, besvarjelsePris } from "../regelmotor.js";
 
 const katalog = new URL("../regler/", import.meta.url);
 const las = (n) => JSON.parse(readFileSync(new URL(n + ".json", katalog), "utf8"));
 const regler = {
   raser: las("raser"), alder: las("alder"), grundegenskaper: las("grundegenskaper"),
   fardigheter: las("fardigheter"), yrken: las("yrken"), slag: las("slag"), vapen: las("vapen"),
+  besvarjelser: las("besvarjelser"), utrustning: las("utrustning"),
 };
 
 const brutus = {
@@ -132,4 +133,25 @@ test("valt socialt stånd räknas som lägsta slagresultatet för ståndet (s. 3
   const r = raknaRollperson(allaRegler, { ...structuredClone(brutus), socialtStand: { bp: 0, slag: null, valt: "Lågadel" } });
   assert.equal(r.slag.socialtStand, "Lågadel");
   assert.equal(r.slag.ssResultat, 30);
+});
+
+test("besvärjelser: pris efter skolvärde, tak av PSY och skolans FV (s. 36, 106)", () => {
+  // Bokens exempel med Sigurd: SV 9 och 8 kostar 4, SV 5 kostar 3, SV 1 kostar 2 EP per FV
+  assert.deepEqual([9, 8, 5, 1, 22].map((sv) => besvarjelsePris(allaRegler, sv)), [4, 4, 3, 2, 9]);
+  const r = raknaRollperson(allaRegler, { ...structuredClone(brutus), fardigheter: { ...brutus.fardigheter, mentalism: 9 },
+    magiformaga: { slag: 1 }, besvarjelser: { osynlighet: 5, teleportera: 1, flyga: 9 } });
+  assert.equal(r.besvarjelser.find((b) => b.id === "osynlighet").ep, 20);
+  assert.match(r.fel.join(), /Teleportera har skolvärde 12/);
+  assert.match(r.fel.join(), /Flyga: högst FV 8/);
+  const utan = raknaRollperson(allaRegler, { ...structuredClone(brutus), besvarjelser: { sprang: 1 } });
+  assert.match(utan.fel.join(), /kan inte lära sig magi/);
+});
+
+test("utrustning betalas med startkapitalet; startpaketets vapen är enkelt och användbart (s. 38, 89)", () => {
+  const rk = (andring) => raknaRollperson(allaRegler, { ...structuredClone(brutus), ...andring });
+  const r = rk({ utrustning: { "Ryggsäck (20 liter)": 1, Bredsvärd: 1 } });
+  assert.equal(r.utrustning.kvar, 6000 - 1020);
+  assert.match(rk({ utrustning: { "Helrustning: Metall": 2 } }).fel.join(), /startkapitalet är 6000/);
+  assert.match(rk({ startpaket: { valt: true, vapen: "Tvåhandssvärd" } }).fel.join(), /högst 100 sm/);
+  assert.equal(rk({ startpaket: { valt: true, vapen: "Dolk" } }).fel.length, 0);
 });
