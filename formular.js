@@ -4,7 +4,7 @@
 import { GRUNDEGENSKAPER, slaUpp, fardighetAv } from "./regelmotor.js";
 
 // Rader per lista. Får inte allt plats fortsätter listan på sida 3.
-const RADER = { formagor: 5, primar: 25, yrke: 12, sprak: 12, sekundar: 32, vapen: 7, besvarjelser: 23, utrustning: 9 };
+const RADER = { formagor: 5, primar: 25, yrke: 12, sprak: 12, sekundar: 33, vapen: 6, besvarjelser: 23, utrustning: 8 };
 const NAMN = { STY: "Styrka", FYS: "Fysik", SMI: "Smidighet", INT: "Intelligens", PSY: "Psyke", KAR: "Karisma", STO: "Storlek" };
 const STATUSNAMN = { primar: "Primär", yrke: "Yrke", sekundar: "Sekundär" };
 
@@ -109,7 +109,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
                 el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-namntext" }, f.namn), sidhanvisning(sidaFor(f.nyckel))),
                 el("span", { class: "rf-cell rf-tal" }, f.fv), el("span", { class: "rf-cell rf-tal" }, bNiva(f.fv)))), RADER.sprak, 3, false)),
             lista("rf-fardigheter rf-sek", rubrik("Sek. färdigheter", ["erf", "FV"], 18), listor.sekundar.map(fardighetsrad), RADER.sekundar))))),
-    el("div", { class: "rf-band rf-fot" }, "1"));
+    sidfot(el, 1));
 
   // ------------------------------------------------------------ sida 2
   const katalog = Object.fromEntries([...R.vapen.narstrid, ...R.vapen.projektil, ...R.vapen.kast, ...R.vapen.skoldar].map((v) => [v.namn, v]));
@@ -204,7 +204,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
             el("div", { class: "rf-rad rf-juveler" }, el("span", { class: "rf-cell rf-namn" }, "Juveler",
               inmatning(pengar.juveler, (v) => { spel.pengar ??= structuredClone(pengar); spel.pengar.juveler = v; }, { "aria-label": "Juveler" })))))),
       el("div", { class: "rf-utrustning" }, rubrik("Utrustning", ["Vikt", "", "Vikt"]), el("div", { class: "rf-sakkolumner" }, sakkolumner))),
-    el("div", { class: "rf-band rf-fot" }, "2"));
+    sidfot(el, 2));
 
   // ------------------------------------------------------------ sida 3: hela texterna och det som inte fick plats
   const stilar = res.fardigheter.filter((f) => f.tekniker?.length);
@@ -230,7 +230,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
       el("p", { class: "rf-forklaring" }, "Bockrutan framför en färdighet bockas vid första lyckade slaget efter minst sex timmars sömn (två för alver). ",
         "Varje bock ger 1 streck i erf, ett perfekt slag 1T4. Gråa erf-rutor är kategori B, som bara kan höjas genom träning. ",
         "EP blir FV först efter en vila på minst sju dagar (s. 74).")),
-    el("div", { class: "rf-band rf-fot" }, "3"));
+    sidfot(el, 3));
 
   return [sida1, sida2, sida3, ...(medRegler ? [regelsida(4)] : [])];
 
@@ -269,13 +269,18 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
   }
 }
 
+// Sidfoten: CHRONOPIA som i sidhuvudet, sidnumret mitt under
+function sidfot(el, nr) {
+  return el("div", { class: "rf-band rf-fot" }, el("span", { class: "rf-fot-titel" }, "Chronopia"), el("span", { class: "rf-sidnr" }, String(nr)));
+}
+
 function tomRegelsida(el, nr) {
   return el("section", { class: "rf-sida rf-regelsida", "aria-label": `Färdigheterna i korthet, sida ${nr}` },
     el("div", { class: "rf-band" }, "Drakar & Demoner"),
     el("div", { class: "rf-ram" },
       el("div", { class: "rf-rubrik" }, el("span", { class: "rf-rubrik-titel" }, "Färdigheterna i korthet"), el("span", { class: "rf-rubrik-kol bred" }, "Egna sammanfattningar, se boken för hela reglerna")),
       el("div", { class: "rf-regelkolumner" }, el("div", { class: "rf-regelkolumn" }), el("div", { class: "rf-regelkolumn" }))),
-    el("div", { class: "rf-band rf-fot" }, String(nr)));
+    sidfot(el, nr));
 }
 
 // Fördelar färdigheterna på regelsidorna efter hur mycket som får plats. Körs när sidorna finns
@@ -287,7 +292,7 @@ export function delaRegelsidor(rot, el) {
   rot.querySelectorAll(".rf-regelsida").forEach((s, i) => { if (i > 0) s.remove(); });
   forsta.querySelectorAll(".rf-regelkolumn").forEach((k) => k.replaceChildren());
   let sida = forsta;
-  let nr = Number(forsta.querySelector(".rf-fot").textContent);
+  let nr = Number(forsta.querySelector(".rf-sidnr").textContent);
   let kolumner = [...sida.querySelectorAll(".rf-regelkolumn")];
   let k = 0;
   for (const post of poster) {

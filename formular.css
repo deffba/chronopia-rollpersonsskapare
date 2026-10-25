@@ -22,7 +22,9 @@
   flex: none; height: 14mm; display: grid; place-items: center; background: var(--rf-band); color: var(--rf-band-text);
   font: 400 12pt "Cinzel", Georgia, serif; letter-spacing: .35em; text-transform: uppercase;
 }
-.rf-band.rf-fot { height: 9mm; font-size: 9pt; letter-spacing: 0; }
+.rf-band.rf-fot { height: 14mm; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: .6mm; }
+.rf-fot-titel { line-height: 1; }
+.rf-sidnr { font-size: 8pt; letter-spacing: 0; line-height: 1; }
 .rf-ram { flex: 1; min-height: 0; margin: 6mm 11mm; display: flex; flex-direction: column; gap: 0; }
 
 /* Rubrikbalkar och listor */
@@ -88,6 +90,9 @@
 .rf-hjaltepoang { flex: none; display: grid; grid-template-columns: 1fr 18mm; align-items: center; height: var(--rf-rubrik); border: var(--rf-ram-linje); border-top: 0; border-left: 0; background: var(--rf-papper); padding-left: 1.6mm; font: 600 9.5pt "Oswald", sans-serif; color: var(--rf-band); }
 .rf-hjaltepoang .rf-in { height: 100%; border-left: .3mm solid var(--rf-linje); border-radius: 0; text-align: center; font-family: "Source Sans 3", sans-serif; }
 .rf-vanster > .rf-lista:last-child, .rf-mitt > .rf-lista:last-child, .rf-hoger-kolumner > .rf-lista:last-child { flex: 1; }
+/* Listor som fyller ut sin kolumn: raderna sträcks lite i stället för att lämna en tom yta under dem */
+.rf-vanster > .rf-lista:last-child .rf-rad, .rf-mitt > .rf-lista:last-child .rf-rad, .rf-hoger-kolumner > .rf-lista:last-child .rf-rad,
+.rf-besvarjelser .rf-rad, .rf-vapen .rf-rad, .rf-sakkolumn .rf-rad { flex: 1 0 var(--rf-rad); height: auto; }
 .rf-lista > .rf-rubrik:first-child { border-bottom: 0; }
 
 /* Sida 2 */
