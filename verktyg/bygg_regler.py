@@ -674,6 +674,74 @@ skriv("vapen", {
 skriv("besvarjelser", besvarjelser.bygg())
 skriv("utrustning", utrustning.bygg())
 
+# ---------------------------------------------------------------- erfarenhet och hjältepoäng (s. 45, 74–76)
+skriv("erfarenhet", {
+    # Var EP kommer ifrån (s. 73–74). EP gäller alltid en viss färdighet eller besvärjelse.
+    "aventyr": {
+        "ep": 1, "epPerfekt": "1T4", "somnTimmar": 6, "somnTimmarAlver": 2,
+        "ejKategoriB": True,  # kategori B förbättras bara genom träning
+        "sida": 74,
+    },
+    "bonus": {
+        "maxPerAventyr": 10,
+        "exempel": [["Lyckat utfört uppdrag", 1, 4], ["Osedvanligt svår gärning", 1, 2], ["Gott rollspelande", 1, 4]],
+        "sida": 74,
+    },
+    # EP växlas till FV först under en sammanhängande vila om minst sju dagar, till samma pris som vid start (s. 74–75)
+    "omvandling": {"viladagar": 7, "sida": [74, 75]},
+    "ensamtraning": {
+        "timmarPerDag": 8, "dagarPerVecka": 6,
+        # Färre timmar om dagen: träningstiden förlängs (6 timmar +50 %, 4 timmar dubbelt). Fler än 8 eller färre än 4 går inte.
+        "tidsfaktor": {"8": 1, "6": 1.5, "4": 2},
+        "svarighet": 0,  # Medelsvårt grundegenskapsslag (s. 45)
+        "ep": "1T4",
+        "intKraverBok": True,
+        "sida": 74,
+    },
+    "larare": {
+        "minFV": 17, "minINT": 13, "slagPerVecka": 2,
+        "modPerFVOver18": -2, "modEnsamElev": -5,
+        "kostnadPerVecka": 1500, "kostnadMagi": 3000, "faktorEnsamElev": 2,
+        "sida": 74,
+    },
+    "besvarjelseEnsam": {
+        "grundegenskap": "INT", "svarighet": 0, "modPerIntUnder": 19, "ep": 1, "kraverKodex": True,
+        "sida": 75,
+    },
+    # Tak efter skapandet (s. 74): sekundär färdighet högst grundegenskapen, ärkemagikerns magiskola högst INT,
+    # besvärjelse högst PSY (s. 36)
+    "tak": {"sida": [36, 74]},
+    "psyHojning": {
+        "magiker": {"bas": 25, "tak": 24, "etta": "1T3+1", "ettaOverTak": "1T3"},
+        "ickeMagiker": {"bas": 20, "tak": 19, "etta": "1T3+1", "ettaOverTak": "1"},
+        "sarskildFormagaMod": {"God PSY-potential": -5},
+        "sida": 75,
+    },
+    # En permanent ändring av en grundegenskap ändrar FV i yrkesfärdigheter och primära färdigheter lika mycket (s. 45)
+    "permanentEgenskap": {"galler": ["primar", "yrke"], "sida": 45},
+    "hjaltepoang": {
+        "fvGrans": {"forsta": 21, "steg": 20, "hp": "1T4"},  # FV 21, 41, 61 …
+        "dad": [
+            ["Uppnå FV 21 (41, 61 etc.) i någon färdighet", "1T4"],
+            ["Vinna tornering med fler än 400 deltagare", "5"],
+            ["På kungens uppdrag rädda prinsessa", "10"],
+            ["Döda fiendens härförare", "10"],
+            ["Upptäcka ny kontinent", "10"],
+            ["Leda belägring och erövring av fientlig borg", "10"],
+            ["Stjäla skatt från monster utan att döda det", "5–25"],
+            ["Döda monster", "10–50"],
+            ["Rädda kungarike från undergång", "50"],
+            ["Besegra annan hjälte", "hälften av den hjältens HP"],
+        ],
+        "egenskap": {"hp": 5, "ejSTO": True},
+        "sarskildFormaga": {"min": 1, "max": 40, "bonusPerHp": 2, "tarning": "2T20"},
+        "hojaCL": "En HP före ett färdighetsslag: fummel blir misslyckat, misslyckat blir lyckat, lyckat blir perfekt och perfekt ger tillbaka HP:n.",
+        "igenkanning": "Chansen att bli igenkänd är summan av alla HP rollpersonen har samlat, i procent.",
+        "sida": [74, 75, 76],
+    },
+    "sida": [45, 73, 74, 75, 76],
+})
+
 # ---------------------------------------------------------------- husregler (dokumenterade tolkningar)
 skriv("husregler", [
     {"id": "primara-fran-s40", "sida": [40, 57, 62], "beslut": "Primära färdigheter enligt s. 40, plus Bärsärkagång för troll och Känna magi för magiker."},
