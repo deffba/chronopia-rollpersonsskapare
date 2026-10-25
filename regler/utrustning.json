@@ -1,0 +1,1326 @@
+{
+  "valuta": "sm",
+  "varor": [
+    {
+      "namn": "Blåsbälg",
+      "kategori": "Diverse verktyg",
+      "vikt": 2,
+      "pris": 90,
+      "sida": 100
+    },
+    {
+      "namn": "Bärbar smedja",
+      "kategori": "Diverse verktyg",
+      "vikt": 26,
+      "pris": 625,
+      "sida": 100
+    },
+    {
+      "namn": "Bärbart städ",
+      "kategori": "Diverse verktyg",
+      "vikt": 5,
+      "pris": 190,
+      "sida": 100
+    },
+    {
+      "namn": "Flacktång",
+      "kategori": "Diverse verktyg",
+      "vikt": 0.5,
+      "pris": 50,
+      "sida": 100
+    },
+    {
+      "namn": "Grov spik (10 st)",
+      "kategori": "Diverse verktyg",
+      "vikt": null,
+      "pris": 50,
+      "sida": 100
+    },
+    {
+      "namn": "Hacka",
+      "kategori": "Diverse verktyg",
+      "vikt": 5,
+      "pris": 125,
+      "sida": 100
+    },
+    {
+      "namn": "Handyxa",
+      "kategori": "Diverse verktyg",
+      "vikt": 3,
+      "pris": 60,
+      "sida": 100
+    },
+    {
+      "namn": "Järnborrar (5 st)",
+      "kategori": "Diverse verktyg",
+      "vikt": null,
+      "pris": 50,
+      "sida": 100
+    },
+    {
+      "namn": "Järnkilar (3 st)",
+      "kategori": "Diverse verktyg",
+      "vikt": null,
+      "pris": 15,
+      "sida": 100
+    },
+    {
+      "namn": "Kniv",
+      "kategori": "Diverse verktyg",
+      "vikt": 0.5,
+      "pris": 50,
+      "sida": 100
+    },
+    {
+      "namn": "Kofot",
+      "kategori": "Diverse verktyg",
+      "vikt": 2,
+      "pris": 25,
+      "sida": 100
+    },
+    {
+      "namn": "Normalt städ",
+      "kategori": "Diverse verktyg",
+      "vikt": 35,
+      "pris": 625,
+      "sida": 100
+    },
+    {
+      "namn": "Skogsyxa",
+      "kategori": "Diverse verktyg",
+      "vikt": 5,
+      "pris": 125,
+      "sida": 100
+    },
+    {
+      "namn": "Skära",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 40,
+      "sida": 100
+    },
+    {
+      "namn": "Slägga",
+      "kategori": "Diverse verktyg",
+      "vikt": 8,
+      "pris": 40,
+      "sida": 100
+    },
+    {
+      "namn": "Småspik (100 st)",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 75,
+      "sida": 100
+    },
+    {
+      "namn": "Snickarhammare",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 18,
+      "sida": 100
+    },
+    {
+      "namn": "Spade",
+      "kategori": "Diverse verktyg",
+      "vikt": 2,
+      "pris": 75,
+      "sida": 100
+    },
+    {
+      "namn": "Trähammare",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 2,
+      "sida": 100
+    },
+    {
+      "namn": "Träsåg",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 60,
+      "sida": 100
+    },
+    {
+      "namn": "Glasflaska (10 doser)",
+      "kategori": "Behållare",
+      "vikt": 0.5,
+      "pris": 160,
+      "sida": 101
+    },
+    {
+      "namn": "Glasplunta (1 dos)",
+      "kategori": "Behållare",
+      "vikt": null,
+      "pris": 60,
+      "sida": 101
+    },
+    {
+      "namn": "Koger (20 pilar)",
+      "kategori": "Behållare",
+      "vikt": 0.5,
+      "pris": 40,
+      "sida": 101
+    },
+    {
+      "namn": "Lerkruka (4 liter)",
+      "kategori": "Behållare",
+      "vikt": 1,
+      "pris": 12,
+      "sida": 101
+    },
+    {
+      "namn": "Penningpung (50 mynt)",
+      "kategori": "Behållare",
+      "vikt": null,
+      "pris": 5,
+      "sida": 101
+    },
+    {
+      "namn": "Myntbälte (100 mynt)",
+      "kategori": "Behållare",
+      "vikt": null,
+      "pris": 40,
+      "sida": 101
+    },
+    {
+      "namn": "Ryggsäck (20 liter)",
+      "kategori": "Behållare",
+      "vikt": 1,
+      "pris": 20,
+      "sida": 101
+    },
+    {
+      "namn": "Träskrin",
+      "kategori": "Behållare",
+      "vikt": 1,
+      "pris": 15,
+      "sida": 101
+    },
+    {
+      "namn": "Metallskrin",
+      "kategori": "Behållare",
+      "vikt": 2,
+      "pris": 140,
+      "sida": 101
+    },
+    {
+      "namn": "Lås till skrin",
+      "kategori": "Behållare",
+      "vikt": null,
+      "pris": 200,
+      "sida": 101
+    },
+    {
+      "namn": "Stor säck (100 liter)",
+      "kategori": "Behållare",
+      "vikt": 1,
+      "pris": 4,
+      "sida": 101
+    },
+    {
+      "namn": "Träkagge (25 liter)",
+      "kategori": "Behållare",
+      "vikt": 4,
+      "pris": 20,
+      "sida": 101
+    },
+    {
+      "namn": "Trätunna (100 liter)",
+      "kategori": "Behållare",
+      "vikt": 14,
+      "pris": 50,
+      "sida": 101
+    },
+    {
+      "namn": "Skinnlägel (2 liter)",
+      "kategori": "Behållare",
+      "vikt": 0.5,
+      "pris": 10,
+      "sida": 101
+    },
+    {
+      "namn": "Vattenskinn (20 liter)",
+      "kategori": "Behållare",
+      "vikt": 2,
+      "pris": 25,
+      "sida": 101
+    },
+    {
+      "namn": "Arbalestlod (10 st)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 1,
+      "pris": 60,
+      "sida": 101
+    },
+    {
+      "namn": "Armborstlod (10 st)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.5,
+      "pris": 50,
+      "sida": 101
+    },
+    {
+      "namn": "Pilar (10 st)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.5,
+      "pris": 20,
+      "sida": 101
+    },
+    {
+      "namn": "Slungkulor (+2 CL, 10 st)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.5,
+      "pris": 5,
+      "sida": 101
+    },
+    {
+      "namn": "Bågsträng",
+      "kategori": "Äventyrarutrustning",
+      "vikt": null,
+      "pris": 3,
+      "sida": 101
+    },
+    {
+      "namn": "Flinta & stål",
+      "kategori": "Äventyrarutrustning",
+      "vikt": null,
+      "pris": 15,
+      "sida": 101
+    },
+    {
+      "namn": "Vaxljus (1 timme)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.5,
+      "pris": 15,
+      "sida": 101
+    },
+    {
+      "namn": "Fackla (1 timme)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 1,
+      "pris": 5,
+      "sida": 101
+    },
+    {
+      "namn": "Oljelampa (1 timme)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.5,
+      "pris": 7,
+      "sida": 101
+    },
+    {
+      "namn": "Oljelykta (6 timmar)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 1,
+      "pris": 40,
+      "sida": 101
+    },
+    {
+      "namn": "Lampolja (1 timme)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.5,
+      "pris": 3,
+      "sida": 101
+    },
+    {
+      "namn": "Halmmadrass",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 2,
+      "pris": 60,
+      "sida": 101
+    },
+    {
+      "namn": "Järngryta (2 liter)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 3,
+      "pris": 35,
+      "sida": 101
+    },
+    {
+      "namn": "Fiskenät (5 × 5 m)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 2,
+      "pris": 30,
+      "sida": 101
+    },
+    {
+      "namn": "Sovfäll",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 4,
+      "pris": 310,
+      "sida": 101
+    },
+    {
+      "namn": "Tält (2 man)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 5,
+      "pris": 190,
+      "sida": 101
+    },
+    {
+      "namn": "Byxor",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 25,
+      "sida": 101
+    },
+    {
+      "namn": "Bälte",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 20,
+      "sida": 101
+    },
+    {
+      "namn": "Handskar",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 40,
+      "sida": 101
+    },
+    {
+      "namn": "Hatt",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 30,
+      "sida": 101
+    },
+    {
+      "namn": "Hosor",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 25,
+      "sida": 101
+    },
+    {
+      "namn": "Jacka",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 30,
+      "sida": 101
+    },
+    {
+      "namn": "Kortbyxor",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 10,
+      "sida": 101
+    },
+    {
+      "namn": "Kåpa (magiker-, präst-)",
+      "kategori": "Kläder",
+      "vikt": 2,
+      "pris": 130,
+      "sida": 101
+    },
+    {
+      "namn": "Kängor",
+      "kategori": "Kläder",
+      "vikt": 1,
+      "pris": 75,
+      "sida": 101
+    },
+    {
+      "namn": "Läderskor",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 50,
+      "sida": 101
+    },
+    {
+      "namn": "Läderstövlar, höga",
+      "kategori": "Kläder",
+      "vikt": 1,
+      "pris": 200,
+      "sida": 101
+    },
+    {
+      "namn": "Mantel",
+      "kategori": "Kläder",
+      "vikt": 2,
+      "pris": 100,
+      "sida": 101
+    },
+    {
+      "namn": "Sandaler",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 10,
+      "sida": 101
+    },
+    {
+      "namn": "Skjorta",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 10,
+      "sida": 101
+    },
+    {
+      "namn": "Tunika",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 20,
+      "sida": 101
+    },
+    {
+      "namn": "Dyrkar (för små lås, 10 st)",
+      "kategori": "Tjuvverktyg",
+      "vikt": 0.5,
+      "pris": 225,
+      "sida": 101
+    },
+    {
+      "namn": "Dyrkar (för större lås, 10 st)",
+      "kategori": "Tjuvverktyg",
+      "vikt": 1,
+      "pris": 320,
+      "sida": 101
+    },
+    {
+      "namn": "Nyckelämnen (10 st)",
+      "kategori": "Tjuvverktyg",
+      "vikt": 0.5,
+      "pris": 140,
+      "sida": 101
+    },
+    {
+      "namn": "Nyckelfilar (6 st)",
+      "kategori": "Tjuvverktyg",
+      "vikt": null,
+      "pris": 100,
+      "sida": 101
+    },
+    {
+      "namn": "Vaxklump",
+      "kategori": "Tjuvverktyg",
+      "vikt": null,
+      "pris": 10,
+      "sida": 101
+    },
+    {
+      "namn": "Handborr",
+      "kategori": "Tjuvverktyg",
+      "vikt": 0.5,
+      "pris": 85,
+      "sida": 101
+    },
+    {
+      "namn": "Glasskärare",
+      "kategori": "Tjuvverktyg",
+      "vikt": null,
+      "pris": 350,
+      "sida": 101
+    },
+    {
+      "namn": "Spik med ögla (1 st)",
+      "kategori": "Tjuvverktyg",
+      "vikt": null,
+      "pris": 20,
+      "sida": 101
+    },
+    {
+      "namn": "Änterhake",
+      "kategori": "Tjuvverktyg",
+      "vikt": 0.5,
+      "pris": 40,
+      "sida": 101
+    },
+    {
+      "namn": "Låsregelsavhakare",
+      "kategori": "Tjuvverktyg",
+      "vikt": null,
+      "pris": 10,
+      "sida": 101
+    },
+    {
+      "namn": "Gångjärnsknäckare",
+      "kategori": "Tjuvverktyg",
+      "vikt": 0.5,
+      "pris": 15,
+      "sida": 101
+    },
+    {
+      "namn": "Metallsåg",
+      "kategori": "Tjuvverktyg",
+      "vikt": null,
+      "pris": 250,
+      "sida": 101
+    },
+    {
+      "namn": "Smörjolja (25 ml)",
+      "kategori": "Tjuvverktyg",
+      "vikt": null,
+      "pris": 8,
+      "sida": 101
+    },
+    {
+      "namn": "1-tums rep (10 m, tål 400 kg)",
+      "kategori": "Diverse",
+      "vikt": 12,
+      "pris": 80,
+      "sida": 102
+    },
+    {
+      "namn": "½-tums rep (10 m, tål 100 kg)",
+      "kategori": "Diverse",
+      "vikt": 3,
+      "pris": 40,
+      "sida": 102
+    },
+    {
+      "namn": "Hänglås + nyckel",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 180,
+      "sida": 102
+    },
+    {
+      "namn": "Hästskor (4 st)",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 35,
+      "sida": 102
+    },
+    {
+      "namn": "Kedja (1 m, tål 100 kg)",
+      "kategori": "Diverse",
+      "vikt": 5,
+      "pris": 200,
+      "sida": 102
+    },
+    {
+      "namn": "Kraftig kedja (1 m, tål 1 000 kg)",
+      "kategori": "Diverse",
+      "vikt": 25,
+      "pris": 400,
+      "sida": 102
+    },
+    {
+      "namn": "Penna, bläck & pergament",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 10,
+      "sida": 102
+    },
+    {
+      "namn": "Repstege (3 m)",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 5,
+      "sida": 102
+    },
+    {
+      "namn": "Solur (± 30 minuter)",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 600,
+      "sida": 102
+    },
+    {
+      "namn": "Spegel",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 550,
+      "sida": 102
+    },
+    {
+      "namn": "Synål",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 1,
+      "sida": 102
+    },
+    {
+      "namn": "Sytråd (10 m)",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 2,
+      "sida": 102
+    },
+    {
+      "namn": "Lädernål",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 3,
+      "sida": 102
+    },
+    {
+      "namn": "Sytråd för läderarbete (10 m)",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 4,
+      "sida": 102
+    },
+    {
+      "namn": "Timglas",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 875,
+      "sida": 102
+    },
+    {
+      "namn": "Trästege (2 m)",
+      "kategori": "Diverse",
+      "vikt": 4,
+      "pris": 9,
+      "sida": 102
+    },
+    {
+      "namn": "Visselpipa",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 25,
+      "sida": 102
+    },
+    {
+      "namn": "Signalhorn",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 30,
+      "sida": 102
+    },
+    {
+      "namn": "Flöjt",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 90,
+      "sida": 102
+    },
+    {
+      "namn": "Harpa",
+      "kategori": "Diverse",
+      "vikt": 5,
+      "pris": 600,
+      "sida": 102
+    },
+    {
+      "namn": "Luta",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 400,
+      "sida": 102
+    },
+    {
+      "namn": "Lyra",
+      "kategori": "Diverse",
+      "vikt": 1.5,
+      "pris": 375,
+      "sida": 102
+    },
+    {
+      "namn": "Trumma",
+      "kategori": "Diverse",
+      "vikt": 3,
+      "pris": 190,
+      "sida": 102
+    },
+    {
+      "namn": "Svagdricka (1 liter)",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 2,
+      "sida": 102
+    },
+    {
+      "namn": "Öl (1 liter)",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 4,
+      "sida": 102
+    },
+    {
+      "namn": "Cider (1 liter)",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 5,
+      "sida": 102
+    },
+    {
+      "namn": "Mjöd (1 liter)",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 6,
+      "sida": 102
+    },
+    {
+      "namn": "Bordsvin (1 liter)",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 3,
+      "sida": 102
+    },
+    {
+      "namn": "Fint vin (1 liter)",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 30,
+      "sida": 102
+    },
+    {
+      "namn": "Brännvin (1 liter)",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 10,
+      "sida": 102
+    },
+    {
+      "namn": "Enkel grönsaksstuvning",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 1,
+      "sida": 102
+    },
+    {
+      "namn": "Köttstuvning",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 4,
+      "sida": 102
+    },
+    {
+      "namn": "Köttstycke och rovor",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 8,
+      "sida": 102
+    },
+    {
+      "namn": "Grönsakspaj",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 2,
+      "sida": 102
+    },
+    {
+      "namn": "Köttpaj",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 8,
+      "sida": 102
+    },
+    {
+      "namn": "Fågel",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 6,
+      "sida": 102
+    },
+    {
+      "namn": "Fisk",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 4,
+      "sida": 102
+    },
+    {
+      "namn": "Helt vildsvin",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 25,
+      "sida": 102
+    },
+    {
+      "namn": "Limpa",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 1,
+      "sida": 102
+    },
+    {
+      "namn": "Skeppsskorpor (1 dagsranson)",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 2,
+      "sida": 102
+    },
+    {
+      "namn": "Torkat kött (1 dagsranson)",
+      "kategori": "Mat & dryck",
+      "vikt": null,
+      "pris": 9,
+      "sida": 102
+    }
+  ],
+  "rustningar": [
+    {
+      "namn": "Tyghuva",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 1,
+      "vikt": 0.5,
+      "pris": 25
+    },
+    {
+      "namn": "Läderhuva",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 2,
+      "vikt": 0.5,
+      "pris": 80
+    },
+    {
+      "namn": "Nitläderhuva",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 3,
+      "vikt": 1,
+      "pris": 180
+    },
+    {
+      "namn": "Ringbrynjehuva",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 4,
+      "vikt": 4,
+      "pris": 300
+    },
+    {
+      "namn": "Öppen metallhjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 6,
+      "vikt": 4,
+      "pris": 500
+    },
+    {
+      "namn": "Öppen metallhjälm med visir",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 6,
+      "vikt": 6,
+      "pris": 1500
+    },
+    {
+      "namn": "Tunnhjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 8,
+      "vikt": 6,
+      "pris": 1000
+    },
+    {
+      "namn": "Armskydd (par): Tjockt tyg",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 1,
+      "vikt": 2,
+      "pris": 50
+    },
+    {
+      "namn": "Armskydd (par): Läder",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 2,
+      "vikt": 3,
+      "pris": 250
+    },
+    {
+      "namn": "Armskydd (par): Nitläder",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 3,
+      "vikt": 5,
+      "pris": 500
+    },
+    {
+      "namn": "Armskydd (par): Härdat läder",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 4,
+      "vikt": 3,
+      "pris": 750
+    },
+    {
+      "namn": "Armskydd (par): Lamellerad",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 6,
+      "vikt": 5.5,
+      "pris": 950
+    },
+    {
+      "namn": "Armskydd (par): Metall",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 7,
+      "vikt": 6,
+      "pris": 1350
+    },
+    {
+      "namn": "Armskydd (par): Laminerad",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 8,
+      "vikt": 8,
+      "pris": 1200
+    },
+    {
+      "namn": "Benskydd (par): Tjockt tyg",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 1,
+      "vikt": 3,
+      "pris": 80
+    },
+    {
+      "namn": "Benskydd (par): Läder",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 2,
+      "vikt": 4,
+      "pris": 400
+    },
+    {
+      "namn": "Benskydd (par): Nitläder",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 3,
+      "vikt": 6,
+      "pris": 750
+    },
+    {
+      "namn": "Benskydd (par): Härdat läder",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 4,
+      "vikt": 5,
+      "pris": 1150
+    },
+    {
+      "namn": "Benskydd (par): Lamellerad",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 6,
+      "vikt": 6,
+      "pris": 1550
+    },
+    {
+      "namn": "Benskydd (par): Metall",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 7,
+      "vikt": 7,
+      "pris": 1850
+    },
+    {
+      "namn": "Benskydd (par): Laminerad",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 8,
+      "vikt": 9,
+      "pris": 1600
+    },
+    {
+      "namn": "Harnesk: Tjockt tyg",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 1,
+      "vikt": 2,
+      "pris": 130
+    },
+    {
+      "namn": "Harnesk: Läder",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 2,
+      "vikt": 3,
+      "pris": 600
+    },
+    {
+      "namn": "Harnesk: Nitläder",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 3,
+      "vikt": 4,
+      "pris": 1150
+    },
+    {
+      "namn": "Harnesk: Härdat läder",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 4,
+      "vikt": 4,
+      "pris": 1500
+    },
+    {
+      "namn": "Harnesk: Ringbrynjeskjorta",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 5,
+      "vikt": 10,
+      "pris": 1500
+    },
+    {
+      "namn": "Harnesk: Förstärkt ringbrynja",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 6,
+      "vikt": 15,
+      "pris": 1150
+    },
+    {
+      "namn": "Harnesk: Fjällpansar",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 6,
+      "vikt": 14,
+      "pris": 1500
+    },
+    {
+      "namn": "Harnesk: Lamellerad",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 6,
+      "vikt": 10,
+      "pris": 1550
+    },
+    {
+      "namn": "Harnesk: Metall",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 7,
+      "vikt": 12,
+      "pris": 1900
+    },
+    {
+      "namn": "Harnesk: Laminerad",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 8,
+      "vikt": 15,
+      "pris": 1800
+    },
+    {
+      "namn": "Brynja: Ringbrynja",
+      "typ": "Brynja",
+      "delar": [
+        "brostkorg",
+        "mage",
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 5,
+      "vikt": 16,
+      "pris": 2000
+    },
+    {
+      "namn": "Brynja: Förstärkt ringbrynja",
+      "typ": "Brynja",
+      "delar": [
+        "brostkorg",
+        "mage",
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 6,
+      "vikt": 24,
+      "pris": 2500
+    },
+    {
+      "namn": "Brynjehosor: Ringbrynja",
+      "typ": "Brynjehosor",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 5,
+      "vikt": 15,
+      "pris": 2500
+    },
+    {
+      "namn": "Brynjehosor: Förstärkt ringbrynja",
+      "typ": "Brynjehosor",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 6,
+      "vikt": 22.5,
+      "pris": 3250
+    },
+    {
+      "namn": "Hauberk: Ringbrynja",
+      "typ": "Hauberk",
+      "delar": [
+        "brostkorg",
+        "mage",
+        "vanster-arm",
+        "hoger-arm",
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 5,
+      "vikt": 32,
+      "pris": 3500
+    },
+    {
+      "namn": "Hauberk: Förstärkt ringbrynja",
+      "typ": "Hauberk",
+      "delar": [
+        "brostkorg",
+        "mage",
+        "vanster-arm",
+        "hoger-arm",
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 6,
+      "vikt": 48,
+      "pris": 4500
+    },
+    {
+      "namn": "Helrustning: Metall",
+      "typ": "Helrustning",
+      "delar": [
+        "brostkorg",
+        "mage",
+        "vanster-arm",
+        "hoger-arm",
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 8,
+      "vikt": 25,
+      "pris": 5100
+    }
+  ],
+  "rustningsnoter": {
+    "Ringbrynja": "Sår kan inte bli infekterade.",
+    "Tunnhjälm": "−5 på CL för Finna dolda ting och Upptäcka fara.",
+    "metall": "Fjällpansar och metallrustning halverar CL i Smyga; metallrustning halverar CL i Klättra och gör Akrobatik och Hoppa omöjliga (s. 93)."
+  },
+  "startpaket": {
+    "varor": [
+      "Ryggsäck (20 liter)",
+      "Skjorta",
+      "Byxor",
+      "Bälte",
+      "Läderskor"
+    ],
+    "vapenMaxPris": 100
+  },
+  "barformaga": [
+    {
+      "gange": 2,
+      "mod": -1,
+      "text": "Kan inte simma, springa eller sprinta."
+    },
+    {
+      "gange": 3,
+      "mod": -2,
+      "text": "Kan inte simma, springa eller sprinta."
+    },
+    {
+      "gange": 4,
+      "mod": -4,
+      "text": "Kan inte simma, springa eller sprinta."
+    },
+    {
+      "gange": 5,
+      "mod": -6,
+      "text": "Kan inte simma, springa eller sprinta."
+    },
+    {
+      "gange": 6,
+      "mod": -8,
+      "text": "Kan inte simma, springa eller sprinta, och inga SMI-baserade färdigheter kan användas."
+    }
+  ],
+  "sida": [
+    38,
+    91,
+    92,
+    93,
+    98,
+    100,
+    101,
+    102
+  ]
+}
