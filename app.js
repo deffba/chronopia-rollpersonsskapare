@@ -53,7 +53,7 @@ const DELVAL_HJALP = {
   djurhelning: "Skriv vilken sorts djur det gäller, till exempel hästar eller hundar. Färdigheten används för att vårda och hela sjuka eller skadade djur av den sorten (s. 58).",
   djurtraning: "Skriv vilken sorts djur det gäller, till exempel hästar eller hundar. Färdigheten används för att dressera och lära djur av den sorten att lyda (s. 58).",
   "spela-instrument": "Skriv vilket instrument det gäller, till exempel luta eller flöjt. Färdigheten lärs separat för varje instrument. Är den en yrkesfärdighet räknas alla instrument som yrkesfärdigheter (s. 68).",
-  stridskonster: "Skriv namnet på stridsstilen. Färdigheten används för obeväpnad strid med särskilda tekniker, som sparkar och dubbelslag. FV gäller alla tekniker i stilen (s. 68–69).",
+  stridskonster: "Skriv namnet på stridsstilen. Färdigheten används för obeväpnad strid med särskilda tekniker, som sparkar och dubbelslag. FV gäller alla tekniker i stilen. Teknikerna väljs i steg 11 och bestämmer vad varje FV kostar (s. 68–69).",
 };
 
 const SPRAK_HJALP = {
@@ -71,7 +71,7 @@ const TOM = () => ({
   extraYrkesfardigheter: [], rasval: [], grundvarden: { STY: 10, FYS: 10, SMI: 10, INT: 10, PSY: 10, KAR: 10 },
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
-  magiformaga: { slag: null }, anteckningar: "",
+  magiformaga: { slag: null }, stridskonstTekniker: {}, anteckningar: "",
 });
 
 let R; // regeldata
@@ -557,6 +557,31 @@ function stegEgenskaper(res) {
   ];
 }
 
+// Tärningsslag: knappen spärras och tärningen snurrar en stund innan resultatet landar
+let rullar = null; // id för slaget som rullas just nu
+let nyssSlaget = null; // id för slaget vars resultat precis har landat
+const rulltid = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? 300 : 2500);
+const tarningsIkon = () => {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", "tarning"); svg.setAttribute("aria-hidden", "true");
+  svg.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
+    + [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="currentColor"/>`).join("");
+  return svg;
+};
+function tarningsKnapp(id, text, sla) {
+  return el("button", {
+    type: "button", class: "knapp tarningsknapp" + (rullar === id ? " rullar" : ""), id: `${id}-sla`,
+    disabled: rullar !== null, "aria-busy": rullar === id ? "true" : null,
+    onclick: () => {
+      if (rullar) return;
+      rullar = id; rita();
+      setTimeout(() => { rullar = null; nyssSlaget = id; sla(); }, rulltid());
+    },
+  }, tarningsIkon(), el("span", {}, rullar === id ? "Slår …" : text));
+}
+// Raden med slagets utfall; den poppar fram och lyser upp när slaget nyss har landat
+const slagRad = (id, text) => el("p", { class: "hjalp slagrad" + (nyssSlaget === id ? " nytt" : "") }, tarningsIkon(), el("span", {}, text));
+
 function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}) {
   const s = rp[nyckel];
   const [n, sidor] = tarning === "2T20" ? [2, 20] : [2, 6];
@@ -565,8 +590,8 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {})
   if (s.slag !== null && s.slag !== undefined) {
     return [
       el("p", {}, hjalp),
-      el("p", { class: "hjalp" }, `Lagda BP: ${s.bp}. Slag: ${s.slag}. Slaget är gjort och kan inte göras om.`),
-      el("p", { class: "summering" }, tolkning),
+      slagRad(id, `Lagda BP: ${s.bp}. Slag: ${s.slag}. Slaget är gjort och kan inte göras om.`),
+      el("p", { class: "summering" + (nyssSlaget === id ? " nytt" : "") }, tolkning),
     ];
   }
   return [
@@ -574,7 +599,7 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {})
     el("div", { class: "rad" },
       falt("BP att lägga", tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 })),
       falt(`Slag (${tarning})`, tal(`${id}-slag`, s.slag, (v) => satt("slag", v), { min: n, max: n * sidor })),
-      el("button", { type: "button", class: "knapp", onclick: () => satt("slag", slaT(n, sidor)) }, `Slå ${tarning}`)),
+      tarningsKnapp(id, `Slå ${tarning}`, () => satt("slag", slaT(n, sidor)))),
     el("p", { class: "summering" }, tolkning),
   ];
 }
@@ -719,8 +744,8 @@ function magiformagaKontroll(res) {
     el("p", { class: "hjalp" }, "Rollpersonen har en magiskola men är inte magiker. Då måste ett magiförmågeslag lyckas. Misslyckas det kan rollpersonen inte lära sig magi, och magiskolan måste bytas mot en annan färdighet."),
     el("p", {}, `Slå 1T100. Slaget${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)}` : ""} måste bli högst ${m.chans}, det vill säga (INT+PSY)/2 avrundat uppåt (s. 106). Det görs en gång.`),
     m.slag === null ? el("div", { class: "rad" },
-      el("button", { type: "button", class: "knapp", id: "magiformaga-sla", onclick: () => satt(slaT(1, 100)) }, "Slå 1T100")) : el("p", { class: "hjalp" }, `Slag: ${m.slag}. Slaget är gjort och kan inte göras om.`),
-    m.slag !== null ? el("p", { class: "summering" }, m.lyckat ? "Lyckat. Rollpersonen kan lära sig magi." : "Misslyckat. Rollpersonen kan inte lära sig magi.") : null));
+      tarningsKnapp("magiformaga", "Slå 1T100", () => satt(slaT(1, 100)))) : slagRad("magiformaga", `Slag: ${m.slag}. Slaget är gjort och kan inte göras om.`),
+    m.slag !== null ? el("p", { class: "summering" + (nyssSlaget === "magiformaga" ? " nytt" : "") }, m.lyckat ? "Lyckat. Rollpersonen kan lära sig magi." : "Misslyckat. Rollpersonen kan inte lära sig magi.") : null));
 }
 
 function stegSvardshand(res) {
@@ -764,13 +789,16 @@ function stegKapital(res) {
 // EP per FV för en ny sekundär färdighet (s. 35–36)
 function sekundarPris(nyckel) {
   const k = R.fardigheter.kostnad;
+  if ((nyckel || "").startsWith("stridskonster")) return 3; // billigaste stilen: en teknik à 0,5 → 1, plus 2 (s. 68)
   return fardighetAv(R, nyckel || "x")?.typ === "magiskola" ? k.magiskolaSekundar : k.sekundar;
 }
 
 function nySekundarInfo(res) {
   const pris = sekundarPris(nySekundar);
   const typ = fardighetAv(R, nySekundar || "x")?.typ === "magiskola" ? "En magiskola som sekundär färdighet" : "En sekundär färdighet";
-  const text = `${typ} har ingen baschans och kostar ${pris} EP per FV. Du har ${res.ep.kvar} EP kvar, vilket räcker till FV ${Math.floor(res.ep.kvar / pris)}.`;
+  const text = nySekundar.startsWith("stridskonster")
+    ? `Stridskonster som sekundär färdighet har ingen baschans. Varje FV kostar teknikernas grundkostnad plus 2 EP, minst ${pris} EP. Teknikerna väljer du när stilen är tillagd. Du har ${res.ep.kvar} EP kvar.`
+    : `${typ} har ingen baschans och kostar ${pris} EP per FV. Du har ${res.ep.kvar} EP kvar, vilket räcker till FV ${Math.floor(res.ep.kvar / pris)}.`;
   return el("p", { class: res.ep.kvar < pris ? "hjalp felrad" : "hjalp" },
     text, res.ep.kvar < pris ? " Du har inte råd med fler sekundära färdigheter." : " Välj färdighet, fyll i vad den gäller och tryck Lägg till.");
 }
@@ -800,6 +828,7 @@ function stegFardigheter(res) {
       const lista = res.fardigheter.filter((f) => f.status === st);
       return lista.length ? [el("h3", {}, titel, el("span", { class: "pris" }, pris)), tabell(lista)] : null;
     }),
+    res.fardigheter.filter((f) => f.tekniker).map((f) => stridskonstTekniker(f)),
     el("h3", {}, "Lär dig en ny sekundär färdighet"),
     el("div", { class: "rad" },
       fardighetsVal("ny-sek", nySekundar, (v) => { nySekundar = v; rita(); }, (f) => f.typ !== "primar" && magiMojlig(f)),
@@ -816,6 +845,30 @@ function stegFardigheter(res) {
     nySekundarInfo(res),
     res.magiformaga.behovs ? magiformagaKontroll(res) : null,
   ];
+}
+
+// Stridskonster: spelaren sätter ihop sin stil av tekniker. Summan av deras grundkostnad,
+// avrundad uppåt, är EP per FV; 2 till om stilen inte är yrkesfärdighet (s. 68).
+function stridskonstTekniker(f) {
+  const valda = rp.stridskonstTekniker[f.nyckel] ?? [];
+  const summa = valda.reduce((a, t) => a + (R.fardigheter.stridskonstTekniker.find(([n]) => n === t)?.[1] ?? 0), 0);
+  const vaxla = (namn, pa) => {
+    const ny = pa ? [...valda, namn] : valda.filter((t) => t !== namn);
+    rp.stridskonstTekniker = { ...rp.stridskonstTekniker, [f.nyckel]: ny };
+    uppdatera();
+  };
+  const tal = (x) => x.toLocaleString("sv-SE", { minimumFractionDigits: 1 });
+  return el("div", { class: "stridskonst" },
+    el("h3", {}, `${f.namn}: stilens tekniker`),
+    el("p", { class: "hjalp" }, "Välj vilka tekniker stilen består av. FV gäller alla tekniker i stilen. Varje tekniks grundkostnad läggs ihop och avrundas uppåt; det blir EP per FV",
+      f.status === "yrke" ? ". " : ", plus 2 eftersom stilen inte är en yrkesfärdighet. ",
+      "† fungerar bara mot människoliknande motståndare (s. 68–70)."),
+    el("div", { class: "teknikrutnat" }, R.fardigheter.stridskonstTekniker.map(([namn, kostnad], i) => el("label", { class: "teknik" },
+      el("input", { type: "checkbox", id: `teknik-${i}`, checked: valda.includes(namn), onchange: (e) => vaxla(namn, e.target.checked) }),
+      el("span", {}, namn), el("span", { class: "teknikpris" }, tal(kostnad))))),
+    el("p", { class: "summering" }, valda.length
+      ? `Grundkostnad ${tal(summa)}, avrundat uppåt ${Math.ceil(summa)}${f.status === "yrke" ? "" : `, plus 2 = ${f.epPerFV}`} EP per FV.`
+      : "Inga tekniker valda än. Välj minst en innan du höjer FV."));
 }
 
 // ------------------------------------------------------------ rollformuläret
@@ -894,6 +947,7 @@ function saknasPerSteg(res) {
     // Bytet görs i en dialog i samma steg som slaget, så rollpersonen skickas inte tillbaka till steg 3
     else (iYrke || iExtra ? lista.egenskaper : lista.fardigheter).push("Magiförmågeslaget misslyckades: byt magiskolan mot en annan färdighet");
   }
+  for (const f of res.fardigheter.filter((x) => x.tekniker && !x.tekniker.length)) lista.fardigheter.push(`${f.namn}: välj stilens tekniker`);
   if (rp.svardshand.slag === null && !(res.sarskildFormaga?.regel ?? []).some((d) => d.typ === "svardshand")) lista.svardshand.push("Slaget för svärdshand");
   if (rp.socialtStand.slag === null && !rp.socialtStand.valt) lista.stand.push("Slaget för socialt stånd");
   if (rp.startkapital.slag === null) lista.kapital.push("Slaget för startkapital");
@@ -960,7 +1014,6 @@ function fordelaEP() {
   rp.fardigheter = {};
   provar = true;
   const borjan = rakna();
-  const pris = R.fardigheter.kostnad;
   const vikt = {};
   for (const f of borjan.fardigheter) {
     const def = fardighetAv(R, f.nyckel);
@@ -970,7 +1023,7 @@ function fordelaEP() {
     else if (f.status === "sekundar") vikt[f.nyckel] = 3;
     else vikt[f.nyckel] = Math.max(0.3, 1 + (ge - 10) / 5);
   }
-  const epPerFV = (f) => (f.status === "sekundar" && fardighetAv(R, f.nyckel).typ === "magiskola" ? pris.magiskolaSekundar : pris[f.status] ?? pris.sekundar);
+  const epPerFV = (f) => f.epPerFV || 99;
   const stopp = new Set();
   for (let varv = 0; varv < 500; varv++) {
     const res = rakna();
@@ -1096,7 +1149,10 @@ function rita() {
       index > 0 ? el("button", { type: "button", class: "knapp", onclick: () => { aktivtSteg = STEG[index - 1].id; uppdatera(); } }, `← ${STEG[index - 1].namn}`) : el("span"),
       index < STEG.length - 1 ? el("button", { type: "button", class: "knapp primar", disabled: index + 1 > grans, onclick: () => { aktivtSteg = STEG[index + 1].id; uppdatera(); } }, `${STEG[index + 1].namn} →`) : el("span")));
   $("#formular").replaceChildren(rollformular(res));
-  magiDialog(res);
+  // Dialogen visas först när tärningen har landat
+  if (nyssSlaget === "magiformaga") setTimeout(() => magiDialog(raknaRollperson(R, motorIndata())), 900);
+  else if (!rullar) magiDialog(res);
+  nyssSlaget = null;
 }
 
 function bpForSteg(id, res) {
