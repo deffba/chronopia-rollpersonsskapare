@@ -908,8 +908,9 @@ function stridskonstTekniker(f, res) {
     rp.stridskonstTekniker = { ...rp.stridskonstTekniker, [f.nyckel]: ny };
     uppdatera();
   };
-  // En teknik till höjer priset för alla FV över baschansen; den går inte att välja om EP inte räcker
-  const merEP = (kostnad) => (f.fv - f.start) * (Math.ceil(summa + kostnad) + tillagg) - f.ep;
+  // En teknik till höjer priset för alla FV över baschansen; den går inte att välja om EP inte räcker.
+  // Är inget FV köpt än räknas det första, eftersom stilen annars inte går att höja alls.
+  const merEP = (kostnad) => Math.max(f.fv - f.start, 1) * (Math.ceil(summa + kostnad) + tillagg) - f.ep;
   const tal = (x) => x.toLocaleString("sv-SE", { minimumFractionDigits: 1 });
   const stil = f.nyckel.split(":")[1] ?? "";
   const summering = el("p", { class: "summering" }, valda.length
@@ -931,7 +932,7 @@ function stridskonstTekniker(f, res) {
       onchange: (e) => bytStilnamn(f.nyckel, e.target.value.trim()) })),
     el("p", { class: "hjalp" }, "Välj vilka tekniker stilen består av. FV gäller alla tekniker i stilen. Varje tekniks grundkostnad läggs ihop och avrundas uppåt; det blir EP per FV",
       tillagg ? ", plus 2 eftersom stilen inte är en yrkesfärdighet. " : ". ",
-      "Tekniker som skulle kosta mer EP än du har kvar går inte att välja. † fungerar bara mot människoliknande motståndare (s. 68–70)."),
+      "Tekniker som skulle göra stilen dyrare än du har EP till går inte att välja (minst ett köpt FV räknas). † fungerar bara mot människoliknande motståndare (s. 68–70)."),
     el("div", { class: "teknikrutnat" }, lista.map(([namn, kostnad], i) => {
       const text = R.fardigheter.stridskonstBeskrivning?.[namn];
       const vald = valda.includes(namn);
@@ -1198,14 +1199,21 @@ function saknasPerSteg(res) {
 
 function saknas(res) {
   const perSteg = saknasPerSteg(res);
-  return STEG.flatMap((st, i) => perSteg[st.id].map((t) => `${t} (steg ${i + 1})`));
+  return synligaSteg(res).flatMap((st, i) => perSteg[st.id].map((t) => `${t} (steg ${i + 1})`));
 }
 
 // Första steget som har obligatoriska val kvar; senare steg går inte att öppna.
 function forstaOfardiga(res) {
   const perSteg = saknasPerSteg(res);
-  const i = STEG.findIndex((st) => perSteg[st.id].length);
-  return i === -1 ? STEG.length : i;
+  const lista = synligaSteg(res);
+  const i = lista.findIndex((st) => perSteg[st.id].length);
+  return i === -1 ? lista.length : i;
+}
+
+// Steget Besvärjelser visas bara för rollpersoner som kan lära sig magi
+function synligaSteg(res) {
+  const kanMagi = (res.yrke.magiker || res.magiformaga.lyckat) && skolFV(res.fardigheter).allman > 0;
+  return kanMagi ? STEG : STEG.filter((s) => s.id !== "besvarjelser");
 }
 
 // Föreslagna grundvärden: högst där yrkets färdigheter och rasens styrkor ligger (s. 18–29).
@@ -1359,7 +1367,9 @@ function visaNotis(text) {
 // ------------------------------------------------------------ ritning
 function rita() {
   const res = raknaRollperson(R, motorIndata());
+  const STEG = synligaSteg(res); // stegen som visas just nu
   const grans = forstaOfardiga(res);
+  if (!STEG.some((s) => s.id === aktivtSteg)) aktivtSteg = "fardigheter"; // ett dolt steg lämnas
   // Står man på ett steg bortom gränsen (t.ex. efter att ha ändrat yrke) flyttas man tillbaka
   // (inte medan en magiskola byts ut i dialogen, då är den valfria färdigheten tillfälligt ofullständig)
   if (!magiByte && STEG.findIndex((s) => s.id === aktivtSteg) > grans) aktivtSteg = STEG[grans].id;
