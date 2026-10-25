@@ -627,6 +627,9 @@ const tarningsIkon = () => {
 // Tärningsrutan ligger i slagfältet. Vid klick snurrar tärningen medan "Slår …" pulserar;
 // sedan tonar rutan ut och slaget visas i fältet i stället.
 const TONING = 400;
+// Rutans text. Rutan kan visa "Slå 2T6", "Slår …" och slaget; de två första ligger osynliga i samma ruta
+// (via CSS), så att rutan är lika bred som sin längsta text och inte ändrar storlek under slaget.
+const rutText = (synlig, text, klass = "") => el("span", { class: `rutetext ${klass}`.trim(), "data-a": text, "data-b": "Slår …" }, el("span", {}, synlig));
 function tarningsKnapp(id, text, sla) {
   const rullarNu = rullar === id;
   return el("button", {
@@ -639,7 +642,7 @@ function tarningsKnapp(id, text, sla) {
       if (tid > TONING * 2) setTimeout(() => document.getElementById(`${id}-sla`)?.classList.add("tona-ut"), tid - TONING);
       setTimeout(() => { rullar = null; nyssSlaget = id; sla(); }, tid);
     },
-  }, tarningsIkon(), el("span", { class: rullarNu ? "pulsera" : null }, rullarNu ? "Slår …" : text));
+  }, tarningsIkon(), rutText(rullarNu ? "Slår …" : text, text, rullarNu ? "pulsera" : ""));
 }
 // Med manuella slag skriver spelaren in slaget och bekräftar det med tärningsrutan
 function bekraftaSlag(id, min, max, satt) {
@@ -672,8 +675,8 @@ const inteSlaget = () => (manuellaSlag ? "Skriv in slaget och bekräfta det." : 
 // så att siffran inte flyttar sig.
 const lastFalt = (id, varde) => el("input", { type: typeof varde === "number" ? "number" : "text", id, class: "tal last", value: varde, readonly: true, "aria-readonly": "true", tabindex: -1 });
 // Tärningsrutan när slaget har landat: tärningen ligger kvar på samma plats och slaget står bredvid den
-const landatSlag = (id, varde) => el("div", { class: "knapp tarningsknapp i-falt landad" + (nyssSlaget === id ? " nytt" : ""), id: `${id}-slag`, "data-varde": varde },
-  tarningsIkon(), el("span", { class: "slagvarde" }, varde));
+const landatSlag = (id, varde, text) => el("div", { class: "knapp tarningsknapp i-falt landad" + (nyssSlaget === id ? " nytt" : ""), id: `${id}-slag`, "data-varde": varde },
+  tarningsIkon(), rutText(varde, text, "slagvarde"));
 // Resultatet under slaget; det lyser upp när tärningen nyss har landat
 const resultat = (id, text) => el("div", { class: "resultat" },
   el("span", { class: "etikett" }, "Resultat"), el("p", { class: "summering" + (nyssSlaget === id ? " nytt" : "") }, text));
@@ -695,7 +698,7 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
       bonuslista,
       el("div", { class: "rad" },
         bpFaltet("BP lagda", lastFalt(`${id}-bp`, s.bp)),
-        falt(`Slag (${tarning})`, landatSlag(id, s.slag)),
+        falt(`Slag (${tarning})`, landatSlag(id, s.slag, `Slå ${tarning}`)),
         bonusfalt),
       resultat(id, tolkning),
     ];
@@ -857,7 +860,7 @@ function magiformagaKontroll(res) {
     el("p", {}, `Slå 1T100. Slaget${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)}` : ""} måste bli högst ${m.chans}, det vill säga (INT+PSY)/2 avrundat uppåt (s. 106). Det görs en gång.`),
     m.slag === null ? magiRad(m, satt)
       : el("div", { class: "rad" },
-        falt("Slag (1T100)", landatSlag("magiformaga", m.slag)),
+        falt("Slag (1T100)", landatSlag("magiformaga", m.slag, "Slå 1T100")),
         m.mod ? falt("Modifikation", lastFalt("magiformaga-mod", fmtMod(m.mod))) : null),
     m.slag !== null ? resultat("magiformaga", `${m.slag}${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)} = ${m.slag + m.mod}` : ""} ${m.lyckat ? "≤" : ">"} ${m.chans}: ${m.lyckat ? "Lyckat. Rollpersonen kan lära sig magi." : "Misslyckat. Rollpersonen kan inte lära sig magi."}`) : null));
 }
