@@ -624,7 +624,7 @@ const tarningsIkon = () => {
     + [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="currentColor"/>`).join("");
   return svg;
 };
-// Tärningsrutan ligger i slagfältet. Vid klick snurrar tärningen medan "Tärningen är kastad!" pulserar;
+// Tärningsrutan ligger i slagfältet. Vid klick snurrar tärningen medan "Slår …" pulserar;
 // sedan tonar rutan ut och slaget visas i fältet i stället.
 const TONING = 400;
 function tarningsKnapp(id, text, sla) {
@@ -639,7 +639,7 @@ function tarningsKnapp(id, text, sla) {
       if (tid > TONING * 2) setTimeout(() => document.getElementById(`${id}-sla`)?.classList.add("tona-ut"), tid - TONING);
       setTimeout(() => { rullar = null; nyssSlaget = id; sla(); }, tid);
     },
-  }, tarningsIkon(), el("span", { class: rullarNu ? "pulsera" : null }, rullarNu ? "Tärningen är kastad!" : text));
+  }, tarningsIkon(), el("span", { class: rullarNu ? "pulsera" : null }, rullarNu ? "Slår …" : text));
 }
 // Med manuella slag skriver spelaren in slaget och bekräftar det med tärningsrutan
 function bekraftaSlag(id, min, max, satt) {
