@@ -3,7 +3,7 @@ import {
   GRUNDEGENSKAPER, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor, tvahandsvapen,
   paborjad, standsvarde, vapengrupp, passarBland, skolFV, besvarjelsePris, kanAnvandaVapen, varukatalog,
 } from "./regelmotor.js";
-import { rollformularSidor } from "./formular.js";
+import { rollformularSidor, delaRegelsidor } from "./formular.js";
 import { tillFil, franFil, TOMT_SPEL } from "./sparformat.js";
 
 const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning"];
@@ -94,6 +94,7 @@ let ritatSteg = null; // steget som visades senast; byts det skrollas sidan upp
 let sparadVidStart = null; // rollpersonen från förra besöket; sidan börjar ändå alltid med en ny
 let vy = "steg"; // "steg" eller "formular" (rollformuläret för utskrift)
 let blacksnal = false; // rollformuläret utan färgade ytor
+let medRegler = false; // rollformuläret med sidorna Färdigheterna i korthet
 // Innan en ras är vald räknar motorn som för en människa, men ingen ras visas som vald
 const rasId = () => rp.ras || "manniska";
 
@@ -1473,10 +1474,17 @@ function ritaFormularVy(res) {
       el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
       el("label", {}, el("input", { type: "checkbox", id: "blacksnal", checked: blacksnal,
         onchange: (e) => { blacksnal = e.target.checked; vyEl.classList.toggle("rf-blacksnal", blacksnal); } }), "Spara bläck"),
+      el("label", {}, el("input", { type: "checkbox", id: "med-regler", checked: medRegler,
+        onchange: (e) => { medRegler = e.target.checked; rita(); } }), "Ta med färdigheterna i korthet"),
       el("p", { class: "hjalp" }, "Skriv direkt i de gula fälten. Det sparas i rollpersonen och följer med när du laddar ner filen. ",
         "Grundegenskaper, FV och KP ändras i stegen. Välj A4 och skala 100 % när du skriver ut.")),
     ...(kvar.length ? [el("div", { class: "saknaslista rf-ofardig" }, el("strong", {}, "Rollpersonen är inte klar än"), el("ul", {}, kvar.map((t) => el("li", {}, t))))] : []),
-    el("div", { class: "rf-sidor" }, rollformularSidor({ R, rp, res, el, sakNamn, andrat: sparaFormular })));
+    el("div", { class: "rf-sidor" }, rollformularSidor({ R, rp, res, el, sakNamn, andrat: sparaFormular, medRegler })));
+  if (medRegler) {
+    delaRegelsidor(vyEl, el);
+    // Texternas höjd beror på typsnitten, så sidorna delas om när de har laddats
+    document.fonts?.ready.then(() => { if (vy === "formular" && medRegler) delaRegelsidor(vyEl, el); });
+  }
 }
 
 // Vid stegbyte glider sidan snabbt upp till toppen i stället för att hoppa dit
