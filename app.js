@@ -596,7 +596,12 @@ const tarningsIkon = () => {
     + [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="currentColor"/>`).join("");
   return svg;
 };
-function tarningsKnapp(id, text, sla) {
+function tarningsKnapp(id, text, sla, kastad = false) {
+  // När slaget är gjort ligger knappen kvar, gråad, och tärningen gör en studs om den nyss landade
+  if (kastad) {
+    return el("button", { type: "button", class: "knapp tarningsknapp kastad" + (nyssSlaget === id ? " nytt" : ""), id: `${id}-sla`, disabled: true },
+      tarningsIkon(), el("span", {}, "Tärningen är kastad!"));
+  }
   return el("button", {
     type: "button", class: "knapp tarningsknapp" + (rullar === id ? " rullar" : ""), id: `${id}-sla`,
     disabled: rullar !== null, "aria-busy": rullar === id ? "true" : null,
@@ -607,8 +612,11 @@ function tarningsKnapp(id, text, sla) {
     },
   }, tarningsIkon(), el("span", {}, rullar === id ? "Slår …" : text));
 }
-// Raden med slagets utfall; den poppar fram och lyser upp när slaget nyss har landat
-const slagRad = (id, text) => el("p", { class: "hjalp slagrad" + (nyssSlaget === id ? " nytt" : "") }, tarningsIkon(), el("span", {}, text));
+// Låst fält som visar ett gjort val (lagda BP, slaget)
+const lastFalt = (id, varde) => el("input", { type: "text", id, class: "tal last", value: varde, readonly: true, "aria-readonly": "true" });
+// Resultatet under slaget; det lyser upp när tärningen nyss har landat
+const resultat = (id, text) => el("div", { class: "resultat" },
+  el("span", { class: "etikett" }, "Resultat"), el("p", { class: "summering" + (nyssSlaget === id ? " nytt" : "") }, text));
 
 // bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget; de visas som punkter och summeras i ett eget fält
 function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, bonusar = []) {
@@ -622,8 +630,12 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
     return [
       el("p", {}, hjalp),
       bonuslista,
-      slagRad(id, `Lagda BP: ${s.bp}. Slag: ${s.slag}.${bonus ? ` Bonus: ${fmtMod(bonus)}.` : ""} Slaget är gjort och kan inte göras om.`),
-      el("p", { class: "summering" + (nyssSlaget === id ? " nytt" : "") }, tolkning),
+      el("div", { class: "rad" },
+        falt("BP lagda", lastFalt(`${id}-bp`, s.bp)),
+        falt(`Slag (${tarning})`, lastFalt(`${id}-slag`, s.slag)),
+        bonus ? falt("Bonus", lastFalt(`${id}-bonus`, fmtMod(bonus))) : null,
+        tarningsKnapp(id, "", null, true)),
+      resultat(id, tolkning),
     ];
   }
   return [
@@ -774,13 +786,19 @@ function magiformagaKontroll(res) {
     rp.magiformaga = { slag: v };
     uppdatera();
   };
-  return el("div", { class: "rutor" }, el("div", {},
+  return el("div", { class: "rutor" }, el("div", { class: "magislag" },
     el("h3", {}, "Magiförmågeslag"),
     el("p", { class: "hjalp" }, "Rollpersonen har en magiskola men är inte magiker. Då måste ett magiförmågeslag lyckas. Misslyckas det kan rollpersonen inte lära sig magi, och magiskolan måste bytas mot en annan färdighet."),
     el("p", {}, `Slå 1T100. Slaget${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)}` : ""} måste bli högst ${m.chans}, det vill säga (INT+PSY)/2 avrundat uppåt (s. 106). Det görs en gång.`),
     m.slag === null ? el("div", { class: "rad" },
-      tarningsKnapp("magiformaga", "Slå 1T100", () => satt(slaT(1, 100)))) : slagRad("magiformaga", `Slag: ${m.slag}. Slaget är gjort och kan inte göras om.`),
-    m.slag !== null ? el("p", { class: "summering" + (nyssSlaget === "magiformaga" ? " nytt" : "") }, m.lyckat ? "Lyckat. Rollpersonen kan lära sig magi." : "Misslyckat. Rollpersonen kan inte lära sig magi.") : null));
+      falt("Slag (1T100)", tal("magiformaga-slag", null, (v) => { if (v) satt(v); }, { min: 1, max: 100 })),
+      m.mod ? falt("Modifikation", lastFalt("magiformaga-mod", fmtMod(m.mod))) : null,
+      tarningsKnapp("magiformaga", "Slå 1T100", () => satt(slaT(1, 100))))
+      : el("div", { class: "rad" },
+        falt("Slag (1T100)", lastFalt("magiformaga-slag", m.slag)),
+        m.mod ? falt("Modifikation", lastFalt("magiformaga-mod", fmtMod(m.mod))) : null,
+        tarningsKnapp("magiformaga", "", null, true)),
+    m.slag !== null ? resultat("magiformaga", `${m.slag}${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)} = ${m.slag + m.mod}` : ""} ${m.lyckat ? "≤" : ">"} ${m.chans}: ${m.lyckat ? "Lyckat. Rollpersonen kan lära sig magi." : "Misslyckat. Rollpersonen kan inte lära sig magi."}`) : null));
 }
 
 function stegSvardshand(res) {
@@ -1439,10 +1457,6 @@ function bpForSteg(id, res) {
   return v ? `${v} BP` : "";
 }
 
-function ritaHusregler() {
-  $("#husregler").replaceChildren(...R.husregler.map((h) => el("li", {}, h.beslut, el("span", { class: "sida" }, ` s. ${h.sida.join(", ")}`))));
-}
-
 async function start() {
   const data = await Promise.all(FILER.map((n) => fetch(`regler/${n}.json`).then((r) => {
     if (!r.ok) throw new Error(`regler/${n}.json`);
@@ -1520,7 +1534,6 @@ async function start() {
   document.addEventListener("focusin", (e) => { const k = e.target.closest?.(".info"); if (k) visa(k); else dolj(); });
   document.addEventListener("click", (e) => { const k = e.target.closest?.(".info"); if (k) { e.stopPropagation(); visa(k); } else dolj(); }, true);
   window.addEventListener("scroll", dolj, { passive: true });
-  ritaHusregler();
   rita();
 }
 

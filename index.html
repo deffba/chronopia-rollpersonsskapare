@@ -244,13 +244,17 @@ input.tal[readonly] { min-width: 0; background: var(--yta-2); color: var(--accen
   70% { transform: rotate(1260deg) scale(1.05); }
   100% { transform: rotate(1440deg) scale(1); }
 }
-.slagrad { display: flex; align-items: center; gap: 6px; }
-.slagrad .tarning { color: var(--accent-text); }
-.slagrad.nytt .tarning { animation: bop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
-.summering.nytt, .slagrad.nytt { animation: markera 1.8s ease-out both; border-radius: var(--rad); }
+.tarningsknapp.kastad { opacity: .55; cursor: default; }
+.tarningsknapp.kastad.nytt .tarning { animation: bop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+input.tal.last { background: var(--yta-2); color: var(--dampad); font-weight: 400; }
+.resultat { display: grid; gap: 2px; }
+.magislag { display: grid; gap: 10px; }
+.magislag > * { margin: 0; }
+.resultat .summering { padding-top: 0; }
+.summering.nytt { animation: markera 1.8s ease-out both; border-radius: var(--rad); }
 @keyframes bop { 0% { transform: scale(.4) rotate(-30deg); } 60% { transform: scale(1.35) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
 @keyframes markera { 0% { background: var(--accent-svag); box-shadow: 0 0 0 6px var(--accent-svag); } 100% { background: transparent; box-shadow: 0 0 0 6px transparent; } }
-@media (prefers-reduced-motion: reduce) { .tarningsknapp.rullar .tarning, .slagrad.nytt .tarning { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .tarningsknapp.rullar .tarning, .tarningsknapp.kastad.nytt .tarning { animation: none; } }
 /* Dialog mitt på skärmen; sidan bakom mörkas och kan inte rullas */
 body.dialog-oppen { overflow: hidden; }
 .dialog-bakgrund { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgb(0 0 0 / .55); }
@@ -422,10 +426,6 @@ option.grupprubrik { font-weight: 700; }
 <div class="layout">
   <nav class="stegrail" aria-label="Steg">
     <ol id="steg"></ol>
-    <details class="husregler">
-      <summary>Husregler och tolkningar</summary>
-      <ul id="husregler"></ul>
-    </details>
   </nav>
   <main id="arbetsyta" class="kort" tabindex="-1"><p>Läser in reglerna …</p></main>
   <aside class="sida-formular kort" id="formular" aria-label="Rollformulär"></aside>
