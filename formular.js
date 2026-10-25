@@ -35,12 +35,16 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
   }, { inputmode: "numeric", "aria-label": `erf för ${namn}` });
 
   const bNiva = (fv) => slaUpp(R.fardigheter.bNivaer, fv);
+  // Sidan där färdighetens regler står, i parentes efter namnet
+  const sidaFor = (nyckel) => fardighetAv(R, nyckel)?.sida;
+  const sidhanvisning = (sida) => (sida ? el("small", { class: "rf-sida-ref" }, `(s. ${sida})`) : null);
   const tak = (f) => (f.status === "sekundar" ? `max ${g[f.grundegenskap] ?? "–"}` : null);
   const fardighetsrad = (f) => el("div", { class: "rf-rad" + (f.kategoriB ? " kat-b" : "") },
     el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock", title: "Bocka vid första lyckade slaget efter sömn (s. 74)" }),
       el("span", { class: "rf-namntext" }, f.namn),
       f.kategoriB ? el("small", {}, bNiva(f.fv)) : null,
-      tak(f) ? el("small", {}, tak(f)) : null),
+      tak(f) ? el("small", {}, tak(f)) : null,
+      sidhanvisning(sidaFor(f.nyckel))),
     el("span", { class: "rf-cell rf-erf" + (f.kategoriB ? " b" : "") }, erfFalt(f.nyckel, f.namn)),
     el("span", { class: "rf-cell rf-tal" }, f.fv));
   // Tomma rader för det som lärs under spel; bockrutan bara där färdigheter kan få EP
@@ -102,7 +106,8 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
                 inmatning(spel.hjaltepoang || "", (v) => { spel.hjaltepoang = Math.max(0, heltal(v) ?? 0); }, { inputmode: "numeric", "aria-label": "Hjältepoäng" })),
               lista("rf-fardigheter", rubrik("Yrkesfärdigheter", ["erf", "FV"], 16), listor.yrke.map(fardighetsrad), RADER.yrke),
               lista("rf-sprak", rubrik("Språk (INT)", ["FV", "B-FV"], 17), sprak.slice(0, RADER.sprak).map((f) => el("div", { class: "rf-rad" },
-                el("span", { class: "rf-cell rf-namn" }, f.namn), el("span", { class: "rf-cell rf-tal" }, f.fv), el("span", { class: "rf-cell rf-tal" }, bNiva(f.fv)))), RADER.sprak, 3, false)),
+                el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-namntext" }, f.namn), sidhanvisning(sidaFor(f.nyckel))),
+                el("span", { class: "rf-cell rf-tal" }, f.fv), el("span", { class: "rf-cell rf-tal" }, bNiva(f.fv)))), RADER.sprak, 3, false)),
             lista("rf-fardigheter rf-sek", rubrik("Sek. färdigheter", ["erf", "FV"], 18), listor.sekundar.map(fardighetsrad), RADER.sekundar))))),
     el("div", { class: "rf-band rf-fot" }, "1"));
 
@@ -115,7 +120,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
     const v = katalog[namn] ?? {};
     const f = vapenFV[namn];
     return el("div", { class: "rf-rad" },
-      el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, namn)),
+      el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, namn), sidhanvisning(sidaFor("vapen:" + namn))),
       el("span", { class: "rf-cell rf-tal" }, f?.fv ?? ""),
       el("span", { class: "rf-cell rf-tal" }, v.skada ?? ""),
       el("span", { class: "rf-cell rf-tal" }, v.bv ?? ""),
@@ -189,7 +194,8 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
           lista("rf-vapen", rubrik("Vapen/sköld", ["FV", "Skada", "BV", "Längd", "Räckv", "Erf", "Vikt"]), vapenrader, Math.max(RADER.vapen, vapenrader.length), 8)),
         el("div", { class: "rf-hoger2" },
           lista("rf-besvarjelser", rubrik("Besvärjelser", ["erf", "FV"]), res.besvarjelser.map((b) => el("div", { class: "rf-rad" },
-            el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, b.namn), el("small", {}, `SV ${b.sv}`)),
+            el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, b.namn), el("small", {}, `SV ${b.sv}`),
+              sidhanvisning(R.besvarjelser.lista.find((x) => x.id === b.id)?.sida)),
             el("span", { class: "rf-cell rf-erf" }, erfFalt(b.nyckel, b.namn)),
             el("span", { class: "rf-cell rf-tal" }, b.fv))), Math.max(RADER.besvarjelser, res.besvarjelser.length)),
           el("div", { class: "rf-lista rf-pengar" }, rubrik("Pengar", ["gm", "sm", "km"], 21),
@@ -212,7 +218,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
         el("p", {}, el("strong", {}, `Yrkesförmåga (${res.yrke.namn.toLowerCase()}): `), res.yrke.yrkesformaga),
         stilar.map((f) => el("p", {}, el("strong", {}, `${f.namn}, tekniker: `), f.tekniker.join(", ")))),
       overflode.length ? el("div", { class: "rf-lista rf-overflode" }, rubrik("Fler färdigheter", ["Typ", "erf", "FV"]), overflode.map((f) => el("div", { class: "rf-rad" },
-        el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, f.namn), f.kategoriB ? el("small", {}, bNiva(f.fv)) : null),
+        el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, f.namn), f.kategoriB ? el("small", {}, bNiva(f.fv)) : null, sidhanvisning(sidaFor(f.nyckel))),
         el("span", { class: "rf-cell" }, arSprak(f) ? "Språk" : STATUSNAMN[f.status]),
         el("span", { class: "rf-cell rf-erf" + (f.kategoriB ? " b" : "") }, arSprak(f) ? null : erfFalt(f.nyckel, f.namn)),
         el("span", { class: "rf-cell rf-tal" }, f.fv)))) : null,
