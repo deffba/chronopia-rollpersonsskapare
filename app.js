@@ -81,6 +81,7 @@ let langst = 0; // längsta steg spelaren har kommit till; senare steg är släc
 let giltig; // senaste rollperson som följer alla regler
 let nySekundar = ""; // påbörjat val av ny sekundär färdighet
 let provar = false;
+let magiByte = null; // platsen där en magiskola byts ut efter ett misslyckat magiförmågeslag
 // Innan en ras är vald räknar motorn som för en människa, men ingen ras visas som vald
 const rasId = () => rp.ras || "manniska";
 
@@ -658,13 +659,60 @@ function magiMojlig(f) {
   return rakna().magiformaga.lyckat;
 }
 
+// Platser där rollpersonen har en magiskola som den inte får lära sig (yrkes-, extra- eller sekundär färdighet)
+function magiPlatser() {
+  const arSkola = (k) => fardighetAv(R, k || "x")?.typ === "magiskola";
+  return [
+    ...(arSkola(rp.valfri) ? [{ typ: "valfri" }] : []),
+    ...rp.extraYrkesfardigheter.flatMap((k, i) => (arSkola(k) ? [{ typ: "extra", i }] : [])),
+    ...rp.sekundara.filter(arSkola).map((k) => ({ typ: "sekundar", nyckel: k })),
+  ];
+}
+
+// Misslyckas magiförmågeslaget öppnas en dialog där magiskolan byts mot en annan färdighet direkt
+function magiDialog(res) {
+  $("#magidialog")?.remove();
+  const misslyckat = !res.magiformaga.lyckat && rp.magiformaga?.slag != null && !yrkeAv(R, rp.yrke).magiker;
+  if (!magiByte && misslyckat) magiByte = magiPlatser()[0] ?? null;
+  if (!misslyckat) magiByte = null;
+  document.body.classList.toggle("dialog-oppen", Boolean(magiByte));
+  if (!magiByte) return;
+  const m = res.magiformaga;
+  const plats = magiByte;
+  const varde = plats.typ === "valfri" ? rp.valfri : plats.typ === "extra" ? rp.extraYrkesfardigheter[plats.i] : plats.nyckel;
+  const skolaKvar = fardighetAv(R, varde || "x")?.typ === "magiskola";
+  const klar = !skolaKvar && !paborjad(varde ?? "");
+  const satt = (v) => {
+    if (plats.typ === "valfri") rp.valfri = v;
+    else rp.extraYrkesfardigheter[plats.i] = v;
+    uppdatera();
+  };
+  const val = plats.typ === "sekundar"
+    ? el("p", {}, el("button", { type: "button", class: "knapp", onclick: () => {
+      rp.sekundara = rp.sekundara.filter((k) => k !== plats.nyckel); delete rp.fardigheter[plats.nyckel]; magiByte = null; uppdatera();
+    } }, `Ta bort ${fardighetAv(R, plats.nyckel).namn}`))
+    : falt(plats.typ === "valfri" ? "Ny valfri yrkesfärdighet" : "Ny extra yrkesfärdighet",
+      fardighetsVal("magibyte", skolaKvar ? "" : varde, satt,
+        (f) => f.typ !== "magiskola" && (plats.typ !== "valfri" || f.typ !== "primar"), { yrke: true }));
+  const dialog = el("div", { id: "magidialog", class: "dialog-bakgrund" },
+    el("div", { class: "dialog", role: "dialog", "aria-modal": "true", "aria-labelledby": "magidialog-rubrik" },
+      el("h2", { id: "magidialog-rubrik" }, "Magiförmågeslaget misslyckades"),
+      el("p", {}, `Slaget blev ${m.slag}${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)}` : ""}, men måste vara högst ${m.chans}. Rollpersonen kan inte lära sig magi (s. 106).`),
+      el("p", {}, plats.typ === "sekundar"
+        ? `${fardighetAv(R, plats.nyckel).namn} måste tas bort från de sekundära färdigheterna.`
+        : `${plats.typ === "valfri" ? "Den valfria yrkesfärdigheten" : "Den extra yrkesfärdigheten"} var en magiskola. Välj en annan färdighet i stället.`),
+      val,
+      plats.typ === "sekundar" ? null : el("div", { class: "dialog-fot" },
+        el("button", { type: "button", class: "knapp primar", id: "magidialog-klar", disabled: !klar, onclick: () => { magiByte = null; rita(); } }, "Klar"))));
+  document.body.append(dialog);
+  if (!dialog.contains(document.activeElement)) dialog.querySelector("select, button")?.focus();
+}
+
 function magiformagaKontroll(res) {
   const m = res.magiformaga;
   const satt = (v) => {
     rp.magiformaga = { slag: v };
     uppdatera();
-    const ny = rakna().magiformaga;
-    if (!ny.lyckat) visaNotis(`Magiförmågeslaget misslyckades: ${v}${ny.mod ? ` ${ny.mod > 0 ? "+" : "−"} ${Math.abs(ny.mod)}` : ""} mot högst ${ny.chans}. Byt magiskolan mot en annan färdighet.`);
   };
   return el("div", { class: "rutor" }, el("div", {},
     el("h3", {}, "Magiförmågeslag"),
@@ -843,7 +891,8 @@ function saknasPerSteg(res) {
     const iYrke = yrkesNycklar().some(arSkola);
     const iExtra = rp.extraYrkesfardigheter.some(arSkola);
     if (rp.magiformaga?.slag == null) (iYrke || iExtra ? lista.egenskaper : lista.fardigheter).push("Magiförmågeslaget");
-    else (iYrke ? lista.yrke : iExtra ? lista.extra : lista.fardigheter).push("Magiförmågeslaget misslyckades: byt magiskolan mot en annan färdighet");
+    // Bytet görs i en dialog i samma steg som slaget, så rollpersonen skickas inte tillbaka till steg 3
+    else (iYrke || iExtra ? lista.egenskaper : lista.fardigheter).push("Magiförmågeslaget misslyckades: byt magiskolan mot en annan färdighet");
   }
   if (rp.svardshand.slag === null && !(res.sarskildFormaga?.regel ?? []).some((d) => d.typ === "svardshand")) lista.svardshand.push("Slaget för svärdshand");
   if (rp.socialtStand.slag === null && !rp.socialtStand.valt) lista.stand.push("Slaget för socialt stånd");
@@ -1013,7 +1062,8 @@ function rita() {
   const res = raknaRollperson(R, motorIndata());
   const grans = forstaOfardiga(res);
   // Står man på ett steg bortom gränsen (t.ex. efter att ha ändrat yrke) flyttas man tillbaka
-  if (STEG.findIndex((s) => s.id === aktivtSteg) > grans) aktivtSteg = STEG[grans].id;
+  // (inte medan en magiskola byts ut i dialogen, då är den valfria färdigheten tillfälligt ofullständig)
+  if (!magiByte && STEG.findIndex((s) => s.id === aktivtSteg) > grans) aktivtSteg = STEG[grans].id;
   langst = Math.max(langst, STEG.findIndex((s) => s.id === aktivtSteg));
   const oppna = Math.min(grans, langst);
   const rail = $("#steg");
@@ -1046,6 +1096,7 @@ function rita() {
       index > 0 ? el("button", { type: "button", class: "knapp", onclick: () => { aktivtSteg = STEG[index - 1].id; uppdatera(); } }, `← ${STEG[index - 1].namn}`) : el("span"),
       index < STEG.length - 1 ? el("button", { type: "button", class: "knapp primar", disabled: index + 1 > grans, onclick: () => { aktivtSteg = STEG[index + 1].id; uppdatera(); } }, `${STEG[index + 1].namn} →`) : el("span")));
   $("#formular").replaceChildren(rollformular(res));
+  magiDialog(res);
 }
 
 function bpForSteg(id, res) {
@@ -1099,7 +1150,7 @@ async function start() {
       return;
     }
     avbryt();
-    rp = TOM(); aktivtSteg = "ras"; langst = 0; nySekundar = ""; uppdatera();
+    rp = TOM(); aktivtSteg = "ras"; langst = 0; nySekundar = ""; magiByte = null; uppdatera();
   });
   $("#importfil").addEventListener("change", async (e) => { const fil = e.target.files[0]; if (fil) importera(await fil.text()); e.target.value = ""; });
   document.addEventListener("paste", (e) => {
