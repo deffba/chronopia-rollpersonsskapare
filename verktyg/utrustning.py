@@ -97,5 +97,13 @@ def bygg():
             "varor": ["Ryggsäck (20 liter)", "Skjorta", "Byxor", "Bälte", "Läderskor"],
             "vapenMaxPris": 100,
         },
+        # Bärförmåga (s. 100): börda upp till STY × gånge ger mod på förflyttning, SMI och CL i SMI-färdigheter
+        "barformaga": [
+            {"gange": 2, "mod": -1, "text": "Kan inte simma, springa eller sprinta."},
+            {"gange": 3, "mod": -2, "text": "Kan inte simma, springa eller sprinta."},
+            {"gange": 4, "mod": -4, "text": "Kan inte simma, springa eller sprinta."},
+            {"gange": 5, "mod": -6, "text": "Kan inte simma, springa eller sprinta."},
+            {"gange": 6, "mod": -8, "text": "Kan inte simma, springa eller sprinta, och inga SMI-baserade färdigheter kan användas."},
+        ],
         "sida": [38, 91, 92, 93, 98, 100, 101, 102],
     }

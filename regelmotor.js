@@ -67,13 +67,14 @@ export function raknaGrundegenskaper(regler, rp) {
   const varden = {};
   let bp = 0;
   const fel = [];
+  const forLaga = []; // slutvärden under 3 är inget regelbrott förrän grundvärdena köps i steg 6
   for (const g of GRUNDEGENSKAPER) {
     const grund = rp.grundvarden[g];
     const kostnad = regler.grundegenskaper.kostnad[String(grund)];
     if (kostnad === undefined) fel.push(`${g}: grundvärdet måste vara 3–18 (s. 27)`);
     bp += kostnad ?? 0;
     varden[g] = grund + ras.mod[g] + aldersmod[g] + (rp.egenskapsbonus?.[g] ?? 0);
-    if (varden[g] < regler.grundegenskaper.minstSlutvarde) fel.push(`${g} blir ${varden[g]}, men måste bli minst 3 (s. 27)`);
+    if (varden[g] < regler.grundegenskaper.minstSlutvarde) forLaga.push(`${g} blir ${varden[g]} efter ras och ålder, men måste bli minst 3: höj grundvärdet (s. 27)`);
   }
   const steg = rp.stoSteg ?? 0;
   const s = regler.grundegenskaper.sto;
@@ -81,7 +82,7 @@ export function raknaGrundegenskaper(regler, rp) {
   if (steg < 0) bp -= s.sankning[-steg - 1];
   varden.STO = ras.sto.normal + steg;
   if (varden.STO < ras.sto.min || varden.STO > ras.sto.max) fel.push(`STO måste ligga inom ${ras.sto.min}–${ras.sto.max} (s. 14, 28)`);
-  return { varden, bp, alderskategori: kat, fel };
+  return { varden, bp, alderskategori: kat, fel, forLaga };
 }
 
 // Härledda värden: KP per kroppsdel, skadebonus, förflyttning, storlek (s. 10, 28–29).
@@ -373,7 +374,7 @@ export function raknaRollperson(regler, indata) {
 
   return {
     ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, harledda, slag, magiformaga,
-    sarskildFormaga: sf.formaga, saknas: sf.saknas, vantar,
+    sarskildFormaga: sf.formaga, saknas: sf.saknas, vantar, forLagaEgenskaper: ge.forLaga,
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
@@ -451,37 +452,41 @@ export function varukatalog(regler) {
 // Inköp betalas med startkapitalet; startpaketet är gratis (s. 38)
 function raknaUtrustning(regler, rp, varden, startkapital, fel) {
   const U = regler.utrustning;
-  if (!U) return { kostnad: 0, kvar: startkapital, vikt: 0, saker: [] };
+  if (!U) return { kostnad: 0, kvar: startkapital, vikt: 0, saker: [], borda: 0, barformaga: varden.STY, belastning: null };
   const katalog = varukatalog(regler);
   const saker = [];
   let kostnad = 0;
-  let vikt = 0;
+  const lagg = (vara, namn, antal, gratis) => {
+    saker.push({ namn, antal, pris: gratis ? 0 : vara.pris, kategori: vara.kategori, gratis, vikt: Math.round((vara.vikt ?? 0) * antal * 10) / 10 });
+  };
   for (const [namn, antal] of Object.entries(rp.utrustning ?? {})) {
     if (!(antal > 0)) continue;
     const vara = katalog.find((x) => x.namn === namn);
     if (!vara) { fel.push(`Okänd vara: ${namn}`); continue; }
     kostnad += vara.pris * antal;
-    vikt += (vara.vikt ?? 0) * antal;
-    saker.push({ namn, antal, pris: vara.pris, kategori: vara.kategori, gratis: false });
+    lagg(vara, namn, antal, false);
   }
   const paket = rp.startpaket;
   if (paket?.valt) {
     for (const namn of U.startpaket.varor) {
-      vikt += katalog.find((x) => x.namn === namn)?.vikt ?? 0;
-      saker.push({ namn, antal: 1, pris: 0, kategori: "Startpaket", gratis: true });
+      const vara = katalog.find((x) => x.namn === namn);
+      if (vara) lagg(vara, namn, 1, true);
     }
     if (paket.vapen) {
       const vapen = katalog.find((x) => x.namn === paket.vapen);
       if (!vapen || !kanAnvandaVapen(regler, paket.vapen, varden)) fel.push(`${paket.vapen} kan inte användas av rollpersonen (s. 89)`);
       else if (vapen.pris > U.startpaket.vapenMaxPris) fel.push(`Startpaketets vapen får kosta högst ${U.startpaket.vapenMaxPris} sm`);
-      else {
-        vikt += vapen.vikt ?? 0;
-        saker.push({ namn: paket.vapen, antal: 1, pris: 0, kategori: "Startpaket", gratis: true });
-      }
+      else lagg(vapen, paket.vapen, 1, true);
     }
   }
   if (kostnad > startkapital) fel.push(`Inköpen kostar ${kostnad} sm men startkapitalet är ${startkapital} sm (s. 38)`);
-  return { kostnad, kvar: startkapital - kostnad, vikt: Math.round(vikt * 10) / 10, saker };
+  // Bärförmåga (s. 100): STY kg utan nackdelar. Kläder räknas inte, en buren rustning väger hälften.
+  const vikt = saker.reduce((a, x) => a + x.vikt, 0);
+  const borda = saker.reduce((a, x) => a + (x.kategori === "Kläder" ? 0 : x.kategori === "Rustning" ? x.vikt / 2 : x.vikt), 0);
+  const barformaga = varden.STY;
+  const belastning = borda <= barformaga ? null
+    : U.barformaga.find((r) => borda <= barformaga * r.gange) ?? { gange: null, mod: null, text: "Rollpersonen orkar inte bära så mycket." };
+  return { kostnad, kvar: startkapital - kostnad, vikt: Math.round(vikt * 10) / 10, borda: Math.round(borda * 10) / 10, barformaga, belastning, saker };
 }
 
 function takFor(regler, rp, nyckel, f, varden, fvHittills) {
