@@ -212,7 +212,9 @@ details.fakta > *:not(summary) { margin-top: 10px; }
 .klar { color: var(--ok); font-weight: 600; text-align: center; }
 .fellista ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; }
 .egenskaper { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 0; }
-.egenskaper > div { text-align: center; border: 1px solid var(--linje); border-radius: 6px; padding: 6px 0; background: var(--bg); }
+.egenskaper > div { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; border: 1px solid var(--linje); border-radius: 6px; padding: 6px 0 4px; background: var(--bg); }
+.egenskaper dd.egenskap-info, [data-stil="klassisk"] .egenskaper dd.egenskap-info { font: inherit; line-height: 1; margin-top: auto; }
+.egenskaper dd.egenskap-info .info { margin: 0; }
 .egenskaper dt { font-size: .7rem; font-weight: 700; letter-spacing: .06em; color: var(--dampad); }
 .egenskaper dd { margin: 0; font: 1.35rem var(--rubrik); font-variant-numeric: tabular-nums; }
 .nyckelvarden { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; margin: 0; font-size: .9rem; }
