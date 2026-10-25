@@ -1,10 +1,15 @@
+<!doctype html>
 <meta charset="utf-8">
 <title>Chronopia rollpersonsskapare</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Skapa rollpersoner till Chronopia (Drakar och Demoner) steg för steg enligt kapitlet Rollpersonen.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&family=Oswald:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap">
+<script>
+  // Valt utseende sätts innan sidan ritas, så att det inte blinkar till
+  try { if (localStorage.getItem("chronopia-stil") === "klassisk") document.documentElement.dataset.stil = "klassisk"; } catch { /* frivilligt */ }
+</script>
 <style>
 :root {
   --bg: #e9e7e2; --yta: #f6f5f1; --yta-2: #dfdcd5; --linje: #c5c0b5; --text: #22231f; --dampad: #5d5d55;
@@ -42,20 +47,20 @@ p { margin: 0; max-width: 68ch; }
 button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+/* Två rader: titeln överst, sedan stilväxeln till vänster och knapparna till höger */
 .topp {
-  display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between;
+  display: flex; flex-wrap: wrap; gap: 14px 16px; align-items: center;
   padding-block: 18px; border-bottom: 1px solid var(--linje); margin-bottom: 20px; max-width: 1480px; margin-inline: auto;
 }
-.topp .undertitel { color: var(--dampad); font: italic .95rem var(--serif); }
-.topp-verktyg { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-#bp-topp { font: 600 .9rem var(--sans); font-variant-numeric: tabular-nums; color: var(--accent-text); padding-inline: 8px; }
+.topp h1 { flex-basis: 100%; font-size: 2.6rem; }
+.topp-verktyg { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; margin-left: auto; }
 
 .layout {
   display: grid; gap: 20px; max-width: 1480px; margin-inline: auto;
   grid-template-columns: 220px minmax(0, 1fr) minmax(300px, 380px); align-items: start;
 }
-@media (max-width: 1180px) { .layout { grid-template-columns: 200px minmax(0, 1fr); } .sida-formular { grid-column: 1 / -1; } }
-@media (max-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 1180px) { .layout { grid-template-columns: 200px minmax(0, 1fr); } .sida-formular { grid-column: 2; } }
+@media (max-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr); } .sida-formular { grid-column: 1; } }
 
 .stegrail { position: sticky; top: 16px; }
 @media (max-width: 760px) { .stegrail { position: static; } }
@@ -81,7 +86,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .kort { background: var(--yta); border: 1px solid var(--linje); border-radius: 10px; box-shadow: var(--skugga); }
 #arbetsyta { padding: 24px clamp(16px, 3vw, 32px); display: grid; gap: 22px; min-width: 0; }
 #arbetsyta:focus { outline: none; }
-.steg-huvud { display: grid; gap: 4px; padding-bottom: 14px; border-bottom: 1px solid var(--linje); }
+.steg-huvud { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--linje); }
+/* Stegets rubrik med BP, EP och pengar följer med när man skrollar */
+.steg-huvud { position: sticky; top: 0; z-index: 5; background: var(--yta); margin-top: -12px; padding-top: 12px; }
+.steg-titel { display: grid; gap: 4px; min-width: 0; }
+.steg-potter { display: flex; gap: 8px; margin: 0; flex-shrink: 0; }
+.steg-potter > div { display: grid; justify-items: end; padding: 6px 10px; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--bg); }
+.steg-potter dt { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--dampad); }
+.steg-potter dd { margin: 0; font: 1.5rem/1.1 var(--rubrik); font-variant-numeric: tabular-nums; color: var(--accent-text); }
+.steg-potter .over { border-color: var(--fel); background: var(--fel-svag); }
+.steg-potter .over dd { color: var(--fel); }
 .eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; font-weight: 700; color: var(--accent-text); }
 .steg-innehall { display: grid; gap: 16px; min-width: 0; }
 .steg-fot { display: flex; justify-content: space-between; gap: 12px; padding-top: 14px; border-top: 1px solid var(--linje); }
@@ -110,16 +124,27 @@ textarea { width: 100%; resize: vertical; }
 input.tal { width: 4.5rem; text-align: right; font-variant-numeric: tabular-nums; }
 input.tal.bred { width: 6rem; }
 
-.raskort-rutnat { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.raskort-rutnat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%;
+  transition: width .4s ease, gap .4s ease; }
 .raskort {
   display: grid; gap: 2px; text-align: left; padding: 12px; border-radius: 8px; border: 1px solid var(--linje);
-  background: var(--bg); cursor: pointer;
+  background: var(--bg); cursor: pointer; min-width: 0; align-content: start; transition: padding .4s ease, background-color .2s, border-color .2s;
 }
 .raskort:hover { border-color: var(--accent); }
 .raskort.valt { border-color: var(--accent); background: var(--accent-svag); box-shadow: inset 0 0 0 1px var(--accent); }
-.raskort-namn { font: 1.2rem var(--rubrik); }
-.raskort-bp { font-weight: 700; color: var(--accent-text); font-size: .85rem; }
-.raskort-mod { font-size: .82rem; color: var(--dampad); font-variant-numeric: tabular-nums; }
+.raskort-namn { font: 1.2rem var(--rubrik); transition: font-size .4s ease; overflow-wrap: anywhere; }
+/* Rasrutorna visar bara namnen i ett 3 × 4-rutnät; siffrorna står i rutan under */
+.raskort-rutnat.liten { width: min(100%, 360px); gap: 6px; }
+.raskort-rutnat.liten .raskort { padding: 5px 8px; gap: 0; }
+.raskort-rutnat.liten .raskort-namn { font-size: .95rem; }
+.rasinfo { display: grid; gap: 2px; }
+.rasrubrik { font: 1.6rem/1.1 var(--rubrik); margin: 4px 0 0; }
+.rutor h4 { font: 1.15rem/1.3 var(--rubrik); letter-spacing: .02em; margin: .5rem 0 0; }
+.rasval-extra { padding-top: calc(1.15rem * 1.3 + .5rem + 1em); }
+.rasdata { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 8px 0 0; padding: 10px 14px; justify-self: start; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--accent-svag); }
+.rasdata dt { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--dampad); }
+.rasdata dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.raslore { font-style: italic; color: var(--dampad); max-width: 65ch; margin: 4px 0 8px; }
 .rutor { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .punkter { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
 
@@ -133,7 +158,7 @@ input.tal.bred { width: 6rem; }
 .tabell .fel { color: var(--fel); }
 .tabell tr.markerad { background: var(--accent-svag); }
 .fardighetstabell td:first-child { min-width: 12rem; }
-.bniva { display: inline-block; margin-left: 6px; font-size: .78rem; color: var(--accent-text); font-weight: 700; }
+.bniva { display: inline-block; min-width: 2.2em; text-align: left; margin-left: 6px; font-size: .78rem; color: var(--accent-text); font-weight: 700; }
 .pris { font: 600 .8rem var(--sans); color: var(--dampad); letter-spacing: 0; }
 .stegare { display: flex; align-items: center; gap: 8px; }
 .stegare span { min-width: 4.5rem; text-align: center; font-size: .9rem; }
@@ -165,6 +190,10 @@ details.fakta > *:not(summary) { margin-top: 10px; }
 .matare > span { display: block; height: 100%; background: var(--accent); }
 .fellista { border: 1px solid var(--fel); background: var(--fel-svag); color: var(--text); border-radius: 8px; padding: 10px 12px; font-size: .88rem; }
 .fellista strong { color: var(--fel); }
+.saknaslista { border: 1px solid var(--linje); background: var(--bg); border-radius: 8px; padding: 10px 12px; font-size: .88rem; }
+.saknaslista strong { color: var(--accent-text); }
+.saknaslista ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; }
+.klar { color: var(--ok); font-weight: 600; text-align: center; }
 .fellista ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; }
 .egenskaper { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 0; }
 .egenskaper > div { text-align: center; border: 1px solid var(--linje); border-radius: 6px; padding: 6px 0; background: var(--bg); }
@@ -178,27 +207,218 @@ details.fakta > *:not(summary) { margin-top: 10px; }
 .kroppsdelar { grid-template-columns: 1fr 1fr; gap: 2px 14px; }
 .kroppsdelar li, .fardighetsrader li { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dotted var(--linje); padding: 2px 0; }
 .fardighetsrader li.yrke span:first-child { font-weight: 600; }
+.kroppsdelar li.kolumnrubrik, .fardighetsrader li.kolumnrubrik { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--dampad); border-bottom: 1px solid var(--linje); }
+.bonuslista { margin: 0; }
+input.tal[readonly] { min-width: 0; background: var(--yta-2); color: var(--accent-text); font-weight: 600; cursor: default; }
 .fardighetsrader li.sekundar span:first-child { font-style: italic; }
 .formular .num { text-align: right; }
 
+.stridskonst { display: grid; gap: 8px; margin-top: 8px; }
+/* Besvärjelser och utrustning */
+.tabell tr.vald td { background: var(--accent-svag); }
+.besvarjelsetabell td:first-child, .varutabell td:first-child { min-width: 12em; }
+.kryss { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.kryss input { margin-top: .3em; }
+.flikar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.varutabell .antal { white-space: nowrap; }
+.varutabell .antal > span { display: inline-block; min-width: 2ch; text-align: center; margin-inline: 6px; font-variant-numeric: tabular-nums; }
+.utrustning-summa { justify-content: flex-start; margin: 8px 0 12px; }
+.packning { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; max-width: 34em; }
+.packning li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dotted var(--linje); padding: 2px 0; }
+.teknikrutnat { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 4px 16px; }
+.teknik { display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+.teknik label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.teknik .teknikpris { margin-left: auto; color: var(--dampad); font-variant-numeric: tabular-nums; }
+.teknik.for-dyr { opacity: .5; }
+.teknik.for-dyr label { cursor: not-allowed; }
+.teknikbeskrivningar { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.teknikbeskrivningar p { margin: 2px 0 0; }
+/* Tärningsslag: snurr medan slaget rullas, sedan en studs och en kort markering av resultatet */
+.tarningsknapp { display: inline-flex; align-items: center; gap: 8px; }
+.tarning { width: 1.25em; height: 1.25em; flex: none; }
+.tarningsknapp.rullar { opacity: 1; cursor: progress; }
+.tarningsknapp.rullar .tarning { animation: rulla 2.5s cubic-bezier(.15, .7, .3, 1) both; }
+@keyframes rulla {
+  0% { transform: rotate(0) scale(1); }
+  10% { transform: rotate(160deg) scale(1.15) translateY(-2px); }
+  70% { transform: rotate(1260deg) scale(1.05); }
+  100% { transform: rotate(1440deg) scale(1); }
+}
+.tarningsknapp.kastad { opacity: .55; cursor: default; }
+.tarningsknapp.kastad.nytt .tarning { animation: bop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+input.tal.last { background: var(--yta-2); color: var(--dampad); font-weight: 400; }
+.resultat { display: grid; gap: 2px; }
+.magislag { display: grid; gap: 10px; }
+.magislag > * { margin: 0; }
+.resultat .summering { padding-top: 0; }
+.summering.nytt { animation: markera 1.8s ease-out both; border-radius: var(--rad); }
+@keyframes bop { 0% { transform: scale(.4) rotate(-30deg); } 60% { transform: scale(1.35) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
+@keyframes markera { 0% { background: var(--accent-svag); box-shadow: 0 0 0 6px var(--accent-svag); } 100% { background: transparent; box-shadow: 0 0 0 6px transparent; } }
+@media (prefers-reduced-motion: reduce) { .tarningsknapp.rullar .tarning, .tarningsknapp.kastad.nytt .tarning { animation: none; } }
+/* Dialog mitt på skärmen; sidan bakom mörkas och kan inte rullas */
+body.dialog-oppen { overflow: hidden; }
+.dialog-bakgrund { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgb(0 0 0 / .55); }
+.dialog { width: min(100%, 560px); max-height: calc(100vh - 32px); overflow: auto; display: grid; gap: 12px; padding: 24px;
+  background: var(--yta); color: var(--text); border: 1px solid var(--linje); border-radius: 10px; box-shadow: 0 20px 60px rgb(0 0 0 / .4); }
+.dialog h2 { margin: 0; color: var(--fel); }
+.dialog p { margin: 0; }
+.dialog-fot { display: flex; justify-content: flex-end; }
+[data-stil="klassisk"] .dialog { background: var(--marmor), var(--ljuskorn), var(--yta); border: 3px double #6b5a54; border-radius: 2px; }
 #notis {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 8px; box-shadow: var(--skugga);
   max-width: min(560px, calc(100vw - 32px)); font-size: .92rem; z-index: 20;
 }
-#exportruta { width: 100%; max-width: 1480px; display: block; margin: 12px auto 0; font: .8rem/1.4 ui-monospace, monospace; }
+#exportruta { width: 100%; display: block; font: .8rem/1.4 ui-monospace, monospace; }
+
+/* info-cirklar och deras förklaringsruta */
+.info {
+  display: inline-grid; place-items: center; width: 15px; height: 15px; margin-left: 5px; padding: 0; vertical-align: 1px;
+  border: 1px solid var(--linje); border-radius: 50%; background: none; color: var(--dampad);
+  font: italic 700 10px/1 Georgia, serif; text-transform: none; letter-spacing: 0; cursor: help;
+}
+.info:hover, .info:focus-visible { border-color: var(--accent); color: var(--accent-text); }
+#tips {
+  position: fixed; z-index: 30; padding: 10px 12px; border-radius: 8px; background: var(--text); color: var(--bg);
+  font: 400 .85rem/1.45 var(--sans); text-transform: none; letter-spacing: 0; box-shadow: var(--skugga); pointer-events: none;
+}
+
+.tabell tr.valbar { cursor: pointer; }
+.tabell tr.valbar:hover { background: var(--yta-2); }
+.radknapp { background: none; border: 0; padding: 0; font: inherit; color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+input.namnfalt {
+  width: 100%; min-width: 0; text-align: center; font: 1.7rem/1.15 var(--rubrik); background: none; border: 1px dashed transparent; border-radius: var(--rad); padding: 2px 6px; color: var(--text);
+}
+input.namnfalt:hover { border-color: var(--linje); }
+input.namnfalt:focus { border-color: var(--accent); outline: none; }
+.namnfalt::placeholder { color: var(--text); opacity: 1; }
+.namnfalt:focus::placeholder { color: transparent; }
+/* "Ny rollperson" och bekräftelsetexten ligger i samma ruta, så knappen behåller sin bredd */
+#ny { display: inline-grid; }
+#ny > span { grid-area: 1 / 1; text-align: center; }
+#ny .ny-bekrafta, #ny.bekrafta .ny-vanlig { visibility: hidden; }
+#ny.bekrafta .ny-bekrafta { visibility: visible; }
+#ny.bekrafta, [data-stil="klassisk"] #ny.bekrafta { background: var(--fel); border-color: var(--fel); color: #fff; }
+.fast { padding: 6px 9px; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--yta-2); font-size: .95rem; }
+.delvalhjalp { flex-basis: 100%; max-width: 68ch; }
+.felrad { color: var(--fel); }
+.valknappar { display: flex; flex-wrap: wrap; gap: 6px; }
+.valknapp { font: inherit; font-size: .95rem; font-weight: 700; padding: 6px 12px; border-radius: var(--rad); cursor: pointer;
+  border: 1px solid var(--accent); background: var(--accent-svag); color: var(--accent-text); }
+.valknapp:hover { border-color: var(--accent-text); }
+.valknapp.vald { background: var(--accent); border-color: var(--accent); color: var(--yta); }
+.valknapp.vald::before { content: "✓ "; }
+.valknapp.bortvald { font-weight: 400; background: transparent; border-color: var(--linje); color: var(--dampad); text-decoration: line-through; opacity: .75; }
+.valknapp.bortvald:hover { opacity: 1; text-decoration: none; border-color: var(--accent); }
+.fbeskr { margin: 2px 0 6px; color: var(--dampad); font-size: .88rem; max-width: 65ch; }
+.yrkeslista > li > .fbeskr { flex-basis: 100%; margin: -4px 0 0; }
+.varning { border: 1px solid var(--accent); border-left-width: 4px; background: var(--accent-svag); color: var(--text); border-radius: var(--rad); padding: 10px 12px; font-size: .92rem; }
+.varning strong { color: var(--accent-text); }
+.tal.upp { color: var(--ok); font-weight: 700; }
+.tal.ner { color: var(--fel); font-weight: 700; }
+.delval-med-text { display: grid; gap: 4px; }
+option.grupprubrik { font-weight: 700; }
+.kostnadstabell th, .kostnadstabell td { padding: 4px 7px; }
+.steg-knapp:disabled { opacity: .45; cursor: not-allowed; }
+.steg-knapp:disabled:hover { background: none; }
+
+/* ---------------------------------------------------------------- utseendet "Klassisk"
+   Efter regelboken: ljusgrå marmorsidor, malvabruna rubrikband och en mörk stenram.
+   Ser likadant ut i ljust och mörkt läge. Bara färger, typsnitt, linjer och ytor ändras. */
+:root[data-stil="klassisk"] {
+  --bg: #ddd7d4; --yta: #ece8e5; --yta-2: #d0c7c3; --linje: #a08f89; --text: #241d1b; --dampad: #5b4c48;
+  --accent: #6d5751; --accent-text: #5a433d; --accent-svag: #dccfca; --fel: #8e2a1f; --fel-svag: #f0d8d2;
+  --ok: #2f5c37; --skugga: 0 4px 15px rgba(0, 0, 0, .4);
+  --rubrik: "Cinzel", "Trajan Pro", Georgia, serif;
+  --serif: "EB Garamond", "Sabon", Garamond, Georgia, serif;
+  --sans: "EB Garamond", "Sabon", Garamond, Georgia, serif;
+  --ui: "Oswald", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --sten: #2b2422; --sten-text: #e6dfdb; --sten-dampad: #b3a7a2; --band: #75605a; --band-text: #f3eeeb;
+  --korn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E"); --marmor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1100' height='1100'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .018' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .34 0 0 0 0 .33 0 0 0 -.55 .38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23m%29'/%3E%3C/svg%3E"); --ljuskorn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .2 0 0 0 0 .2 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  color-scheme: light;
+}
+[data-stil="klassisk"] body {
+  background: var(--korn), radial-gradient(ellipse at 30% 0%, #3b322e, var(--sten) 70%) fixed;
+  font-size: 17px;
+}
+[data-stil="klassisk"] .kort, [data-stil="klassisk"] .steg-knapp.aktiv {
+  background: var(--marmor), var(--ljuskorn), var(--yta); border: 1px solid #4a3a35; border-radius: 3px;
+  box-shadow: inset 0 0 0 4px var(--yta), inset 0 0 0 5px var(--linje), var(--skugga);
+}
+[data-stil="klassisk"] .steg-knapp.aktiv { box-shadow: var(--skugga); }
+/* Text som ligger direkt på den mörka stenen */
+[data-stil="klassisk"] .topp { border-bottom: 3px double #6b5a54; }
+[data-stil="klassisk"] .topp h1 { color: var(--sten-text); font: 700 2.7rem/1.1 var(--rubrik); letter-spacing: .04em; }
+@media (max-width: 520px) { .topp h1, [data-stil="klassisk"] .topp h1 { font-size: 1.7rem; overflow-wrap: anywhere; } }
+[data-stil="klassisk"] .steg-knapp { color: var(--sten-text); border-radius: 3px; }
+[data-stil="klassisk"] .steg-knapp:hover { background: rgba(255, 255, 255, .07); }
+[data-stil="klassisk"] .steg-knapp.aktiv { color: var(--text); }
+[data-stil="klassisk"] .steg-nr { border-color: #8c7a74; color: var(--sten-dampad); font-family: var(--rubrik); }
+[data-stil="klassisk"] .aktiv .steg-nr { background: var(--band); border-color: var(--band); color: var(--band-text); }
+[data-stil="klassisk"] .steg-bp { color: var(--sten-dampad); font-family: var(--ui); letter-spacing: .04em; }
+[data-stil="klassisk"] .steg-knapp.aktiv .steg-bp { color: var(--dampad); }
+[data-stil="klassisk"] .husregler { color: var(--sten-dampad); }
+[data-stil="klassisk"] .husregler summary { color: var(--sten-text); }
+/* Typografi */
+[data-stil="klassisk"] h2 { font: 700 1.9rem/1.15 "Cinzel Decorative", var(--rubrik); color: var(--accent-text); }
+[data-stil="klassisk"] h3, [data-stil="klassisk"] .rutor h4 {
+  font: 600 1rem/1.3 var(--ui); text-transform: uppercase; letter-spacing: 2px; color: var(--accent-text);
+}
+[data-stil="klassisk"] .rasrubrik { font: 700 1.6rem/1.1 var(--rubrik); color: var(--accent-text); }
+[data-stil="klassisk"] .eyebrow, [data-stil="klassisk"] .etikett, [data-stil="klassisk"] .steg-potter dt,
+[data-stil="klassisk"] .egenskaper dt, [data-stil="klassisk"] .pott .etikett, [data-stil="klassisk"] .pris {
+  font-family: var(--ui); font-weight: 500; letter-spacing: 1.5px;
+}
+[data-stil="klassisk"] .knapp, [data-stil="klassisk"] .valknapp {
+  font-family: var(--ui); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; border-radius: 2px;
+}
+[data-stil="klassisk"] .knapp { border-color: #7d6a64; background: var(--yta); }
+[data-stil="klassisk"] .knapp.primar { background: var(--band); border-color: #4a3a35; color: var(--band-text); }
+[data-stil="klassisk"] .knapp.primar:hover { background: #5e4a44; }
+[data-stil="klassisk"] .summering, [data-stil="klassisk"] .raslore { font-family: var(--serif); }
+/* Rubrikband och dubbla linjer som i boken */
+[data-stil="klassisk"] .steg-huvud { border-top: 3px double var(--linje); border-bottom: 3px double var(--linje); padding-top: 12px; }
+[data-stil="klassisk"] .formular-huvud { border-bottom: 3px double var(--linje); }
+[data-stil="klassisk"] .tabellram { border: 1px solid #4a3a35; border-radius: 0; }
+[data-stil="klassisk"] .tabell thead th {
+  background: var(--band); color: var(--band-text); font: 500 .8rem var(--ui); letter-spacing: 1.5px; border-bottom: 1px solid #4a3a35;
+}
+[data-stil="klassisk"] .tabell thead .info { border-color: rgba(255, 255, 255, .5); color: var(--band-text); }
+[data-stil="klassisk"] .tabell tbody tr:nth-child(even) { background: rgba(109, 87, 81, .1); }
+[data-stil="klassisk"] .tabell .stor, [data-stil="klassisk"] .egenskaper dd, [data-stil="klassisk"] .pott-tal,
+[data-stil="klassisk"] .steg-potter dd { font-family: var(--rubrik); font-weight: 600; }
+/* Tunna, skarpa ramar runt rutor, formulär och värden */
+[data-stil="klassisk"] input[type="text"], [data-stil="klassisk"] input[type="number"], [data-stil="klassisk"] select,
+[data-stil="klassisk"] textarea { border-radius: 2px; border-color: #8c7a74; background: #f4f1ef; }
+[data-stil="klassisk"] .yrkeslista > li, [data-stil="klassisk"] .raskort, [data-stil="klassisk"] .pott,
+[data-stil="klassisk"] .egenskaper > div, [data-stil="klassisk"] .saknaslista, [data-stil="klassisk"] .steg-potter > div,
+[data-stil="klassisk"] .varning, [data-stil="klassisk"] .fast { border-radius: 2px; border-color: #8c7a74; }
+[data-stil="klassisk"] .raskort-namn { font: 600 1rem/1.2 var(--rubrik); }
+[data-stil="klassisk"] .raskort-rutnat.liten .raskort-namn { font-size: .8rem; }
+[data-stil="klassisk"] input.namnfalt { background: none; border-color: transparent; font: 700 1.6rem/1.15 var(--rubrik); }
+[data-stil="klassisk"] input.namnfalt:hover { border-color: var(--linje); }
+[data-stil="klassisk"] .yrkesformaga { border-radius: 0; }
+[data-stil="klassisk"] #notis, [data-stil="klassisk"] #tips { background: var(--sten); color: var(--sten-text); border: 1px solid #6b5a54; border-radius: 2px; }
+
+/* Växeln mellan utseendena */
+.stilval { display: inline-flex; border: 1px solid var(--linje); border-radius: var(--rad); overflow: hidden; }
+.stilval button { border: 0; background: var(--yta); color: var(--dampad); padding: 6px 12px; font-size: .85rem; font-weight: 600; cursor: pointer; }
+.stilval button + button { border-left: 1px solid var(--linje); }
+.stilval button[aria-pressed="true"] { background: var(--accent); color: var(--yta); }
+[data-stil="klassisk"] .stilval { border-color: #6b5a54; border-radius: 2px; }
+[data-stil="klassisk"] .stilval button { font: 500 .8rem var(--ui); text-transform: uppercase; letter-spacing: 1px; background: #3a312e; color: var(--sten-dampad); }
+[data-stil="klassisk"] .stilval button + button { border-left-color: #6b5a54; }
+[data-stil="klassisk"] .stilval button[aria-pressed="true"] { background: var(--band); color: var(--band-text); }
 </style>
 
 <header class="topp">
-  <div>
-    <h1>Chronopia rollpersonsskapare</h1>
-    <p class="undertitel">Drakar och Demoner, kapitlet Rollpersonen (s. 8–38)</p>
+  <h1>Chronopia rollpersonsskapare</h1>
+  <div class="stilval" role="group" aria-label="Utseende">
+    <button type="button" data-stil="modern" aria-pressed="true">Modern</button>
+    <button type="button" data-stil="klassisk" aria-pressed="false">Klassisk</button>
   </div>
   <div class="topp-verktyg">
-    <span id="bp-topp" aria-live="polite"></span>
-    <button type="button" class="knapp" id="exempel">Visa bokens exempel</button>
-    <button type="button" class="knapp" id="ny">Ny rollperson</button>
-    <button type="button" class="knapp" id="exportera">Kopiera som JSON</button>
+    <button type="button" class="knapp" id="ny"><span class="ny-vanlig">Ny rollperson</span><span class="ny-bekrafta" aria-live="polite">Bekräfta (5)</span></button>
     <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
   </div>
 </header>
@@ -206,15 +426,10 @@ details.fakta > *:not(summary) { margin-top: 10px; }
 <div class="layout">
   <nav class="stegrail" aria-label="Steg">
     <ol id="steg"></ol>
-    <details class="husregler">
-      <summary>Husregler och tolkningar</summary>
-      <ul id="husregler"></ul>
-    </details>
   </nav>
   <main id="arbetsyta" class="kort" tabindex="-1"><p>Läser in reglerna …</p></main>
   <aside class="sida-formular kort" id="formular" aria-label="Rollformulär"></aside>
 </div>
-<textarea id="exportruta" rows="8" hidden aria-label="Rollpersonen som JSON"></textarea>
 <div id="notis" role="status" hidden></div>
 
 <script type="module" src="app.js"></script>

@@ -4,6 +4,9 @@
 
 export const GRUNDEGENSKAPER = ["STY", "FYS", "SMI", "INT", "PSY", "KAR"];
 
+// Ett påbörjat val, t.ex. "vapen:" innan vapnet är valt eller "tva-vapen:Dolk+" innan det andra vapnet är valt.
+export const paborjad = (nyckel) => !nyckel || nyckel.endsWith(":") || nyckel.endsWith("+");
+
 // Slår upp i en tabell av [övre gräns, värde]; null som gräns betyder "och uppåt".
 export function slaUpp(tabell, varde) {
   for (const [grans, ...resten] of tabell) {
@@ -64,13 +67,14 @@ export function raknaGrundegenskaper(regler, rp) {
   const varden = {};
   let bp = 0;
   const fel = [];
+  const forLaga = []; // slutvärden under 3 är inget regelbrott förrän grundvärdena köps i steg 6
   for (const g of GRUNDEGENSKAPER) {
     const grund = rp.grundvarden[g];
     const kostnad = regler.grundegenskaper.kostnad[String(grund)];
     if (kostnad === undefined) fel.push(`${g}: grundvärdet måste vara 3–18 (s. 27)`);
     bp += kostnad ?? 0;
     varden[g] = grund + ras.mod[g] + aldersmod[g] + (rp.egenskapsbonus?.[g] ?? 0);
-    if (varden[g] < regler.grundegenskaper.minstSlutvarde) fel.push(`${g} blir ${varden[g]}, men måste bli minst 3 (s. 27)`);
+    if (varden[g] < regler.grundegenskaper.minstSlutvarde) forLaga.push(`${g} blir ${varden[g]} efter ras och ålder, men måste bli minst 3: höj grundvärdet (s. 27)`);
   }
   const steg = rp.stoSteg ?? 0;
   const s = regler.grundegenskaper.sto;
@@ -78,7 +82,7 @@ export function raknaGrundegenskaper(regler, rp) {
   if (steg < 0) bp -= s.sankning[-steg - 1];
   varden.STO = ras.sto.normal + steg;
   if (varden.STO < ras.sto.min || varden.STO > ras.sto.max) fel.push(`STO måste ligga inom ${ras.sto.min}–${ras.sto.max} (s. 14, 28)`);
-  return { varden, bp, alderskategori: kat, fel };
+  return { varden, bp, alderskategori: kat, fel, forLaga };
 }
 
 // Härledda värden: KP per kroppsdel, skadebonus, förflyttning, storlek (s. 10, 28–29).
@@ -111,7 +115,9 @@ export function raknaHarledda(regler, v, { kpFaktor = 1, forflyttningBonus = 0 }
 export function raknaSlag(regler, rp, ras, yrke, alderEff) {
   const t = regler.slag;
   const svardshand = rp.svardshand.overstyrd ?? slaUpp(t.svardshand.tabell, rp.svardshand.slag + rp.svardshand.bp);
-  const ssResultat = rp.socialtStand.slag + rp.socialtStand.bp + (ras.slagbonus.socialtStand ?? 0);
+  // Med SL:s tillåtelse kan ståndet väljas i stället för att slås; då räknas lägsta värdet för det ståndet
+  const ssResultat = rp.socialtStand.valt ? standsvarde(t.socialtStand.tabell, rp.socialtStand.valt)
+    : rp.socialtStand.slag + rp.socialtStand.bp + (ras.slagbonus.socialtStand ?? 0);
   const [stand, klass] = slaUpp(t.socialtStand.tabell, ssResultat);
   const skBonus = (ras.slagbonus.startkapital ?? 0) + (yrke.slagbonus?.startkapital ?? 0);
   const tak = ssResultat + (yrke.kapitaltak ?? t.startkapital.tak);
@@ -119,6 +125,50 @@ export function raknaSlag(regler, rp, ras, yrke, alderEff) {
     rp.startkapital.slag + rp.startkapital.bp + Math.ceil(rp.socialtStand.bp / 2) + skBonus, tak);
   const silver = slaUpp(t.startkapital.tabell, skResultat) * alderEff.kapital + (rp.arv ?? 0);
   return { svardshand, socialtStand: stand, standsklass: klass, ssResultat, skResultat, startkapital: silver };
+}
+
+// Lägsta slagresultat som ger ett visst socialt stånd.
+export function standsvarde(tabell, namn) {
+  const i = tabell.findIndex(([, n]) => n === namn);
+  if (i === -1) return 0;
+  return i === 0 ? tabell[0][0] : tabell[i - 1][0] + 1;
+}
+
+// Måste vapnet hållas med två händer av den här rollpersonen? (s. 72, 89–90)
+export function tvahandsvapen(regler, namn, varden) {
+  const vapen = regler.vapen.narstrid.find((x) => x.namn === namn);
+  if (!vapen) return true;
+  if (vapen.enHandOmStoOverKrav) return !(varden.STO > vapen.styKrav && !["Trästav", "Långspjut"].includes(namn));
+  return Boolean(regler.vapen.styBeroendeGrupper[vapen.grupp]) && vapen.styKrav > varden.STY;
+}
+
+// Regler för vad som får väljas som språk, vapenkombination och yrkesfärdighet (s. 66–71).
+function kontrolleraVal(regler, rp, varden, fel) {
+  const yrkesnycklar = new Set([...rp.yrkesfardigheter, ...rp.extraYrkesfardigheter]);
+  for (const nyckel of new Set([...yrkesnycklar, ...Object.keys(rp.fardigheter)])) {
+    const [id, val] = nyckel.split(":");
+    if (!val || paborjad(nyckel)) continue;
+    if (id === "tala" || id === "lasa-skriva") {
+      const sprak = regler.fardigheter.sprak.find((x) => x.id === val);
+      const namn = sprak?.namn ?? val;
+      if (!sprak) fel.push(`Okänt språk: ${val}`);
+      else if (id === "lasa-skriva" && (sprak.skriftsprak === false || sprak.endastTala)) fel.push(`${namn} har inget skriftspråk (s. 66)`);
+      else if (yrkesnycklar.has(nyckel) && sprak.aldrigYrke) fel.push(`${namn} kan aldrig vara yrkesfärdighet (s. 64)`);
+      else if (yrkesnycklar.has(nyckel) && sprak.endastPrimarFor && sprak.endastPrimarFor !== rp.ras) fel.push(`${namn} kan bara vara yrkesfärdighet för ${sprak.endastPrimarFor === "wongos" ? "wongoser" : sprak.endastPrimarFor} (s. 64)`);
+      const modersmal = id === "tala" ? rp.modersmal?.tala : rp.modersmal?.lasaSkriva;
+      if (yrkesnycklar.has(nyckel) && modersmal?.includes(val)) fel.push(`${namn} är redan modersmål och kan inte väljas som främmande språk (s. 66, 70)`);
+    }
+    if (id === "tva-vapen") {
+      const vapen = val.split("+");
+      if (vapen.length !== 2 || vapen.some((v) => !regler.vapen.narstrid.some((x) => x.namn === v))) fel.push(`Två vapen gäller två närstridsvapen (s. 71)`);
+      else {
+        const tvahands = vapen.find((v) => tvahandsvapen(regler, v, varden));
+        const krav = regler.vapen.narstrid.find((x) => x.namn === tvahands)?.styKrav;
+        if (tvahands) fel.push(`${tvahands} är ett tvåhandsvapen för en rollperson med STY ${varden.STY} (STY-krav ${krav}) och kan inte ingå i Två vapen (s. 71–72)`);
+      }
+    }
+  }
+  if (rp.valfri && fardighetAv(regler, rp.valfri)?.typ === "primar") fel.push("Den valfria yrkesfärdigheten kan inte vara en primär färdighet (s. 18)");
 }
 
 const BC = (regler, varde) => slaUpp(regler.fardigheter.baschans, varde);
@@ -151,6 +201,9 @@ export function grundegenskapFor(regler, nyckel, varden) {
 export function status(regler, rp, nyckel) {
   const f = fardighetAv(regler, nyckel);
   const ras = rasAv(regler, rp.ras);
+  const andrad = rp.sarskildaFormagor?.status?.[nyckel];
+  if (andrad === "primar") return "primar";
+  if (andrad === "yrke") return "yrke";
   if (rp.yrkesfardigheter.includes(nyckel) || rp.extraYrkesfardigheter.includes(nyckel)) return "yrke";
   const id = f.id;
   const val = nyckel.split(":")[1];
@@ -200,6 +253,7 @@ export function startvarde(regler, rp, nyckel, varden, stand, fvHittills) {
     } else if (b.fardighet === nyckel || b.fardighet === f.id) start += b.bc;
   }
   for (const s of rp.sarskildaFormagor?.fvBonus ?? []) if (s.fardighet === nyckel) start += s.fv;
+  for (const s of rp.sarskildaFormagor?.fvMinst ?? []) if (s.fardighet === nyckel) start = Math.max(start, s.fv);
 
   // Vapengrupp: minst halva bästa FV i gruppen (s. 71)
   if (f.id === "vapen") {
@@ -220,19 +274,30 @@ function sankaBNiva(regler, fv, steg) {
 }
 
 // EP-kostnad för att gå från start till mål (s. 35–36).
-export function epKostnad(regler, st, fardighet, start, mal) {
-  if (mal <= start) return 0;
+// EP per FV-steg (s. 34–35). Stridskonster kostar summan av de valda teknikernas grundkostnad,
+// avrundad uppåt, och 2 till om stilen inte är yrkesfärdighet (s. 68).
+export function epPerFV(regler, st, fardighet, tekniker = []) {
   const k = regler.fardigheter.kostnad;
-  let per = st === "primar" ? k.primar : st === "yrke" ? k.yrke : k.sekundar;
-  if (fardighet.typ === "magiskola" && st === "sekundar") per = k.magiskolaSekundar;
-  return (mal - start) * per;
+  if (fardighet.id === "stridskonster") {
+    const summa = tekniker.reduce((a, t) => a + (regler.fardigheter.stridskonstTekniker.find(([n]) => n === t)?.[1] ?? 0), 0);
+    return Math.ceil(summa) + (st === "yrke" ? 0 : 2);
+  }
+  if (fardighet.typ === "magiskola" && st === "sekundar") return k.magiskolaSekundar;
+  return st === "primar" ? k.primar : st === "yrke" ? k.yrke : k.sekundar;
+}
+
+export function epKostnad(regler, st, fardighet, start, mal, tekniker) {
+  if (mal <= start) return 0;
+  return (mal - start) * epPerFV(regler, st, fardighet, tekniker);
 }
 
 // Räknar fram hela rollpersonen och alla regelbrott.
-export function raknaRollperson(regler, rp) {
+export function raknaRollperson(regler, indata) {
+  const sf = sarskildFormaga(regler, indata);
+  const rp = { ...indata, ...sf.tillagg };
   const ras = rasAv(regler, rp.ras);
   const yrke = yrkeAv(regler, rp.yrke);
-  const fel = [];
+  const fel = [...sf.fel];
   const alderEff = alderseffekter(regler, rp.alder);
 
   const bpStart = regler.grundegenskaper.startBP + alderEff.bp + (yrke.extraBP?.antal ?? 0);
@@ -269,20 +334,159 @@ export function raknaRollperson(regler, rp) {
     const egenskap = grundegenskapFor(regler, nyckel, ge.varden);
     const tak = Math.max(start, takFor(regler, rp, nyckel, f, ge.varden, fvHittills));
     if (mal > tak) fel.push(`${namnFor(regler, f, nyckel)}: högst FV ${tak} vid start (s. 35)`);
-    const ep = epKostnad(regler, st, f, start, mal);
+    const tekniker = f.id === "stridskonster" ? (rp.stridskonstTekniker?.[nyckel] ?? []) : undefined;
+    if (tekniker) {
+      const okanda = tekniker.filter((t) => !regler.fardigheter.stridskonstTekniker.some(([n]) => n === t));
+      if (okanda.length) fel.push(`Okänd stridskonstteknik: ${okanda.join(", ")}`);
+      if (mal > start && !tekniker.length) fel.push(`${namnFor(regler, f, nyckel)}: välj stilens tekniker innan FV höjs (s. 68)`);
+    }
+    const ep = epKostnad(regler, st, f, start, mal, tekniker);
     epSpenderat += ep;
     fvHittills[nyckel] = Math.max(mal, start);
-    fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, start, fv: Math.max(mal, start), ep, kategoriB: f.kategoriB });
+    fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, start, fv: Math.max(mal, start), ep,
+      epPerFV: epPerFV(regler, st, f, tekniker), kategoriB: f.kategoriB, ...(tekniker ? { tekniker } : {}) });
   }
+  kontrolleraVal(regler, rp, ge.varden, fel);
+
+  // Samma yrkesfärdighet kan inte väljas två gånger (s. 18, 27)
+  const sedda = new Set();
+  for (const k of [...rp.yrkesfardigheter, ...rp.extraYrkesfardigheter].filter((x) => paborjad(x) === false)) {
+    if (sedda.has(k)) fel.push(`${namnFor(regler, fardighetAv(regler, k), k)} är redan yrkesfärdighet (s. 27)`);
+    sedda.add(k);
+  }
+
+  // Magiskolor utanför magikeryrkena kräver ett lyckat magiförmågeslag (s. 27, 106)
+  const skolor = Object.keys(rp.fardigheter).filter((k) => fardighetAv(regler, k)?.typ === "magiskola");
+  const behoverSlag = !yrke.magiker && (skolor.length > 0 || rp.extraYrkesfardigheter.some((k) => fardighetAv(regler, k)?.typ === "magiskola"));
+  const magiformaga = { chans: Math.ceil((ge.varden.INT + ge.varden.PSY) / 2), behovs: behoverSlag, slag: rp.magiformaga?.slag ?? null, mod: sf.magiformaga };
+  magiformaga.lyckat = magiformaga.slag !== null && magiformaga.slag + magiformaga.mod <= magiformaga.chans;
+  // Slaget görs först när INT och PSY är bestämda, så ett saknat eller misslyckat slag är inte ett regelbrott
+  // i sig utan något som återstår: slaget ska göras, eller magiskolan bytas ut.
+  const vantar = [];
+  if (behoverSlag && !magiformaga.lyckat) {
+    vantar.push(magiformaga.slag === null ? "Magiskolor kräver ett magiförmågeslag (s. 106)" : "Magiförmågeslaget misslyckades, så rollpersonen kan inte lära sig magi (s. 106)");
+  }
+
+  const besvarjelser = raknaBesvarjelser(regler, rp, fardigheter, ge.varden, yrke.magiker || magiformaga.lyckat, fel);
+  epSpenderat += besvarjelser.reduce((a, b) => a + b.ep, 0);
   if (epSpenderat > epStart) fel.push(`${epSpenderat - epStart} EP för mycket har spenderats (s. 34)`);
+  const utrustning = raknaUtrustning(regler, rp, ge.varden, slag.startkapital, fel);
 
   return {
-    ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, harledda, slag,
+    ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, harledda, slag, magiformaga,
+    sarskildFormaga: sf.formaga, saknas: sf.saknas, vantar, forLagaEgenskaper: ge.forLaga,
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
+    besvarjelser, utrustning,
     fel,
   };
+}
+
+// FV i varje magiskola; allmänna besvärjelser styrs av den högsta (s. 106)
+export function skolFV(fardigheter) {
+  const fv = { animism: 0, elementarmagi: 0, mentalism: 0 };
+  for (const f of fardigheter) if (f.nyckel in fv) fv[f.nyckel] = f.fv;
+  return { ...fv, allman: Math.max(...Object.values(fv)) };
+}
+
+// EP per FV-steg i en besvärjelse efter skolvärde: 2 för SV 1–3, sedan +1 per tre SV (s. 36)
+export function besvarjelsePris(regler, sv) {
+  const tabell = regler.besvarjelser.kostnad;
+  const rad = tabell.find(([max]) => sv <= max);
+  return rad ? rad[1] : tabell.at(-1)[1] + Math.ceil((sv - tabell.at(-1)[0]) / 3);
+}
+
+// Besvärjelser har ingen BC, bygger på PSY och kan bara läras upp till skolans FV i skolvärde (s. 36, 106–107)
+function raknaBesvarjelser(regler, rp, fardigheter, varden, kanMagi, fel) {
+  const B = regler.besvarjelser;
+  const valda = Object.entries(rp.besvarjelser ?? {}).filter(([, fv]) => fv > 0);
+  if (!B) return [];
+  const skola = skolFV(fardigheter);
+  return valda.map(([nyckel, fv]) => {
+    const [id, val] = nyckel.split(":");
+    const b = B.lista.find((x) => x.id === id);
+    if (!b) { fel.push(`Okänd besvärjelse: ${nyckel}`); return null; }
+    const namn = val ? `${b.namn} (${val})` : b.namn;
+    const tillatna = b.perVal === "varelsegrupp" ? B.varelsegrupper : b.perVal === "elementar" ? B.elementarer : null;
+    if (tillatna && !tillatna.includes(val)) fel.push(`${b.namn}: välj vilken ${b.perVal === "elementar" ? "elementar" : "grupp av varelser"} den gäller (s. 120, 123)`);
+    if (!kanMagi) fel.push(`${namn}: rollpersonen kan inte lära sig magi (s. 106)`);
+    else if (b.sv > skola[b.skola]) {
+      fel.push(`${namn} har skolvärde ${b.sv} men FV i ${b.skola === "allman" ? "bästa magiskolan" : B.skolor[b.skola].toLowerCase()} är ${skola[b.skola]} (s. 106)`);
+    }
+    if (fv > varden.PSY) fel.push(`${namn}: högst FV ${varden.PSY}, samma som PSY (s. 36)`);
+    const epPerFV = besvarjelsePris(regler, b.sv);
+    return { nyckel, id, namn, skola: b.skola, sv: b.sv, fv, epPerFV, ep: fv * epPerFV, rackvidd: b.rackvidd, varaktighet: b.varaktighet };
+  }).filter(Boolean).sort((a, b) => a.skola.localeCompare(b.skola) || a.sv - b.sv || a.namn.localeCompare(b.namn, "sv"));
+}
+
+// Kan rollpersonen över huvud taget använda vapnet? (s. 89, 91, 94)
+export function kanAnvandaVapen(regler, namn, varden) {
+  const v = regler.vapen;
+  const narstrid = v.narstrid.find((x) => x.namn === namn);
+  if (narstrid) return narstrid.styKrav <= varden.STY * 2; // med två händer räknas STY dubbelt
+  const projektil = v.projektil.find((x) => x.namn === namn);
+  if (projektil) return projektil.styKrav <= varden.STY * (projektil.tvaHander ? 2 : 1);
+  const kast = v.kast.find((x) => x.namn === namn);
+  if (kast) return kast.styKrav <= varden.STY; // kastvapen hålls alltid med en hand
+  const skold = v.skoldar.find((x) => x.namn === namn);
+  if (skold) return skold.styKrav <= varden.STY;
+  return false;
+}
+
+// Alla saker som går att köpa, med pris och vikt (s. 90–102)
+export function varukatalog(regler) {
+  const U = regler.utrustning;
+  if (!U) return [];
+  const v = regler.vapen;
+  return [
+    ...U.varor,
+    ...U.rustningar.map((r) => ({ ...r, kategori: "Rustning" })),
+    ...v.narstrid.filter((x) => x.pris).map((x) => ({ ...x, kategori: "Närstridsvapen" })),
+    ...v.projektil.map((x) => ({ ...x, kategori: "Avståndsvapen" })),
+    ...v.kast.map((x) => ({ ...x, kategori: "Kastvapen" })),
+    ...v.skoldar.map((x) => ({ ...x, kategori: "Sköldar" })),
+  ];
+}
+
+// Inköp betalas med startkapitalet; startpaketet är gratis (s. 38)
+function raknaUtrustning(regler, rp, varden, startkapital, fel) {
+  const U = regler.utrustning;
+  if (!U) return { kostnad: 0, kvar: startkapital, vikt: 0, saker: [], borda: 0, barformaga: varden.STY, belastning: null };
+  const katalog = varukatalog(regler);
+  const saker = [];
+  let kostnad = 0;
+  const lagg = (vara, namn, antal, gratis) => {
+    saker.push({ namn, antal, pris: gratis ? 0 : vara.pris, kategori: vara.kategori, gratis, vikt: Math.round((vara.vikt ?? 0) * antal * 10) / 10 });
+  };
+  for (const [namn, antal] of Object.entries(rp.utrustning ?? {})) {
+    if (!(antal > 0)) continue;
+    const vara = katalog.find((x) => x.namn === namn);
+    if (!vara) { fel.push(`Okänd vara: ${namn}`); continue; }
+    kostnad += vara.pris * antal;
+    lagg(vara, namn, antal, false);
+  }
+  const paket = rp.startpaket;
+  if (paket?.valt) {
+    for (const namn of U.startpaket.varor) {
+      const vara = katalog.find((x) => x.namn === namn);
+      if (vara) lagg(vara, namn, 1, true);
+    }
+    if (paket.vapen) {
+      const vapen = katalog.find((x) => x.namn === paket.vapen);
+      if (!vapen || !kanAnvandaVapen(regler, paket.vapen, varden)) fel.push(`${paket.vapen} kan inte användas av rollpersonen (s. 89)`);
+      else if (vapen.pris > U.startpaket.vapenMaxPris) fel.push(`Startpaketets vapen får kosta högst ${U.startpaket.vapenMaxPris} sm`);
+      else lagg(vapen, paket.vapen, 1, true);
+    }
+  }
+  if (kostnad > startkapital) fel.push(`Inköpen kostar ${kostnad} sm men startkapitalet är ${startkapital} sm (s. 38)`);
+  // Bärförmåga (s. 100): STY kg utan nackdelar. Kläder räknas inte, en buren rustning väger hälften.
+  const vikt = saker.reduce((a, x) => a + x.vikt, 0);
+  const borda = saker.reduce((a, x) => a + (x.kategori === "Kläder" ? 0 : x.kategori === "Rustning" ? x.vikt / 2 : x.vikt), 0);
+  const barformaga = varden.STY;
+  const belastning = borda <= barformaga ? null
+    : U.barformaga.find((r) => borda <= barformaga * r.gange) ?? { gange: null, mod: null, text: "Rollpersonen orkar inte bära så mycket." };
+  return { kostnad, kvar: startkapital - kostnad, vikt: Math.round(vikt * 10) / 10, borda: Math.round(borda * 10) / 10, barformaga, belastning, saker };
 }
 
 function takFor(regler, rp, nyckel, f, varden, fvHittills) {
@@ -293,6 +497,9 @@ function takFor(regler, rp, nyckel, f, varden, fvHittills) {
     tak = Math.min(tak, Math.max(0, ...ls));
   }
   if (f.typ === "magiskola" && yrkeAv(regler, rp.yrke).skolTak) tak = Math.min(tak, varden.INT);
+  // Drakonitiska kan aldrig bli högre än FV 5 för andra än drakoniter (s. 64)
+  const sprak = regler.fardigheter.sprak.find((x) => x.id === nyckel.split(":")[1]);
+  if (f.id === "tala" && sprak?.maxFvAndra && rp.ras !== "drakonit") tak = Math.min(tak, sprak.maxFvAndra);
   return tak + (rp.sarskildaFormagor?.takBonus?.[nyckel] ?? 0);
 }
 
@@ -306,4 +513,87 @@ export function namnFor(regler, f, nyckel) {
   if (f.id === "lardom") return val;
   if (f.id === "kanna-magi") return `Känna ${val}`;
   return `${f.namn} (${val})`;
+}
+
+// Färdigheter som räknas som magi och därför inte får väljas för "ej magi" (s. 30–31).
+const MAGI = ["kanna-magi", "magisk-kanalisering", "magistudier"];
+const arMagi = (f) => f.typ === "magiskola" || MAGI.includes(f.id);
+
+// Kan färdigheten väljas för en särskild förmåga med gruppen "bland"?
+export function passarBland(regler, rp, nyckel, bland) {
+  const f = fardighetAv(regler, nyckel);
+  if (!f) return false;
+  if (f.perVal && !nyckel.split(":")[1]) return false;
+  if (Array.isArray(bland)) return bland.includes(f.id);
+  if (bland === "alla-ej-magi") return !arMagi(f);
+  if (bland === "sekundar-ej-magi") return !arMagi(f) && status(regler, rp, nyckel) === "sekundar";
+  if (bland === "sprak") return f.id === "tala";
+  return f.id === bland;
+}
+
+// Vilken särskild förmåga rollpersonen har och vad den ger, utifrån spelarens val (s. 30–32).
+// rp.sarskildaFormagor.val[i] är valen för förmågans i:te effekt.
+export function sarskildFormaga(regler, rp) {
+  const s = rp.sarskildaFormagor ?? {};
+  const svar = { formaga: null, fel: [], saknas: [], magiformaga: 0, tillagg: {} };
+  if (!s.bp || s.slag === null || s.slag === undefined) return svar;
+  const summa = s.slag + s.bp;
+  const formaga = regler["sarskilda-formagor"].find(({ slag: [fran, till] }) => summa >= fran && (till === null || summa <= till));
+  svar.formaga = formaga;
+  const fvBonus = [];
+  const fvMinst = [];
+  const takBonus = {};
+  const andrad = {};
+  const egenskapsbonus = {};
+  let harledda = { kpFaktor: 1, forflyttningBonus: 0 };
+  let arv = 0;
+  let svardshand;
+  (formaga.regel ?? []).forEach((del, i) => {
+    const val = s.val?.[i];
+    if (del.typ === "fv") {
+      let nycklar = [...(del.fasta ?? [])];
+      if (del.valj) {
+        // En nyckel som slutar på ":" är ett påbörjat val (t.ex. "vapen:" innan vapnet är valt)
+        const valda = [].concat(val ?? []).filter((k) => paborjad(k) === false);
+        if (valda.length < del.valj) svar.saknas.push(`Välj ${del.valj - valda.length} färdighet${del.valj - valda.length > 1 ? "er" : ""} för ${formaga.namn}`);
+        if (valda.length > del.valj || new Set(valda).size !== valda.length) svar.fel.push(`${formaga.namn}: välj ${del.valj} olika färdigheter (s. 30–32)`);
+        for (const k of valda) {
+          if (!passarBland(regler, rp, k, del.bland)) svar.fel.push(`${formaga.namn} gäller inte ${k.split(":")[1] ?? fardighetAv(regler, k)?.namn ?? k} (s. 30–32)`);
+        }
+        nycklar.push(...valda);
+      }
+      if (del.bland === "sprak") {
+        nycklar = nycklar.flatMap((k) => {
+          const sprak = regler.fardigheter.sprak.find((x) => x.id === k.split(":")[1]);
+          return sprak?.skriftsprak === false || sprak?.endastTala ? [k] : [k, `lasa-skriva:${k.split(":")[1]}`];
+        });
+      }
+      for (const k of nycklar) {
+        if (del.fv) (del.minst ? fvMinst : fvBonus).push({ fardighet: k, fv: del.fv });
+        if (del.tak) takBonus[k] = (takBonus[k] ?? 0) + del.fv;
+        if (del.status) andrad[k] = del.status;
+      }
+    } else if (del.typ === "egenskap") {
+      for (const [g, m] of Object.entries(del.mod)) egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + m;
+    } else if (del.typ === "egenskapVal") {
+      const lage = val?.lage;
+      const valda = (val?.egenskaper ?? []).filter(Boolean);
+      const antal = lage === "en" ? 1 : 3;
+      if (!lage || valda.length < antal) svar.saknas.push(`Välj grundegenskaper för ${formaga.namn}`);
+      if (valda.length > antal || new Set(valda).size !== valda.length || valda.some((g) => !GRUNDEGENSKAPER.includes(g))) {
+        svar.fel.push(`${formaga.namn}: +1 på tre olika grundegenskaper eller +2 på en (s. 32)`);
+      }
+      for (const g of valda) egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + (lage === "en" ? 2 : 1);
+    } else if (del.typ === "forflyttning") harledda = { ...harledda, forflyttningBonus: del.varde };
+    else if (del.typ === "kpFaktor") harledda = { ...harledda, kpFaktor: del.varde };
+    else if (del.typ === "kapital") arv = del.varde;
+    else if (del.typ === "svardshand") svardshand = del.varde;
+    else if (del.typ === "magiformaga") svar.magiformaga = del.varde;
+  });
+  svar.tillagg = {
+    sarskildaFormagor: { ...s, fvBonus, fvMinst, takBonus, status: andrad },
+    egenskapsbonus, harleddaJustering: harledda, arv,
+    svardshand: { ...rp.svardshand, overstyrd: svardshand },
+  };
+  return svar;
 }

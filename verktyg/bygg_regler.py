@@ -6,6 +6,9 @@ Kör: python3 bygg_regler.py <utkatalog>
 import json
 import os
 import sys
+from beskrivningar import BESKRIVNINGAR
+import besvarjelser
+import utrustning
 
 UT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "regler")
 os.makedirs(UT, exist_ok=True)
@@ -63,7 +66,7 @@ RASER = [
     ras("ljusalv", "Ljusalv", 30, [-1, 0, 3, 1, 0, 2], [10, 20, 15], ALV_ALDER,
         [{"sprak": "alviska", "fv": 16}, {"sprak": "chronos", "fv": 16}], ["alviska", "chronos"],
         ["Mörkersyn", "Dör aldrig av ålder, blir aldrig sjuk"],
-        primara=["langbage"], sekundara=["rida"], startbonus=[{"fardighet": "klattra", "bc": 5}]),
+        primara=["vapen:Långbåge"], sekundara=["rida"], startbonus=[{"fardighet": "klattra", "bc": 5}]),
     ras("manniska", "Människa", 15, [0, 0, 0, 0, 0, 0], [8, 18, 13],
         [[16, 20], [21, 45], [46, 60], [61, 70], [71, 100]],
         [{"sprak": "chronos", "fv": 16}], ["chronos"], []),
@@ -84,6 +87,23 @@ RASER = [
         [{"sprak": "wongosiska", "fv": 16}, {"sprak": "chronos", "fv": 5}], ["chronos", "wongosiska"], [],
         startbonus=[{"fardighet": "kopsla", "bc": 5}]),
 ]
+# Egna korta sammanfattningar av rasbeskrivningarna (s. 14–16)
+RASBESKRIVNING = {
+    "dimalv": "Ur-alverna som stadsalver och ljusalver härstammar från. Starkare och kraftigare än andra alver, ofta med stor magisk kraft och visdom. I människornas stad Chronopia passar de illa in; de är illa omtyckta och ser själva ner på stadens dekadenta invånare.",
+    "drakonit": "Liknar stora ödlor eller krokodiler som går på två ben, med vaggande gång och svängande svans. Större och starkare än människor och ofta duktiga krigare. I Chronopia lever de för sig själva i en egen stadsdel och tål inte att någon kommenterar deras utseende.",
+    "dvarg": "Korta, kraftigt byggda och ofta långskäggiga. Deras städer ligger under jorden, där de bryter guld, ädelstenar och svart gas. Duktiga krigare, hantverkare, ingenjörer och advokater, men sällan magiker. Dvärgiskan skiljer sig så mycket från människospråken att de flesta dvärgar har svårt med språk.",
+    "goblin": "Komiska, småvuxna och klent byggda, med grönaktig och vårtig hy. Ses som korkade och lättlurade och lever ofta som rövare, tjuvar, tiggare eller gycklare. De håller sig borta från gatorna, vilket fått folk att tro att de är rädda för solen.",
+    "halvalv": "Halvt människa, halvt alv: kortare än alver och klenare än människor, men ofta med sällsynta magiska gåvor. Många ser dem med misstänksamhet. De som inte blir magiker blir ofta tjuvar eller lönnmördare.",
+    "hoglandare": "Ett storvuxet, stolt och hästburet människofolk från de otillgängliga högländerna i norr, härdat av årtusenden av krig för sitt land. De handlar mycket med dvärgarna, och de som syns i Chronopia är oftast äventyrare eller köpmän man inte lurar i första taget.",
+    "ljusalv": "Långa, spensliga alver från skogarna kring staden, där de bor i väldiga städer uppe i trädkronorna. Uppsluppna och lekfulla, men ogillar inkräktare och främlingar, och kan verka grymma och egoistiska. I staden är de oftast pälsjägare, gycklare eller äventyrare.",
+    "manniska": "I Chronopia samlas människor från hela världen och alla kulturer: köpmän, legoknektar, äventyrare, magiker, lärda, sjöfarare och upptäcktsresande, i alla storlekar och sorter.",
+    "orch": "Kraftiga och krumryggade, med ovanligt långa armar. Stora och starka men sällan särskilt kloka; de som inte slavar i dvärgarnas gruvor blir ofta krigare. Stadsborna ser dem som bråkiga och våldsamma, och alla orcher är mycket snåla.",
+    "stadsalv": "Antingen födda i staden eller inflyttade för tusentals år sedan. Ofantligt förmögna, med pengar som de gärna slösar på vin och nöjen och vinner tillbaka genom bankverksamhet och handel. De är stadens överklass och ser människor som tjänstefolk.",
+    "troll": "Syns på håll, en meter högre än resten av folkmassan. Trots muskler och längd är de oftast vänliga och godtrogna, ja lite för vänliga och lättlurade. Men den som till slut lyckas reta upp ett troll gör det sällan igen. Arbetar ofta som dörrvakter, gladiatorer, legosoldater och vagnsdragare.",
+    "wongos": "Kortvuxna, med gulaktig hy, breda munnar, platta ansikten och stora trubbiga hörntänder som ger ett barnsligt och komiskt intryck. Trots det är de respekterade köpmän och mästerliga förhandlare, och de långa livet och alla handelsresor gör dem ofta visa.",
+}
+for r in RASER:
+    r["beskrivning"] = RASBESKRIVNING[r["id"]]
 skriv("raser", RASER)
 
 # ---------------------------------------------------------------- ålder (s. 16–17, 34)
@@ -234,7 +254,22 @@ FARDIGHETER = [
 for d in FARDIGHETER:
     if d["id"] == "lappläsning":
         d["id"] = "lapplasning"
+    d["beskrivning"] = BESKRIVNINGAR[d["id"]]
 skriv("fardigheter", {
+    "hantverkBeskrivning": {  # egna korta beskrivningar; boken listar bara namnen (s. 59)
+        "Smide": "Att smida verktyg, vapen och rustningar av järn och stål.",
+        "Sömnad": "Att sy kläder, tält, segel och annat av tyg.",
+        "Snickeri": "Att bygga möbler, dörrar, kistor och hus av trä.",
+        "Stenhuggning": "Att hugga och foga sten till byggnader, statyer och gravstenar.",
+        "Garvning": "Att bereda djurhudar till läder och päls.",
+        "Guldsmide": "Att forma smycken och prydnader av guld, silver och andra ädla metaller.",
+        "Juvelsnideri": "Att slipa ädelstenar och fatta dem i smycken.",
+        "Hovslageri": "Att sko hästar och andra riddjur och sköta deras hovar.",
+        "Gjutning": "Att gjuta föremål av metall, till exempel klockor, kittlar och statyer.",
+        "Träsnideri": "Att snida i trä, till exempel pilar, bågar, skålar och utsmyckningar.",
+        "Tygfärgning": "Att färga tyg och garn med växtfärger och andra färgämnen.",
+        "Läderarbete": "Att tillverka skor, sadlar, bälten och läderrustningar.",
+    },
     "lista": FARDIGHETER,
     "kostnad": {"primar": 2, "yrke": 3, "sekundar": 5, "magiskolaSekundar": 20},  # EP per FV, s. 35
     "baschans": [[3, 0], [8, 1], [12, 2], [16, 3], [20, 4], [None, 5]],  # s. 34
@@ -264,7 +299,32 @@ skriv("fardigheter", {
         ["Liggande/knästående strid", 1.0], ["Lågt kast†", 0.5], ["Låsning/nerdragning†", 1.0],
         ["Normalt slag", 0.5], ["Normal spark", 0.5], ["Obeväpnad parering av vapen", 0.5],
         ["Rundspark", 1.0], ["Stålsättning", 1.0], ["Uppresning", 0.5], ["Vidvinkelsyn", 1.0]],
-    "sida": [34, 35, 36, 40, 43, 52, 54, 68],
+    # Egna korta sammanfattningar av teknikbeskrivningarna (s. 69–70)
+    "stridskonstBeskrivning": {
+        "Avväpning": "Obeväpnad parering mot ett vapenanfall. Misslyckas anfallet flyger vapnet 1T3 rutor, om inte anfallaren lyckas parera avväpningen. Vid perfekt slag tar försvararen vapnet själv, om inte anfallaren också slog perfekt.",
+        "Bakåtspark": "Spark mot en motståndare i rutan bakom kämpen. 1T6 i skada.",
+        "Bedövningsslag†": "Slag med knytnäve eller fingrar mot nervknutar, 1T3 i skada. Den som skadas måste klara ett Svårt FYS-slag, annars är den bedövad och förlorar nästa attack eller parering. Mot icke-människoliknande gör det bara 1T3 i skada.",
+        "Blind strid": "Kämpen känner av var motståndarna finns utan att se dem och kan slåss i totalt mörker. Alltid påkopplad, kräver inget slag. Terrängen kan fortfarande ställa till det.",
+        "Dubbelslag": "Två knytnävsattacker i samma SR mot två olika motståndare, 1T3 i skada vardera och ett slag per attack. Offren får stå högst 180° isär.",
+        "Dubbelspark": "Flygande hoppspark som träffar två olika motståndare, en med varje fot, 1T6 i skada vardera och ett slag per spark. Offren får stå högst 1 meter isär. I övrigt som hoppspark.",
+        "Fallteknik/rullningar": "Ett lyckat slag halverar skadan från ett fall. En rullning flyttar kämpen upp till 5 rutor på en SR, och en rullande person kan inte huggas med närstridsvapen. Misslyckas rullningen kommer man bara halvvägs och blir liggande.",
+        "Fint": "Görs samtidigt som ett anfall. Lyckas finten halveras motståndarens chans att parera (avrundat nedåt). Fungerar med alla anfall utom avståndsvapen.",
+        "Hoppspark": "Sats och hopp med spark mot huvud eller bröstkorg, 1T8 i skada. Missar sparken landar kämpen i målets ruta och måste klara ett SMI-slag för att inte ramla omkull. Ger −2 på initiativslaget.",
+        "Högt kast†": "Görs alltid sist i SR. Lyckas kastet hamnar offret liggande 1T3 rutor bort och tar 1T3 i skada om det missar ett Svårt SMI-slag.",
+        "Initiativbonus": "Alltid påkopplad, kräver inget slag. Kämpen lägger 5 till sin SMI när turordningen i striden räknas fram.",
+        "Krosslag": "Knytnävsslag mot ömtåliga punkter som tinning, struphuvud eller solar plexus. 1T6 i skada.",
+        "Liggande/knästående strid": "Kämpen kan slå, sparka, parera och göra låga kast när den ligger ned, och anfallare får ingen bonus mot den. Alltid påkopplad, kräver inget slag.",
+        "Lågt kast†": "Lyckas kastet hamnar försvararen omkull i sin egen ruta utan att skadas och kan resa sig efter 1T2 SR. Kastet kan pareras.",
+        "Låsning/nerdragning†": "Ett anfall som drar ned motståndaren på marken och låser den där. Kan pareras. För att ta sig loss måste offret övervinna anfallarens FV med sin halverade SMI.",
+        "Normalt slag": "Vanligt knytnävsslag mot huvud eller bröstkorg. 1T3 i skada.",
+        "Normal spark": "Vanlig spark mot ben, bröstkorg eller huvud. 1T6 i skada.",
+        "Obeväpnad parering av vapen": "Kämpen kan parera alla närstridsanfall, även med vapen, som om den hade ett vapen. Utan tekniken kan en obeväpnad kämpe bara parera obeväpnade anfall.",
+        "Rundspark": "Spark med ett helt varv för extra kraft, 1T8 i skada. Missar den kan kämpen inte anfalla eller parera nästa runda. Ger −2 på initiativslaget.",
+        "Stålsättning": "Med ett lyckat slag när kämpen skadas tar den bara halv skada. Fungerar inte mot slag mot huvudet.",
+        "Uppresning": "Med ett lyckat slag reser sig kämpen direkt efter att ha kastats omkull, oavsett när i rundan det hände.",
+        "Vidvinkelsyn": "Kämpen uppfattar allt inom 270° omkring sig. Alltid påkopplad, kräver inget slag.",
+    },
+    "sida": [34, 35, 36, 40, 43, 52, 54, 68, 69, 70],
 })
 
 # ---------------------------------------------------------------- yrken (s. 18–26, 41–42)
@@ -451,6 +511,66 @@ SF = [
 ]
 
 
+# Maskinläsbara effekter, så att gränssnittet kan erbjuda just de val förmågan ger.
+# fv: lägg till FV; minst: startvärdet blir minst FV; status: färdigheten byter status;
+# valj/bland: spelaren väljer så många färdigheter ur en grupp; fasta: färdigheterna är givna.
+def fv(n, *fasta, valj=0, bland=None, minst=False, tak=False, status=None):
+    d = {"typ": "fv", "fv": n}
+    if fasta:
+        d["fasta"] = list(fasta)
+    if valj:
+        d["valj"] = valj
+        d["bland"] = bland
+    if minst:
+        d["minst"] = True
+    if tak:
+        d["tak"] = True
+    if status:
+        d["status"] = status
+    return d
+
+
+SF_REGLER = {
+    "Talang": [fv(1, valj=1, bland="sekundar-ej-magi")],
+    "Berest": [fv(2, valj=2, bland="geografi")],
+    "Musikalisk": [fv(15, valj=1, bland="spela-instrument", minst=True)],
+    "Sjöfarare": [fv(2, "sjokunnighet", "navigera")],
+    "Akrobat": [fv(3, "akrobatik")],
+    "Örtkunnig": [fv(3, "ortkunskap", "giftkunskap", "drogkunskap")],
+    "Konstnärlig": [fv(3, "forfalskning", "malning")],
+    "Spänstig": [fv(3, "hoppa")],
+    "Byråkrat": [fv(3, valj=1, bland="administration")],
+    "Spelare": [fv(3, valj=1, bland=["schack", "hasardspel"])],
+    "Stora öron": [{"typ": "egenskap", "mod": {"KAR": -2}}, fv(5, "lyssna")],
+    "Slagskämpe": [fv(3, "slagsmal")],
+    "Händig": [fv(3, valj=1, bland="hantverk")],
+    "Skarpt öga": [fv(3, "vardera")],
+    "Snabbfotad": [{"typ": "forflyttning", "varde": 1}],
+    "Tvåhandskämpe": [fv(3, valj=1, bland="tva-vapen")],
+    "Hobbyist": [fv(3, valj=1, bland="sekundar-ej-magi", minst=True)],
+    "Begåvad": [fv(2, valj=1, bland="alla-ej-magi", tak=True)],
+    "Ljudlös": [fv(2, "smyga")],
+    "Vacker röst": [fv(3, "sjunga")],
+    "Vaksam": [fv(1, "upptacka-fara", "finna-dolda-ting")],
+    "Beläst": [fv(10, valj=1, bland="lardom", minst=True)],
+    "Språkbegåvad": [fv(20, valj=1, bland="sprak", minst=True)],
+    "Mångsidig": [fv(0, valj=2, bland="sekundar-ej-magi", status="yrke")],
+    "Uppmärksam": [fv(2, "finna-dolda-ting", "upptacka-fara")],
+    "Arv": [{"typ": "kapital", "varde": 10000}],
+    "Vapentalang": [fv(5, valj=1, bland="vapen")],
+    "Dubbelhänt": [{"typ": "svardshand", "varde": "Dubbelhänt"}],
+    "Bärsärk": [fv(5, "barsarkagang", status="primar")],
+    "Skarpsinnig": [fv(5, "upptacka-fara", "finna-dolda-ting")],
+    "Ryttare": [fv(10, "rida")],
+    "Ambidextriös": [{"typ": "svardshand", "varde": "Ambidextriös"}],
+    "Vapenmästare": [fv(10, valj=1, bland="vapen", minst=True, status="primar")],
+    "Skarpa sinnen": [fv(5, "upptacka-fara", "lyssna")],
+    "Magikänsla": [{"typ": "magiformaga", "varde": -5}],
+    "Tålig": [{"typ": "kpFaktor", "varde": 1.5}],
+    "Höjd grundegenskap": [{"typ": "egenskapVal"}],
+}
+
+
 def intervall(s):
     if s.endswith("+"):
         return [int(s[:-1]), None]
@@ -459,8 +579,10 @@ def intervall(s):
 
 
 skriv("sarskilda-formagor", [
-    {"slag": intervall(s), "namn": n, "effekt": e, "sida": 30 if intervall(s)[0] <= 28 else (31 if intervall(s)[0] <= 68 else 32)}
+    {"slag": intervall(s), "namn": n, "effekt": e, "sida": 30 if intervall(s)[0] <= 28 else (31 if intervall(s)[0] <= 68 else 32),
+     **({"regel": SF_REGLER[n]} if n in SF_REGLER else {})}
     for s, n, e in SF])
+assert not set(SF_REGLER) - {n for _, n, _ in SF}, set(SF_REGLER) - {n for _, n, _ in SF}
 
 # ---------------------------------------------------------------- vapen (s. 72, 90–91, 94)
 def v(namn, skada, sty, langd, vikt, bv, pris, grupp, stjarna=False, **extra):
@@ -523,7 +645,7 @@ skriv("vapen", {
     "grupper": [  # s. 72
         {"id": "dolkar", "namn": "Dolkar", "grundegenskap": "SMI"},
         {"id": "enhandssvard", "namn": "Enhandssvärd", "grundegenskap": "STY"},
-        {"id": "enhandskross", "namn": "Enhands krossvapen", "grundegenskap": "STY"},
+        {"id": "enhandskross", "namn": "Enhandskrossvapen", "grundegenskap": "STY"},
         {"id": "enhandsyxor", "namn": "Enhandsyxor", "grundegenskap": "STY"},
         {"id": "tvahandsvapen", "namn": "Tvåhandsvapen", "grundegenskap": "STY"},
         {"id": "stickvapen", "namn": "Stickvapen", "grundegenskap": "STY"},
@@ -548,6 +670,10 @@ skriv("vapen", {
     "sida": [72, 89, 90, 91, 94],
 })
 
+# ---------------------------------------------------------------- besvärjelser och utrustning
+skriv("besvarjelser", besvarjelser.bygg())
+skriv("utrustning", utrustning.bygg())
+
 # ---------------------------------------------------------------- husregler (dokumenterade tolkningar)
 skriv("husregler", [
     {"id": "primara-fran-s40", "sida": [40, 57, 62], "beslut": "Primära färdigheter enligt s. 40, plus Bärsärkagång för troll och Känna magi för magiker."},
@@ -561,6 +687,7 @@ skriv("husregler", [
     {"id": "aldersgranser", "sida": [16, 17, 34], "beslut": "Nedre kategorin slutar året före nästa börjar; Dvärg vuxen 41–150."},
     {"id": "kapitaltak-efter-bonus", "sida": [33], "beslut": "Taket (socialt stånd +10/+15) gäller summan efter bonusar."},
     {"id": "over-bp-till-ep", "sida": [34], "beslut": "Varje överblivet BP ger 5 EP."},
+    {"id": "startpaket", "sida": [38], "beslut": "Frivilligt startpaket utan kostnad: ryggsäck, skjorta, byxor, bälte, läderskor och ett vapen för högst 100 sm som rollpersonen kan använda (Niclas 2026-10-25)."},
     {"id": "lasa-skriva-tak", "sida": [56, 61, 64, 65], "beslut": "Tak mot Läsa/Skriva använder högsta L/S-FV."},
     {"id": "chronos-lagre", "sida": [52, 54], "beslut": "Tala Chronos FV 5 för drakonit/orch/wongos; drakoniters L/S Chronos två B-nivåer under modersmålets BC."},
     {"id": "sf-fore-harledda", "sida": [30, 31, 32], "beslut": "Särskilda förmågor räknas in innan KP, SB och färdigheter räknas ut."},
