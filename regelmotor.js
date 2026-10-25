@@ -345,8 +345,6 @@ export function raknaRollperson(regler, indata) {
     fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, start, fv: Math.max(mal, start), ep,
       epPerFV: epPerFV(regler, st, f, tekniker), kategoriB: f.kategoriB, ...(tekniker ? { tekniker } : {}) });
   }
-  if (epSpenderat > epStart) fel.push(`${epSpenderat - epStart} EP för mycket har spenderats (s. 34)`);
-
   kontrolleraVal(regler, rp, ge.varden, fel);
 
   // Samma yrkesfärdighet kan inte väljas två gånger (s. 18, 27)
@@ -368,14 +366,122 @@ export function raknaRollperson(regler, indata) {
     vantar.push(magiformaga.slag === null ? "Magiskolor kräver ett magiförmågeslag (s. 106)" : "Magiförmågeslaget misslyckades, så rollpersonen kan inte lära sig magi (s. 106)");
   }
 
+  const besvarjelser = raknaBesvarjelser(regler, rp, fardigheter, ge.varden, yrke.magiker || magiformaga.lyckat, fel);
+  epSpenderat += besvarjelser.reduce((a, b) => a + b.ep, 0);
+  if (epSpenderat > epStart) fel.push(`${epSpenderat - epStart} EP för mycket har spenderats (s. 34)`);
+  const utrustning = raknaUtrustning(regler, rp, ge.varden, slag.startkapital, fel);
+
   return {
     ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, harledda, slag, magiformaga,
     sarskildFormaga: sf.formaga, saknas: sf.saknas, vantar,
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
+    besvarjelser, utrustning,
     fel,
   };
+}
+
+// FV i varje magiskola; allmänna besvärjelser styrs av den högsta (s. 106)
+export function skolFV(fardigheter) {
+  const fv = { animism: 0, elementarmagi: 0, mentalism: 0 };
+  for (const f of fardigheter) if (f.nyckel in fv) fv[f.nyckel] = f.fv;
+  return { ...fv, allman: Math.max(...Object.values(fv)) };
+}
+
+// EP per FV-steg i en besvärjelse efter skolvärde: 2 för SV 1–3, sedan +1 per tre SV (s. 36)
+export function besvarjelsePris(regler, sv) {
+  const tabell = regler.besvarjelser.kostnad;
+  const rad = tabell.find(([max]) => sv <= max);
+  return rad ? rad[1] : tabell.at(-1)[1] + Math.ceil((sv - tabell.at(-1)[0]) / 3);
+}
+
+// Besvärjelser har ingen BC, bygger på PSY och kan bara läras upp till skolans FV i skolvärde (s. 36, 106–107)
+function raknaBesvarjelser(regler, rp, fardigheter, varden, kanMagi, fel) {
+  const B = regler.besvarjelser;
+  const valda = Object.entries(rp.besvarjelser ?? {}).filter(([, fv]) => fv > 0);
+  if (!B) return [];
+  const skola = skolFV(fardigheter);
+  return valda.map(([nyckel, fv]) => {
+    const [id, val] = nyckel.split(":");
+    const b = B.lista.find((x) => x.id === id);
+    if (!b) { fel.push(`Okänd besvärjelse: ${nyckel}`); return null; }
+    const namn = val ? `${b.namn} (${val})` : b.namn;
+    const tillatna = b.perVal === "varelsegrupp" ? B.varelsegrupper : b.perVal === "elementar" ? B.elementarer : null;
+    if (tillatna && !tillatna.includes(val)) fel.push(`${b.namn}: välj vilken ${b.perVal === "elementar" ? "elementar" : "grupp av varelser"} den gäller (s. 120, 123)`);
+    if (!kanMagi) fel.push(`${namn}: rollpersonen kan inte lära sig magi (s. 106)`);
+    else if (b.sv > skola[b.skola]) {
+      fel.push(`${namn} har skolvärde ${b.sv} men FV i ${b.skola === "allman" ? "bästa magiskolan" : B.skolor[b.skola].toLowerCase()} är ${skola[b.skola]} (s. 106)`);
+    }
+    if (fv > varden.PSY) fel.push(`${namn}: högst FV ${varden.PSY}, samma som PSY (s. 36)`);
+    const epPerFV = besvarjelsePris(regler, b.sv);
+    return { nyckel, id, namn, skola: b.skola, sv: b.sv, fv, epPerFV, ep: fv * epPerFV, rackvidd: b.rackvidd, varaktighet: b.varaktighet };
+  }).filter(Boolean).sort((a, b) => a.skola.localeCompare(b.skola) || a.sv - b.sv || a.namn.localeCompare(b.namn, "sv"));
+}
+
+// Kan rollpersonen över huvud taget använda vapnet? (s. 89, 91, 94)
+export function kanAnvandaVapen(regler, namn, varden) {
+  const v = regler.vapen;
+  const narstrid = v.narstrid.find((x) => x.namn === namn);
+  if (narstrid) return narstrid.styKrav <= varden.STY * 2; // med två händer räknas STY dubbelt
+  const projektil = v.projektil.find((x) => x.namn === namn);
+  if (projektil) return projektil.styKrav <= varden.STY * (projektil.tvaHander ? 2 : 1);
+  const kast = v.kast.find((x) => x.namn === namn);
+  if (kast) return kast.styKrav <= varden.STY; // kastvapen hålls alltid med en hand
+  const skold = v.skoldar.find((x) => x.namn === namn);
+  if (skold) return skold.styKrav <= varden.STY;
+  return false;
+}
+
+// Alla saker som går att köpa, med pris och vikt (s. 90–102)
+export function varukatalog(regler) {
+  const U = regler.utrustning;
+  if (!U) return [];
+  const v = regler.vapen;
+  return [
+    ...U.varor,
+    ...U.rustningar.map((r) => ({ ...r, kategori: "Rustning" })),
+    ...v.narstrid.filter((x) => x.pris).map((x) => ({ ...x, kategori: "Närstridsvapen" })),
+    ...v.projektil.map((x) => ({ ...x, kategori: "Avståndsvapen" })),
+    ...v.kast.map((x) => ({ ...x, kategori: "Kastvapen" })),
+    ...v.skoldar.map((x) => ({ ...x, kategori: "Sköldar" })),
+  ];
+}
+
+// Inköp betalas med startkapitalet; startpaketet är gratis (s. 38)
+function raknaUtrustning(regler, rp, varden, startkapital, fel) {
+  const U = regler.utrustning;
+  if (!U) return { kostnad: 0, kvar: startkapital, vikt: 0, saker: [] };
+  const katalog = varukatalog(regler);
+  const saker = [];
+  let kostnad = 0;
+  let vikt = 0;
+  for (const [namn, antal] of Object.entries(rp.utrustning ?? {})) {
+    if (!(antal > 0)) continue;
+    const vara = katalog.find((x) => x.namn === namn);
+    if (!vara) { fel.push(`Okänd vara: ${namn}`); continue; }
+    kostnad += vara.pris * antal;
+    vikt += (vara.vikt ?? 0) * antal;
+    saker.push({ namn, antal, pris: vara.pris, kategori: vara.kategori, gratis: false });
+  }
+  const paket = rp.startpaket;
+  if (paket?.valt) {
+    for (const namn of U.startpaket.varor) {
+      vikt += katalog.find((x) => x.namn === namn)?.vikt ?? 0;
+      saker.push({ namn, antal: 1, pris: 0, kategori: "Startpaket", gratis: true });
+    }
+    if (paket.vapen) {
+      const vapen = katalog.find((x) => x.namn === paket.vapen);
+      if (!vapen || !kanAnvandaVapen(regler, paket.vapen, varden)) fel.push(`${paket.vapen} kan inte användas av rollpersonen (s. 89)`);
+      else if (vapen.pris > U.startpaket.vapenMaxPris) fel.push(`Startpaketets vapen får kosta högst ${U.startpaket.vapenMaxPris} sm`);
+      else {
+        vikt += vapen.vikt ?? 0;
+        saker.push({ namn: paket.vapen, antal: 1, pris: 0, kategori: "Startpaket", gratis: true });
+      }
+    }
+  }
+  if (kostnad > startkapital) fel.push(`Inköpen kostar ${kostnad} sm men startkapitalet är ${startkapital} sm (s. 38)`);
+  return { kostnad, kvar: startkapital - kostnad, vikt: Math.round(vikt * 10) / 10, saker };
 }
 
 function takFor(regler, rp, nyckel, f, varden, fvHittills) {

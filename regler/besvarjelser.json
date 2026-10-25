@@ -1,0 +1,817 @@
+{
+  "skolor": {
+    "allman": "Allmänna",
+    "animism": "Animism",
+    "elementarmagi": "Elementarmagi",
+    "mentalism": "Mentalism"
+  },
+  "lista": [
+    {
+      "id": "antimagi",
+      "namn": "Antimagi",
+      "skola": "allman",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV/4 minuter",
+      "sida": 116,
+      "beskrivning": "En magisk sköld runt en varelse eller ett föremål. Magi mot målet måste först övervinna sköldens effektgrad, annars studsar den tillbaka."
+    },
+    {
+      "id": "skingra",
+      "namn": "Skingra",
+      "skola": "allman",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 116,
+      "beskrivning": "Tar bort verkan av en annan besvärjelse, eller stoppar en som håller på att läggas, om den övervinner dess effektgrad."
+    },
+    {
+      "id": "varseblivning",
+      "namn": "Varseblivning",
+      "skola": "allman",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 117,
+      "beskrivning": "Ger riktning och avstånd till närmaste sak av en vald sort, till exempel en fälla eller guld. En sak per grad."
+    },
+    {
+      "id": "beskyddare",
+      "namn": "Beskyddare",
+      "skola": "allman",
+      "sv": 9,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "Permanent",
+      "sida": 117,
+      "beskrivning": "Nio stenar bildar en skyddande kub på 3 × 3 × 3 meter som stoppar magi och föremål. Varje grad över den första lägger till 3 meter."
+    },
+    {
+      "id": "foryngra",
+      "namn": "Föryngra",
+      "skola": "allman",
+      "sv": 14,
+      "typ": "R",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV/4 veckor",
+      "sida": 117,
+      "beskrivning": "Gör en kropp tillfälligt E × 5 år yngre. Bara kroppen föryngras, inte kunskaper eller sinne."
+    },
+    {
+      "id": "laddning",
+      "namn": "Laddning",
+      "skola": "allman",
+      "sv": 14,
+      "typ": "R",
+      "rackvidd": "Beröring",
+      "varaktighet": "Permanent",
+      "sida": 117,
+      "beskrivning": "Lagrar PSY-poäng i ett föremål som ett engångsbatteri, 5 PSY per effektgrad. Ett föremål kan bara laddas en gång."
+    },
+    {
+      "id": "finna-vatten",
+      "namn": "Finna vatten",
+      "skola": "animism",
+      "sv": 1,
+      "typ": "",
+      "rackvidd": "FV/4 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 117,
+      "beskrivning": "Visar avstånd och riktning till drickbart vatten. Fungerar inte när det regnar."
+    },
+    {
+      "id": "traeld",
+      "namn": "Träeld",
+      "skola": "animism",
+      "sv": 2,
+      "typ": "F, K",
+      "rackvidd": "Beröring",
+      "varaktighet": "Omedelbar",
+      "sida": 117,
+      "beskrivning": "Antänder ett stycke torrt, dött trä. Ett trästycke till per extra grad."
+    },
+    {
+      "id": "sparlos",
+      "namn": "Spårlös",
+      "skola": "animism",
+      "sv": 4,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV/4 minuter",
+      "sida": 117,
+      "beskrivning": "Varelsen lämnar inga spår, inte ens lukt. En varelse till per extra grad."
+    },
+    {
+      "id": "vaxtkunskap",
+      "namn": "Växtkunskap",
+      "skola": "animism",
+      "sv": 5,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "Omedelbar",
+      "sida": 118,
+      "beskrivning": "Ger all kunskap om en växt man rör vid: vad den är och vad den kan användas till."
+    },
+    {
+      "id": "minska",
+      "namn": "Minska",
+      "skola": "animism",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV/4 minuter",
+      "sida": 118,
+      "beskrivning": "Sänker STY, FYS, STO, KAR eller SMI med 1 per grad, aldrig under 1. Färdigheterna påverkas också."
+    },
+    {
+      "id": "nedkalla-askvigg",
+      "namn": "Nedkalla åskvigg",
+      "skola": "animism",
+      "sv": 6,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 118,
+      "beskrivning": "Kallar ned en blixt från ett regnmoln mot ett mål. Skadar som Blixt. Det måste regna på både animisten och målet."
+    },
+    {
+      "id": "vindpil",
+      "namn": "Vindpil",
+      "skola": "animism",
+      "sv": 6,
+      "typ": "F",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 118,
+      "beskrivning": "En träpil svävar framför magikern och träffar automatiskt, 1T10+E i skada. Rustning skyddar som vanligt."
+    },
+    {
+      "id": "oka",
+      "namn": "Öka",
+      "skola": "animism",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV/4 minuter",
+      "sida": 118,
+      "beskrivning": "Höjer STY, FYS, STO, KAR eller SMI med 1 per grad. Färdigheterna påverkas också."
+    },
+    {
+      "id": "ortrankor",
+      "namn": "Örtrankor",
+      "skola": "animism",
+      "sv": 6,
+      "typ": "F",
+      "rackvidd": "Särskild",
+      "varaktighet": "FV×1 SR",
+      "sida": 118,
+      "beskrivning": "Ett knippe frön som kastas och snärjer offret. En grad krävs per 10 STO hos offret."
+    },
+    {
+      "id": "kamouflage",
+      "namn": "Kamouflage",
+      "skola": "animism",
+      "sv": 7,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV/4 minuter",
+      "sida": 119,
+      "beskrivning": "Magikern smälter in i omgivningen och kan inte upptäckas så länge den står stilla."
+    },
+    {
+      "id": "vindkontroll",
+      "namn": "Vindkontroll",
+      "skola": "animism",
+      "sv": 11,
+      "typ": "",
+      "rackvidd": "FV×1 km",
+      "varaktighet": "FV×1 timmar",
+      "sida": 119,
+      "beskrivning": "Ändrar vinden: upp till E meter per sekund och ett åttondels varv i riktning per grad."
+    },
+    {
+      "id": "forandra",
+      "namn": "Förändra",
+      "skola": "animism",
+      "sv": 12,
+      "typ": "",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "FV×1 min",
+      "sida": 119,
+      "beskrivning": "Förvandlar ett föremål eller en varelse till en annan form av samma huvudtyp (djur, växt, mineral). 3 STO per grad."
+    },
+    {
+      "id": "hela",
+      "namn": "Hela",
+      "skola": "animism",
+      "sv": 12,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "Omedelbar",
+      "sida": 119,
+      "beskrivning": "Läker 1T6 KP per grad från sår, slag, eld, kyla och liknande. Inte sjukdomar."
+    },
+    {
+      "id": "kanna-fiendskap",
+      "namn": "Känna fiendskap",
+      "skola": "animism",
+      "sv": 12,
+      "typ": "",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 119,
+      "beskrivning": "Avslöjar om en intelligent varelse är fientligt inställd, men inte vad den har för avsikter."
+    },
+    {
+      "id": "regnkontroll",
+      "namn": "Regnkontroll",
+      "skola": "animism",
+      "sv": 13,
+      "typ": "",
+      "rackvidd": "FV/4 km",
+      "varaktighet": "FV×1 minuter",
+      "sida": 120,
+      "beskrivning": "Får molnen att börja regna, eller stoppar regn som redan faller."
+    },
+    {
+      "id": "dimma",
+      "namn": "Dimma",
+      "skola": "animism",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV/4 timmar",
+      "sida": 120,
+      "beskrivning": "En dimbank med högst 15 meters sikt. Kräver vatten i terrängen."
+    },
+    {
+      "id": "neutralisera-gift",
+      "namn": "Neutralisera gift",
+      "skola": "animism",
+      "sv": 15,
+      "typ": "F",
+      "rackvidd": "Beröring",
+      "varaktighet": "Omedelbar",
+      "sida": 120,
+      "beskrivning": "Neutraliserar 1T6+1 poäng giftstyrka per grad. Läker inte skada som redan skett."
+    },
+    {
+      "id": "tillkalla-varelse",
+      "namn": "Tillkalla varelse",
+      "skola": "animism",
+      "sv": 2,
+      "typ": "",
+      "rackvidd": "FV/4 km",
+      "varaktighet": "Omedelbar",
+      "sida": 120,
+      "beskrivning": "Kallar till sig 20 STO varelser per grad ur rätt grupp. De är inte fientliga.",
+      "perVal": "varelsegrupp"
+    },
+    {
+      "id": "tala-med-varelse",
+      "namn": "Tala med varelse",
+      "skola": "animism",
+      "sv": 5,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 minuter",
+      "sida": 120,
+      "beskrivning": "Samtal med en varelse ur rätt grupp, FV 1 i språket per grad. De flesta varelser är ointelligenta.",
+      "perVal": "varelsegrupp"
+    },
+    {
+      "id": "kontrollera-varelse",
+      "namn": "Kontrollera varelse",
+      "skola": "animism",
+      "sv": 10,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 120,
+      "beskrivning": "Full kontroll över 20 STO varelser ur rätt grupp per grad, genom telepati.",
+      "perVal": "varelsegrupp"
+    },
+    {
+      "id": "ljus",
+      "namn": "Ljus",
+      "skola": "elementarmagi",
+      "sv": 2,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×4 minuter",
+      "sida": 121,
+      "beskrivning": "Gör en del av ett föremål självlysande, lyser upp 3 meter. Mer ljus eller längre tid per extra grad."
+    },
+    {
+      "id": "laga",
+      "namn": "Låga",
+      "skola": "elementarmagi",
+      "sv": 2,
+      "typ": "F, K",
+      "rackvidd": "Personlig",
+      "varaktighet": "1T3 SR",
+      "sida": 121,
+      "beskrivning": "En liten låga ur tummen, som kan tända brännbara saker."
+    },
+    {
+      "id": "morker",
+      "namn": "Mörker",
+      "skola": "elementarmagi",
+      "sv": 3,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV/4 minuter",
+      "sida": 121,
+      "beskrivning": "Släcker allt ljus i en sfär med 6 meters diameter."
+    },
+    {
+      "id": "skold",
+      "namn": "Sköld",
+      "skola": "elementarmagi",
+      "sv": 3,
+      "typ": "F, K",
+      "rackvidd": "Personlig",
+      "varaktighet": "Omedelbar",
+      "sida": 121,
+      "beskrivning": "Luften blir en sköld som parerar en fysisk attack automatiskt. BV 4, +2 per extra grad."
+    },
+    {
+      "id": "forsegla",
+      "namn": "Försegla",
+      "skola": "elementarmagi",
+      "sv": 3,
+      "typ": "F",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV×1 minuter",
+      "sida": 121,
+      "beskrivning": "Binder ihop två föremål som passar ihop, till exempel dörr och karm, och ger dem 20 KP extra."
+    },
+    {
+      "id": "flammande-hand",
+      "namn": "Flammande hand",
+      "skola": "elementarmagi",
+      "sv": 4,
+      "typ": "F",
+      "rackvidd": "Beröring",
+      "varaktighet": "1T3 minuter",
+      "sida": 121,
+      "beskrivning": "Handen flammar och ger 1T3 extra skada per grad på slag. Antänder det den rör."
+    },
+    {
+      "id": "kalla-handen",
+      "namn": "Kalla handen",
+      "skola": "elementarmagi",
+      "sv": 4,
+      "typ": "F, K",
+      "rackvidd": "FV/2 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 121,
+      "beskrivning": "En köldstråle. Offret måste klara ett svårt FYS-slag eller förlora sin handling, annars −4 på CL."
+    },
+    {
+      "id": "blixt",
+      "namn": "Blixt",
+      "skola": "elementarmagi",
+      "sv": 6,
+      "typ": "F, K",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 122,
+      "beskrivning": "En blixt mot närmaste mål, 1T6 per grad. Rustning skyddar inte."
+    },
+    {
+      "id": "energistrale",
+      "namn": "Energistråle",
+      "skola": "elementarmagi",
+      "sv": 6,
+      "typ": "F, K",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 122,
+      "beskrivning": "En ljusstråle mot ett mål, 1T6 per grad. Rustning och Skydd drar bort skada."
+    },
+    {
+      "id": "eld",
+      "namn": "Eld",
+      "skola": "elementarmagi",
+      "sv": 6,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 122,
+      "beskrivning": "Hetta i en sfär med 1 meters diameter, 1T6 per grad, eller fler sfärer med mindre skada."
+    },
+    {
+      "id": "frost",
+      "namn": "Frost",
+      "skola": "elementarmagi",
+      "sv": 6,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 122,
+      "beskrivning": "Kyla i en sfär med 1 meters diameter, 1T6 per grad, eller fler sfärer. Kan släcka eldar."
+    },
+    {
+      "id": "forbanna-vapen",
+      "namn": "Förbanna vapen",
+      "skola": "elementarmagi",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×1 minuter",
+      "sida": 123,
+      "beskrivning": "Sänker ett vapens CL och skada med 1 per grad."
+    },
+    {
+      "id": "fortrolla-vapen",
+      "namn": "Förtrolla vapen",
+      "skola": "elementarmagi",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×1 minuter",
+      "sida": 123,
+      "beskrivning": "Höjer ett vapens CL och skada med 1 per grad. Vapnet räknas som magiskt."
+    },
+    {
+      "id": "oppna",
+      "namn": "Öppna",
+      "skola": "elementarmagi",
+      "sv": 6,
+      "typ": "F",
+      "rackvidd": "Beröring",
+      "varaktighet": "Omedelbar",
+      "sida": 123,
+      "beskrivning": "Öppnar låsta dörrar, lådor och kistor. Kan bryta en Försegla."
+    },
+    {
+      "id": "knacka",
+      "namn": "Knäcka",
+      "skola": "elementarmagi",
+      "sv": 6,
+      "typ": "F, K",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 123,
+      "beskrivning": "Skadar ett icke-levande föremål: −10 BV, +2 per extra grad."
+    },
+    {
+      "id": "viggfangare",
+      "namn": "Viggfångare",
+      "skola": "elementarmagi",
+      "sv": 7,
+      "typ": "F",
+      "rackvidd": "Personlig",
+      "varaktighet": "Omedelbar",
+      "sida": 123,
+      "beskrivning": "I åskväder kan magikern dra till sig en blixt och omvandla en del av skadan till PSY-poäng."
+    },
+    {
+      "id": "virvelskold",
+      "namn": "Virvelsköld",
+      "skola": "elementarmagi",
+      "sv": 8,
+      "typ": "F",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 SR",
+      "sida": 123,
+      "beskrivning": "En luftvirvel runt magikern som stöter undan projektiler."
+    },
+    {
+      "id": "frammana-elementar",
+      "namn": "Frammana elementar",
+      "skola": "elementarmagi",
+      "sv": 9,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 123,
+      "beskrivning": "Frammanar, eller skickar bort, en elementar av en viss sort. Kräver lite av elementet.",
+      "perVal": "elementar"
+    },
+    {
+      "id": "astralvapen",
+      "namn": "Astralvapen",
+      "skola": "elementarmagi",
+      "sv": 10,
+      "typ": "F",
+      "rackvidd": "FV/2 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 126,
+      "beskrivning": "Ett vapen med egg av blåskimrande energi. En grad per kg som det riktiga vapnet väger."
+    },
+    {
+      "id": "explosion",
+      "namn": "Explosion",
+      "skola": "elementarmagi",
+      "sv": 11,
+      "typ": "F, K",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 126,
+      "beskrivning": "En eld- och ljusexplosion, 5 skada per grad inom E meter. Bländar alla som ser den."
+    },
+    {
+      "id": "sprang",
+      "namn": "Språng",
+      "skola": "mentalism",
+      "sv": 1,
+      "typ": "K",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV/4 SR",
+      "sida": 126,
+      "beskrivning": "Ett jättesprång utan ansats, 4 meter långt och 2 meter högt per grad."
+    },
+    {
+      "id": "motstandskraft",
+      "namn": "Motståndskraft",
+      "skola": "mentalism",
+      "sv": 3,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV×1 minuter",
+      "sida": 127,
+      "beskrivning": "Skyddar mot hetta och kyla. Minskar sådan skada med 1 per grad och anfall."
+    },
+    {
+      "id": "levitation",
+      "namn": "Levitation",
+      "skola": "mentalism",
+      "sv": 4,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 minuter",
+      "sida": 127,
+      "beskrivning": "Stiga rakt upp i luften, 5 meter per grad, med upp till 50 kg packning."
+    },
+    {
+      "id": "kanslolasning",
+      "namn": "Känsloläsning",
+      "skola": "mentalism",
+      "sv": 5,
+      "typ": "",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "FV/4 SR",
+      "sida": 127,
+      "beskrivning": "Läser av en annan varelses känslor, till exempel om den är vänlig eller fientlig."
+    },
+    {
+      "id": "lyft",
+      "namn": "Lyft",
+      "skola": "mentalism",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "FV×4 rutor",
+      "varaktighet": "FV×1 minuter",
+      "sida": 127,
+      "beskrivning": "Lyfter och flyttar 3 STO per grad genom luften. Kan bromsa fall."
+    },
+    {
+      "id": "skydd",
+      "namn": "Skydd",
+      "skola": "mentalism",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "FV/4 minuter",
+      "sida": 127,
+      "beskrivning": "Som rustning: 1 poängs skydd per grad."
+    },
+    {
+      "id": "tankeoverforing",
+      "namn": "Tankeöverföring",
+      "skola": "mentalism",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 128,
+      "beskrivning": "Ljudlös kommunikation av ytliga tankar och känslor med en varelse per grad."
+    },
+    {
+      "id": "vattenandning",
+      "namn": "Vattenandning",
+      "skola": "mentalism",
+      "sv": 7,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV×1 timmar",
+      "sida": 128,
+      "beskrivning": "Den förhäxade kan andas under vatten och dyka hur djupt som helst."
+    },
+    {
+      "id": "flyga",
+      "namn": "Flyga",
+      "skola": "mentalism",
+      "sv": 8,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV/4 timmar",
+      "sida": 128,
+      "beskrivning": "Flyga fritt med E × 5 rutor per SR. Tunga varelser kräver fler grader."
+    },
+    {
+      "id": "laderhud",
+      "namn": "Läderhud",
+      "skola": "mentalism",
+      "sv": 8,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 timmar",
+      "sida": 128,
+      "beskrivning": "Huden blir läderartad och ger 2 poängs skydd, men KAR sjunker med 2."
+    },
+    {
+      "id": "morkersyn",
+      "namn": "Mörkersyn",
+      "skola": "mentalism",
+      "sv": 8,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV×1 timmar",
+      "sida": 128,
+      "beskrivning": "Ser värmestrålning, till exempel varmblodiga varelser i mörker."
+    },
+    {
+      "id": "osynlighet",
+      "namn": "Osynlighet",
+      "skola": "mentalism",
+      "sv": 9,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV×1 minuter",
+      "sida": 128,
+      "beskrivning": "Gör 6 STO osynliga per grad. Bryts om den osynlige slåss, springer, använder magi eller skadas."
+    },
+    {
+      "id": "syn",
+      "namn": "Syn",
+      "skola": "mentalism",
+      "sv": 9,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 SR",
+      "sida": 128,
+      "beskrivning": "Ser och hör vad som händer på en bekant plats inom 120 meter, eller ett föremåls historia."
+    },
+    {
+      "id": "elchock",
+      "namn": "Elchock",
+      "skola": "mentalism",
+      "sv": 10,
+      "typ": "F, K",
+      "rackvidd": "Beröring",
+      "varaktighet": "Omedelbar",
+      "sida": 128,
+      "beskrivning": "En elektrisk urladdning mot den magikern rör vid, 1T4 per grad. Metallrustning skyddar bara till hälften."
+    },
+    {
+      "id": "tankelasning",
+      "namn": "Tankeläsning",
+      "skola": "mentalism",
+      "sv": 11,
+      "typ": "",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "FV×1 minuter",
+      "sida": 129,
+      "beskrivning": "Läser en intelligent varelses tankar utan att den märker något."
+    },
+    {
+      "id": "kontrollera-person",
+      "namn": "Kontrollera person",
+      "skola": "mentalism",
+      "sv": 12,
+      "typ": "",
+      "rackvidd": "FV×4 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 129,
+      "beskrivning": "Styr en humanoid varelses kropp per grad. Kräver att offrets PSY övervinns och full koncentration."
+    },
+    {
+      "id": "telepati",
+      "namn": "Telepati",
+      "skola": "mentalism",
+      "sv": 12,
+      "typ": "",
+      "rackvidd": "Special",
+      "varaktighet": "FV×1 minuter",
+      "sida": 129,
+      "beskrivning": "Tankekontakt med en namngiven varelse oavsett avstånd. En person till per extra grad."
+    },
+    {
+      "id": "teleportera",
+      "namn": "Teleportera",
+      "skola": "mentalism",
+      "sv": 12,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "Omedelbar",
+      "sida": 129,
+      "beskrivning": "Flyttar 3 STO per grad till en välkänd plats högst 100 meter bort."
+    },
+    {
+      "id": "magisk-syn",
+      "namn": "Magisk syn",
+      "skola": "mentalism",
+      "sv": 13,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV×1 minuter",
+      "sida": 129,
+      "beskrivning": "Ser naturligt eller magiskt osynliga saker och skyddar mot synförsämrande magi."
+    },
+    {
+      "id": "oradd",
+      "namn": "Orädd",
+      "skola": "mentalism",
+      "sv": 14,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV×1 minuter",
+      "sida": 129,
+      "beskrivning": "Den förhäxade behöver aldrig slå på Skräcktabellen."
+    }
+  ],
+  "varelsegrupper": [
+    "Däggdjur",
+    "Fåglar",
+    "Kräldjur",
+    "Groddjur",
+    "Fiskar",
+    "Insekter och spindlar",
+    "Skaldjur",
+    "Maskar",
+    "Blötdjur",
+    "Växter"
+  ],
+  "elementarer": [
+    "Luft (sylf)",
+    "Eld (salamander)",
+    "Jord (gnom)",
+    "Vatten (undin)",
+    "Mörker (umbra)",
+    "Ljus (luminal)",
+    "Köld (glacial)",
+    "Värme (therm)"
+  ],
+  "kostnad": [
+    [
+      3,
+      2
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      9,
+      4
+    ],
+    [
+      12,
+      5
+    ],
+    [
+      15,
+      6
+    ],
+    [
+      18,
+      7
+    ],
+    [
+      21,
+      8
+    ]
+  ],
+  "regler": [
+    "Besvärjelser har ingen baschans och bygger på PSY. FV kan aldrig vara högre än PSY (s. 36).",
+    "En besvärjelse med högre skolvärde än FV i dess skola kan inte läras. Allmänna besvärjelser styrs av den högsta skol-FV (s. 106).",
+    "FV i en besvärjelse får vara högre än FV i skolan, men effektgraden kan aldrig bli högre än skolans FV (s. 107)."
+  ],
+  "sida": [
+    36,
+    106,
+    107,
+    111,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129
+  ]
+}

@@ -90,6 +90,13 @@
     "beslut": "Varje överblivet BP ger 5 EP."
   },
   {
+    "id": "startpaket",
+    "sida": [
+      38
+    ],
+    "beslut": "Frivilligt startpaket utan kostnad: ryggsäck, skjorta, byxor, bälte, läderskor och ett vapen för högst 100 sm som rollpersonen kan använda (Niclas 2026-10-25)."
+  },
+  {
     "id": "lasa-skriva-tak",
     "sida": [
       56,
