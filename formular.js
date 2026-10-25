@@ -8,7 +8,7 @@ const RADER = { formagor: 5, primar: 25, yrke: 12, sprak: 12, sekundar: 32, vape
 const NAMN = { STY: "Styrka", FYS: "Fysik", SMI: "Smidighet", INT: "Intelligens", PSY: "Psyke", KAR: "Karisma", STO: "Storlek" };
 const STATUSNAMN = { primar: "Primär", yrke: "Yrke", sekundar: "Sekundär" };
 
-export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
+export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler = false }) {
   const spel = rp.spel;
   const g = res.grundegenskaper;
   const h = res.harledda;
@@ -41,7 +41,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
   const tak = (f) => (f.status === "sekundar" ? `max ${g[f.grundegenskap] ?? "–"}` : null);
   const fardighetsrad = (f) => el("div", { class: "rf-rad" + (f.kategoriB ? " kat-b" : "") },
     el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock", title: "Bocka vid första lyckade slaget efter sömn (s. 74)" }),
-      el("span", { class: "rf-namntext" }, f.namn),
+      el("span", { class: "rf-namntext" }, f.status === "primar" && f.grundegenskap ? `${f.namn} (${f.grundegenskap})` : f.namn),
       f.kategoriB ? el("small", {}, bNiva(f.fv)) : null,
       tak(f) ? el("small", {}, tak(f)) : null,
       sidhanvisning(sidaFor(f.nyckel))),
@@ -232,7 +232,85 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat }) {
         "EP blir FV först efter en vila på minst sju dagar (s. 74).")),
     el("div", { class: "rf-band rf-fot" }, "3"));
 
-  return [sida1, sida2, sida3];
+  return [sida1, sida2, sida3, ...(medRegler ? [regelsida(4)] : [])];
+
+  // ------------------------------------------------------------ sida 4 och framåt: färdigheterna i korthet (valfri)
+  // Alla färdigheter i spelet, med rollpersonens yrkesfärdigheter först. delaRegelsidor fördelar dem på sidor.
+  function regelsida(nr) {
+    const egna = {};
+    for (const f of res.fardigheter) (egna[idFor(f)] ??= []).push(f);
+    const statusFor = (x) => {
+      const mina = egna[x.id] ?? [];
+      if (mina.some((f) => f.status === "yrke")) return "yrke";
+      if (mina.length) return mina[0].status;
+      if (res.ras?.primara?.includes(x.id)) return "primar";
+      if (res.ras?.sekundara?.includes(x.id)) return "sekundar";
+      return x.typ === "primar" ? "primar" : "sekundar";
+    };
+    const typnamn = { primar: "Primär", sekundar: "Sekundär", magiskola: "Magiskola", sprak: "Språk" };
+    const post = (x) => {
+      const mina = egna[x.id] ?? [];
+      return el("div", { class: "rf-regel" },
+        el("p", { class: "rf-regel-namn" }, el("strong", {}, x.namn),
+          el("span", {}, [x.grundegenskap === "varierar" ? "grundegenskap varierar" : x.grundegenskap, typnamn[x.typ], x.kategoriB ? "kategori B" : null, `s. ${x.sida}`].filter(Boolean).join(" · "))),
+        el("p", {}, x.beskrivning),
+        mina.length ? el("p", { class: "rf-regel-egen" }, "Rollpersonen: ", mina.map((f) => `${f.namn} FV ${f.kategoriB ? `${f.fv} (${bNiva(f.fv)})` : f.fv}`).join(", ")) : null);
+    };
+    const grupper = [
+      [`Yrkesfärdigheter (${res.yrke.namn.toLowerCase()})`, "yrke"],
+      ["Primära färdigheter", "primar"],
+      ["Sekundära färdigheter", "sekundar"],
+    ];
+    const lista = [...R.fardigheter.lista].sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
+    const poster = grupper.flatMap(([titel, st]) => {
+      const valda = lista.filter((x) => statusFor(x) === st);
+      return valda.length ? [el("h3", { class: "rf-regel-rubrik" }, titel), ...valda.map(post)] : [];
+    });
+    const sida = tomRegelsida(el, nr);
+    sida.querySelector(".rf-regelkolumn").append(...poster);
+    return sida;
+  }
+}
+
+function tomRegelsida(el, nr) {
+  return el("section", { class: "rf-sida rf-regelsida", "aria-label": `Färdigheterna i korthet, sida ${nr}` },
+    el("div", { class: "rf-band" }, "Drakar & Demoner"),
+    el("div", { class: "rf-ram" },
+      el("div", { class: "rf-rubrik" }, el("span", { class: "rf-rubrik-titel" }, "Färdigheterna i korthet"), el("span", { class: "rf-rubrik-kol bred" }, "Egna sammanfattningar, se boken för hela reglerna")),
+      el("div", { class: "rf-regelkolumner" }, el("div", { class: "rf-regelkolumn" }), el("div", { class: "rf-regelkolumn" }))),
+    el("div", { class: "rf-band rf-fot" }, String(nr)));
+}
+
+// Fördelar färdigheterna på regelsidorna efter hur mycket som får plats. Körs när sidorna finns
+// i dokumentet, eftersom texternas höjd beror på typsnitten.
+export function delaRegelsidor(rot, el) {
+  const forsta = rot.querySelector(".rf-regelsida");
+  if (!forsta) return;
+  const poster = [...rot.querySelectorAll(".rf-regelsida .rf-regelkolumn > *")];
+  rot.querySelectorAll(".rf-regelsida").forEach((s, i) => { if (i > 0) s.remove(); });
+  forsta.querySelectorAll(".rf-regelkolumn").forEach((k) => k.replaceChildren());
+  let sida = forsta;
+  let nr = Number(forsta.querySelector(".rf-fot").textContent);
+  let kolumner = [...sida.querySelectorAll(".rf-regelkolumn")];
+  let k = 0;
+  for (const post of poster) {
+    kolumner[k].append(post);
+    if (kolumner[k].scrollHeight <= kolumner[k].clientHeight + 1 || kolumner[k].children.length === 1) continue;
+    post.remove();
+    k += 1;
+    if (k === kolumner.length) {
+      nr += 1;
+      const ny = tomRegelsida(el, nr);
+      sida.after(ny);
+      sida = ny;
+      kolumner = [...sida.querySelectorAll(".rf-regelkolumn")];
+      k = 0;
+    }
+    // En rubrik ska inte bli ensam längst ned i en kolumn
+    const forra = k === 0 ? sida.previousElementSibling?.querySelectorAll(".rf-regelkolumn")[1] : kolumner[k - 1];
+    if (forra?.lastElementChild?.matches(".rf-regel-rubrik")) kolumner[k].append(forra.lastElementChild);
+    kolumner[k].append(post);
+  }
 }
 
 // Gubben på sida 2, ritad i bokens stil: en stående figur i kontur.
