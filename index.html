@@ -460,6 +460,26 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] .menypanel .stilval { border-color: var(--linje); }
 [data-stil="klassisk"] .menypanel .stilval button:not([aria-pressed="true"]) { background: var(--yta); color: var(--dampad); }
 [data-stil="klassisk"] .menypanel .stilval button + button { border-left-color: var(--linje); }
+
+/* Spelmötesdelen (spelmote.js) */
+.kryss { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; margin: 6px 0; }
+.kryss input { margin-top: 4px; accent-color: var(--accent); }
+.spel-valjare { display: grid; gap: 10px; margin: 8px 0 12px; }
+.spel-kryss { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0 16px; }
+.spel-steg { list-style: none; padding: 0; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.spel-steginnehall { display: grid; gap: 12px; }
+.stegare { white-space: nowrap; }
+.stegare > span { display: inline-block; min-width: 2.2em; text-align: center; }
+.knapp.liten { padding: 2px 10px; min-height: 0; line-height: 1.4; }
+.knapp.fara { border-color: var(--fel); color: var(--fel); }
+.bniva.ok { color: var(--ok); }
+.spel-spara { margin-top: 8px; }
+.spel-fot { align-items: center; flex-wrap: wrap; gap: 10px; }
+.spel-fot > .rad { justify-content: flex-end; margin-left: auto; }
+.spel-logg { display: grid; gap: 10px; padding-left: 22px; }
+.spel-logg > li { padding: 10px 12px; background: var(--bg); border: 1px solid var(--linje); border-radius: 8px; display: grid; gap: 6px; justify-items: start; }
+.spel-siffror { margin: 10px 0; }
+#session-anteckning { width: 100%; }
 </style>
 
 <header class="topp">
@@ -471,6 +491,7 @@ option.grupprubrik { font-weight: 700; }
     <div class="menypanel" id="menypanel" hidden>
       <button type="button" class="knapp" id="ny"><span class="ny-vanlig">Ny rollperson</span><span class="ny-bekrafta" aria-live="polite">Bekräfta (5)</span></button>
       <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
+      <button type="button" class="knapp" id="visa-spel" aria-pressed="false">Spelmöten och förbättring</button>
       <button type="button" class="knapp" id="visa-formular" aria-pressed="false">Rollformulär</button>
       <label class="vaxel"><input type="checkbox" id="manuella-slag"><span>Skriv in tärningsslag själv</span></label>
       <div class="menydel">
