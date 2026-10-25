@@ -105,7 +105,9 @@ export function utvecklad(regler, indata, res) {
   }
   const fore = new Map(res.fardigheter.map((f) => [f.nyckel, f]));
   const fvNu = Object.fromEntries(res.fardigheter.map((f) => [f.nyckel, f.fv]));
-  const nycklar = [...new Set([...fore.keys(), ...Object.keys(s.fv), ...Object.keys(bonus), ...Object.keys(minst)])];
+  // Färdigheter med osparade EP står också med, även om rollpersonen inte har lärt sig dem än
+  const medEp = Object.keys(indata.spel?.erf ?? {}).filter((k) => fardighetAv(regler, k) && !besvarjelseAv(regler, k) && !k.endsWith(":"));
+  const nycklar = [...new Set([...fore.keys(), ...Object.keys(s.fv), ...Object.keys(bonus), ...Object.keys(minst), ...medEp])];
   const fardigheter = [];
   for (const nyckel of nycklar) {
     const f = fardighetAv(regler, nyckel);
@@ -172,8 +174,10 @@ export function utvecklad(regler, indata, res) {
   }
   const utrustning = regler.utrustning ? { ...res.utrustning, saker, ...bordaFor(regler, saker, varden) } : res.utrustning;
 
+  // En köpt förmåga kan bestämma svärdshanden (Dubbelhänt, Ambidextriös, s. 31–32)
+  const svardshand = extra.map((r) => r.tillagg.svardshand.overstyrd).filter(Boolean).at(-1);
   return {
-    ...res, grundegenskaper: varden, harledda, utrustning,
+    ...res, grundegenskaper: varden, harledda, utrustning, slag: svardshand ? { ...res.slag, svardshand } : res.slag,
     fardigheter: fardigheter.sort((a, b) => a.namn.localeCompare(b.namn, "sv")), besvarjelser,
     extraFormagor: extra.map((r) => r.formaga).filter(Boolean),
     utveckling: { ...s, delta }, fel,
