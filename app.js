@@ -863,9 +863,16 @@ function stridskonstTekniker(f) {
     el("p", { class: "hjalp" }, "Välj vilka tekniker stilen består av. FV gäller alla tekniker i stilen. Varje tekniks grundkostnad läggs ihop och avrundas uppåt; det blir EP per FV",
       f.status === "yrke" ? ". " : ", plus 2 eftersom stilen inte är en yrkesfärdighet. ",
       "† fungerar bara mot människoliknande motståndare (s. 68–70)."),
-    el("div", { class: "teknikrutnat" }, R.fardigheter.stridskonstTekniker.map(([namn, kostnad], i) => el("label", { class: "teknik" },
-      el("input", { type: "checkbox", id: `teknik-${i}`, checked: valda.includes(namn), onchange: (e) => vaxla(namn, e.target.checked) }),
-      el("span", {}, namn), el("span", { class: "teknikpris" }, tal(kostnad))))),
+    el("div", { class: "teknikrutnat" }, R.fardigheter.stridskonstTekniker.map(([namn, kostnad], i) => {
+      const text = R.fardigheter.stridskonstBeskrivning?.[namn];
+      // Info-knappen ligger utanför etiketten, så att ett tryck på den inte kryssar i tekniken
+      return el("div", { class: "teknik" },
+        el("label", {},
+          el("input", { type: "checkbox", id: `teknik-${i}`, checked: valda.includes(namn), onchange: (e) => vaxla(namn, e.target.checked) }),
+          el("span", {}, namn)),
+        text ? el("button", { type: "button", class: "info", "data-tip": `${text} (s. 69–70)`, "aria-label": `Om ${namn.replace("†", "")}` }, "i") : null,
+        el("span", { class: "teknikpris" }, tal(kostnad)));
+    })),
     el("p", { class: "summering" }, valda.length
       ? `Grundkostnad ${tal(summa)}, avrundat uppåt ${Math.ceil(summa)}${f.status === "yrke" ? "" : `, plus 2 = ${f.epPerFV}`} EP per FV.`
       : "Inga tekniker valda än. Välj minst en innan du höjer FV."));
