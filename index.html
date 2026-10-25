@@ -8,7 +8,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&family=Oswald:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap">
 <script>
   // Valt utseende sätts innan sidan ritas, så att det inte blinkar till
-  try { if (localStorage.getItem("chronopia-stil") === "klassisk") document.documentElement.dataset.stil = "klassisk"; } catch { /* frivilligt */ }
+  // Klassisk är standard; Modern gäller bara om spelaren har valt det
+  let stil = null;
+  try { stil = localStorage.getItem("chronopia-stil"); } catch { /* frivilligt */ }
+  if (stil !== "modern") document.documentElement.dataset.stil = "klassisk";
 </script>
 <link rel="stylesheet" href="formular.css">
 <style>
@@ -53,8 +56,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
   display: flex; flex-wrap: wrap; gap: 14px 16px; align-items: center;
   padding-block: 18px; border-bottom: 1px solid var(--linje); margin-bottom: 20px; max-width: 1480px; margin-inline: auto;
 }
-.topp h1 { flex-basis: 100%; font-size: 2.6rem; }
-.topp-verktyg { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; margin-left: auto; }
+.topp h1 { flex: 1 1 auto; min-width: 0; font-size: 2.6rem; }
+/* Menyn: Ny rollperson, Läs in fil, manuella slag och utseende */
+.meny { position: relative; margin-left: auto; }
+.knapp.menyknapp { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; }
+.menyknapp svg { width: 22px; height: 22px; }
+.menypanel { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: max-content; max-width: calc(100vw - 32px);
+  display: grid; gap: 10px; padding: 14px; background: var(--yta); border: 1px solid var(--linje); border-radius: 10px; box-shadow: var(--skugga); }
+.menypanel > .knapp { width: 100%; justify-content: center; text-align: center; }
+.menydel { display: grid; gap: 6px; padding-top: 10px; border-top: 1px solid var(--linje); }
+.vaxel { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: .95rem; }
+.vaxel input { appearance: none; width: 38px; height: 22px; border-radius: 11px; background: var(--yta-2); border: 1px solid var(--linje); position: relative; cursor: pointer; flex: none; margin: 0; transition: background .2s; }
+.vaxel input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--dampad); transition: transform .2s, background .2s; }
+.vaxel input:checked { background: var(--accent); border-color: var(--accent); }
+.vaxel input:checked::after { transform: translateX(16px); background: var(--yta); }
 
 .layout {
   display: grid; gap: 20px; max-width: 1480px; margin-inline: auto;
@@ -117,7 +132,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .falt { display: grid; gap: 4px; min-width: 0; }
 .etikett { font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--dampad); }
 .hjalp { font-size: .85rem; color: var(--dampad); }
-input[type="text"], input[type="number"], select, textarea {
+input[type="text"], input[type="number"], input[type="search"], select, textarea {
   background: var(--bg); border: 1px solid var(--linje); border-radius: var(--rad); padding: 6px 9px; min-width: 0; max-width: 100%;
 }
 input[type="text"], select { min-width: 12rem; }
@@ -228,6 +243,12 @@ input.tal[readonly] { min-width: 0; background: var(--yta-2); color: var(--accen
 .packning li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dotted var(--linje); padding: 2px 0; }
 .teknikrutnat { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 4px 16px; }
 .teknik { display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+/* Fritextsökning bland varorna: under sökningen visas varje varas kategori och ingen flik är markerad */
+.sokfalt { width: 100%; margin-top: 4px; }
+.varukategori { display: none; }
+.tabellram.sokning .varukategori { display: inline; }
+.flikar.sokning .valknapp.vald { background: var(--accent-svag); border-color: var(--accent); color: var(--accent-text); }
+.flikar.sokning .valknapp.vald::before { content: none; }
 .teknik label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 .teknik .teknikpris { margin-left: auto; color: var(--dampad); font-variant-numeric: tabular-nums; }
 .teknik.for-dyr { opacity: .5; }
@@ -245,8 +266,26 @@ input.tal[readonly] { min-width: 0; background: var(--yta-2); color: var(--accen
   70% { transform: rotate(1260deg) scale(1.05); }
   100% { transform: rotate(1440deg) scale(1); }
 }
-.tarningsknapp.kastad { opacity: .55; cursor: default; }
-.tarningsknapp.kastad.nytt .tarning { animation: bop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+/* I slagfältet: rutan har samma storlek och tärningen samma plats före, under och efter slaget.
+   Texten pulserar medan tärningen rullar och tonar sedan ut; slaget tonar in bredvid tärningen. */
+.tarningsknapp.i-falt { justify-content: flex-start; }
+.rutetext { display: inline-grid; }
+.rutetext > span, .rutetext::before, .rutetext::after { grid-area: 1 / 1; }
+.rutetext::before { content: attr(data-a); visibility: hidden; }
+.rutetext::after { content: attr(data-b); visibility: hidden; }
+/* BP-fältet är lika brett som "BP att lägga", så att fälten bredvid inte flyttar sig när etiketten blir "BP lagda" */
+.falt.bp-falt { min-width: 6.5rem; }
+.tarningsknapp.rullar .pulsera { animation: pulsera 1.1s ease-in-out infinite; }
+.tarningsknapp.tona-ut span { animation: tona-ut .4s ease-in forwards; }
+.tarningsknapp.landad { cursor: default; background: var(--yta-2); color: var(--text); font-variant-numeric: tabular-nums; }
+.tarningsknapp.landad .tarning { color: var(--dampad); }
+[data-stil="klassisk"] .tarningsknapp.landad { background: var(--yta-2); }
+.tarningsknapp.landad.nytt .slagvarde > span { animation: tona-in .5s ease-out both; }
+@keyframes pulsera { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+@keyframes tona-ut { to { opacity: 0; } }
+/* Låsta sifferfält behåller pilarnas plats (osynliga) så att siffran står still när fältet låses */
+input.tal.last::-webkit-inner-spin-button, input.tal.last::-webkit-outer-spin-button { visibility: hidden; }
+@keyframes tona-in { from { opacity: 0; } to { opacity: 1; } }
 input.tal.last { background: var(--yta-2); color: var(--dampad); font-weight: 400; }
 .resultat { display: grid; gap: 2px; }
 .magislag { display: grid; gap: 10px; }
@@ -255,7 +294,7 @@ input.tal.last { background: var(--yta-2); color: var(--dampad); font-weight: 40
 .summering.nytt { animation: markera 1.8s ease-out both; border-radius: var(--rad); }
 @keyframes bop { 0% { transform: scale(.4) rotate(-30deg); } 60% { transform: scale(1.35) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
 @keyframes markera { 0% { background: var(--accent-svag); box-shadow: 0 0 0 6px var(--accent-svag); } 100% { background: transparent; box-shadow: 0 0 0 6px transparent; } }
-@media (prefers-reduced-motion: reduce) { .tarningsknapp.rullar .tarning, .tarningsknapp.kastad.nytt .tarning { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .tarningsknapp.rullar .tarning, .tarningsknapp.rullar .pulsera, .tarningsknapp.tona-ut span, .tarningsknapp.landad.nytt .slagvarde > span { animation: none; } }
 /* Dialog mitt på skärmen; sidan bakom mörkas och kan inte rullas */
 body.dialog-oppen { overflow: hidden; }
 .dialog-bakgrund { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgb(0 0 0 / .55); }
@@ -309,6 +348,7 @@ input.namnfalt:focus { border-color: var(--accent); outline: none; }
 .valknapp:hover { border-color: var(--accent-text); }
 .valknapp.vald { background: var(--accent); border-color: var(--accent); color: var(--yta); }
 .valknapp.vald::before { content: "✓ "; }
+.valknapp:disabled { opacity: .45; cursor: not-allowed; }
 .valknapp.bortvald { font-weight: 400; background: transparent; border-color: var(--linje); color: var(--dampad); text-decoration: line-through; opacity: .75; }
 .valknapp.bortvald:hover { opacity: 1; text-decoration: none; border-color: var(--accent); }
 .fbeskr { margin: 2px 0 6px; color: var(--dampad); font-size: .88rem; max-width: 65ch; }
@@ -351,6 +391,8 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] .topp { border-bottom: 3px double #6b5a54; }
 [data-stil="klassisk"] .topp h1 { color: var(--sten-text); font: 700 2.7rem/1.1 var(--rubrik); letter-spacing: .04em; }
 @media (max-width: 520px) { .topp h1, [data-stil="klassisk"] .topp h1 { font-size: 1.7rem; overflow-wrap: anywhere; } }
+[data-stil="klassisk"] .menypanel { background: var(--marmor), var(--ljuskorn), var(--yta); border: 3px double #6b5a54; border-radius: 2px; }
+[data-stil="klassisk"] .menyknapp { color: var(--text); }
 [data-stil="klassisk"] .steg-knapp { color: var(--sten-text); border-radius: 3px; }
 [data-stil="klassisk"] .steg-knapp:hover { background: rgba(255, 255, 255, .07); }
 [data-stil="klassisk"] .steg-knapp.aktiv { color: var(--text); }
@@ -389,7 +431,7 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] .tabell .stor, [data-stil="klassisk"] .egenskaper dd, [data-stil="klassisk"] .pott-tal,
 [data-stil="klassisk"] .steg-potter dd { font-family: var(--rubrik); font-weight: 600; }
 /* Tunna, skarpa ramar runt rutor, formulär och värden */
-[data-stil="klassisk"] input[type="text"], [data-stil="klassisk"] input[type="number"], [data-stil="klassisk"] select,
+[data-stil="klassisk"] input[type="text"], [data-stil="klassisk"] input[type="number"], [data-stil="klassisk"] input[type="search"], [data-stil="klassisk"] select,
 [data-stil="klassisk"] textarea { border-radius: 2px; border-color: #8c7a74; background: #f4f1ef; }
 [data-stil="klassisk"] .yrkeslista > li, [data-stil="klassisk"] .raskort, [data-stil="klassisk"] .pott,
 [data-stil="klassisk"] .egenskaper > div, [data-stil="klassisk"] .saknaslista, [data-stil="klassisk"] .steg-potter > div,
@@ -410,18 +452,33 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] .stilval button { font: 500 .8rem var(--ui); text-transform: uppercase; letter-spacing: 1px; background: #3a312e; color: var(--sten-dampad); }
 [data-stil="klassisk"] .stilval button + button { border-left-color: #6b5a54; }
 [data-stil="klassisk"] .stilval button[aria-pressed="true"] { background: var(--band); color: var(--band-text); }
+/* I menyn fyller temaväljaren hela bredden och ligger på ljus botten */
+.menypanel .stilval { display: flex; }
+.menypanel .stilval button { flex: 1; }
+[data-stil="klassisk"] .menypanel .stilval { border-color: var(--linje); }
+[data-stil="klassisk"] .menypanel .stilval button:not([aria-pressed="true"]) { background: var(--yta); color: var(--dampad); }
+[data-stil="klassisk"] .menypanel .stilval button + button { border-left-color: var(--linje); }
 </style>
 
 <header class="topp">
   <h1>Chronopia rollpersonsskapare</h1>
-  <div class="stilval" role="group" aria-label="Utseende">
-    <button type="button" data-stil="modern" aria-pressed="true">Modern</button>
-    <button type="button" data-stil="klassisk" aria-pressed="false">Klassisk</button>
-  </div>
-  <div class="topp-verktyg">
-    <button type="button" class="knapp" id="visa-formular" aria-pressed="false">Rollformulär</button>
-    <button type="button" class="knapp" id="ny"><span class="ny-vanlig">Ny rollperson</span><span class="ny-bekrafta" aria-live="polite">Bekräfta (5)</span></button>
-    <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
+  <div class="meny">
+    <button type="button" class="knapp menyknapp" id="menyknapp" aria-expanded="false" aria-controls="menypanel" aria-label="Meny">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="menypanel" id="menypanel" hidden>
+      <button type="button" class="knapp" id="ny"><span class="ny-vanlig">Ny rollperson</span><span class="ny-bekrafta" aria-live="polite">Bekräfta (5)</span></button>
+      <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
+      <button type="button" class="knapp" id="visa-formular" aria-pressed="false">Rollformulär</button>
+      <label class="vaxel"><input type="checkbox" id="manuella-slag"><span>Skriv in tärningsslag själv</span></label>
+      <div class="menydel">
+        <span class="etikett">Utseende</span>
+        <div class="stilval" role="group" aria-label="Utseende">
+          <button type="button" data-stil="klassisk" aria-pressed="true">Klassisk</button>
+          <button type="button" data-stil="modern" aria-pressed="false">Modern</button>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
