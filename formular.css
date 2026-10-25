@@ -1,0 +1,181 @@
+/* Rollformuläret i bokens layout (s. 11–12). Sidorna är A4 och ser likadana ut i alla utseenden. */
+.rf-vy {
+  --rf-band: #79615b; --rf-band-text: #fbf8f6; --rf-linje: #806a64; --rf-text: #231c1a; --rf-etikett: #5b4944;
+  --rf-nr: #d8ceca; --rf-papper: #fff; --rf-bakgrund: #d9d4d2; --rf-in: #fff6dc; --rf-rad: 6.4mm; --rf-rubrik: 7mm;
+  --rf-marmor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .018' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .36 0 0 0 0 .35 0 0 0 -.6 .34'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23m%29'/%3E%3C/svg%3E");
+  color-scheme: light;
+}
+.rf-verktyg { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; padding: 16px; }
+.rf-verktyg .hjalp { flex-basis: 100%; text-align: center; margin: 0; }
+.rf-verktyg label { display: inline-flex; gap: 6px; align-items: center; }
+.rf-ofardig { max-width: 210mm; margin: 0 auto 12px; }
+.rf-sidor { display: grid; justify-content: center; gap: 24px; padding: 0 16px 40px; overflow-x: auto; }
+
+.rf-sida {
+  width: 210mm; height: 297mm; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--rf-marmor), var(--rf-bakgrund); color: var(--rf-text); box-shadow: 0 6px 24px -8px rgba(0, 0, 0, .45);
+  font: 400 8.4pt/1.2 "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.rf-sida * { box-sizing: border-box; }
+.rf-band {
+  flex: none; height: 14mm; display: grid; place-items: center; background: var(--rf-band); color: var(--rf-band-text);
+  font: 400 12pt "Cinzel", Georgia, serif; letter-spacing: .35em; text-transform: uppercase;
+}
+.rf-band.rf-fot { height: 9mm; font-size: 9pt; letter-spacing: 0; }
+.rf-ram { flex: 1; min-height: 0; margin: 6mm 11mm; display: flex; flex-direction: column; gap: 0; }
+
+/* Rubrikbalkar och listor */
+.rf-rubrik {
+  display: flex; align-items: center; height: var(--rf-rubrik); padding: 0 1.6mm; gap: 1mm; background: var(--rf-band); color: var(--rf-band-text);
+  font: 600 9pt/1 "Oswald", "Arial Narrow", sans-serif; letter-spacing: .02em; position: relative;
+}
+.rf-rubrik-titel { flex: 1; }
+.rf-rubrik-kol { width: 8.5mm; text-align: center; }
+.rf-lista { display: flex; flex-direction: column; border: .3mm solid var(--rf-linje); background: var(--rf-papper); }
+.rf-rad { display: grid; grid-template-columns: 1fr 8.5mm 8.5mm; height: var(--rf-rad); border-top: .2mm solid var(--rf-linje); }
+.rf-rubrik + .rf-rad { border-top: 0; }
+.rf-cell { display: flex; align-items: center; gap: 1mm; padding: 0 1mm; min-width: 0; overflow: hidden; white-space: nowrap; position: relative; }
+.rf-cell + .rf-cell { border-left: .3mm solid var(--rf-linje); }
+.rf-tal { justify-content: center; font-weight: 600; }
+.rf-tal.stor { font-size: 10pt; }
+.rf-namntext { overflow: hidden; text-overflow: ellipsis; }
+.rf-cell small { color: var(--rf-etikett); font-size: 6.6pt; flex: none; }
+.rf-erf.b { background: repeating-linear-gradient(135deg, #d9d2cf 0 .6mm, #fff 0 1.6mm); }
+.rf-bock { flex: none; width: 2.6mm; height: 2.6mm; border: .25mm solid var(--rf-linje); background: #fff; }
+.rf-rubrik .rf-nr { position: static; transform: none; order: 0; margin-right: 1mm; }
+.rf-ruta-stor .rf-nr { top: .8mm; right: .8mm; transform: none; font-size: 8pt; }
+.rf-nr { position: absolute; right: 1.2mm; top: 50%; transform: translateY(-50%); color: var(--rf-nr); font: 700 12pt/1 "Oswald", sans-serif; pointer-events: none; }
+.rf-nr.ljus { color: rgba(255, 255, 255, .35); }
+.rf-rad.tom .rf-nr { display: none; }
+
+/* Fält som går att skriva i */
+.rf-vy input.rf-in, .rf-vy textarea.rf-in {
+  min-width: 0; box-shadow: none;
+  width: 100%; min-width: 0; border: 0; padding: 0 .6mm; margin: 0; background: var(--rf-in); color: inherit; font: inherit; border-radius: .6mm;
+  height: calc(var(--rf-rad) - 1.4mm);
+}
+.rf-tal .rf-in, .rf-erf .rf-in { text-align: center; font-weight: 600; }
+.rf-vy .rf-in:hover { outline: .3mm solid #c9b27a; }
+.rf-vy .rf-in:focus { outline: .5mm solid #8a6420; background: #fff; }
+.rf-vy textarea.rf-textyta { height: auto; resize: vertical; font: 9pt/1.45 "EB Garamond", Georgia, serif; padding: 1mm 1.5mm; }
+
+/* Sida 1 */
+.rf-topp { display: grid; grid-template-columns: 46% 54%; height: 34mm; flex: none; }
+.rf-titel {
+  display: grid; align-content: center; justify-items: center; background: var(--rf-band); color: var(--rf-band-text);
+  font: 700 18pt/1.1 "Cinzel Decorative", "Cinzel", Georgia, serif; letter-spacing: .04em; text-transform: uppercase;
+  border-top: 1.4mm solid var(--rf-band); box-shadow: inset 0 1.6mm 0 -1mm #fff, inset 0 -1.6mm 0 -1mm #fff; padding: 2mm 0;
+}
+.rf-huvud { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 1fr; border: .3mm solid var(--rf-linje); border-left: 0; background: var(--rf-papper); }
+.rf-falt { position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: .4mm 1mm .6mm; border-left: .3mm solid var(--rf-linje); border-top: .3mm solid var(--rf-linje); min-width: 0; }
+.rf-huvud .rf-falt:nth-child(-n+2) { border-top: 0; }
+.rf-falt.s2 { grid-column: span 2; } .rf-falt.s3 { grid-column: span 3; } .rf-falt.s6 { grid-column: span 6; }
+.rf-etikett { position: absolute; top: .4mm; left: 1mm; font-size: 6.8pt; color: var(--rf-etikett); }
+.rf-falt .rf-nr { top: auto; bottom: .6mm; transform: none; }
+.rf-varde { font-weight: 600; font-size: 9pt; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 5mm; }
+.rf-varde.liten { font-weight: 400; font-size: 8pt; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.rf-falt .rf-in { height: 4.4mm; font-weight: 600; font-size: 9pt; width: calc(100% - 5mm); }
+
+.rf-kropp1 { flex: 1; min-height: 0; display: grid; grid-template-columns: 33% 67%; }
+.rf-vanster, .rf-hoger, .rf-mitt { display: flex; flex-direction: column; min-height: 0; }
+.rf-egenskaper .rf-rad { grid-template-columns: 1fr 13mm; }
+.rf-egenskaper .rf-rubrik-kol { width: 13mm; }
+.rf-utseende { height: 13mm; flex: none; border: .3mm solid var(--rf-linje); border-left: 0; background: var(--rf-papper); justify-content: center; padding-top: 3mm; }
+.rf-hoger-kolumner { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; }
+.rf-hoger-kolumner > .rf-lista, .rf-mitt > .rf-lista { border-left: 0; }
+.rf-formagor .rf-rad { grid-template-columns: 1fr; }
+.rf-hjaltepoang { flex: none; display: grid; grid-template-columns: 1fr 18mm; align-items: center; height: var(--rf-rubrik); border: .3mm solid var(--rf-linje); border-top: 0; border-left: 0; background: var(--rf-papper); padding-left: 1.6mm; font: 600 9.5pt "Oswald", sans-serif; color: var(--rf-band); }
+.rf-hjaltepoang .rf-in { height: 100%; border-left: .3mm solid var(--rf-linje); border-radius: 0; text-align: center; font-family: "Source Sans 3", sans-serif; }
+.rf-vanster > .rf-lista:last-child, .rf-mitt > .rf-lista:last-child, .rf-hoger-kolumner > .rf-lista:last-child { flex: 1; }
+.rf-lista > .rf-rubrik:first-child { border-bottom: 0; }
+
+/* Sida 2 */
+.rf-kropp2 { display: grid; grid-template-columns: 64% 36%; flex: none; }
+.rf-vanster2, .rf-hoger2 { display: flex; flex-direction: column; }
+.rf-figur { position: relative; height: 104mm; display: grid; grid-template-columns: 37% 26% 37%; border: .3mm solid var(--rf-linje); background: var(--rf-papper); padding: 3mm 2mm; }
+.rf-figur > .rf-nr { top: 4mm; transform: none; }
+.rf-delar-v, .rf-delar-h { display: flex; flex-direction: column; justify-content: space-between; gap: 2mm; }
+.rf-delar-h { justify-content: space-around; padding-block: 6mm 8mm; }
+.rf-gubbe { display: grid; place-items: center; }
+.rf-gubbe svg { width: 100%; height: 92mm; fill: none; stroke: var(--rf-band); stroke-width: 1.4; }
+.rf-kroppsdel { border: .4mm solid var(--rf-linje); padding: 1mm 1.4mm 1.2mm; display: grid; gap: .8mm; background: #fff; }
+.rf-del-namn { font: 400 9.5pt/1 "Source Sans 3", sans-serif; text-transform: uppercase; color: var(--rf-band); display: flex; gap: 1.5mm; }
+.rf-del-namn span { font-weight: 700; color: var(--rf-text); }
+.rf-rutor { display: flex; flex-wrap: wrap; gap: .7mm; }
+.rf-rutor.kp { max-width: calc(6 * 3.5mm); }
+.rf-ruta { width: 2.8mm; height: 2.8mm; border: .3mm solid var(--rf-linje); background: #fff; }
+.rf-rutor.tio { display: grid; grid-template-columns: repeat(10, 3.2mm); gap: .7mm; padding: 1mm; align-content: center; }
+.rf-rutor.tio .rf-ruta { width: 3.2mm; height: 3.2mm; }
+.rf-del-rad { display: grid; grid-template-columns: auto 1fr; gap: 1mm; font-size: 7.4pt; color: var(--rf-etikett); align-items: end; }
+.rf-linje { border-bottom: .2mm solid var(--rf-linje); min-height: 3.2mm; color: var(--rf-text); font-weight: 600; font-size: 7pt; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+.rf-strid { display: grid; grid-template-columns: 48% 52%; height: 40mm; border: .3mm solid var(--rf-linje); border-top: 0; background: var(--rf-papper); }
+.rf-strid-v { display: grid; grid-template-rows: 1fr .6fr 1fr 1fr; border-right: .3mm solid var(--rf-linje); }
+.rf-strid-rad { display: grid; grid-template-columns: 1fr 15mm 15mm; align-items: stretch; border-top: .2mm solid var(--rf-linje); }
+.rf-strid-rad:first-child { border-top: 0; grid-template-columns: 1fr 30mm; }
+.rf-strid-etiketter { font-size: 7.4pt; color: var(--rf-etikett); align-items: end; text-align: center; }
+.rf-bar { display: flex; align-items: center; padding: 0 1.6mm; background: var(--rf-band); color: var(--rf-band-text); font: 600 9pt "Oswald", sans-serif; }
+.rf-ruta-stor { position: relative; display: grid; place-items: center; border-left: .3mm solid var(--rf-linje); font-weight: 700; font-size: 10pt; }
+.rf-strid-h { display: grid; grid-template-rows: 1fr 1fr; }
+.rf-poang { display: grid; grid-template-columns: 14mm 12mm 1fr; border-top: .2mm solid var(--rf-linje); }
+.rf-poang:first-child { border-top: 0; }
+.rf-poang .rf-bar { padding: 0 1mm; font-size: 8.5pt; }
+.rf-poang .rf-ruta-stor { border-right: .3mm solid var(--rf-linje); }
+.rf-vapen { border-top: 0; flex: 1; }
+.rf-vapen .rf-rad { grid-template-columns: 1fr 7mm 12mm 7mm 8.5mm 13mm 7mm 8mm; }
+.rf-vapen .rf-rubrik-kol:nth-child(2) { width: 7mm; } .rf-vapen .rf-rubrik-kol:nth-child(3) { width: 12mm; }
+.rf-vapen .rf-rubrik-kol:nth-child(4) { width: 7mm; } .rf-vapen .rf-rubrik-kol:nth-child(5) { width: 8.5mm; }
+.rf-vapen .rf-rubrik-kol:nth-child(6) { width: 13mm; } .rf-vapen .rf-rubrik-kol:nth-child(7) { width: 7mm; }
+.rf-vapen .rf-rubrik-kol:nth-child(8) { width: 8mm; }
+.rf-vapen .rf-rubrik-kol { font-size: 7.8pt; }
+.rf-vapen .rf-tal { font-size: 7.6pt; padding: 0 .4mm; }
+.rf-hoger2 > .rf-lista { border-left: 0; }
+.rf-besvarjelser { flex: 1; }
+.rf-pengar .rf-rad { grid-template-columns: 1fr 10mm 10mm 10mm; }
+.rf-pengar .rf-rubrik-kol { width: 10mm; }
+.rf-juveler { grid-template-columns: 1fr !important; }
+.rf-juveler .rf-in { margin-left: 1mm; }
+.rf-utrustning { margin-top: 3mm; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.rf-utrustning .rf-rubrik-kol:nth-child(2) { width: 12mm; margin-right: calc(50% - 14mm); }
+.rf-utrustning .rf-rubrik-kol:nth-child(3) { display: none; }
+.rf-utrustning .rf-rubrik-kol:nth-child(4) { width: 12mm; }
+.rf-sakkolumner { display: grid; grid-template-columns: 1fr 1fr; flex: 1; }
+.rf-sakkolumn { border-top: 0; }
+.rf-sakkolumn + .rf-sakkolumn { border-left: 0; }
+.rf-sakkolumn .rf-rad { grid-template-columns: 1fr 12mm; }
+
+/* Sida 3 */
+.rf-sida3 .rf-ram { gap: 4mm; }
+.rf-block { border: .3mm solid var(--rf-linje); background: var(--rf-papper); }
+.rf-blocktext { padding: 2mm 2.5mm; font: 9.5pt/1.4 "EB Garamond", Georgia, serif; }
+.rf-blocktext p { margin: 0 0 1.5mm; }
+.rf-blocktext .rf-textyta { width: 100%; }
+.rf-overflode .rf-rad { grid-template-columns: 1fr 18mm 8.5mm 8.5mm; }
+.rf-overflode .rf-rubrik-kol:nth-child(2) { width: 18mm; }
+.rf-anteckningar { flex: 1; display: flex; flex-direction: column; min-height: 30mm; }
+.rf-vy .rf-anteckningar .rf-textyta { flex: 1; border-radius: 0; resize: none; line-height: var(--rf-rad); padding-top: 0;
+  background-color: var(--rf-in); background-image: linear-gradient(to top, #b9aba6 .25mm, transparent .25mm); background-size: 100% var(--rf-rad); }
+.rf-forklaring { margin: 0; font-size: 7.6pt; color: var(--rf-etikett); }
+
+/* Spara bläck: inga ytor med färg, bara linjer */
+.rf-blacksnal .rf-sida { background: #fff; }
+.rf-blacksnal .rf-band, .rf-blacksnal .rf-rubrik, .rf-blacksnal .rf-titel, .rf-blacksnal .rf-bar {
+  background: #fff; color: var(--rf-band); box-shadow: none; border: .3mm solid var(--rf-linje);
+}
+.rf-blacksnal .rf-titel { border-width: .3mm; }
+.rf-blacksnal .rf-nr.ljus { color: var(--rf-nr); }
+
+@media print {
+  @page { size: A4; margin: 0; }
+  html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+  body:has(.rf-vy:not([hidden])) > *:not(.rf-vy) { display: none !important; }
+  .rf-vy .rf-verktyg, .rf-vy .rf-ofardig { display: none !important; }
+  .rf-sidor { display: block; padding: 0; gap: 0; overflow: visible; }
+  .rf-sida { box-shadow: none; break-after: page; height: 296.5mm; }
+  .rf-sida:last-child { break-after: auto; }
+  .rf-vy input.rf-in, .rf-vy textarea.rf-in { background: transparent; outline: none !important; }
+  .rf-in::placeholder { color: transparent; }
+  .rf-textyta { resize: none; }
+  .rf-vy .rf-anteckningar .rf-textyta { background-color: transparent; }
+}

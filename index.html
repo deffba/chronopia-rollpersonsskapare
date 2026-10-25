@@ -10,6 +10,7 @@
   // Valt utseende sätts innan sidan ritas, så att det inte blinkar till
   try { if (localStorage.getItem("chronopia-stil") === "klassisk") document.documentElement.dataset.stil = "klassisk"; } catch { /* frivilligt */ }
 </script>
+<link rel="stylesheet" href="formular.css">
 <style>
 :root {
   --bg: #e9e7e2; --yta: #f6f5f1; --yta-2: #dfdcd5; --linje: #c5c0b5; --text: #22231f; --dampad: #5d5d55;
@@ -418,6 +419,7 @@ option.grupprubrik { font-weight: 700; }
     <button type="button" data-stil="klassisk" aria-pressed="false">Klassisk</button>
   </div>
   <div class="topp-verktyg">
+    <button type="button" class="knapp" id="visa-formular" aria-pressed="false">Rollformulär</button>
     <button type="button" class="knapp" id="ny"><span class="ny-vanlig">Ny rollperson</span><span class="ny-bekrafta" aria-live="polite">Bekräfta (5)</span></button>
     <label class="knapp filknapp">Läs in fil<input type="file" id="importfil" accept=".json,application/json,text/plain"></label>
   </div>
@@ -430,6 +432,7 @@ option.grupprubrik { font-weight: 700; }
   <main id="arbetsyta" class="kort" tabindex="-1"><p>Läser in reglerna …</p></main>
   <aside class="sida-formular kort" id="formular" aria-label="Rollformulär"></aside>
 </div>
+<div class="rf-vy" id="rf-vy" hidden></div>
 <div id="notis" role="status" hidden></div>
 
 <script type="module" src="app.js"></script>
