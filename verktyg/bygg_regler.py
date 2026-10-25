@@ -297,7 +297,32 @@ skriv("fardigheter", {
         ["Liggande/knästående strid", 1.0], ["Lågt kast†", 0.5], ["Låsning/nerdragning†", 1.0],
         ["Normalt slag", 0.5], ["Normal spark", 0.5], ["Obeväpnad parering av vapen", 0.5],
         ["Rundspark", 1.0], ["Stålsättning", 1.0], ["Uppresning", 0.5], ["Vidvinkelsyn", 1.0]],
-    "sida": [34, 35, 36, 40, 43, 52, 54, 68],
+    # Egna korta sammanfattningar av teknikbeskrivningarna (s. 69–70)
+    "stridskonstBeskrivning": {
+        "Avväpning": "Obeväpnad parering mot ett vapenanfall. Misslyckas anfallet flyger vapnet 1T3 rutor, om inte anfallaren lyckas parera avväpningen. Vid perfekt slag tar försvararen vapnet själv, om inte anfallaren också slog perfekt.",
+        "Bakåtspark": "Spark mot en motståndare i rutan bakom kämpen. 1T6 i skada.",
+        "Bedövningsslag†": "Slag med knytnäve eller fingrar mot nervknutar, 1T3 i skada. Den som skadas måste klara ett Svårt FYS-slag, annars är den bedövad och förlorar nästa attack eller parering. Mot icke-människoliknande gör det bara 1T3 i skada.",
+        "Blind strid": "Kämpen känner av var motståndarna finns utan att se dem och kan slåss i totalt mörker. Alltid påkopplad, kräver inget slag. Terrängen kan fortfarande ställa till det.",
+        "Dubbelslag": "Två knytnävsattacker i samma SR mot två olika motståndare, 1T3 i skada vardera och ett slag per attack. Offren får stå högst 180° isär.",
+        "Dubbelspark": "Flygande hoppspark som träffar två olika motståndare, en med varje fot, 1T6 i skada vardera och ett slag per spark. Offren får stå högst 1 meter isär. I övrigt som hoppspark.",
+        "Fallteknik/rullningar": "Ett lyckat slag halverar skadan från ett fall. En rullning flyttar kämpen upp till 5 rutor på en SR, och en rullande person kan inte huggas med närstridsvapen. Misslyckas rullningen kommer man bara halvvägs och blir liggande.",
+        "Fint": "Görs samtidigt som ett anfall. Lyckas finten halveras motståndarens chans att parera (avrundat nedåt). Fungerar med alla anfall utom avståndsvapen.",
+        "Hoppspark": "Sats och hopp med spark mot huvud eller bröstkorg, 1T8 i skada. Missar sparken landar kämpen i målets ruta och måste klara ett SMI-slag för att inte ramla omkull. Ger −2 på initiativslaget.",
+        "Högt kast†": "Görs alltid sist i SR. Lyckas kastet hamnar offret liggande 1T3 rutor bort och tar 1T3 i skada om det missar ett Svårt SMI-slag.",
+        "Initiativbonus": "Alltid påkopplad, kräver inget slag. Kämpen lägger 5 till sin SMI när turordningen i striden räknas fram.",
+        "Krosslag": "Knytnävsslag mot ömtåliga punkter som tinning, struphuvud eller solar plexus. 1T6 i skada.",
+        "Liggande/knästående strid": "Kämpen kan slå, sparka, parera och göra låga kast när den ligger ned, och anfallare får ingen bonus mot den. Alltid påkopplad, kräver inget slag.",
+        "Lågt kast†": "Lyckas kastet hamnar försvararen omkull i sin egen ruta utan att skadas och kan resa sig efter 1T2 SR. Kastet kan pareras.",
+        "Låsning/nerdragning†": "Ett anfall som drar ned motståndaren på marken och låser den där. Kan pareras. För att ta sig loss måste offret övervinna anfallarens FV med sin halverade SMI.",
+        "Normalt slag": "Vanligt knytnävsslag mot huvud eller bröstkorg. 1T3 i skada.",
+        "Normal spark": "Vanlig spark mot ben, bröstkorg eller huvud. 1T6 i skada.",
+        "Obeväpnad parering av vapen": "Kämpen kan parera alla närstridsanfall, även med vapen, som om den hade ett vapen. Utan tekniken kan en obeväpnad kämpe bara parera obeväpnade anfall.",
+        "Rundspark": "Spark med ett helt varv för extra kraft, 1T8 i skada. Missar den kan kämpen inte anfalla eller parera nästa runda. Ger −2 på initiativslaget.",
+        "Stålsättning": "Med ett lyckat slag när kämpen skadas tar den bara halv skada. Fungerar inte mot slag mot huvudet.",
+        "Uppresning": "Med ett lyckat slag reser sig kämpen direkt efter att ha kastats omkull, oavsett när i rundan det hände.",
+        "Vidvinkelsyn": "Kämpen uppfattar allt inom 270° omkring sig. Alltid påkopplad, kräver inget slag.",
+    },
+    "sida": [34, 35, 36, 40, 43, 52, 54, 68, 69, 70],
 })
 
 # ---------------------------------------------------------------- yrken (s. 18–26, 41–42)
