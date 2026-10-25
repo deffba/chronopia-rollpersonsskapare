@@ -235,17 +235,14 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
   return [sida1, sida2, sida3, ...(medRegler ? [regelsida(4)] : [])];
 
   // ------------------------------------------------------------ sida 4 och framåt: färdigheterna i korthet (valfri)
-  // Alla färdigheter i spelet, med rollpersonens yrkesfärdigheter först. delaRegelsidor fördelar dem på sidor.
+  // Rollpersonens färdigheter, yrkesfärdigheterna först. delaRegelsidor fördelar dem på sidor.
   function regelsida(nr) {
     const egna = {};
     for (const f of res.fardigheter) (egna[idFor(f)] ??= []).push(f);
     const statusFor = (x) => {
       const mina = egna[x.id] ?? [];
       if (mina.some((f) => f.status === "yrke")) return "yrke";
-      if (mina.length) return mina[0].status;
-      if (res.ras?.primara?.includes(x.id)) return "primar";
-      if (res.ras?.sekundara?.includes(x.id)) return "sekundar";
-      return x.typ === "primar" ? "primar" : "sekundar";
+      return mina[0]?.status;
     };
     const typnamn = { primar: "Primär", sekundar: "Sekundär", magiskola: "Magiskola", sprak: "Språk" };
     const post = (x) => {
@@ -261,7 +258,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
       ["Primära färdigheter", "primar"],
       ["Sekundära färdigheter", "sekundar"],
     ];
-    const lista = [...R.fardigheter.lista].sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
+    const lista = R.fardigheter.lista.filter((x) => egna[x.id]).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
     const poster = grupper.flatMap(([titel, st]) => {
       const valda = lista.filter((x) => statusFor(x) === st);
       return valda.length ? [el("h3", { class: "rf-regel-rubrik" }, titel), ...valda.map(post)] : [];
