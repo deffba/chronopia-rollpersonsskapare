@@ -13,6 +13,7 @@ const LAGEN = [
   ["fardigheter", "Färdigheter"],
   ["ras", "Steg 1"],
   ["formular", "Rollformuläret"],
+  ["spel", "Spelmöten och förbättring"], // visas bara när sidan har spelmötesdelen (knappen #visa-spel)
 ];
 
 // ------------------------------------------------------------ bygget
@@ -244,8 +245,9 @@ export function starta(api) {
     stangMeny();
     const bygget = hamta(recept);
     if (!bygget) return;
-    api.ladda(bygget.rp, lage === "formular" ? "export" : lage);
+    api.ladda(bygget.rp, ["formular", "spel"].includes(lage) ? "export" : lage);
     if (lage === "formular") api.visaFormular();
+    if (lage === "spel") document.querySelector("#visa-spel")?.click();
     if (bygget.avvek) api.visaNotis(`${bygget.rp.namn} är inläst, men önskemålen i testrollpersoner.js gick inte (${bygget.avvek}), så valen gjordes automatiskt.`);
   };
   const laddaNerAlla = () => {
@@ -269,7 +271,8 @@ export function starta(api) {
       onclick: () => ladda(recept) }, recept.etikett)),
     el("label", {}, el("span", { class: "hjalp" }, "Öppna i"),
       el("select", { id: "dev-lage", onchange: (e) => { lage = e.target.value; } },
-        LAGEN.map(([v, t]) => el("option", { value: v, selected: v === lage }, t)))),
+        LAGEN.filter(([v]) => v !== "spel" || document.querySelector("#visa-spel"))
+          .map(([v, t]) => el("option", { value: v, selected: v === lage }, t)))),
     el("label", { class: "vaxel" }, el("input", { type: "checkbox", id: "dev-erf", onchange: (e) => { erf = e.target.checked; } }),
       el("span", {}, "Med erf att förbättra")),
     el("div", { class: "dev-rad" },
