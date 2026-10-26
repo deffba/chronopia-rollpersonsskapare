@@ -139,6 +139,73 @@
     "beslut": "Pavise räknas till vapengruppen Sköldar."
   },
   {
+    "id": "bonus-ej-kategori-b",
+    "sida": [
+      74
+    ],
+    "beslut": "Bonuspoäng efter ett äventyr får inte läggas på färdigheter i kategori B, eftersom de bara förbättras genom träning (tolkning)."
+  },
+  {
+    "id": "fv21-bara-fardigheter",
+    "sida": [
+      76
+    ],
+    "beslut": "1T4 HP för FV 21, 41, 61 … gäller färdigheter, inte besvärjelser (tolkning)."
+  },
+  {
+    "id": "besvarjelse-tak-psy",
+    "sida": [
+      36
+    ],
+    "beslut": "FV i en besvärjelse är högst PSY även efter skapandet (tolkning)."
+  },
+  {
+    "id": "larare-magi",
+    "sida": [
+      74
+    ],
+    "beslut": "Lärarkostnaden 3 000 sm för magiker gäller träning i magiskolor, besvärjelser och magifärdigheter (tolkning)."
+  },
+  {
+    "id": "besvarjelse-larare-psy",
+    "sida": [
+      74,
+      75,
+      107
+    ],
+    "beslut": "Träning i en besvärjelse med lärare slås mot PSY, som besvärjelser bygger på; ensam slås mot INT enligt s. 75 (tolkning)."
+  },
+  {
+    "id": "psy-magiker",
+    "sida": [
+      75
+    ],
+    "beslut": "Magiker vid PSY-höjning är den som har ett magikeryrke (tolkning)."
+  },
+  {
+    "id": "ny-fardighet-bc",
+    "sida": [
+      34,
+      73
+    ],
+    "beslut": "En färdighet som lärs efter skapandet börjar på BC om den är primär eller yrkesfärdighet, annars på 0 (tolkning)."
+  },
+  {
+    "id": "vapengrupp-under-spel",
+    "sida": [
+      71
+    ],
+    "beslut": "Vapen i samma grupp har minst halva bästa FV i gruppen även efter skapandet (tolkning)."
+  },
+  {
+    "id": "mynt-utan-vaxelkurs",
+    "sida": [
+      38,
+      74
+    ],
+    "beslut": "Växelkursen mellan gm, sm och km används inte; lärarkostnad dras från börsens sm (husregel)."
+  },
+  {
     "id": "vapen-utan-grupp",
     "sida": [
       72,
