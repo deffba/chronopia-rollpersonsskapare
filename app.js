@@ -685,6 +685,17 @@ const lastFalt = (id, varde) => el("input", { type: typeof varde === "number" ? 
 // Tärningsrutan när slaget har landat: tärningen ligger kvar på samma plats och slaget står bredvid den
 const landatSlag = (id, varde, text) => el("div", { class: "knapp tarningsknapp i-falt landad" + (nyssSlaget === id ? " nytt" : ""), id: `${id}-slag`, "data-varde": varde },
   tarningsIkon(), rutText(varde, text, "slagvarde"));
+// Utvecklarläget kan låsa upp ett gjort slag så att det går att slå om. Det görs utan regelkontroll:
+// utan slaget kan till exempel inköpen kosta mer än startkapitalet tills det är slaget igen.
+let omslag = false;
+const SLAGETS_VAL = { sf: "sarskildaFormagor", sh: "svardshand", ss: "socialtStand", sk: "startkapital", magiformaga: "magiformaga" };
+const omslagKnapp = (id) => (omslag ? el("button", { type: "button", class: "knapp omslag", id: `${id}-las-upp`,
+  title: "Utvecklarläge: ta bort slaget och slå om", onclick: () => {
+    rp[SLAGETS_VAL[id]] = { ...rp[SLAGETS_VAL[id]], slag: null };
+    giltig = structuredClone(rp);
+    spara();
+    rita();
+  } }, "Lås upp") : null);
 // Resultatet under slaget; det lyser upp när tärningen nyss har landat
 const resultat = (id, text) => el("div", { class: "resultat" },
   el("span", { class: "etikett" }, "Resultat"), el("p", { class: "summering" + (nyssSlaget === id ? " nytt" : "") }, text));
@@ -707,7 +718,8 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
       el("div", { class: "rad" },
         bpFaltet("BP lagda", lastFalt(`${id}-bp`, s.bp)),
         falt(`Slag (${tarning})`, landatSlag(id, s.slag, `Slå ${tarning}`)),
-        bonusfalt),
+        bonusfalt,
+        omslagKnapp(id)),
       resultat(id, tolkning),
     ];
   }
@@ -869,7 +881,8 @@ function magiformagaKontroll(res) {
     m.slag === null ? magiRad(m, satt)
       : el("div", { class: "rad" },
         falt("Slag (1T100)", landatSlag("magiformaga", m.slag, "Slå 1T100")),
-        m.mod ? falt("Modifikation", lastFalt("magiformaga-mod", fmtMod(m.mod))) : null),
+        m.mod ? falt("Modifikation", lastFalt("magiformaga-mod", fmtMod(m.mod))) : null,
+        omslagKnapp("magiformaga")),
     m.slag !== null ? resultat("magiformaga", `${m.slag}${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)} = ${m.slag + m.mod}` : ""} ${m.lyckat ? "≤" : ">"} ${m.chans}: ${m.lyckat ? "Lyckat. Rollpersonen kan lära sig magi." : "Misslyckat. Rollpersonen kan inte lära sig magi."}`) : null));
 }
 
@@ -1728,7 +1741,7 @@ function startaUtvecklarlage() {
   } catch { pa = param !== null && param !== "av"; }
   if (!pa) return;
   import("./utvecklarlage.js").then((m) => m.starta({
-    R, el, TOM, tillFil, visaNotis, yrkesNycklar, saknas, rakna,
+    R, STEG, el, TOM, tillFil, visaNotis, yrkesNycklar, saknas, rakna,
     // Kör fn med en tillfällig rollperson och ger tillbaka den; spelarens rollperson rörs inte
     med(tillfallig, fn) {
       const fore = rp;
@@ -1743,6 +1756,7 @@ function startaUtvecklarlage() {
       if (rp.namn === ny.namn) { aktivtSteg = steg; vy = "steg"; nySekundar = ""; magiByte = null; utrustningsFilter = ""; rita(); }
     },
     visaFormular,
+    tillatOmslag() { omslag = true; rita(); },
     stangAv() { try { localStorage.setItem("chronopia-dev", "nej"); } catch { /* frivilligt */ } },
   }));
 }

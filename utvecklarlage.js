@@ -8,10 +8,8 @@
 import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, varukatalog, tvahandsvapen, besvarjelsePris } from "./regelmotor.js";
 import { TESTROLLPERSONER } from "./testrollpersoner.js";
 
-const LAGEN = [
-  ["export", "Sista steget"],
-  ["fardigheter", "Färdigheter"],
-  ["ras", "Steg 1"],
+// Var en inläst testrollperson öppnas, utöver stegen
+const VYER = [
   ["formular", "Rollformuläret"],
   ["spel", "Spelmöten och förbättring"], // visas bara när sidan har spelmötesdelen (knappen #visa-spel)
 ];
@@ -220,6 +218,7 @@ const STIL = `
 .utvecklarlage select { width: 100%; }
 .utvecklarlage .dev-rad { display: flex; gap: 6px; }
 .utvecklarlage .dev-rad .knapp { flex: 1; }
+.knapp.omslag { align-self: end; border-style: dashed; border-color: #b4462d; color: #b4462d; }
 @media print { .dev-markering { display: none; } }
 `;
 
@@ -227,6 +226,7 @@ export function starta(api) {
   const { el } = api;
   document.head.append(el("style", {}, STIL));
   document.body.append(el("div", { class: "dev-markering", "aria-hidden": "true" }, "UTVECKLARLÄGE"));
+  api.tillatOmslag(); // knappen Lås upp bredvid gjorda tärningsslag
 
   let lage = "export";
   let erf = false;
@@ -274,8 +274,10 @@ export function starta(api) {
       onclick: () => ladda(recept) }, recept.etikett)),
     el("label", {}, el("span", { class: "hjalp" }, "Öppna i"),
       el("select", { id: "dev-lage", onchange: (e) => { lage = e.target.value; } },
-        LAGEN.filter(([v]) => v !== "spel" || document.querySelector("#visa-spel"))
-          .map(([v, t]) => el("option", { value: v, selected: v === lage }, t)))),
+        el("optgroup", { label: "Steg" }, api.STEG.map((st, i) => el("option", { value: st.id, selected: st.id === lage },
+          `${i + 1}. ${st.namn}${st.id === "besvarjelser" ? " (bara magiker)" : ""}`))),
+        el("optgroup", { label: "Annat" }, VYER.filter(([v]) => v !== "spel" || document.querySelector("#visa-spel"))
+          .map(([v, t]) => el("option", { value: v, selected: v === lage }, t))))),
     el("label", { class: "vaxel" }, el("input", { type: "checkbox", id: "dev-erf", onchange: (e) => { erf = e.target.checked; } }),
       el("span", {}, "Med erf att förbättra")),
     el("div", { class: "dev-rad" },
