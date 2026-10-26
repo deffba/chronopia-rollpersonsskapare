@@ -71,7 +71,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
   // Särskilda förmågor med en kort förklaring: rasens, den slagna, yrkesförmågan och stridskonstens tekniker
   const formagor = [
     ...(res.ras?.formagor ?? []).map((t) => ({ namn: t, text: `Rasförmåga (${res.ras.namn.toLowerCase()})` })),
-    res.sarskildFormaga ? { namn: res.sarskildFormaga.namn, text: res.sarskildFormaga.effekt } : null,
+    ...[res.sarskildFormaga, ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
     { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: res.yrke.yrkesformaga },
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
   ].filter(Boolean);

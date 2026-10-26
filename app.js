@@ -1,12 +1,14 @@
 // Gränssnittet för Chronopia-rollpersonsskaparen. All regellogik finns i regelmotor.js.
 import {
   GRUNDEGENSKAPER, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor, tvahandsvapen,
-  paborjad, standsvarde, vapengrupp, passarBland, skolFV, besvarjelsePris, kanAnvandaVapen, varukatalog,
+  paborjad, standsvarde, vapengrupp, passarBland, skolFV, besvarjelsePris, kanAnvandaVapen, varukatalog, namnFor,
 } from "./regelmotor.js";
 import { rollformularSidor, delaRegelsidor } from "./formular.js";
-import { tillFil, franFil, TOMT_SPEL } from "./sparformat.js";
+import { tillFil, franFil, TOMT_SPEL, TOM_UTVECKLING } from "./sparformat.js";
+import { utvecklad, laggTill, angraSenaste, kontrolleraPost } from "./utveckling.js";
+import { spelInnehall, spelDelar, aktivDel, valjDel, nollstallSpel, spelPotter } from "./spelmote.js";
 
-const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning"];
+const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning", "erfarenhet"];
 const LAGRING = "chronopia-rollperson-v2";
 
 const STEG = [
@@ -84,10 +86,10 @@ const TOM = () => ({
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
   magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
-  spel: TOMT_SPEL(),
+  spel: TOMT_SPEL(), utveckling: TOM_UTVECKLING(),
 });
 // En sparad rollperson kompletteras med fält som har tillkommit sedan den sparades
-const fyllUt = (data) => ({ ...TOM(), ...data, spel: { ...TOMT_SPEL(), ...(data.spel ?? {}) } });
+const fyllUt = (data) => ({ ...TOM(), ...data, spel: { ...TOMT_SPEL(), ...(data.spel ?? {}) }, utveckling: { ...TOM_UTVECKLING(), ...(data.utveckling ?? {}) } });
 
 let R; // regeldata
 let rp; // rollpersonen (spelarens val)
@@ -100,7 +102,7 @@ let magiByte = null; // platsen där en magiskola byts ut efter ett misslyckat m
 let autoAnvand = { egenskaper: false, fardigheter: false }; // Återställ visas bara efter en automatisk fördelning
 let ritatSteg = null; // steget som visades senast; byts det skrollas sidan upp
 let sparadVidStart = null; // rollpersonen från förra besöket; sidan börjar ändå alltid med en ny
-let vy = "steg"; // "steg" eller "formular" (rollformuläret för utskrift)
+let vy = "steg"; // "steg", "spel" (spelmöten och förbättring) eller "formular" (rollformuläret för utskrift)
 let blacksnal = false; // rollformuläret utan färgade ytor
 let medRegler = false; // rollformuläret med sidorna Färdigheterna i korthet
 // Innan en ras är vald räknar motorn som för en människa, men ingen ras visas som vald
@@ -127,7 +129,15 @@ function spara() {
   try { localStorage.setItem(LAGRING, JSON.stringify({ rp, aktivtSteg, langst })); } catch { /* lagring är frivillig */ }
 }
 
-const rakna = () => raknaRollperson(R, motorIndata());
+// Rollpersonen med allt som har förts in under spel (utveckling.js). Utan logg är det rollpersonen vid skapandet.
+const rakna = () => { const indata = motorIndata(); return utvecklad(R, indata, raknaRollperson(R, indata)); };
+// Samma uträkning för en annan rollperson, t.ex. ett utkast i spelmötesdelen
+function raknaFor(annan) {
+  const fore = rp;
+  rp = annan;
+  try { return rakna(); } finally { rp = fore; }
+}
+const harLogg = () => (rp.utveckling?.logg?.length ?? 0) > 0;
 
 // Varje ändring kontrolleras mot reglerna. Bryter den mot någon regel återställs rollpersonen
 // till senaste giltiga läge, så att det aldrig går att skapa en otillåten rollperson.
@@ -460,7 +470,7 @@ function fortsattSparad() {
     el("p", {}, el("strong", {}, "Du har en sparad rollperson från förra gången: "), `${s.rp.namn || "Namnlös"} (${beskr}).`),
     el("div", { class: "rad" },
       el("button", { type: "button", class: "knapp", id: "fortsatt-sparad", onclick: () => {
-        rp = structuredClone(s.rp); aktivtSteg = s.aktivtSteg; langst = s.langst; sparadVidStart = null; uppdatera();
+        rp = structuredClone(s.rp); aktivtSteg = s.aktivtSteg; langst = s.langst; sparadVidStart = null; nollstallSpel(); if (harLogg()) vy = "spel"; uppdatera();
       } }, "Fortsätt med den"),
       el("span", { class: "hjalp" }, "Väljer du en ras börjar du på en ny rollperson, och den sparade försvinner."))));
 }
@@ -1238,14 +1248,16 @@ function rollformular(res) {
       el("h2", {}, el("input", { id: "formular-namn", class: "namnfalt", type: "text", value: rp.namn, placeholder: "Namnlös rollperson", "aria-label": "Rollpersonens namn",
         onchange: (e) => { rp.namn = e.target.value; uppdatera(); } })),
       el("p", {}, [rp.ras ? res.ras.namn : null, res.yrke.namn, `${rp.alder} år`, rp.kon].filter(Boolean).join(" · "))),
-    el("div", { class: "potter" },
+    vy === "spel" ? el("dl", { class: "nyckelvarden" },
+      el("div", {}, el("dt", {}, "Osparade EP", info("EP")), el("dd", {}, spelPotter(spelCtx(res)).ep)),
+      el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, rp.spel.hjaltepoang ?? 0))) : el("div", { class: "potter" },
       el("div", { class: "pott" + (res.bp.kvar < 0 ? " over" : "") }, el("span", { class: "etikett" }, "BP kvar", info("BP")),
         el("span", { class: "pott-tal" }, res.bp.kvar), el("span", { class: "matare" }, el("span", { style: `width:${bpProcent}%` })),
         el("span", { class: "hjalp" }, `av ${res.bp.start}`)),
       el("div", { class: "pott" + (res.ep.kvar < 0 ? " over" : "") }, el("span", { class: "etikett" }, "EP kvar", info("EP")),
         el("span", { class: "pott-tal" }, res.ep.kvar), el("span", { class: "matare" }, el("span", { style: `width:${epProcent}%` })),
         el("span", { class: "hjalp" }, `av ${res.ep.start}`))),
-    saknas(res).length ? el("div", { class: "saknaslista", role: "status" }, el("strong", {}, "Kvar att välja"), el("ul", {}, saknas(res).map((f) => el("li", {}, f))))
+    vy === "spel" ? null : saknas(res).length ? el("div", { class: "saknaslista", role: "status" }, el("strong", {}, "Kvar att välja"), el("ul", {}, saknas(res).map((f) => el("li", {}, f))))
       : el("p", { class: "klar" }, "Rollpersonen är klar."),
     // Förkortning och värde centrerade; infoikonen längst ned i rutan
     el("dl", { class: "egenskaper" }, [...GRUNDEGENSKAPER, "STO"].map((k) => el("div", {}, el("dt", {}, k), el("dd", {}, g[k]), el("dd", { class: "egenskap-info" }, info(k))))),
@@ -1261,7 +1273,7 @@ function rollformular(res) {
     el("h3", {}, "Kroppsdelar"),
     el("ul", { class: "kroppsdelar" }, [0, 1].map(() => el("li", { class: "kolumnrubrik" }, el("span", {}, "Kroppsdel"), el("span", { class: "num" }, "KP"))),
       h.kroppsdelar.map((d) => el("li", {}, el("span", {}, d.namn), el("span", { class: "num" }, d.kp)))),
-    res.sarskildFormaga ? [el("h3", {}, "Särskild förmåga"), el("p", {}, el("strong", {}, res.sarskildFormaga.namn), " ", res.sarskildFormaga.effekt)] : null,
+    [res.sarskildFormaga, ...res.extraFormagor].filter(Boolean).map((f, i) => [i === 0 ? el("h3", {}, "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
     el("p", {}, el("strong", {}, "Yrkesförmåga: "), res.yrke.yrkesformaga),
     el("h3", {}, "Färdigheter", info("B-nivå")),
     el("ul", { class: "fardighetsrader" }, kolumnrubrik("Färdighet", "FV"), res.fardigheter.filter((f) => f.fv > 0).map((f) =>
@@ -1463,6 +1475,8 @@ function stegExport(res) {
       el("button", { type: "button", class: "knapp primar", onclick: visaFormular }, "Visa rollformuläret"),
       el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
       el("button", { type: "button", class: "knapp", onclick: () => kopiera(text) }, "Kopiera JSON")),
+    el("p", {}, "När rollpersonen har spelats för du in erfarenhet, hjältepoäng, pengar och utrustning efter varje spelmöte, och förbättrar henne när erfarenheten räcker. Efter det första spelmötet går skapandet inte längre att ändra."),
+    el("div", { class: "rad" }, el("button", { type: "button", class: "knapp", id: "till-spel", onclick: oppnaSpel }, "Till spelmötena →")),
     el("details", { class: "fakta" }, el("summary", {}, "Visa JSON"),
       el("textarea", { id: "exportruta", rows: 12, readonly: true, "aria-label": "Rollpersonen som JSON" }, text)),
   ];
@@ -1496,6 +1510,9 @@ function importera(text) {
       throw new Error(`den bryter mot reglerna (${fel[0]})`);
     }
     langst = STEG.length - 1; // en inläst rollperson är redan genomgången
+    nollstallSpel();
+    // En rollperson som har spelats öppnas i spelmötesdelen; skapandet är då låst
+    vy = harLogg() ? "spel" : vy === "spel" ? "steg" : vy;
     visaNotis(`${rp.namn || "Rollpersonen"} är inläst.`);
     uppdatera();
   } catch (e) {
@@ -1513,11 +1530,14 @@ function visaNotis(text) {
 
 // ------------------------------------------------------------ ritning
 function rita() {
-  const res = raknaRollperson(R, motorIndata());
+  const res = rakna();
+  if (vy === "steg" && harLogg()) vy = "spel"; // efter första posten går skapandet inte att ändra
   $(".layout").style.display = vy === "formular" ? "none" : "";
   $("#rf-vy").hidden = vy !== "formular";
   $("#visa-formular").setAttribute("aria-pressed", String(vy === "formular"));
+  $("#visa-spel").setAttribute("aria-pressed", String(vy === "spel"));
   if (vy === "formular") { ritaFormularVy(res); return; }
+  if (vy === "spel") { ritaSpelvy(res); return; }
   const STEG = synligaSteg(res); // stegen som visas just nu
   const grans = forstaOfardiga(res);
   if (!STEG.some((s) => s.id === aktivtSteg)) aktivtSteg = "fardigheter"; // ett dolt steg lämnas
@@ -1562,8 +1582,78 @@ function rita() {
   if (ritatSteg !== null && ritatSteg !== aktivtSteg) skrollaUpp();
   ritatSteg = aktivtSteg;
   // Dialogen visas först när tärningen har landat
-  if (nyssSlaget === "magiformaga") setTimeout(() => magiDialog(raknaRollperson(R, motorIndata())), 900);
+  if (nyssSlaget === "magiformaga") setTimeout(() => magiDialog(rakna()), 900);
   else if (!rullar) magiDialog(res);
+  nyssSlaget = null;
+}
+
+// ------------------------------------------------------------ spelmöten och förbättring (spelmote.js)
+function oppnaSpel() {
+  const kvar = saknas(rakna());
+  if (kvar.length) { visaNotis(`Gör klart rollpersonen först: ${kvar[0]}.`); return; }
+  vy = "spel";
+  rita();
+  window.scrollTo(0, 0);
+}
+
+// För in en post i loggen om den följer reglerna
+function forIn(post) {
+  const fore = rakna();
+  const efter = laggTill(rp, post, fore.utrustning.kvar);
+  const fel = kontrolleraPost(R, motorIndata(), efter, fore, raknaFor(efter), post);
+  if (fel.length) { visaNotis(`Det går inte: ${fel[0]}.`); return false; }
+  rp = efter;
+  giltig = structuredClone(rp);
+  spara();
+  return true;
+}
+
+function angra() {
+  const efter = angraSenaste(rp, rakna().utrustning.kvar);
+  if (raknaFor(efter).fel.length) { visaNotis("Det går inte att ångra posten."); return; }
+  rp = efter;
+  giltig = structuredClone(rp);
+  spara();
+  visaNotis(harLogg() ? "Den senaste posten är ångrad." : "Posten är ångrad. Loggen är tom, så skapandet går att ändra igen.");
+  rita();
+}
+
+const spelCtx = (res) => ({
+  R, res, rp: () => rp, indata: motorIndata, rakna: raknaFor, forIn, angra, rita, visaNotis,
+  kontrollera: (post, efter, resEfter) => kontrolleraPost(R, motorIndata(), efter, res, resEfter, post),
+  el, falt, valLista, gruppLista, fardighetsVal, valjFardighet, info, infoText: (text) => infoKnapp(text, "Förklaring"),
+  slagKontroll, landatSlag, tarningsIkon, slaT, sakNamn, paborjad, rullar: () => rullar !== null,
+  namnFor: (k) => { const f = fardighetAv(R, k); return f ? namnFor(R, f, k) : k; },
+});
+
+function ritaSpelvy(res) {
+  const ctx = spelCtx(res);
+  const delar = spelDelar();
+  const aktiv = delar.find((d) => d.id === aktivDel());
+  const pott = spelPotter(ctx);
+  $("#steg").replaceChildren(...delar.map((d, i) => el("li", {},
+    el("button", { type: "button", class: "steg-knapp" + (d.id === aktiv.id ? " aktiv" : ""), "aria-current": d.id === aktiv.id ? "step" : null,
+      onclick: () => { valjDel(d.id); rita(); $("#arbetsyta").focus({ preventScroll: true }); } },
+    el("span", { class: "steg-nr" }, i + 1), el("span", { class: "steg-namn" }, d.namn)))));
+  $("#arbetsyta").replaceChildren(
+    el("header", { class: "steg-huvud" },
+      el("div", { class: "steg-titel" },
+        el("span", { class: "eyebrow" }, `Spelmöten · ${rp.namn} · s. 73–76`),
+        el("h2", {}, aktiv.namn)),
+      el("dl", { class: "steg-potter", "aria-label": "Att använda" },
+        el("div", {}, el("dt", {}, "Osparade EP", info("EP")), el("dd", {}, pott.ep)),
+        el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, pott.hp)))),
+    el("div", { class: "steg-innehall" }, spelInnehall(ctx)),
+    el("nav", { class: "steg-fot spel-fot", "aria-label": "Rollpersonen" },
+      harLogg() ? el("span", { class: "hjalp" }, "Skapandet är låst eftersom rollpersonen har spelats. Ångra alla poster i loggen för att ändra det.")
+        : el("button", { type: "button", class: "knapp", onclick: () => { vy = "steg"; rita(); } }, "← Tillbaka till skapandet"),
+      el("div", { class: "rad" },
+        el("button", { type: "button", class: "knapp", onclick: visaFormular }, "Rollformulär"),
+        el("button", { type: "button", class: "knapp primar", onclick: laddaNer }, `Ladda ner ${filnamn()}`))));
+  $("#formular").replaceChildren(rollformular(res));
+  const nu = `spel-${aktiv.id}`;
+  if (ritatSteg !== null && ritatSteg !== nu) skrollaUpp();
+  ritatSteg = nu;
   nyssSlaget = null;
 }
 
@@ -1587,7 +1677,7 @@ function ritaFormularVy(res) {
   const kvar = saknas(res);
   vyEl.replaceChildren(
     el("div", { class: "rf-verktyg" },
-      el("button", { type: "button", class: "knapp", onclick: () => { vy = "steg"; rita(); } }, "← Tillbaka till stegen"),
+      el("button", { type: "button", class: "knapp", onclick: () => { vy = harLogg() ? "spel" : "steg"; rita(); } }, harLogg() ? "← Tillbaka till spelmötena" : "← Tillbaka till stegen"),
       el("button", { type: "button", class: "knapp primar", onclick: () => window.print() }, "Skriv ut eller spara som PDF"),
       el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
       el("label", {}, el("input", { type: "checkbox", id: "blacksnal", checked: blacksnal,
@@ -1595,7 +1685,7 @@ function ritaFormularVy(res) {
       el("label", {}, el("input", { type: "checkbox", id: "med-regler", checked: medRegler,
         onchange: (e) => { medRegler = e.target.checked; rita(); } }), "Ta med färdigheterna i korthet"),
       el("p", { class: "hjalp" }, "Skriv direkt i de gula fälten. Det sparas i rollpersonen och följer med när du laddar ner filen. ",
-        "Grundegenskaper, FV och KP ändras i stegen. Välj A4 och skala 100 % när du skriver ut.")),
+        harLogg() ? "Grundegenskaper, FV och KP ändras under Spelmöten (Förbättra). " : "Grundegenskaper, FV och KP ändras i stegen. ", "Välj A4 och skala 100 % när du skriver ut.")),
     ...(kvar.length ? [el("div", { class: "saknaslista rf-ofardig" }, el("strong", {}, "Rollpersonen är inte klar än"), el("ul", {}, kvar.map((t) => el("li", {}, t))))] : []),
     el("div", { class: "rf-sidor" }, rollformularSidor({ R, rp, res, el, sakNamn, andrat: sparaFormular, medRegler })));
   if (medRegler) {
@@ -1667,11 +1757,15 @@ async function start() {
       return;
     }
     avbryt();
-    rp = TOM(); aktivtSteg = "ras"; langst = 0; vy = "steg"; nySekundar = ""; magiByte = null; autoAnvand = { egenskaper: false, fardigheter: false }; utrustningsFilter = ""; uppdatera();
+    rp = TOM(); aktivtSteg = "ras"; langst = 0; vy = "steg"; nollstallSpel(); nySekundar = ""; magiByte = null; autoAnvand = { egenskaper: false, fardigheter: false }; utrustningsFilter = ""; uppdatera();
+  });
+  $("#visa-spel").addEventListener("click", () => {
+    $("#menypanel").hidden = true; $("#menyknapp").setAttribute("aria-expanded", "false");
+    oppnaSpel();
   });
   $("#visa-formular").addEventListener("click", () => {
     $("#menypanel").hidden = true; $("#menyknapp").setAttribute("aria-expanded", "false");
-    if (vy === "formular") { vy = "steg"; rita(); } else visaFormular();
+    if (vy === "formular") { vy = harLogg() ? "spel" : "steg"; rita(); } else visaFormular();
   });
   $("#importfil").addEventListener("change", async (e) => { const fil = e.target.files[0]; if (fil) importera(await fil.text()); e.target.value = ""; });
   document.addEventListener("paste", (e) => {
