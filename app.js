@@ -1337,7 +1337,8 @@ function synligaSteg(res) {
 }
 
 // Föreslagna grundvärden: högst där yrkets färdigheter och rasens styrkor ligger (s. 18–29).
-function foreslaGrundvarden() {
+// Ger grundvärdena, eller null om BP inte räcker till något förslag.
+function grundvardesForslag() {
   const res = rakna();
   const yrke = res.yrke;
   const ras = res.ras;
@@ -1367,22 +1368,26 @@ function foreslaGrundvarden() {
     // Slutvärdet måste bli minst 3 efter ras och ålder
     for (const g of GRUNDEGENSKAPER) varden[g] = Math.min(18, Math.max(varden[g], 3 - ras.mod[g] - aldersmod[g]));
     const pris = GRUNDEGENSKAPER.reduce((summa, g) => summa + kostnad[String(varden[g])], 0);
-    if (pris <= budget) {
-      rp.grundvarden = varden;
-      autoAnvand.egenskaper = true;
-      uppdatera();
-      return;
-    }
+    if (pris <= budget) return varden;
   }
-  visaNotis("Det finns inte tillräckligt med BP för ett förslag. Sänk något annat först.");
+  return null;
+}
+
+function foreslaGrundvarden() {
+  const varden = grundvardesForslag();
+  if (!varden) { visaNotis("Det finns inte tillräckligt med BP för ett förslag. Sänk något annat först."); return; }
+  rp.grundvarden = varden;
+  autoAnvand.egenskaper = true;
+  uppdatera();
 }
 
 // Automatisk fördelning av EP (s. 34–36). Varje FV läggs där det gör mest nytta just nu: yrkesfärdigheter
 // väger tyngst, sedan valda sekundära färdigheter och primära färdigheter med hög grundegenskap.
-// Varje höjning prövas mot reglerna, så tak och EP-gränsen hålls.
-function fordelaEP() {
+// Varje höjning prövas mot reglerna, så tak och EP-gränsen hålls. reserv är EP som lämnas kvar
+// (utvecklarläget sparar EP till besvärjelser). Ger false och lämnar rollpersonen orörd om det inte gick.
+function epFordelning(reserv = 0) {
   const fore = structuredClone(rp);
-  const hadeBesvarjelser = Object.keys(rp.besvarjelser).length > 0;
+  const provadeFore = provar;
   rp.fardigheter = {};
   rp.besvarjelser = {}; // besvärjelserna bygger på skolornas FV och väljs om i nästa steg
   provar = true;
@@ -1405,7 +1410,7 @@ function fordelaEP() {
       .sort((a, b) => b.poang - a.poang);
     let hojd = false;
     for (const { f } of kandidater) {
-      if (epPerFV(f) > res.ep.kvar) { stopp.add(f.nyckel); continue; }
+      if (epPerFV(f) > res.ep.kvar - reserv) { stopp.add(f.nyckel); continue; }
       const gammalt = rp.fardigheter[f.nyckel];
       rp.fardigheter[f.nyckel] = f.fv + 1;
       if (!rakna().fel.length) { hojd = true; break; }
@@ -1415,9 +1420,15 @@ function fordelaEP() {
     }
     if (!hojd) break;
   }
-  provar = false;
-  if (rakna().fel.length) rp = fore;
-  else autoAnvand.fardigheter = true;
+  provar = provadeFore;
+  if (!rakna().fel.length) return true;
+  rp = fore;
+  return false;
+}
+
+function fordelaEP() {
+  const hadeBesvarjelser = Object.keys(rp.besvarjelser).length > 0;
+  if (epFordelning()) autoAnvand.fardigheter = true;
   uppdatera();
   visaNotis(`EP är fördelade. ${rakna().ep.kvar} EP blev över.${hadeBesvarjelser ? " Besvärjelserna togs bort och får väljas om." : ""}`);
 }
@@ -1703,6 +1714,37 @@ async function start() {
   document.addEventListener("click", (e) => { const k = e.target.closest?.(".info"); if (k) { e.stopPropagation(); visa(k); } else dolj(); }, true);
   window.addEventListener("scroll", dolj, { passive: true });
   rita();
+  startaUtvecklarlage();
+}
+
+// ------------------------------------------------------------ utvecklarläge (utvecklarlage.js)
+// Slås på med ?dev i adressen och av med ?dev=av. Valet sparas i webbläsaren. Modulen laddas bara när läget är på.
+function startaUtvecklarlage() {
+  const param = new URLSearchParams(location.search).get("dev");
+  let pa = false;
+  try {
+    if (param !== null) localStorage.setItem("chronopia-dev", param === "av" ? "nej" : "ja");
+    pa = localStorage.getItem("chronopia-dev") === "ja";
+  } catch { pa = param !== null && param !== "av"; }
+  if (!pa) return;
+  import("./utvecklarlage.js").then((m) => m.starta({
+    R, el, TOM, tillFil, visaNotis, yrkesNycklar, saknas, rakna,
+    // Kör fn med en tillfällig rollperson och ger tillbaka den; spelarens rollperson rörs inte
+    med(tillfallig, fn) {
+      const fore = rp;
+      const provadeFore = provar;
+      rp = tillfallig;
+      provar = true;
+      try { fn(() => rp); return rp; } finally { rp = fore; provar = provadeFore; }
+    },
+    grundvardesForslag, epFordelning,
+    ladda(ny, steg) {
+      importera(JSON.stringify(tillFil(ny)));
+      if (rp.namn === ny.namn) { aktivtSteg = steg; vy = "steg"; nySekundar = ""; magiByte = null; utrustningsFilter = ""; rita(); }
+    },
+    visaFormular,
+    stangAv() { try { localStorage.setItem("chronopia-dev", "nej"); } catch { /* frivilligt */ } },
+  }));
 }
 
 start().catch((e) => {
