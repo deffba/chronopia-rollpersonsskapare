@@ -5,7 +5,7 @@
 // grundvärden, automatisk EP-fördelning) utifrån önskemålen i testrollpersoner.js, och kontrolleras sedan
 // av regelmotorn precis som en inläst fil. Går ett önskemål inte längre efter en regeländring väljs något
 // annat tillåtet i stället, och det sägs till i en notis.
-import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, varukatalog, tvahandsvapen } from "./regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, varukatalog, tvahandsvapen, besvarjelsePris } from "./regelmotor.js";
 import { TESTROLLPERSONER } from "./testrollpersoner.js";
 
 const LAGEN = [
@@ -194,15 +194,18 @@ export function byggTestrollperson(api, recept) {
   return { ...auto, avvek: enligt.fel[0] };
 }
 
-// Osparade erf på några färdigheter och en besvärjelse, så att förbättringen efter ett spelmöte har något att slå för
+// Osparade erf på några färdigheter och en besvärjelse, så att förbättringen har något att växla:
+// två FV i de tre bästa yrkesfärdigheterna och ett FV i två primära färdigheter och en besvärjelse
 function medErf(api, rp) {
   let lista = [];
   api.med(structuredClone(rp), () => { lista = api.rakna().fardigheter; });
   const erf = {};
-  lista.filter((f) => f.status === "yrke" && f.fv > 0).sort((a, b) => b.fv - a.fv).slice(0, 3).forEach((f) => { erf[f.nyckel] = 2; });
-  lista.filter((f) => f.status === "primar" && f.fv > 0).sort((a, b) => b.fv - a.fv).slice(0, 2).forEach((f) => { erf[f.nyckel] = 1; });
+  const per = (f) => f.epPerFV || 3;
+  lista.filter((f) => f.status === "yrke" && f.fv > 0).sort((a, b) => b.fv - a.fv).slice(0, 3).forEach((f) => { erf[f.nyckel] = 2 * per(f); });
+  lista.filter((f) => f.status === "primar" && f.fv > 0).sort((a, b) => b.fv - a.fv).slice(0, 2).forEach((f) => { erf[f.nyckel] = per(f); });
   const besv = Object.keys(rp.besvarjelser ?? {})[0];
-  if (besv) erf[besv] = 1;
+  const b = besv && api.R.besvarjelser.lista.find((x) => x.id === besv.split(":")[0]);
+  if (b) erf[besv] = besvarjelsePris(api.R, b.sv);
   rp.spel = { ...rp.spel, erf };
   return rp;
 }
