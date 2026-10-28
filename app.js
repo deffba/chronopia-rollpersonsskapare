@@ -991,8 +991,8 @@ function oppnaMagiModal(vidare = null) {
     else if (!e.shiftKey && document.activeElement === sista) { e.preventDefault(); forsta.focus(); }
   });
 
-  // Efter ett misslyckat slag: magiskolor bland yrkesfärdigheterna byts i modalen, sekundära tas bort
-  const bytesPlatser = () => magiPlatser().filter((p) => p.typ !== "sekundar");
+  // Efter ett misslyckat slag byts varje magiskola mot en annan färdighet i modalen
+  const bytesPlatser = () => magiPlatser();
   const visaByte = (knapp) => {
     const platser = bytesPlatser();
     const val = platser.map(() => "");
@@ -1003,7 +1003,14 @@ function oppnaMagiModal(vidare = null) {
     const fel = el("p", { class: "magi-byte-fel", role: "alert" });
     const gaVidare = el("button", { type: "button", class: "magi-knapp", id: "magimodal-ga-vidare", disabled: true, onclick: () => {
       const kandidat = structuredClone(rp);
-      platser.forEach((p, i) => { if (p.typ === "valfri") kandidat.valfri = val[i]; else kandidat.extraYrkesfardigheter[p.i] = val[i]; });
+      platser.forEach((p, i) => {
+        if (p.typ === "valfri") kandidat.valfri = val[i];
+        else if (p.typ === "extra") kandidat.extraYrkesfardigheter[p.i] = val[i];
+        else {
+          kandidat.sekundara[kandidat.sekundara.indexOf(p.nyckel)] = val[i];
+          delete kandidat.fardigheter[p.nyckel];
+        }
+      });
       const problem = raknaFor(kandidat).fel;
       if (problem.length) { fel.textContent = `Det går inte: ${problem[0]}.`; return; }
       rp = kandidat;
@@ -1011,10 +1018,13 @@ function oppnaMagiModal(vidare = null) {
     } }, "GÅ VIDARE");
     const ritaVal = () => {
       fel.textContent = "";
+      // Färdigheter som rollpersonen redan har (eller väljer i en annan lista här) visas inte; delval spärras som i stegen
+      const harRedan = new Set([...yrkesNycklar(), ...rp.extraYrkesfardigheter, ...rp.sekundara, ...val].filter(Boolean));
       listor.replaceChildren(...platser.map((p, i) => el("div", { class: "magi-byte-plats" },
-        el("label", { for: `magibyte-${i}-f` }, p.typ === "valfri" ? "Ny valfri yrkesfärdighet" : "Ny extra yrkesfärdighet"),
+        el("label", { for: `magibyte-${i}-f` }, { valfri: "Ny valfri yrkesfärdighet", extra: "Ny extra yrkesfärdighet", sekundar: "Ny sekundär färdighet" }[p.typ]),
         fardighetsVal(`magibyte-${i}`, val[i], (v) => { val[i] = v; ritaVal(); },
-          (f) => f.typ !== "magiskola" && (p.typ !== "valfri" || f.typ !== "primar"), { yrke: true }),
+          (f) => f.typ !== "magiskola" && (p.typ === "extra" || f.typ !== "primar") && (f.perVal || !harRedan.has(f.id) || val[i].split(":")[0] === f.id),
+          p.typ === "sekundar" ? {} : { yrke: true }),
         valdBeskrivning(val[i]),
         val[i].startsWith("stridskonster") ? stridskonstInfo() : null)));
       gaVidare.disabled = val.some((v) => !v || paborjad(v));
