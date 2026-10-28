@@ -349,9 +349,9 @@ body.dialog-oppen { overflow: hidden; }
 .magi-bakgrund.klar .magi-under { display: none; }
 .magi-ledtext { margin: 0; font-family: "EB Garamond", Georgia, serif; font-style: italic; font-size: 1.2rem; letter-spacing: .04em; color: #cdb9a0; animation: magi-andas 2.6s ease-in-out infinite; }
 .magi-chans, .magi-detalj { margin: 0; font-size: .82rem; color: var(--magi-dov); }
-.magi-inmatning { width: 7ch; padding: 6px 8px; text-align: center; font: 600 1.4rem Cinzel, serif; color: var(--magi-text);
+#magimodal .magi-inmatning { width: 7ch; padding: 6px 8px; text-align: center; font: 600 1.4rem Cinzel, serif; color: var(--magi-text);
   background: #1d151e; border: 1px solid #5a4450; border-radius: 3px; }
-.magi-inmatning.fel { border-color: var(--magi-rod); }
+#magimodal .magi-inmatning.fel { border-color: var(--magi-rod); }
 .magi-utfall { display: none; }
 .magi-bakgrund.klar .magi-utfall { display: grid; justify-items: center; gap: 8px; animation: magi-upp .6s .45s ease-out both; }
 #magimodal .magi-utfall h2 { margin: 4px 0 0; font-family: Cinzel, serif; font-weight: 700; font-size: clamp(1.15rem, 5vw, 1.45rem); letter-spacing: .08em; white-space: nowrap; text-transform: none; }
@@ -369,6 +369,28 @@ body.dialog-oppen { overflow: hidden; }
 @keyframes magi-tal { 0% { opacity: 0; transform: scale(1.25); letter-spacing: .2em; } 100% { opacity: 1; transform: none; letter-spacing: 0; } }
 @keyframes magi-andas { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
 @keyframes magi-upp { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: none; } }
+.magi-dev { display: flex; gap: 8px; margin-top: 6px; }
+.magi-dev button { font: 600 .75rem "Source Sans 3", sans-serif; padding: 4px 10px; border-radius: 3px; cursor: pointer; color: #f4e6c8; background: #2a1f2d; border: 1px dashed #8a6a7a; }
+.magi-dev button:hover { background: #3a2b3e; }
+/* Bytet efter ett misslyckat slag: FÖRLIKAS MED ÖDET blir rubrik, sedan listan, beskrivningen och GÅ VIDARE */
+.magi-bakgrund.byte .magi-panel { justify-items: stretch; gap: 12px; width: min(100%, 520px); text-align: left; }
+#magimodal .magi-byte-rubrik { margin: 0; text-align: center; font-family: Cinzel, serif; font-weight: 700; font-size: clamp(1.15rem, 5vw, 1.5rem); letter-spacing: .14em; color: var(--magi-rod); white-space: nowrap; text-transform: none; }
+.magi-byte-text { margin: 0 0 6px; text-align: center; font-family: "EB Garamond", Georgia, serif; font-style: italic; font-size: 1.15rem; color: #cdb9a0; }
+.magi-byte-val { display: grid; gap: 14px; }
+.magi-byte-plats { display: grid; gap: 6px; }
+.magi-byte-plats label { font-size: .8rem; letter-spacing: .06em; color: var(--magi-dov); }
+#magimodal .magi-byte-plats select, #magimodal .magi-byte-plats input { width: 100%; box-sizing: border-box; color: var(--magi-text); background: #1d151e; border: 1px solid #5a4450; border-radius: 3px; padding: 6px 8px; font: inherit; }
+.magi-byte-plats .vald-beskrivning { background: #1a131b; color: var(--magi-text); border-left-color: #a8843f; max-width: none; }
+.magi-byte-plats .hjalp, .magi-byte-plats p { color: #cdb9a0; }
+.magi-byte-fel { margin: 0; min-height: 1em; font-size: .85rem; color: #f0a0a0; }
+.magi-byte-fot { display: flex; justify-content: center; }
+.magi-knapp:disabled { opacity: .4; cursor: not-allowed; }
+.magi-knapp:disabled:hover { background: transparent; }
+/* Utvecklarläget: Gör om magiförmågeslaget ligger ovanför Nästa-knappen */
+.nasta-kolumn { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.steg-fot { align-items: flex-end; }
+#arbetsyta .knapp.magi-gor-om { background: #a8333d; border-color: #a8333d; color: #fff; }
+#arbetsyta .knapp.magi-gor-om:hover { background: #8e2731; }
 .magi-bakgrund.reducerad, .magi-bakgrund.reducerad * { transition: none !important; animation: none !important; }
 #notis {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px));
