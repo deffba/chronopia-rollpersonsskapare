@@ -674,6 +674,74 @@ skriv("vapen", {
 skriv("besvarjelser", besvarjelser.bygg())
 skriv("utrustning", utrustning.bygg())
 
+# ---------------------------------------------------------------- erfarenhet och hjältepoäng (s. 45, 74–76)
+skriv("erfarenhet", {
+    # Var EP kommer ifrån (s. 73–74). EP gäller alltid en viss färdighet eller besvärjelse.
+    "aventyr": {
+        "ep": 1, "epPerfekt": "1T4", "somnTimmar": 6, "somnTimmarAlver": 2,
+        "ejKategoriB": True,  # kategori B förbättras bara genom träning
+        "sida": 74,
+    },
+    "bonus": {
+        "maxPerAventyr": 10,
+        "exempel": [["Lyckat utfört uppdrag", 1, 4], ["Osedvanligt svår gärning", 1, 2], ["Gott rollspelande", 1, 4]],
+        "sida": 74,
+    },
+    # EP växlas till FV först under en sammanhängande vila om minst sju dagar, till samma pris som vid start (s. 74–75)
+    "omvandling": {"viladagar": 7, "sida": [74, 75]},
+    "ensamtraning": {
+        "timmarPerDag": 8, "dagarPerVecka": 6,
+        # Färre timmar om dagen: träningstiden förlängs (6 timmar +50 %, 4 timmar dubbelt). Fler än 8 eller färre än 4 går inte.
+        "tidsfaktor": {"8": 1, "6": 1.5, "4": 2},
+        "svarighet": 0,  # Medelsvårt grundegenskapsslag (s. 45)
+        "ep": "1T4",
+        "intKraverBok": True,
+        "sida": 74,
+    },
+    "larare": {
+        "minFV": 17, "minINT": 13, "slagPerVecka": 2,
+        "modPerFVOver18": -2, "modEnsamElev": -5,
+        "kostnadPerVecka": 1500, "kostnadMagi": 3000, "faktorEnsamElev": 2,
+        "sida": 74,
+    },
+    "besvarjelseEnsam": {
+        "grundegenskap": "INT", "svarighet": 0, "modPerIntUnder": 19, "ep": 1, "kraverKodex": True,
+        "sida": 75,
+    },
+    # Tak efter skapandet (s. 74): sekundär färdighet högst grundegenskapen, ärkemagikerns magiskola högst INT,
+    # besvärjelse högst PSY (s. 36)
+    "tak": {"sida": [36, 74]},
+    "psyHojning": {
+        "magiker": {"bas": 25, "tak": 24, "etta": "1T3+1", "ettaOverTak": "1T3"},
+        "ickeMagiker": {"bas": 20, "tak": 19, "etta": "1T3+1", "ettaOverTak": "1"},
+        "sarskildFormagaMod": {"God PSY-potential": -5},
+        "sida": 75,
+    },
+    # En permanent ändring av en grundegenskap ändrar FV i yrkesfärdigheter och primära färdigheter lika mycket (s. 45)
+    "permanentEgenskap": {"galler": ["primar", "yrke"], "sida": 45},
+    "hjaltepoang": {
+        "fvGrans": {"forsta": 21, "steg": 20, "hp": "1T4"},  # FV 21, 41, 61 …
+        "dad": [
+            ["Uppnå FV 21 (41, 61 etc.) i någon färdighet", "1T4"],
+            ["Vinna tornering med fler än 400 deltagare", "5"],
+            ["På kungens uppdrag rädda prinsessa", "10"],
+            ["Döda fiendens härförare", "10"],
+            ["Upptäcka ny kontinent", "10"],
+            ["Leda belägring och erövring av fientlig borg", "10"],
+            ["Stjäla skatt från monster utan att döda det", "5–25"],
+            ["Döda monster", "10–50"],
+            ["Rädda kungarike från undergång", "50"],
+            ["Besegra annan hjälte", "hälften av den hjältens HP"],
+        ],
+        "egenskap": {"hp": 5, "ejSTO": True},
+        "sarskildFormaga": {"min": 1, "max": 40, "bonusPerHp": 2, "tarning": "2T20"},
+        "hojaCL": "En HP före ett färdighetsslag: fummel blir misslyckat, misslyckat blir lyckat, lyckat blir perfekt och perfekt ger tillbaka HP:n.",
+        "igenkanning": "Chansen att bli igenkänd är summan av alla HP rollpersonen har samlat, i procent.",
+        "sida": [74, 75, 76],
+    },
+    "sida": [45, 73, 74, 75, 76],
+})
+
 # ---------------------------------------------------------------- husregler (dokumenterade tolkningar)
 skriv("husregler", [
     {"id": "primara-fran-s40", "sida": [40, 57, 62], "beslut": "Primära färdigheter enligt s. 40, plus Bärsärkagång för troll och Känna magi för magiker."},
@@ -693,6 +761,15 @@ skriv("husregler", [
     {"id": "sf-fore-harledda", "sida": [30, 31, 32], "beslut": "Särskilda förmågor räknas in innan KP, SB och färdigheter räknas ut."},
     {"id": "paladin-bp", "sida": [25], "beslut": "Paladinens 50 BP visas som separat pott som SL styr."},
     {"id": "pavise-skold", "sida": [72, 94], "beslut": "Pavise räknas till vapengruppen Sköldar."},
+    {"id": "bonus-ej-kategori-b", "sida": [74], "beslut": "Bonuspoäng efter ett äventyr får inte läggas på färdigheter i kategori B, eftersom de bara förbättras genom träning (tolkning)."},
+    {"id": "fv21-bara-fardigheter", "sida": [76], "beslut": "1T4 HP för FV 21, 41, 61 … gäller färdigheter, inte besvärjelser (tolkning)."},
+    {"id": "besvarjelse-tak-psy", "sida": [36], "beslut": "FV i en besvärjelse är högst PSY även efter skapandet (tolkning)."},
+    {"id": "larare-magi", "sida": [74], "beslut": "Lärarkostnaden 3 000 sm för magiker gäller träning i magiskolor, besvärjelser och magifärdigheter (tolkning)."},
+    {"id": "besvarjelse-larare-psy", "sida": [74, 75, 107], "beslut": "Träning i en besvärjelse med lärare slås mot PSY, som besvärjelser bygger på; ensam slås mot INT enligt s. 75 (tolkning)."},
+    {"id": "psy-magiker", "sida": [75], "beslut": "Magiker vid PSY-höjning är den som har ett magikeryrke (tolkning)."},
+    {"id": "ny-fardighet-bc", "sida": [34, 73], "beslut": "En färdighet som lärs efter skapandet börjar på BC om den är primär eller yrkesfärdighet, annars på 0 (tolkning)."},
+    {"id": "vapengrupp-under-spel", "sida": [71], "beslut": "Vapen i samma grupp har minst halva bästa FV i gruppen även efter skapandet (tolkning)."},
+    {"id": "mynt-utan-vaxelkurs", "sida": [38, 74], "beslut": "Växelkursen mellan gm, sm och km används inte; lärarkostnad dras från börsens sm (husregel)."},
     {"id": "vapen-utan-grupp", "sida": [72, 90], "beslut": "Vapen som s. 72 inte nämner: Korpnäbb och Hjälmkrossare = krossvapen, Kroksabel = svärd, Skäggyxa = yxa, Partisan och Glav = stångvapen."},
 ])
 print("Skrev regelfiler till", os.path.abspath(UT))
