@@ -72,7 +72,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
   const formagor = [
     ...(res.ras?.formagor ?? []).map((t) => ({ namn: t, text: `Rasförmåga (${res.ras.namn.toLowerCase()})` })),
     ...[res.sarskildFormaga, ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
-    { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: res.yrke.yrkesformaga },
+    rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: res.yrke.yrkesformaga } : null,
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
   ].filter(Boolean);
 
@@ -89,7 +89,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
           falt("Ras", 4, text(rp.ras ? res.ras.namn : ""), "s2"),
           falt("Kön", 6, text(rp.kon), "s2"),
           falt("Socialt stånd", 8, text(res.slag.socialtStand), "s2"),
-          falt("Yrke", 5, text(res.yrke.namn), "s2"),
+          falt("Yrke", 5, text(rp.yrke ? res.yrke.namn : ""), "s2"),
           falt("Svärdshand", 7, text(res.slag.svardshand), "s2"),
           falt("Ålder", 9, text(`${rp.alder} år`), "s2"))),
       el("div", { class: "rf-kropp1" },

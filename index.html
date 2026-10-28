@@ -150,10 +150,15 @@ input.tal.bred { width: 6rem; }
 .valkort.valt { border-color: var(--accent); background: var(--accent-svag); box-shadow: inset 0 0 0 1px var(--accent); }
 .valkort-namn { font: 1.2rem var(--rubrik); transition: font-size .4s ease; overflow-wrap: anywhere; }
 /* Korten för ras (steg 1) och yrke (steg 3) delar utseende. Rasrutorna visar bara namnen i ett 3 × 4-rutnät, yrkena i 4 × 4; siffrorna står i rutan under */
-.valkort-rutnat.liten { width: min(100%, 360px); gap: 6px; }
-.valkort-rutnat.liten .valkort { padding: 5px 8px; gap: 0; }
-.valkort-rutnat.liten .valkort-namn { font-size: .95rem; }
-.valkort-rutnat.liten.fyra { grid-template-columns: repeat(4, minmax(0, 1fr)); width: min(100%, 640px); }
+.valkort-rutnat.liten { width: min(100%, 468px); gap: 8px; }
+.valkort-rutnat.liten .valkort { padding: 8px 10px; gap: 0; text-align: center; align-content: center; justify-items: center; min-height: 3.2rem; }
+.valkort-rutnat.liten .valkort-namn { font-size: 1.24rem; line-height: 1.2; overflow-wrap: break-word; }
+.valkort-rutnat.liten.fyra { grid-template-columns: repeat(4, minmax(0, 1fr)); width: min(100%, 832px); }
+/* Yrkesnamnen krymper med rutnätet när det är smalt, så att fyra kort i bredd alltid räcker */
+.valkort-rutnat.liten.fyra { container-type: inline-size; }
+.valkort-rutnat.liten.fyra .valkort { padding: 8px 4px; }
+.valkort-rutnat.liten.fyra .valkort-namn { font-size: min(1.24rem, 3.1cqi); }
+@media (max-width: 560px) { .valkort-rutnat.liten.fyra .valkort-namn { font-size: min(1.24rem, 6.2cqi); } }
 @media (max-width: 560px) { .valkort-rutnat.liten.fyra { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .valdata.bred { max-width: 65ch; }
 .valdata.bred dd { font-weight: 500; font-variant-numeric: normal; }
@@ -446,7 +451,9 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] .egenskaper > div, [data-stil="klassisk"] .saknaslista, [data-stil="klassisk"] .steg-potter > div,
 [data-stil="klassisk"] .varning, [data-stil="klassisk"] .fast { border-radius: 2px; border-color: #8c7a74; }
 [data-stil="klassisk"] .valkort-namn { font: 600 1rem/1.2 var(--rubrik); }
-[data-stil="klassisk"] .valkort-rutnat.liten .valkort-namn { font-size: .8rem; }
+[data-stil="klassisk"] .valkort-rutnat.liten .valkort-namn { font-size: 1.04rem; }
+[data-stil="klassisk"] .valkort-rutnat.liten.fyra .valkort-namn { font-size: min(1.04rem, 2.6cqi); }
+@media (max-width: 560px) { [data-stil="klassisk"] .valkort-rutnat.liten.fyra .valkort-namn { font-size: min(1.04rem, 5.2cqi); } }
 [data-stil="klassisk"] input.namnfalt { background: none; border-color: transparent; font: 700 1.6rem/1.15 var(--rubrik); }
 [data-stil="klassisk"] input.namnfalt:hover { border-color: var(--linje); }
 [data-stil="klassisk"] .yrkesformaga { border-radius: 0; }
