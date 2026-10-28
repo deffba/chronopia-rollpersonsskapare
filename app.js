@@ -510,8 +510,8 @@ function stegYrke() {
   const kort = R.yrken.lista.map((y) => el("button", {
     type: "button", class: "valkort yrkeskort" + (y.id === rp.yrke ? " valt" : ""), "aria-pressed": y.id === rp.yrke ? "true" : "false", "data-yrke": y.id,
     onclick: () => {
-      if (y.id === rp.yrke) return;
-      rp.yrke = y.id; rp.yrkesval = {}; rp.valfri = ""; rp.hantverkBonus = ""; uppdatera();
+      // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1
+      rp.yrke = y.id === rp.yrke ? "" : y.id; rp.yrkesval = {}; rp.valfri = ""; rp.hantverkBonus = ""; uppdatera();
     },
   }, el("span", { class: "valkort-namn" }, y.namn.replace(/^(.{5,})(magiker)$/, "$1\u00ad$2")))); // Elementar-magiker avstavas om namnet inte får plats
   if (!rp.yrke) return [el("div", { class: "valkort-rutnat liten fyra" }, kort), el("p", { class: "hjalp" }, "Välj rollpersonens yrke genom att klicka på ett av korten.")];
