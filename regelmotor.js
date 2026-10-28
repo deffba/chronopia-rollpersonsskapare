@@ -3,6 +3,8 @@
 // Sidhänvisningar avser tryckta sidor i regelboken.
 
 export const GRUNDEGENSKAPER = ["STY", "FYS", "SMI", "INT", "PSY", "KAR"];
+// Grundvärdet 10 i alla grundegenskaper, som tabellen i steg 6 börjar med (s. 27)
+export const STANDARDVARDEN = () => Object.fromEntries(GRUNDEGENSKAPER.map((g) => [g, 10]));
 
 // Ett påbörjat val, t.ex. "vapen:" innan vapnet är valt eller "tva-vapen:Dolk+" innan det andra vapnet är valt.
 export const paborjad = (nyckel) => !nyckel || nyckel.endsWith(":") || nyckel.endsWith("+");
@@ -68,13 +70,17 @@ export function raknaGrundegenskaper(regler, rp) {
   let bp = 0;
   const fel = [];
   const forLaga = []; // slutvärden under 3 är inget regelbrott förrän grundvärdena köps i steg 6
+  // Före steg 6 finns inga grundvärden (grundvarden är null). Då kostar de inga BP; värdena räknas ändå
+  // med grundvärdet 10 så att resten av motorn fungerar, men de visas inte.
+  const satta = !!rp.grundvarden;
+  const grundvarden = rp.grundvarden ?? STANDARDVARDEN();
   for (const g of GRUNDEGENSKAPER) {
-    const grund = rp.grundvarden[g];
+    const grund = grundvarden[g];
     const kostnad = regler.grundegenskaper.kostnad[String(grund)];
     if (kostnad === undefined) fel.push(`${g}: grundvärdet måste vara 3–18 (s. 27)`);
-    bp += kostnad ?? 0;
+    if (satta) bp += kostnad ?? 0;
     varden[g] = grund + ras.mod[g] + aldersmod[g] + (rp.egenskapsbonus?.[g] ?? 0);
-    if (varden[g] < regler.grundegenskaper.minstSlutvarde) forLaga.push(`${g} blir ${varden[g]} efter ras och ålder, men måste bli minst 3: höj grundvärdet (s. 27)`);
+    if (satta && varden[g] < regler.grundegenskaper.minstSlutvarde) forLaga.push(`${g} blir ${varden[g]} efter ras och ålder, men måste bli minst 3: höj grundvärdet (s. 27)`);
   }
   const steg = rp.stoSteg ?? 0;
   const s = regler.grundegenskaper.sto;
@@ -82,7 +88,7 @@ export function raknaGrundegenskaper(regler, rp) {
   if (steg < 0) bp -= s.sankning[-steg - 1];
   varden.STO = ras.sto.normal + steg;
   if (varden.STO < ras.sto.min || varden.STO > ras.sto.max) fel.push(`STO måste ligga inom ${ras.sto.min}–${ras.sto.max} (s. 14, 28)`);
-  return { varden, bp, alderskategori: kat, fel, forLaga };
+  return { varden, bp, alderskategori: kat, fel, forLaga, satta };
 }
 
 // Härledda värden: KP per kroppsdel, skadebonus, förflyttning, storlek (s. 10, 28–29).
@@ -304,7 +310,7 @@ export function raknaRollperson(regler, indata) {
   const ge = raknaGrundegenskaper(regler, rp);
   fel.push(...ge.fel);
   const bpUtgifter = {
-    ras: ras.bp,
+    ras: rp.rasVald === false ? 0 : ras.bp, // ingen ras vald än: motorn räknar som för en människa, men inget kostar
     extraYrkesfardigheter: kostnadExtraYrken(regler, rp.extraYrkesfardigheter),
     grundegenskaper: ge.bp,
     sarskildaFormagor: rp.sarskildaFormagor?.bp ?? 0,
@@ -373,7 +379,7 @@ export function raknaRollperson(regler, indata) {
   const utrustning = raknaUtrustning(regler, rp, ge.varden, slag.startkapital, fel);
 
   return {
-    ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, harledda, slag, magiformaga,
+    ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, grundegenskaperSatta: ge.satta, harledda, slag, magiformaga,
     sarskildFormaga: sf.formaga, saknas: sf.saknas, vantar, forLagaEgenskaper: ge.forLaga,
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
