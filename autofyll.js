@@ -28,7 +28,7 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
     if (valfriRas && !rp.rasval.some(klar)) rp.rasval = [`${valfriRas}:${delval(valfriRas)}`];
   }
 
-  if (steg === "yrke") {
+  if (steg === "extra") {
     const yrke = yrkeAv(R, rp.yrke);
     yrke.fardigheter.forEach((post, i) => {
       const val = rp.yrkesval[i];

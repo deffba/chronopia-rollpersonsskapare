@@ -407,6 +407,43 @@ YRKEN = [
        "mentalism", antal("tala", 2)],
       valfri=False, auto=MAGI_AUTO, magiker=True, skolTak="INT"),
 ]
+# Egna korta texter om yrkena (s. 18–26): en stämningsrad och en beskrivning av vad yrket gör
+YRKESBESKRIVNING = {
+    "animist": ("Djuren och växterna har ett språk, och skogens andar svarar den som kan tala det.",
+                "Magiker som drar sin kraft ur den levande naturen. Animisten helar djur och människor, känner örter och gifter och följer de mönster som finns i allt som växer och lever."),
+    "bard": ("Ingen hör ett rykte före barden, och ingen berättar det bättre.",
+             "Sångare, berättare och nyhetsbärare som rör sig lika lätt i fina salonger som på stadens krogar. Barden lever på sin röst och sitt instrument, och på allt som andra viskar om."),
+    "elementarmagiker": ("Eld, vatten, luft och jord: den som kan tämja dem kan tämja allt.",
+                         "Magiker som behärskar elementens krafter. Elementarmagikern studerar alkemi eller stjärnornas gång och lär sig kanalisera magin, och elementens besvärjelser är bland de mest förödande som finns."),
+    "gladiator": ("Sanden på arenan har druckit blodet från bättre krigare än du.",
+                  "Yrkeskämpe som slåss inför publik på Chronopias arenor. Gladiatorn lever för duellen man mot man och behärskar flera vapen, avväpningar och egna stridskonster."),
+    "gycklare": ("Ett skratt, en volt och en hatt som skickas runt: mer behövs inte för att överleva.",
+                 "Akrobat, dansare, buktalare och skådespelare som uppträder på gator och torg. En gycklare går aldrig hungrig, och fingrarna är lika snabba med ett lås som med bollarna i luften."),
+    "hantverkare": ("Det som byggs med händerna står kvar när orden har glömts.",
+                    "Yrkeskunnig person som behärskar tre hantverk och vet vad varor och arbete är värda. Hantverkaren kan räkna, pruta och hålla ordning på papper och tillstånd."),
+    "krigare": ("Svärdet gör ingen skillnad på adel och tiggare, bara på snabb och långsam.",
+                "Legosoldat, vakt eller äventyrare som lever på sina vapen. Krigaren hugger först, kan slåss med två vapen och vet vem i undre världen som tar emot en muta."),
+    "kopman": ("Allt har ett pris, och köpmannen vet alltid vilket.",
+               "Handelsman som reser mellan städer och folk och känner till deras seder, vägar och myndigheter. Köpmannen pratar sig till goda affärer och börjar med mer pengar än de flesta."),
+    "lard-man": ("Kunskap är den enda skatt som ingen tjuv kan ta.",
+                 "Forskare, skrivare och vetenskapsman som läser och talar många språk. Den lärde mannen känner historien, geografin och folken, och all slags lärdom räknas som yrkesfärdigheter."),
+    "lonnmordare": ("Den du aldrig ser komma är den som dödar dig.",
+                    "Yrkesmördare som arbetar i skuggorna. Lönnmördaren smyger sig på sitt offer, hanterar gifter, lås och fällor och kan döda med ett enda väl placerat hugg."),
+    "mentalist": ("Själen är ett rum med många dörrar, och mentalisten har nycklarna.",
+                  "Magiker som behärskar sinnets krafter. Mentalisten läser och styr andras tankar, hypnotiserar och använder droger och örter för att vidga medvetandet."),
+    "munk": ("Stillhet i sinnet ger styrka i handen.",
+             "Medlem av en religiös orden, kunnig i tro, läkekonst och meditation. Genom att samla sig en stund kan munken prestera långt mer än vanligt, vad uppgiften än är."),
+    "paladin": ("Kulten befaller, och paladinen lyder, med svärd och med liv.",
+                "Krigare i en kults tjänst, utrustad och utbildad av sin orden. Paladinen får mer resurser än andra från början, men kulten bestämmer hur de används och paladinen måste lyda order."),
+    "resenar": ("Vägen är resenärens hem, och horisonten det enda mål som räknas.",
+                "Upptäcktsresande, sjöfarare eller vagabond som har sett mer av världen än de flesta. Resenären hittar vägen, klarar sig i vildmarken och står emot både väder och elementens magi."),
+    "tjuv": ("Det som inte är fastspikat har bara inte bytt ägare än.",
+             "Inbrottstjuv, ficktjuv eller bedragare med fäste i stadens undre värld. När det verkligen gäller kan tjuven samla sig och lyckas med det nästan omöjliga."),
+    "arkemagiker": ("Tre skolor, en vilja: ärkemagikern böjer sig för ingen magi.",
+                    "Den mest lärde av magiker, som studerar animism, elementarmagi och mentalism på en gång. Bredden har ett pris: färdigheten i en magiskola kan aldrig bli högre än intelligensen."),
+}
+for y_ in YRKEN:
+    y_["stamning"], y_["beskrivning"] = YRKESBESKRIVNING[y_["id"]]
 skriv("yrken", {
     "lista": YRKEN,
     "extraYrkesfardigheter": {"forsta": 5, "andra": 7, "darefter": 10, "magiskola": 20},  # BP, s. 27

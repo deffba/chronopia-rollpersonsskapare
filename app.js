@@ -15,7 +15,7 @@ const STEG = [
   { id: "ras", namn: "Ras", sida: "14–16", bp: true },
   { id: "alder", namn: "Ålder", sida: "16–17" },
   { id: "yrke", namn: "Yrke", sida: "18–26" },
-  { id: "extra", namn: "Fler yrkesfärdigheter", sida: "27", bp: true },
+  { id: "extra", namn: "Yrkesfärdigheter", sida: "18–27", bp: true },
   { id: "kon", namn: "Kön och namn", sida: "27" },
   { id: "egenskaper", namn: "Grundegenskaper", sida: "27–29", bp: true },
   { id: "formagor", namn: "Särskilda förmågor", sida: "30–32", bp: true },
@@ -333,7 +333,7 @@ function fardighetsInfo(nyckel) {
   if (!f?.beskrivning) return null;
   return el("button", { type: "button", class: "info", "data-tip": `${f.beskrivning} (s. ${f.sida})`, "aria-label": `Om ${f.namn}` }, "i");
 }
-// Beskrivning som skrivs ut under en yrkesfärdighet i steg 3
+// Beskrivning som skrivs ut under en yrkesfärdighet i steg 4
 function kortBeskrivning(id, namn = null) {
   const f = fardighetAv(R, id ?? "");
   if (!f?.beskrivning) return null;
@@ -416,15 +416,15 @@ function fardighetsVal(idPrefix, nyckel, onchange, filter = () => true, val = {}
 function stegRas() {
   const valt = rp.ras ? rasAv(R, rp.ras) : null;
   const kort = R.raser.map((r) => el("button", {
-    type: "button", class: "raskort" + (r.id === rp.ras ? " valt" : ""), "aria-pressed": r.id === rp.ras ? "true" : "false",
+    type: "button", class: "valkort raskort" + (r.id === rp.ras ? " valt" : ""), "aria-pressed": r.id === rp.ras ? "true" : "false",
     onclick: () => {
       // Ett tryck på den valda rasen avmarkerar den
       rp.ras = r.id === rp.ras ? "" : r.id; rp.rasval = []; rp.stoSteg = 0;
       uppdatera();
     },
   },
-  el("span", { class: "raskort-namn" }, r.namn)));
-  const huvud = el("div", { class: "raskort-rutnat liten" }, kort);
+  el("span", { class: "valkort-namn" }, r.namn)));
+  const huvud = el("div", { class: "valkort-rutnat liten" }, kort);
   if (!valt) return [huvud, el("p", { class: "hjalp" }, "Välj rollpersonens ras genom att klicka på ett av korten."), fortsattSparad()];
   const extra = [];
   if (valt.primara.some((p) => p.valfri === "vapen")) {
@@ -438,10 +438,10 @@ function stegRas() {
   const sprak = (lista) => lista.map((x) => R.fardigheter.sprak.find((s) => s.id === (x.sprak ?? x))?.namn ?? x).join(", ") || "inget skriftspråk";
   return [
     huvud,
-    el("div", { class: "rasinfo" },
-      el("h3", { class: "rasrubrik" }, valt.namn),
-      valt.beskrivning ? el("p", { class: "raslore" }, valt.beskrivning, " (s. 14–16)") : null,
-      el("dl", { class: "rasdata" },
+    el("div", { class: "valinfo" },
+      el("h3", { class: "valrubrik" }, valt.namn),
+      valt.beskrivning ? el("p", { class: "vallore" }, valt.beskrivning, " (s. 14–16)") : null,
+      el("dl", { class: "valdata" },
         el("div", {}, el("dt", {}, "BP"), el("dd", {}, valt.bp)),
         el("div", {}, el("dt", {}, "Grundegenskaper"), el("dd", {}, GRUNDEGENSKAPER.filter((g) => valt.mod[g]).map((g) => `${g} ${valt.mod[g] > 0 ? "+" : "−"}${Math.abs(valt.mod[g])}`).join(" · ") || "Inga modifikationer")),
         el("div", {}, el("dt", {}, "STO"), el("dd", {}, `${valt.sto.min}–${valt.sto.max} (normalt ${valt.sto.normal})`)))),
@@ -501,7 +501,52 @@ function stegAlder() {
 
 const fmtMod = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : "0");
 
+// Steg 3: yrket väljs med kort som rasen i steg 1. Yrkesfärdigheterna visas bara; valen inom dem görs i steg 4.
 function stegYrke() {
+  const yrke = yrkeAv(R, rp.yrke);
+  const kort = R.yrken.lista.map((y) => el("button", {
+    type: "button", class: "valkort yrkeskort" + (y.id === rp.yrke ? " valt" : ""), "aria-pressed": y.id === rp.yrke ? "true" : "false", "data-yrke": y.id,
+    onclick: () => {
+      if (y.id === rp.yrke) return;
+      rp.yrke = y.id; rp.yrkesval = {}; rp.valfri = ""; rp.hantverkBonus = ""; uppdatera();
+    },
+  }, el("span", { class: "valkort-namn" }, y.namn)));
+  const namn = (x) => fardighetAv(R, x)?.namn ?? x;
+  const punkt = (text, id, val) => el("li", {}, text, id ? fardighetsInfo(id) : null, val ? el("span", { class: "sida" }, ` (${val})`) : null);
+  const punkter = yrke.fardigheter.map((post, i) => {
+    const val = rp.yrkesval[i];
+    if (typeof post === "string") return punkt(namn(post), post, typeof val === "string" && !paborjad(val) ? val : null);
+    if (post.valEn) {
+      const text = post.valEn.map((x) => (typeof x === "string" ? namn(x) : `${namn(x.fardighet)} (${x.antal})`)).join(" eller ");
+      return punkt(text, null, val?.id ? [namn(val.id), val.sub].filter(Boolean).join(": ") : null);
+    }
+    if (post.antal === null) return punkt(`${namn(post.fardighet)} (alla)`, post.fardighet);
+    const valda = [].concat(val ?? []);
+    post.maste?.forEach((m, j) => { valda[j] = m; });
+    return punkt(`${namn(post.fardighet)} (${post.antal})`, post.fardighet, valda.filter((v) => v && !paborjad(v)).join(", ") || null);
+  });
+  if (yrke.valfri) punkter.push(punkt("En valfri färdighet", null, rp.valfri && !paborjad(rp.valfri) ? namn(rp.valfri.split(":")[0]) + (rp.valfri.split(":")[1] ? `: ${rp.valfri.split(":")[1]}` : "") : null));
+  if (yrke.automatiska.length) punkter.push(punkt("Känna magi och Kunskap om magi, automatiskt med samma FV som magiskolan (s. 62, 64)", null));
+  const bonus = yrke.startbonus?.find((b) => b.valEttAv);
+  return [
+    el("div", { class: "valkort-rutnat liten fyra" }, kort),
+    el("div", { class: "valinfo" },
+      el("h3", { class: "valrubrik" }, yrke.namn),
+      yrke.stamning ? el("p", { class: "vallore" }, yrke.stamning) : null,
+      yrke.beskrivning ? el("p", { class: "yrkestext" }, yrke.beskrivning, el("span", { class: "sida" }, ` (s. ${yrke.sida})`)) : null,
+      el("dl", { class: "valdata bred" },
+        el("div", {}, el("dt", {}, "Yrkesförmåga"), el("dd", {}, yrke.yrkesformaga)))),
+    el("div", { class: "rutor" },
+      el("div", {}, el("h4", {}, "Yrkesfärdigheter"),
+        el("ul", { class: "punkter" }, punkter),
+        el("p", { class: "hjalp" }, "Siffran inom parentes är hur många du väljer. ",
+          bonus ? `Ett av hantverken får FV ${bonus.bc} gratis. ` : "",
+          "Vilka vapen, språk, hantverk och andra delval det blir väljer du i steg 4, där du också kan köpa fler yrkesfärdigheter."))),
+  ];
+}
+
+// Valen inom yrkets färdigheter (vapen, språk, hantverk, alternativ och den valfria färdigheten). Visas i steg 4.
+function yrketsVal() {
   const yrke = yrkeAv(R, rp.yrke);
   const rader = yrke.fardigheter.map((post, i) => {
     const id = `yrke-${i}`;
@@ -549,12 +594,7 @@ function stegYrke() {
   }
   const yrkesrader = rader;
   return [
-    falt("Yrke", valLista("yrke", rp.yrke, R.yrken.lista.map((y) => [y.id, y.namn]), (v) => {
-      if (!v) return; rp.yrke = v; rp.yrkesval = {}; rp.valfri = ""; rp.hantverkBonus = ""; uppdatera();
-    })),
-    el("p", { class: "yrkesformaga" }, el("strong", {}, "Yrkesförmåga: "), yrke.yrkesformaga, el("span", { class: "sida" }, ` s. ${yrke.sida}`)),
-    yrke.extraBP ? el("p", { class: "notis" }, `Paladinen får ${yrke.extraBP.antal} extra BP. Enligt boken bestämmer ${yrke.extraBP.styrsAv} hur de används.`) : null,
-    el("h3", {}, "Yrkesfärdigheter"),
+    el("h3", {}, `Yrkesfärdigheter för ${yrke.namn.toLowerCase()}`),
     el("ul", { class: "yrkeslista" }, yrkesrader,
       yrke.valfri ? el("li", {}, el("span", { class: "fnamn" }, "En valfri färdighet"),
         rp.valfri ? kortBeskrivning(rp.valfri.split(":")[0]) : null,
@@ -604,8 +644,10 @@ function stegExtra(res) {
   const nasta = extraPriser([...lista, nyExtra || "x"]).at(-1);
   const harRedan = new Set([...yrkesNycklar(), ...lista]);
   return [
+    ...yrketsVal(),
+    el("h3", {}, "Fler yrkesfärdigheter"),
     el("p", {}, `Den första extra yrkesfärdigheten kostar ${k.forsta} BP, den andra ${k.andra} BP och varje därefter ${k.darefter} BP. En magiskola kostar ${k.magiskola} BP och kräver ett lyckat magiförmågeslag (1T100 högst (INT+PSY)/2, s. 106). Slaget görs i steg 6, när INT och PSY är bestämda.`),
-    el("h3", {}, "Dina yrkesfärdigheter"),
+    el("h4", {}, "Dina yrkesfärdigheter"),
     el("div", { class: "tabellram" }, el("table", { class: "tabell fardighetstabell yrkestabell" },
       el("thead", {}, el("tr", {}, el("th", {}, "Färdighet"), el("th", {}, "Grundeg."), el("th", {}, "Från"), el("th", { class: "num" }, "BP", info("BP")))),
       el("tbody", {},
@@ -615,7 +657,7 @@ function stegExtra(res) {
           return rad(n, !f ? n || "Tom rad" : paborjad(n) ? `${f.namn} (inte färdigvald)` : namnFor(R, f, n), f?.grundegenskap);
         })))),
     lista.some((n) => n.startsWith("stridskonster")) ? stridskonstInfo() : null,
-    el("h3", {}, "Lägg till en extra yrkesfärdighet"),
+    el("h4", {}, "Lägg till en extra yrkesfärdighet"),
     el("div", { class: "rad" },
       // Färdigheter som rollpersonen redan har som yrkesfärdighet visas inte; för dem med delval spärras de delval som redan finns
       fardighetsVal("ny-extra", nyExtra, (v) => { nyExtra = v; rita(); }, (f) => magiMojlig(f) && (f.perVal || !harRedan.has(f.id)), { yrke: true }),
@@ -1372,16 +1414,16 @@ function saknasPerSteg(res) {
   yrke.fardigheter.forEach((post, i) => {
     const val = rp.yrkesval[i];
     if (typeof post === "string") {
-      if (fardighetAv(R, post)?.perVal && !klar(val)) lista.yrke.push(`${fardighetAv(R, post).namn}: vad den gäller`);
+      if (fardighetAv(R, post)?.perVal && !klar(val)) lista.extra.push(`${fardighetAv(R, post).namn}: vad den gäller`);
     } else if (post.valEn) {
-      if (!val?.id || (fardighetAv(R, val.id).perVal && !klar(val.sub))) lista.yrke.push(post.valEn.map((x) => fardighetAv(R, x.fardighet ?? x).namn).join(" eller "));
+      if (!val?.id || (fardighetAv(R, val.id).perVal && !klar(val.sub))) lista.extra.push(post.valEn.map((x) => fardighetAv(R, x.fardighet ?? x).namn).join(" eller "));
     } else if (post.antal !== null) {
       const gjorda = (post.maste?.length ?? 0) + [].concat(val ?? []).slice(post.maste?.length ?? 0).filter(klar).length;
-      if (gjorda < post.antal) lista.yrke.push(`${fardighetAv(R, post.fardighet).namn}: ${post.antal - gjorda} val kvar`);
+      if (gjorda < post.antal) lista.extra.push(`${fardighetAv(R, post.fardighet).namn}: ${post.antal - gjorda} val kvar`);
     }
   });
-  if (yrke.valfri && !klar(rp.valfri)) lista.yrke.push("Den valfria yrkesfärdigheten");
-  if (yrke.startbonus?.some((b) => b.valEttAv) && !yrkesNycklar().includes(rp.hantverkBonus)) lista.yrke.push("Hantverket som får gratis FV");
+  if (yrke.valfri && !klar(rp.valfri)) lista.extra.push("Den valfria yrkesfärdigheten");
+  if (yrke.startbonus?.some((b) => b.valEttAv) && !yrkesNycklar().includes(rp.hantverkBonus)) lista.extra.push("Hantverket som får gratis FV");
   if (rp.extraYrkesfardigheter.some((k) => !klar(k))) lista.extra.push("En extra yrkesfärdighet är inte färdigvald (välj klart eller ta bort den)");
   if (!rp.namn.trim()) lista.kon.push("Namn");
   if (!rp.kon) lista.kon.push("Kön");
