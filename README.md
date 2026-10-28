@@ -14,6 +14,10 @@ Lägg till `?dev` i adressen (till exempel http://localhost:8000/?dev) för att 
 
 Rollpersonerna byggs med samma regler och automatik som stegen (`utvecklarlage.js`) utifrån önskemålen i `testrollpersoner.js`, så de håller sig giltiga när reglerna ändras. Går ett önskemål inte längre väljs något annat tillåtet och en notis säger till.
 
+**Autofyll** (i menyn eller knappen Auto i poängloggen) fyller i stegets obligatoriska val så fort steget visas: tomma listor och textfält, den särskilda förmågans val, startpaketets vapen och alla tärningsslag. Ras och yrke väljer man själv, och knapparna Föreslå värden och Fördela EP används aldrig. Bara tomma val fylls i. Efter Lås upp slås slaget inte om automatiskt förrän man lämnar steget, så att BP kan ändras först (`autofyll.js`).
+
+**Poängloggen** nere till vänster visar varje post som ger eller tar BP, EP eller pengar: steg, vad som hände, ändringen och vad som är kvar efter raden. Den räknas fram på nytt ur rollpersonen vid varje ändring, så ett val som byts ut försvinner ur loggen. BP, EP och Guld kan filtreras med kryssrutor, loggen kan dras högre i överkanten (aldrig lägre än standardstorleken), fällas ihop och visas i helskärm, och raderna kan kopieras som text. Stämmer loggens summa inte med det som visas på sidan säger den till (`poanglogg.js`).
+
 ## Kör lokalt
 
 Sidan är helt statisk men läser reglerna med `fetch`, så den behöver en enkel webbserver:
@@ -32,7 +36,7 @@ Slå på GitHub Pages för grenen `main` (rotkatalogen) under Settings → Pages
 
 - `index.html`, `app.js`: gränssnittet.
 - `formular.js`, `formular.css`: rollformuläret för utskrift.
-- `utvecklarlage.js`, `testrollpersoner.js`: utvecklarläget med testrollpersoner.
+- `utvecklarlage.js`, `testrollpersoner.js`, `autofyll.js`, `poanglogg.js`: utvecklarläget med testrollpersoner, autofyll och poänglogg.
 - `sparformat.js`: filformatet för sparade rollpersoner (version 1).
 - `regelmotor.js`: all regellogik (BP, EP, grundegenskaper, härledda värden, färdigheter). Har inga beroenden.
 - `regler/*.json`: reglerna som data, med sidhänvisningar. `husregler.json` beskriver hur oklara regler har tolkats.
