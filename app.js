@@ -1515,7 +1515,13 @@ function visaNotis(text) {
 }
 
 // ------------------------------------------------------------ ritning
+const efterRita = []; // utvecklarläget följer varje ändring (poängloggen och den automatiska ifyllningen)
 function rita() {
+  ritaVy();
+  for (const fn of efterRita) fn();
+}
+
+function ritaVy() {
   // Grundvärdena sätts först när steg 6 öppnas: alla börjar på 10 och kostar BP därifrån
   if (aktivtSteg === "egenskaper" && !rp.grundvarden) {
     rp.grundvarden = STANDARDVARDEN();
@@ -1764,6 +1770,9 @@ function startaUtvecklarlage() {
       if (rp.namn === ny.namn) { aktivtSteg = steg; vy = "steg"; nySekundar = ""; magiByte = null; utrustningsFilter = ""; rita(); }
     },
     visaFormular,
+    // För poängloggen och den automatiska ifyllningen: läget just nu och en krok som körs efter varje ritning
+    nu: () => rp, uppdatera, rita, saknasPerSteg, synligaSteg, motorIndata, efterRita: (fn) => { efterRita.push(fn); fn(); },
+    lage: () => ({ vy, aktivtSteg, rullar, magiByte, provar }),
     tillatOmslag() { omslag = true; rita(); },
     stangAv() { try { localStorage.setItem("chronopia-dev", "nej"); } catch { /* frivilligt */ } },
   }));
