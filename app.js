@@ -599,6 +599,7 @@ function yrketsVal() {
       yrke.valfri ? el("li", {}, el("span", { class: "fnamn" }, "En valfri färdighet"),
         rp.valfri ? kortBeskrivning(rp.valfri.split(":")[0]) : null,
         fardighetsVal("valfri", rp.valfri, (v) => { rp.valfri = v; uppdatera(); }, (f) => f.typ !== "primar" && magiMojlig(f), { yrke: true }),
+        magiInfo(rp.valfri),
         rp.valfri?.startsWith("stridskonster") ? stridskonstInfo() : null,
         rp.valfri ? null : el("p", { class: "hjalp" }, "Vilken sekundär färdighet som helst, som blir en yrkesfärdighet. Primära färdigheter har rollpersonen redan. En magiskola kräver ett lyckat magiförmågeslag. Det slås när du går vidare från steg 6, när INT och PSY är bestämda.")) : null),
     yrke.automatiska.length ? el("p", { class: "hjalp" }, "Får automatiskt Känna magi och Kunskap om magi med samma FV som i sin magiskola (s. 62, 64).") : null,
@@ -670,6 +671,7 @@ function stegExtra(res) {
         nyExtra = "";
         uppdatera();
       } }, "Lägg till")),
+    magiInfo(nyExtra),
     valdBeskrivning(nyExtra),
     nyExtra.startsWith("stridskonster") ? stridskonstInfo() : null,
     el("p", { class: res.bp.kvar < nasta ? "hjalp felrad" : "hjalp" },
@@ -942,6 +944,14 @@ let magiModal = null; // { fas: "in" | "redo" | "rullar" | "klar", vidare, tarni
 const reduceraRorelse = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 const magiBehovs = (res) => res.magiformaga.behovs && rp.magiformaga?.slag == null && !yrkeAv(R, rp.yrke).magiker;
 const magiMisslyckat = (res) => res.magiformaga.behovs && rp.magiformaga?.slag != null && !res.magiformaga.lyckat && !yrkeAv(R, rp.yrke).magiker;
+
+// I steg 4 slås magiförmågeslaget inte direkt (INT och PSY är inte bestämda än), så en vald magiskola får en upplysning
+function magiInfo(nyckel) {
+  if (fardighetAv(R, (nyckel || "x").split(":")[0])?.typ !== "magiskola" || yrkeAv(R, rp.yrke).magiker || rp.magiformaga?.slag != null) return null;
+  return el("div", { class: "varning magi-info", role: "note" },
+    el("strong", {}, "Magiförmågeslag. "),
+    "En magiskola kräver ett lyckat magiförmågeslag: 1T100 som måste bli högst (INT+PSY)/2 (s. 106). Slaget görs när du går vidare från steg 6, Grundegenskaper, när INT och PSY är bestämda. Misslyckas det får du välja en annan färdighet i stället.");
+}
 
 // Öppnar modalen. `vidare` är steget som visas när ett lyckat slag stängs (null = stanna kvar).
 function oppnaMagiModal(vidare = null) {
