@@ -193,7 +193,9 @@
 @media print {
   @page { size: A4; margin: 0; }
   html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
-  body:has(.rf-vy:not([hidden])) > *:not(.rf-vy) { display: none !important; }
+  body:has(.rf-vy:not([hidden])) > *:not(.rf-vy), body.rf-direkt > *:not(.rf-vy) { display: none !important; }
+  /* Utskrift direkt från steg 14: vyn är dold på skärmen men visas på papperet */
+  body.rf-direkt .rf-vy[hidden] { display: block !important; }
   .rf-vy .rf-verktyg, .rf-vy .rf-ofardig { display: none !important; }
   .rf-sidor { display: block; padding: 0; gap: 0; overflow: visible; }
   .rf-sida { box-shadow: none; break-after: page; height: 296.5mm; }
