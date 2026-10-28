@@ -45,7 +45,9 @@
         "kanna-magi",
         "kunskap-om-magi"
       ],
-      "magiker": true
+      "magiker": true,
+      "stamning": "Djuren och växterna har ett språk, och skogens andar svarar den som kan tala det.",
+      "beskrivning": "Magiker som drar sin kraft ur den levande naturen. Animisten helar djur och människor, känner örter och gifter och följer de mönster som finns i allt som växer och lever."
     },
     {
       "id": "bard",
@@ -88,7 +90,9 @@
         }
       ],
       "valfri": true,
-      "automatiska": []
+      "automatiska": [],
+      "stamning": "Ingen hör ett rykte före barden, och ingen berättar det bättre.",
+      "beskrivning": "Sångare, berättare och nyhetsbärare som rör sig lika lätt i fina salonger som på stadens krogar. Barden lever på sin röst och sitt instrument, och på allt som andra viskar om."
     },
     {
       "id": "elementarmagiker",
@@ -134,7 +138,9 @@
         "kanna-magi",
         "kunskap-om-magi"
       ],
-      "magiker": true
+      "magiker": true,
+      "stamning": "Eld, vatten, luft och jord: den som kan tämja dem kan tämja allt.",
+      "beskrivning": "Magiker som behärskar elementens krafter. Elementarmagikern studerar alkemi eller stjärnornas gång och lär sig kanalisera magin, och elementens besvärjelser är bland de mest förödande som finns."
     },
     {
       "id": "gladiator",
@@ -152,7 +158,9 @@
         }
       ],
       "valfri": true,
-      "automatiska": []
+      "automatiska": [],
+      "stamning": "Sanden på arenan har druckit blodet från bättre krigare än du.",
+      "beskrivning": "Yrkeskämpe som slåss inför publik på Chronopias arenor. Gladiatorn lever för duellen man mot man och behärskar flera vapen, avväpningar och egna stridskonster."
     },
     {
       "id": "gycklare",
@@ -173,7 +181,9 @@
         }
       ],
       "valfri": true,
-      "automatiska": []
+      "automatiska": [],
+      "stamning": "Ett skratt, en volt och en hatt som skickas runt: mer behövs inte för att överleva.",
+      "beskrivning": "Akrobat, dansare, buktalare och skådespelare som uppträder på gator och torg. En gycklare går aldrig hungrig, och fingrarna är lika snabba med ett lås som med bollarna i luften."
     },
     {
       "id": "hantverkare",
@@ -220,7 +230,9 @@
           "bc": 10,
           "valEttAv": "yrkesHantverk"
         }
-      ]
+      ],
+      "stamning": "Det som byggs med händerna står kvar när orden har glömts.",
+      "beskrivning": "Yrkeskunnig person som behärskar tre hantverk och vet vad varor och arbete är värda. Hantverkaren kan räkna, pruta och hålla ordning på papper och tillstånd."
     },
     {
       "id": "krigare",
@@ -246,7 +258,9 @@
         }
       ],
       "valfri": true,
-      "automatiska": []
+      "automatiska": [],
+      "stamning": "Svärdet gör ingen skillnad på adel och tiggare, bara på snabb och långsam.",
+      "beskrivning": "Legosoldat, vakt eller äventyrare som lever på sina vapen. Krigaren hugger först, kan slåss med två vapen och vet vem i undre världen som tar emot en muta."
     },
     {
       "id": "kopman",
@@ -291,7 +305,9 @@
       "slagbonus": {
         "startkapital": 5
       },
-      "kapitaltak": 15
+      "kapitaltak": 15,
+      "stamning": "Allt har ett pris, och köpmannen vet alltid vilket.",
+      "beskrivning": "Handelsman som reser mellan städer och folk och känner till deras seder, vägar och myndigheter. Köpmannen pratar sig till goda affärer och börjar med mer pengar än de flesta."
     },
     {
       "id": "lard-man",
@@ -317,7 +333,9 @@
         }
       ],
       "valfri": true,
-      "automatiska": []
+      "automatiska": [],
+      "stamning": "Kunskap är den enda skatt som ingen tjuv kan ta.",
+      "beskrivning": "Forskare, skrivare och vetenskapsman som läser och talar många språk. Den lärde mannen känner historien, geografin och folken, och all slags lärdom räknas som yrkesfärdigheter."
     },
     {
       "id": "lonnmordare",
@@ -343,7 +361,9 @@
         }
       ],
       "valfri": true,
-      "automatiska": []
+      "automatiska": [],
+      "stamning": "Den du aldrig ser komma är den som dödar dig.",
+      "beskrivning": "Yrkesmördare som arbetar i skuggorna. Lönnmördaren smyger sig på sitt offer, hanterar gifter, lås och fällor och kan döda med ett enda väl placerat hugg."
     },
     {
       "id": "mentalist",
@@ -383,7 +403,9 @@
         "kanna-magi",
         "kunskap-om-magi"
       ],
-      "magiker": true
+      "magiker": true,
+      "stamning": "Själen är ett rum med många dörrar, och mentalisten har nycklarna.",
+      "beskrivning": "Magiker som behärskar sinnets krafter. Mentalisten läser och styr andras tankar, hypnotiserar och använder droger och örter för att vidga medvetandet."
     },
     {
       "id": "munk",
@@ -425,7 +447,9 @@
         }
       ],
       "valfri": true,
-      "automatiska": []
+      "automatiska": [],
+      "stamning": "Stillhet i sinnet ger styrka i handen.",
+      "beskrivning": "Medlem av en religiös orden, kunnig i tro, läkekonst och meditation. Genom att samla sig en stund kan munken prestera långt mer än vanligt, vad uppgiften än är."
     },
     {
       "id": "paladin",
@@ -461,7 +485,9 @@
       "extraBP": {
         "antal": 50,
         "styrsAv": "kulten (SL)"
-      }
+      },
+      "stamning": "Kulten befaller, och paladinen lyder, med svärd och med liv.",
+      "beskrivning": "Krigare i en kults tjänst, utrustad och utbildad av sin orden. Paladinen får mer resurser än andra från början, men kulten bestämmer hur de används och paladinen måste lyda order."
     },
     {
       "id": "resenar",
@@ -512,7 +538,9 @@
         }
       ],
       "valfri": true,
-      "automatiska": []
+      "automatiska": [],
+      "stamning": "Vägen är resenärens hem, och horisonten det enda mål som räknas.",
+      "beskrivning": "Upptäcktsresande, sjöfarare eller vagabond som har sett mer av världen än de flesta. Resenären hittar vägen, klarar sig i vildmarken och står emot både väder och elementens magi."
     },
     {
       "id": "tjuv",
@@ -533,7 +561,9 @@
         }
       ],
       "valfri": true,
-      "automatiska": []
+      "automatiska": [],
+      "stamning": "Det som inte är fastspikat har bara inte bytt ägare än.",
+      "beskrivning": "Inbrottstjuv, ficktjuv eller bedragare med fäste i stadens undre värld. När det verkligen gäller kan tjuven samla sig och lyckas med det nästan omöjliga."
     },
     {
       "id": "arkemagiker",
@@ -571,7 +601,9 @@
         "kunskap-om-magi"
       ],
       "magiker": true,
-      "skolTak": "INT"
+      "skolTak": "INT",
+      "stamning": "Tre skolor, en vilja: ärkemagikern böjer sig för ingen magi.",
+      "beskrivning": "Den mest lärde av magiker, som studerar animism, elementarmagi och mentalism på en gång. Bredden har ett pris: färdigheten i en magiskola kan aldrig bli högre än intelligensen."
     }
   ],
   "extraYrkesfardigheter": {

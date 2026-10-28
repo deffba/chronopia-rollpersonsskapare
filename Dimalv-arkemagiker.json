@@ -1,0 +1,109 @@
+{
+  "format": "chronopia-rollperson",
+  "version": 2,
+  "sparad": "2026-10-28T21:57:17.431Z",
+  "rollperson": {
+    "namn": "Dimalv arkemagiker",
+    "spelare": "",
+    "kon": "Man",
+    "ras": "dimalv",
+    "alder": 21,
+    "yrke": "arkemagiker",
+    "yrkesval": {
+      "1": {
+        "id": "drogkunskap"
+      },
+      "3": [
+        "Test6"
+      ],
+      "4": [
+        "dvargiska",
+        "hoglandska"
+      ],
+      "7": [
+        "dvargiska",
+        "orchiska"
+      ]
+    },
+    "valfri": "",
+    "extraYrkesfardigheter": [],
+    "rasval": [],
+    "grundvarden": {
+      "INT": 10,
+      "PSY": 10,
+      "SMI": 9,
+      "FYS": 8,
+      "KAR": 7,
+      "STY": 6
+    },
+    "stoSteg": 0,
+    "sarskildaFormagor": {
+      "bp": 5,
+      "slag": 14,
+      "val": [],
+      "formaga": "Gourmand"
+    },
+    "svardshand": {
+      "bp": 0,
+      "slag": 5
+    },
+    "socialtStand": {
+      "bp": 0,
+      "slag": 6
+    },
+    "startkapital": {
+      "bp": 0,
+      "slag": 2
+    },
+    "sekundara": [],
+    "fardigheter": {
+      "animism": 13,
+      "elementarmagi": 13,
+      "mentalism": 13,
+      "drogkunskap": 13,
+      "finna-dolda-ting": 6,
+      "upptacka-fara": 6,
+      "forsta-hjalpen": 8,
+      "gomma-sig": 8,
+      "hoppa": 8,
+      "klattra": 7,
+      "lyssna": 7,
+      "rida": 7,
+      "smyga": 7,
+      "spara": 7,
+      "stjala-foremal": 7,
+      "vardera": 7,
+      "bluffa": 2,
+      "kopsla": 2,
+      "sjunga": 2,
+      "overtala": 2
+    },
+    "magiformaga": {
+      "slag": null
+    },
+    "stridskonstTekniker": {},
+    "stridskonstFardig": {},
+    "besvarjelser": {},
+    "utrustning": {
+      "Arbalestlod (10 st)": 1
+    },
+    "startpaket": {
+      "valt": true,
+      "vapen": "Knogjärn el. stålhätta"
+    },
+    "anteckningar": "",
+    "spel": {
+      "spelledare": "",
+      "hjaltepoang": 0,
+      "erf": {},
+      "pengar": null,
+      "utrustning": [],
+      "borttaget": {},
+      "anteckningar": ""
+    },
+    "utveckling": {
+      "logg": []
+    },
+    "hantverkBonus": ""
+  }
+}
