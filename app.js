@@ -100,6 +100,7 @@ let nySekundar = ""; // påbörjat val av ny sekundär färdighet
 let provar = false;
 let magiByte = null; // platsen där en magiskola byts ut efter ett misslyckat magiförmågeslag
 let autoAnvand = { egenskaper: false, fardigheter: false }; // Återställ visas bara efter en automatisk fördelning
+let spelSynlig = false; // spelmötesdelen visas tills vidare bara i utvecklarläget
 let ritatSteg = null; // steget som visades senast; byts det skrollas sidan upp
 let sparadVidStart = null; // rollpersonen från förra besöket; sidan börjar ändå alltid med en ny
 let vy = "steg"; // "steg", "spel" (spelmöten och förbättring) eller "formular" (rollformuläret för utskrift)
@@ -1475,8 +1476,8 @@ function stegExport(res) {
       el("button", { type: "button", class: "knapp primar", onclick: visaFormular }, "Visa rollformuläret"),
       el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
       el("button", { type: "button", class: "knapp", onclick: () => kopiera(text) }, "Kopiera JSON")),
-    el("p", {}, "När rollpersonen har spelats för du in erfarenhet, hjältepoäng, pengar och utrustning efter varje spelmöte, och förbättrar henne när erfarenheten räcker. Efter det första spelmötet går skapandet inte längre att ändra."),
-    el("div", { class: "rad" }, el("button", { type: "button", class: "knapp", id: "till-spel", onclick: oppnaSpel }, "Till spelmötena →")),
+    spelSynlig && el("p", {}, "När rollpersonen har spelats för du in erfarenhet, hjältepoäng, pengar och utrustning efter varje spelmöte, och förbättrar henne när erfarenheten räcker. Efter det första spelmötet går skapandet inte längre att ändra."),
+    spelSynlig && el("div", { class: "rad" }, el("button", { type: "button", class: "knapp", id: "till-spel", onclick: oppnaSpel }, "Till spelmötena →")),
     el("details", { class: "fakta" }, el("summary", {}, "Visa JSON"),
       el("textarea", { id: "exportruta", rows: 12, readonly: true, "aria-label": "Rollpersonen som JSON" }, text)),
   ];
@@ -1820,8 +1821,8 @@ async function start() {
   document.addEventListener("focusin", (e) => { const k = e.target.closest?.(".info"); if (k) visa(k); else dolj(); });
   document.addEventListener("click", (e) => { const k = e.target.closest?.(".info"); if (k) { e.stopPropagation(); visa(k); } else dolj(); }, true);
   window.addEventListener("scroll", dolj, { passive: true });
-  rita();
   startaUtvecklarlage();
+  rita();
 }
 
 // ------------------------------------------------------------ utvecklarläge (utvecklarlage.js)
@@ -1834,6 +1835,8 @@ function startaUtvecklarlage() {
     pa = localStorage.getItem("chronopia-dev") === "ja";
   } catch { pa = param !== null && param !== "av"; }
   if (!pa) return;
+  spelSynlig = true;
+  $("#visa-spel").hidden = false;
   import("./utvecklarlage.js").then((m) => m.starta({
     R, STEG, el, TOM, tillFil, visaNotis, yrkesNycklar, saknas, rakna,
     // Kör fn med en tillfällig rollperson och ger tillbaka den; spelarens rollperson rörs inte
