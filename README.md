@@ -10,7 +10,7 @@ Rollpersonen sparas som en JSON-fil med formatnamn och versionsnummer (`sparform
 
 ## Spelmöten och förbättring
 
-Under menyn Spelmöten och förbättring (eller sista steget) förs det in som händer efter skapandet, enligt kapitel 4 (s. 73–76):
+Tills vidare syns delen bara i utvecklarläget. Under menyn Spelmöten och förbättring (eller sista steget) förs det in som händer efter skapandet, enligt kapitel 4 (s. 73–76):
 
 - **Spelmöte:** EP per färdighet från äventyret (inte kategori B), bonuspoäng efter ett avslutat äventyr (högst 10), slaget för höjd PSY efter en vunnen kamp PSY mot PSY, hjältepoäng, pengar, ny och förlorad utrustning och anteckningar.
 - **Träning:** ensam, med lärare eller privatlärare, med slagen per vecka, tiden och kostnaden. Nya färdigheter och besvärjelser kan läras.
@@ -24,6 +24,10 @@ Varje post kontrolleras mot reglerna innan den förs in. Efter första posten ä
 Lägg till `?dev` i adressen (till exempel http://localhost:8000/?dev) för att få testrollpersoner i menyn: en människa som krigare, en högländare som gladiator och en dimalv som elementarmagiker. Ett klick ger en färdig, tillåten rollperson, öppnad i valfritt steg eller direkt i rollformuläret, och med osparade erf om man vill prova förbättringen. Bredvid gjorda tärningsslag finns knappen Lås upp, som tar bort slaget så att det kan slås om. Valet sparas i webbläsaren; `?dev=av` eller knappen Stäng av slår av det igen. Vanliga spelare ser ingenting av det.
 
 Rollpersonerna byggs med samma regler och automatik som stegen (`utvecklarlage.js`) utifrån önskemålen i `testrollpersoner.js`, så de håller sig giltiga när reglerna ändras. Går ett önskemål inte längre väljs något annat tillåtet och en notis säger till.
+
+**Autofyll** (i menyn eller knappen Auto i poängloggen) fyller i stegets obligatoriska val så fort steget visas: tomma listor och textfält, den särskilda förmågans val, startpaketets vapen och alla tärningsslag. Ras och yrke väljer man själv, och knapparna Föreslå värden och Fördela EP används aldrig. Bara tomma val fylls i. Efter Lås upp slås slaget inte om automatiskt förrän man lämnar steget, så att BP kan ändras först (`autofyll.js`).
+
+**Poängloggen** nere till vänster visar varje post som ger eller tar BP, EP eller pengar: steg, vad som hände, ändringen och vad som är kvar efter raden. Den räknas fram på nytt ur rollpersonen vid varje ändring, så ett val som byts ut försvinner ur loggen. BP, EP och Guld kan filtreras med kryssrutor, loggen kan dras högre i överkanten (aldrig lägre än standardstorleken), fällas ihop och visas i helskärm, och raderna kan kopieras som text. Stämmer loggens summa inte med det som visas på sidan säger den till (`poanglogg.js`).
 
 ## Kör lokalt
 
@@ -43,7 +47,7 @@ Slå på GitHub Pages för grenen `main` (rotkatalogen) under Settings → Pages
 
 - `index.html`, `app.js`: gränssnittet.
 - `formular.js`, `formular.css`: rollformuläret för utskrift.
-- `utvecklarlage.js`, `testrollpersoner.js`: utvecklarläget med testrollpersoner.
+- `utvecklarlage.js`, `testrollpersoner.js`, `autofyll.js`, `poanglogg.js`: utvecklarläget med testrollpersoner, autofyll och poänglogg.
 - `sparformat.js`: filformatet för sparade rollpersoner (version 2).
 - `utveckling.js`: regellogiken efter skapandet. Räknar fram den utvecklade rollpersonen ur loggen och kontrollerar varje post.
 - `spelmote.js`: gränssnittet för spelmöten, träning, förbättring och logg.

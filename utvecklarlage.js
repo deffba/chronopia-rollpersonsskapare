@@ -7,6 +7,8 @@
 // annat tillåtet i stället, och det sägs till i en notis.
 import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, varukatalog, tvahandsvapen, besvarjelsePris } from "./regelmotor.js";
 import { TESTROLLPERSONER } from "./testrollpersoner.js";
+import { startaPoanglogg } from "./poanglogg.js";
+import { startaAutofyll } from "./autofyll.js";
 
 // Var en inläst testrollperson öppnas, utöver stegen
 const VYER = [
@@ -228,6 +230,18 @@ export function starta(api) {
   document.body.append(el("div", { class: "dev-markering", "aria-hidden": "true" }, "UTVECKLARLÄGE"));
   api.tillatOmslag(); // knappen Lås upp bredvid gjorda tärningsslag
 
+  // Autofyll och poänglogg (autofyll.js, poanglogg.js). Växlarna finns både i menyn och i loggen.
+  const autofyll = startaAutofyll(api, autoDelval);
+  const visaAutofyll = () => {
+    const dev = document.querySelector("#dev-autofyll");
+    if (dev) dev.checked = autofyll.pa();
+    document.querySelector("#pl-autofyll")?.setAttribute("aria-pressed", String(autofyll.pa()));
+  };
+  const autofyllKnapp = el("button", { type: "button", class: "pl-knapp pl-auto", id: "pl-autofyll", "aria-pressed": String(autofyll.pa()),
+    title: "Autofyll: stegets obligatoriska val och slag görs automatiskt. Ras, yrke, BP och EP väljer du själv.",
+    onclick: () => { autofyll.satt(!autofyll.pa()); visaAutofyll(); } }, "Auto");
+  const logg = startaPoanglogg(api, { autofyllKnapp });
+
   let lage = "export";
   let erf = false;
   const hamta = (recept) => {
@@ -278,6 +292,10 @@ export function starta(api) {
           `${i + 1}. ${st.namn}${st.id === "besvarjelser" ? " (bara magiker)" : ""}`))),
         el("optgroup", { label: "Annat" }, VYER.filter(([v]) => v !== "spel" || document.querySelector("#visa-spel"))
           .map(([v, t]) => el("option", { value: v, selected: v === lage }, t))))),
+    el("label", { class: "vaxel" }, el("input", { type: "checkbox", id: "dev-autofyll", checked: autofyll.pa(),
+      onchange: (e) => { autofyll.satt(e.target.checked); visaAutofyll(); } }), el("span", {}, "Autofyll: fyll i valen och slå åt mig")),
+    el("label", { class: "vaxel" }, el("input", { type: "checkbox", id: "dev-logg", checked: logg.synlig(), onchange: (e) => logg.visa(e.target.checked) }),
+      el("span", {}, "Visa poänglogg")),
     el("label", { class: "vaxel" }, el("input", { type: "checkbox", id: "dev-erf", onchange: (e) => { erf = e.target.checked; } }),
       el("span", {}, "Med erf att förbättra")),
     el("div", { class: "dev-rad" },
