@@ -81,7 +81,7 @@ const LARDOMSFORSLAG = ["Kunskap om magi", "Kunskap om religion", "Kunskap om de
 const SKOLOR = [["animism", "Animism"], ["elementarmagi", "Elementarmagi"], ["mentalism", "Mentalism"]];
 
 const TOM = () => ({
-  namn: "", spelare: "", kon: "", ras: "", alder: 21, yrke: "krigare", yrkesval: {}, valfri: "",
+  namn: "", spelare: "", kon: "", ras: "", alder: 21, yrke: "", yrkesval: {}, valfri: "",
   extraYrkesfardigheter: [], rasval: [], grundvarden: null, // null tills steg 6 öppnas
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
@@ -109,6 +109,8 @@ let blacksnal = false; // rollformuläret utan färgade ytor
 let medRegler = false; // rollformuläret med sidorna Färdigheterna i korthet
 // Innan en ras är vald räknar motorn som för en människa, men ingen ras visas som vald
 const rasId = () => rp.ras || "manniska";
+// Innan ett yrke är valt räknar motorn som för en krigare (som saknar bonusar), men inget yrke visas som valt och det ger inga yrkesfärdigheter
+const yrkeId = () => rp.yrke || "krigare";
 
 const $ = (sel, rot = document) => rot.querySelector(sel);
 const el = (tagg, attr = {}, ...barn) => {
@@ -163,7 +165,8 @@ function delval(f) {
 }
 
 function yrkesNycklar() {
-  const yrke = yrkeAv(R, rp.yrke);
+  if (!rp.yrke) return [];
+  const yrke = yrkeAv(R, yrkeId());
   const nycklar = [];
   yrke.fardigheter.forEach((post, i) => {
     const val = rp.yrkesval[i];
@@ -196,7 +199,7 @@ function modersmal() {
 
 function allaNycklar(yrkesfardigheter) {
   const ras = rasAv(R, rasId());
-  const yrke = yrkeAv(R, rp.yrke);
+  const yrke = yrkeAv(R, yrkeId());
   const m = modersmal();
   const mangd = new Set();
   for (const f of R.fardigheter.lista) if (f.typ === "primar" && !ras.sekundara.includes(f.id)) mangd.add(f.id);
@@ -222,7 +225,7 @@ function motorIndata() {
   const fardigheter = {};
   for (const k of allaNycklar(yrkesfardigheter)) fardigheter[k] = rp.fardigheter[k] ?? 0;
   return {
-    ...rp, ras: rasId(), rasVald: !!rp.ras, yrkesfardigheter, fardigheter, modersmal: modersmal(),
+    ...rp, ras: rasId(), rasVald: !!rp.ras, yrke: yrkeId(), yrkesfardigheter, fardigheter, modersmal: modersmal(),
     svardshand: { ...rp.svardshand, slag: rp.svardshand.slag ?? 0 },
     socialtStand: { ...rp.socialtStand, slag: rp.socialtStand.slag ?? 0 },
     startkapital: { ...rp.startkapital, slag: rp.startkapital.slag ?? 0 },
@@ -503,14 +506,15 @@ const fmtMod = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : "0");
 
 // Steg 3: yrket väljs med kort som rasen i steg 1. Yrkesfärdigheterna visas bara; valen inom dem görs i steg 4.
 function stegYrke() {
-  const yrke = yrkeAv(R, rp.yrke);
+  const yrke = yrkeAv(R, yrkeId());
   const kort = R.yrken.lista.map((y) => el("button", {
     type: "button", class: "valkort yrkeskort" + (y.id === rp.yrke ? " valt" : ""), "aria-pressed": y.id === rp.yrke ? "true" : "false", "data-yrke": y.id,
     onclick: () => {
       if (y.id === rp.yrke) return;
       rp.yrke = y.id; rp.yrkesval = {}; rp.valfri = ""; rp.hantverkBonus = ""; uppdatera();
     },
-  }, el("span", { class: "valkort-namn" }, y.namn)));
+  }, el("span", { class: "valkort-namn" }, y.namn.replace(/^(.{5,})(magiker)$/, "$1\u00ad$2")))); // Elementar-magiker avstavas om namnet inte får plats
+  if (!rp.yrke) return [el("div", { class: "valkort-rutnat liten fyra" }, kort), el("p", { class: "hjalp" }, "Välj rollpersonens yrke genom att klicka på ett av korten.")];
   const namn = (x) => fardighetAv(R, x)?.namn ?? x;
   const punkt = (text, id, val) => el("li", {}, text, id ? fardighetsInfo(id) : null, val ? el("span", { class: "sida" }, ` (${val})`) : null);
   const punkter = yrke.fardigheter.map((post, i) => {
@@ -547,7 +551,7 @@ function stegYrke() {
 
 // Valen inom yrkets färdigheter (vapen, språk, hantverk, alternativ och den valfria färdigheten). Visas i steg 4.
 function yrketsVal() {
-  const yrke = yrkeAv(R, rp.yrke);
+  const yrke = yrkeAv(R, yrkeId());
   const rader = yrke.fardigheter.map((post, i) => {
     const id = `yrke-${i}`;
     const satt = (v) => { rp.yrkesval[i] = v; uppdatera(); };
@@ -921,7 +925,7 @@ function stegFormagor() {
 // Magiförmågeslaget (s. 106) behövs för magiskolor utanför magikeryrkena.
 // Magiskolor visas inte om magiförmågeslaget redan har misslyckats
 function magiMojlig(f) {
-  if (f.typ !== "magiskola" || yrkeAv(R, rp.yrke).magiker || rp.magiformaga?.slag == null) return true;
+  if (f.typ !== "magiskola" || yrkeAv(R, yrkeId()).magiker || rp.magiformaga?.slag == null) return true;
   return rakna().magiformaga.lyckat;
 }
 
@@ -938,7 +942,7 @@ function magiPlatser() {
 // Misslyckas magiförmågeslaget öppnas en dialog där magiskolan byts mot en annan färdighet direkt
 function magiDialog(res) {
   $("#magidialog")?.remove();
-  const misslyckat = !res.magiformaga.lyckat && rp.magiformaga?.slag != null && !yrkeAv(R, rp.yrke).magiker;
+  const misslyckat = !res.magiformaga.lyckat && rp.magiformaga?.slag != null && !yrkeAv(R, yrkeId()).magiker;
   if (!magiByte && misslyckat) magiByte = magiPlatser()[0] ?? null;
   if (!misslyckat) magiByte = null;
   document.body.classList.toggle("dialog-oppen", Boolean(magiByte));
@@ -1032,7 +1036,7 @@ function stegKapital(res) {
   const halva = Math.ceil(rp.socialtStand.bp / 2);
   const alderEff = R.alder.efterAr.find((r) => r.max === null || rp.alder <= r.max);
   const ras = rasAv(R, rasId());
-  const yrke = yrkeAv(R, rp.yrke);
+  const yrke = yrkeAv(R, yrkeId());
   const bonusar = [
     halva ? ["Halva BP från socialt stånd", halva] : null,
     ras.slagbonus.startkapital ? [`Ras (${ras.namn.toLowerCase()})`, ras.slagbonus.startkapital] : null,
@@ -1179,7 +1183,7 @@ function bytStilnamn(gammal, namn) {
   if (rakna().fardigheter.some((x) => x.nyckel === ny)) { visaNotis(`Det finns redan en stil som heter ${namn}.`); rita(); return; }
   const gammaltNamn = gammal.split(":")[1];
   for (const [i, v] of Object.entries(rp.yrkesval)) {
-    const post = yrkeAv(R, rp.yrke).fardigheter[i];
+    const post = yrkeAv(R, yrkeId()).fardigheter[i];
     if (post === "stridskonster" && v === gammaltNamn) rp.yrkesval[i] = namn;
     else if (v?.id === "stridskonster" && v.sub === gammaltNamn) rp.yrkesval[i] = { ...v, sub: namn };
   }
@@ -1352,7 +1356,7 @@ function rollformular(res) {
     el("div", { class: "formular-huvud" },
       el("h2", {}, el("input", { id: "formular-namn", class: "namnfalt", type: "text", value: rp.namn, placeholder: "Namnlös rollperson", "aria-label": "Rollpersonens namn",
         onchange: (e) => { rp.namn = e.target.value; uppdatera(); } })),
-      el("p", {}, [rp.ras ? res.ras.namn : null, res.yrke.namn, `${rp.alder} år`, rp.kon].filter(Boolean).join(" · "))),
+      el("p", {}, [rp.ras ? res.ras.namn : null, rp.yrke ? res.yrke.namn : null, `${rp.alder} år`, rp.kon].filter(Boolean).join(" · "))),
     vy === "spel" ? el("dl", { class: "nyckelvarden" },
       el("div", {}, el("dt", {}, "Osparade EP", info("EP")), el("dd", {}, spelPotter(spelCtx(res)).ep)),
       el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, rp.spel.hjaltepoang ?? 0))) : el("div", { class: "potter" },
@@ -1379,7 +1383,7 @@ function rollformular(res) {
     el("ul", { class: "kroppsdelar" }, [0, 1].map(() => el("li", { class: "kolumnrubrik" }, el("span", {}, "Kroppsdel"), el("span", { class: "num" }, "KP"))),
       h.kroppsdelar.map((d) => el("li", {}, el("span", {}, d.namn), el("span", { class: "num" }, visa(d.kp))))),
     [res.sarskildFormaga, ...res.extraFormagor].filter(Boolean).map((f, i) => [i === 0 ? el("h3", {}, "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
-    el("p", {}, el("strong", {}, "Yrkesförmåga: "), res.yrke.yrkesformaga),
+    rp.yrke ? el("p", {}, el("strong", {}, "Yrkesförmåga: "), res.yrke.yrkesformaga) : null,
     el("h3", {}, "Färdigheter", info("B-nivå")),
     el("ul", { class: "fardighetsrader" }, kolumnrubrik("Färdighet", "FV"), res.fardigheter.filter((f) => f.fv > 0).map((f) =>
       el("li", { class: f.status }, el("span", {}, f.kategoriB ? medNiva(f.namn, slaUpp(R.fardigheter.bNivaer, f.fv)) : f.namn), el("span", { class: "num" }, f.fv)))),
@@ -1405,13 +1409,14 @@ const kolumnrubrik = (namn, varde) => el("li", { class: "kolumnrubrik" }, el("sp
 // Val som ännu inte är gjorda, per steg. Ett steg med obligatoriska val kvar går inte att lämna framåt.
 function saknasPerSteg(res) {
   const lista = Object.fromEntries(STEG.map((st) => [st.id, []]));
-  const yrke = yrkeAv(R, rp.yrke);
+  const yrke = yrkeAv(R, yrkeId());
   const ras = rasAv(R, rasId());
   const klar = (v) => !paborjad(v ?? "");
   if (!rp.ras) lista.ras.push("Ras");
   const valfriRas = ras.primara.find((p) => p.valfri);
   if (valfriRas && !rp.rasval.some(klar)) lista.ras.push(`Rasens valfria ${valfriRas.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`);
-  yrke.fardigheter.forEach((post, i) => {
+  if (!rp.yrke) lista.yrke.push("Yrke");
+  else yrke.fardigheter.forEach((post, i) => {
     const val = rp.yrkesval[i];
     if (typeof post === "string") {
       if (fardighetAv(R, post)?.perVal && !klar(val)) lista.extra.push(`${fardighetAv(R, post).namn}: vad den gäller`);
@@ -1422,8 +1427,8 @@ function saknasPerSteg(res) {
       if (gjorda < post.antal) lista.extra.push(`${fardighetAv(R, post.fardighet).namn}: ${post.antal - gjorda} val kvar`);
     }
   });
-  if (yrke.valfri && !klar(rp.valfri)) lista.extra.push("Den valfria yrkesfärdigheten");
-  if (yrke.startbonus?.some((b) => b.valEttAv) && !yrkesNycklar().includes(rp.hantverkBonus)) lista.extra.push("Hantverket som får gratis FV");
+  if (rp.yrke && yrke.valfri && !klar(rp.valfri)) lista.extra.push("Den valfria yrkesfärdigheten");
+  if (rp.yrke && yrke.startbonus?.some((b) => b.valEttAv) && !yrkesNycklar().includes(rp.hantverkBonus)) lista.extra.push("Hantverket som får gratis FV");
   if (rp.extraYrkesfardigheter.some((k) => !klar(k))) lista.extra.push("En extra yrkesfärdighet är inte färdigvald (välj klart eller ta bort den)");
   if (!rp.namn.trim()) lista.kon.push("Namn");
   if (!rp.kon) lista.kon.push("Kön");
@@ -1578,7 +1583,8 @@ function stegExport(res) {
     el("p", {}, "Spara rollpersonen som en JSON-fil. Filen kan läsas in igen med knappen Läs in fil högst upp, till exempel för att fortsätta på en annan dator."),
     el("p", {}, "Rollformuläret ser ut som bokens (s. 11–12) och kan skrivas ut eller sparas som PDF. Det du skriver i det under spel, som erf och pengar, sparas i samma fil."),
     el("div", { class: "rad" },
-      el("button", { type: "button", class: "knapp primar", onclick: visaFormular }, "Visa rollformuläret"),
+      el("button", { type: "button", class: "knapp primar", id: "pdf-direkt", onclick: skrivUtDirekt }, "Skriv ut eller spara som PDF"),
+      el("button", { type: "button", class: "knapp", onclick: visaFormular }, "Visa rollformuläret"),
       el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
       el("button", { type: "button", class: "knapp", onclick: () => kopiera(text) }, "Kopiera JSON")),
     spelSynlig && el("p", {}, "När rollpersonen har spelats för du in erfarenhet, hjältepoäng, pengar och utrustning efter varje spelmöte, och förbättrar henne när erfarenheten räcker. Efter det första spelmötet går skapandet inte längre att ändra."),
@@ -1640,7 +1646,24 @@ function visaNotis(text) {
 const efterRita = []; // utvecklarläget följer varje ändring (poängloggen och den automatiska ifyllningen)
 function rita() {
   ritaVy();
+  foljHistorik();
   for (const fn of efterRita) fn();
+}
+
+// Varje steg (och rollformuläret och spelmötena) får en post i webbläsarens historik,
+// så att bakåtknappen går till föregående steg i stället för att lämna sidan. Adressen (t.ex. ?dev) ändras inte.
+const platsNu = () => (vy === "steg" ? aktivtSteg : vy);
+function foljHistorik() {
+  const plats = platsNu();
+  if (history.state?.plats === plats) return;
+  if (history.state?.plats) history.pushState({ plats }, "");
+  else history.replaceState({ plats }, "");
+}
+function gaTillPlats(plats) {
+  if (plats === "formular") vy = "formular";
+  else if (plats === "spel") vy = spelSynlig && !saknas(rakna()).length ? "spel" : "steg";
+  else { vy = "steg"; aktivtSteg = plats; } // ritaVy flyttar tillbaka till första ofärdiga steget om det behövs
+  rita();
 }
 
 function ritaVy() {
@@ -1797,7 +1820,7 @@ function ritaFormularVy(res) {
   vyEl.replaceChildren(
     el("div", { class: "rf-verktyg" },
       el("button", { type: "button", class: "knapp", onclick: () => { vy = harLogg() ? "spel" : "steg"; rita(); } }, harLogg() ? "← Tillbaka till spelmötena" : "← Tillbaka till stegen"),
-      el("button", { type: "button", class: "knapp primar", onclick: () => window.print() }, "Skriv ut eller spara som PDF"),
+      el("button", { type: "button", class: "knapp primar", onclick: skrivUt }, "Skriv ut eller spara som PDF"),
       el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
       el("label", {}, el("input", { type: "checkbox", id: "blacksnal", checked: blacksnal,
         onchange: (e) => { blacksnal = e.target.checked; vyEl.classList.toggle("rf-blacksnal", blacksnal); } }), "Spara bläck"),
@@ -1812,6 +1835,27 @@ function ritaFormularVy(res) {
     // Texternas höjd beror på typsnitten, så sidorna delas om när de har laddats
     document.fonts?.ready.then(() => { if (vy === "formular" && medRegler) delaRegelsidor(vyEl, el); });
   }
+}
+
+// Utskriftsdialogen föreslår sidans titel som filnamn för PDF:en, så titeln är rollpersonens namn medan den visas
+const SIDTITEL = document.title;
+function namnSomTitel() { document.title = rp.namn.trim() || SIDTITEL; }
+function skrivUt() {
+  namnSomTitel();
+  window.print();
+}
+
+// Rollformuläret som PDF direkt från steg 14: formuläret ritas i den dolda vyn, som bara syns i utskriften
+function skrivUtDirekt() {
+  const vyEl = $("#rf-vy");
+  vyEl.classList.toggle("rf-blacksnal", blacksnal);
+  vyEl.replaceChildren(el("div", { class: "rf-sidor" }, rollformularSidor({ R, rp, res: rakna(), el, sakNamn, andrat: sparaFormular })));
+  document.body.classList.add("rf-direkt");
+  window.addEventListener("afterprint", () => {
+    document.body.classList.remove("rf-direkt");
+    if (vy !== "formular") vyEl.replaceChildren();
+  }, { once: true });
+  skrivUt();
 }
 
 // Vid stegbyte glider sidan snabbt upp till toppen i stället för att hoppa dit
@@ -1939,6 +1983,10 @@ async function start() {
   document.addEventListener("focusin", (e) => { const k = e.target.closest?.(".info"); if (k) visa(k); else dolj(); });
   document.addEventListener("click", (e) => { const k = e.target.closest?.(".info"); if (k) { e.stopPropagation(); visa(k); } else dolj(); }, true);
   window.addEventListener("scroll", dolj, { passive: true });
+  // Även Ctrl+P eller Cmd+P föreslår rollpersonens namn som filnamn
+  window.addEventListener("beforeprint", namnSomTitel);
+  window.addEventListener("afterprint", () => { document.title = SIDTITEL; });
+  window.addEventListener("popstate", (e) => { if (e.state?.plats) gaTillPlats(e.state.plats); });
   startaUtvecklarlage();
   rita();
 }
