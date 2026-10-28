@@ -39,7 +39,7 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
       r.rasval = [`${valfriRas}:${ta(valfriRas, fid === valfriRas && val ? val : autoDelval(api, r, valfriRas, anvanda))}`];
     }
 
-    // Yrkets färdigheter, post för post som i steg 3
+    // Yrkets färdigheter, post för post som i steg 4
     const val = onskat(recept.val) ?? {};
     yrke.fardigheter.forEach((post, i) => {
       if (typeof post === "string") {

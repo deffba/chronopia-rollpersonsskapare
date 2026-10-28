@@ -1,0 +1,104 @@
+{
+  "format": "chronopia-rollperson",
+  "version": 2,
+  "sparad": "2026-10-28T21:57:21.416Z",
+  "rollperson": {
+    "namn": "Troll gladiator",
+    "spelare": "",
+    "kon": "Man",
+    "ras": "troll",
+    "alder": 21,
+    "yrke": "gladiator",
+    "yrkesval": {
+      "2": "Test9",
+      "3": "Parerdolk+Parerdolk",
+      "4": [
+        "Parerdolk",
+        "Dolk",
+        "Kortsvärd",
+        "Kroksabel",
+        "Bredsvärd"
+      ]
+    },
+    "valfri": "administration:Test10",
+    "extraYrkesfardigheter": [],
+    "rasval": [],
+    "grundvarden": {
+      "SMI": 15,
+      "STY": 14,
+      "FYS": 12,
+      "INT": 11,
+      "KAR": 10,
+      "PSY": 8
+    },
+    "stoSteg": 0,
+    "sarskildaFormagor": {
+      "bp": 5,
+      "slag": 31,
+      "val": [],
+      "formaga": "Magikänsla"
+    },
+    "svardshand": {
+      "bp": 0,
+      "slag": 8
+    },
+    "socialtStand": {
+      "bp": 0,
+      "slag": 8
+    },
+    "startkapital": {
+      "bp": 0,
+      "slag": 4
+    },
+    "sekundara": [],
+    "fardigheter": {
+      "stridskonster:Test9": 12,
+      "administration:Test10": 8,
+      "vapen:Dolk": 12,
+      "vapen:Parerdolk": 12,
+      "avvapna": 10,
+      "dra-vapen": 9,
+      "tva-vapen:Parerdolk+Parerdolk": 9,
+      "vapen:Bredsvärd": 12,
+      "vapen:Kortsvärd": 12,
+      "vapen:Kroksabel": 12,
+      "slagsmal": 11,
+      "hoppa": 4,
+      "klattra": 4,
+      "rida": 4,
+      "smyga": 4,
+      "stjala-foremal": 4
+    },
+    "magiformaga": {
+      "slag": null
+    },
+    "stridskonstTekniker": {
+      "stridskonster:Test9": [
+        "Avväpning"
+      ]
+    },
+    "stridskonstFardig": {},
+    "besvarjelser": {},
+    "utrustning": {
+      "Arbalestlod (10 st)": 1
+    },
+    "startpaket": {
+      "valt": true,
+      "vapen": "Parerdolk"
+    },
+    "anteckningar": "",
+    "spel": {
+      "spelledare": "",
+      "hjaltepoang": 0,
+      "erf": {},
+      "pengar": null,
+      "utrustning": [],
+      "borttaget": {},
+      "anteckningar": ""
+    },
+    "utveckling": {
+      "logg": []
+    },
+    "hantverkBonus": ""
+  }
+}

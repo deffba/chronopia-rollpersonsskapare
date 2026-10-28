@@ -140,27 +140,32 @@ textarea { width: 100%; resize: vertical; }
 input.tal { width: 4.5rem; text-align: right; font-variant-numeric: tabular-nums; }
 input.tal.bred { width: 6rem; }
 
-.raskort-rutnat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%;
+.valkort-rutnat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%;
   transition: width .4s ease, gap .4s ease; }
-.raskort {
+.valkort {
   display: grid; gap: 2px; text-align: left; padding: 12px; border-radius: 8px; border: 1px solid var(--linje);
   background: var(--bg); cursor: pointer; min-width: 0; align-content: start; transition: padding .4s ease, background-color .2s, border-color .2s;
 }
-.raskort:hover { border-color: var(--accent); }
-.raskort.valt { border-color: var(--accent); background: var(--accent-svag); box-shadow: inset 0 0 0 1px var(--accent); }
-.raskort-namn { font: 1.2rem var(--rubrik); transition: font-size .4s ease; overflow-wrap: anywhere; }
-/* Rasrutorna visar bara namnen i ett 3 × 4-rutnät; siffrorna står i rutan under */
-.raskort-rutnat.liten { width: min(100%, 360px); gap: 6px; }
-.raskort-rutnat.liten .raskort { padding: 5px 8px; gap: 0; }
-.raskort-rutnat.liten .raskort-namn { font-size: .95rem; }
-.rasinfo { display: grid; gap: 2px; }
-.rasrubrik { font: 1.6rem/1.1 var(--rubrik); margin: 4px 0 0; }
+.valkort:hover { border-color: var(--accent); }
+.valkort.valt { border-color: var(--accent); background: var(--accent-svag); box-shadow: inset 0 0 0 1px var(--accent); }
+.valkort-namn { font: 1.2rem var(--rubrik); transition: font-size .4s ease; overflow-wrap: anywhere; }
+/* Korten för ras (steg 1) och yrke (steg 3) delar utseende. Rasrutorna visar bara namnen i ett 3 × 4-rutnät, yrkena i 4 × 4; siffrorna står i rutan under */
+.valkort-rutnat.liten { width: min(100%, 360px); gap: 6px; }
+.valkort-rutnat.liten .valkort { padding: 5px 8px; gap: 0; }
+.valkort-rutnat.liten .valkort-namn { font-size: .95rem; }
+.valkort-rutnat.liten.fyra { grid-template-columns: repeat(4, minmax(0, 1fr)); width: min(100%, 640px); }
+@media (max-width: 560px) { .valkort-rutnat.liten.fyra { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.valdata.bred { max-width: 65ch; }
+.valdata.bred dd { font-weight: 500; font-variant-numeric: normal; }
+.valinfo { display: grid; gap: 2px; }
+.valrubrik { font: 1.6rem/1.1 var(--rubrik); margin: 4px 0 0; }
 .rutor h4 { font: 1.15rem/1.3 var(--rubrik); letter-spacing: .02em; margin: .5rem 0 0; }
 .rasval-extra { padding-top: calc(1.15rem * 1.3 + .5rem + 1em); }
-.rasdata { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 8px 0 0; padding: 10px 14px; justify-self: start; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--accent-svag); }
-.rasdata dt { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--dampad); }
-.rasdata dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
-.raslore { font-style: italic; color: var(--dampad); max-width: 65ch; margin: 4px 0 8px; }
+.valdata { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 8px 0 0; padding: 10px 14px; justify-self: start; border: 1px solid var(--linje); border-radius: var(--rad); background: var(--accent-svag); }
+.valdata dt { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--dampad); }
+.valdata dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.vallore { font-style: italic; color: var(--dampad); max-width: 65ch; margin: 4px 0 8px; }
+.yrkestext { max-width: 65ch; margin: 0 0 4px; }
 .rutor { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .punkter { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
 
@@ -411,7 +416,7 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] h3, [data-stil="klassisk"] .rutor h4 {
   font: 600 1rem/1.3 var(--ui); text-transform: uppercase; letter-spacing: 2px; color: var(--accent-text);
 }
-[data-stil="klassisk"] .rasrubrik { font: 700 1.6rem/1.1 var(--rubrik); color: var(--accent-text); }
+[data-stil="klassisk"] .valrubrik { font: 700 1.6rem/1.1 var(--rubrik); color: var(--accent-text); }
 [data-stil="klassisk"] .eyebrow, [data-stil="klassisk"] .etikett, [data-stil="klassisk"] .steg-potter dt,
 [data-stil="klassisk"] .egenskaper dt, [data-stil="klassisk"] .pott .etikett, [data-stil="klassisk"] .pris {
   font-family: var(--ui); font-weight: 500; letter-spacing: 1.5px;
@@ -422,7 +427,7 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] .knapp { border-color: #7d6a64; background: var(--yta); }
 [data-stil="klassisk"] .knapp.primar { background: var(--band); border-color: #4a3a35; color: var(--band-text); }
 [data-stil="klassisk"] .knapp.primar:hover { background: #5e4a44; }
-[data-stil="klassisk"] .summering, [data-stil="klassisk"] .raslore { font-family: var(--serif); }
+[data-stil="klassisk"] .summering, [data-stil="klassisk"] .vallore { font-family: var(--serif); }
 /* Rubrikband och dubbla linjer som i boken */
 [data-stil="klassisk"] .steg-huvud { border-top: 3px double var(--linje); border-bottom: 3px double var(--linje); padding-top: 12px; }
 [data-stil="klassisk"] .formular-huvud { border-bottom: 3px double var(--linje); }
@@ -437,11 +442,11 @@ option.grupprubrik { font-weight: 700; }
 /* Tunna, skarpa ramar runt rutor, formulär och värden */
 [data-stil="klassisk"] input[type="text"], [data-stil="klassisk"] input[type="number"], [data-stil="klassisk"] input[type="search"], [data-stil="klassisk"] select,
 [data-stil="klassisk"] textarea { border-radius: 2px; border-color: #8c7a74; background: #f4f1ef; }
-[data-stil="klassisk"] .yrkeslista > li, [data-stil="klassisk"] .raskort, [data-stil="klassisk"] .pott,
+[data-stil="klassisk"] .yrkeslista > li, [data-stil="klassisk"] .valkort, [data-stil="klassisk"] .pott,
 [data-stil="klassisk"] .egenskaper > div, [data-stil="klassisk"] .saknaslista, [data-stil="klassisk"] .steg-potter > div,
 [data-stil="klassisk"] .varning, [data-stil="klassisk"] .fast { border-radius: 2px; border-color: #8c7a74; }
-[data-stil="klassisk"] .raskort-namn { font: 600 1rem/1.2 var(--rubrik); }
-[data-stil="klassisk"] .raskort-rutnat.liten .raskort-namn { font-size: .8rem; }
+[data-stil="klassisk"] .valkort-namn { font: 600 1rem/1.2 var(--rubrik); }
+[data-stil="klassisk"] .valkort-rutnat.liten .valkort-namn { font-size: .8rem; }
 [data-stil="klassisk"] input.namnfalt { background: none; border-color: transparent; font: 700 1.6rem/1.15 var(--rubrik); }
 [data-stil="klassisk"] input.namnfalt:hover { border-color: var(--linje); }
 [data-stil="klassisk"] .yrkesformaga { border-radius: 0; }
