@@ -40,7 +40,7 @@ export function franFil(data) {
 }
 
 function uppgradera(rp, version) {
-  if (!rp?.ras || !rp?.grundvarden) throw new Error("saknar ras eller grundegenskaper");
+  if (!rp?.ras || rp?.grundvarden === undefined) throw new Error("saknar ras eller grundegenskaper"); // null = inte valda än
   const ut = structuredClone(rp);
   if (version < 1) ut.spel = {};
   ut.spel = { ...TOMT_SPEL(), ...ut.spel, erf: { ...(ut.spel?.erf ?? {}) }, borttaget: { ...(ut.spel?.borttaget ?? {}) } };
