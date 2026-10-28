@@ -1,6 +1,6 @@
 // Gränssnittet för Chronopia-rollpersonsskaparen. All regellogik finns i regelmotor.js.
 import {
-  GRUNDEGENSKAPER, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor, tvahandsvapen,
+  GRUNDEGENSKAPER, STANDARDVARDEN, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor, tvahandsvapen,
   paborjad, standsvarde, vapengrupp, passarBland, skolFV, besvarjelsePris, kanAnvandaVapen, varukatalog,
 } from "./regelmotor.js";
 import { rollformularSidor, delaRegelsidor } from "./formular.js";
@@ -80,7 +80,7 @@ const SKOLOR = [["animism", "Animism"], ["elementarmagi", "Elementarmagi"], ["me
 
 const TOM = () => ({
   namn: "", spelare: "", kon: "", ras: "", alder: 21, yrke: "krigare", yrkesval: {}, valfri: "",
-  extraYrkesfardigheter: [], rasval: [], grundvarden: { STY: 10, FYS: 10, SMI: 10, INT: 10, PSY: 10, KAR: 10 },
+  extraYrkesfardigheter: [], rasval: [], grundvarden: null, // null tills steg 6 öppnas
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
   magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
@@ -210,7 +210,7 @@ function motorIndata() {
   const fardigheter = {};
   for (const k of allaNycklar(yrkesfardigheter)) fardigheter[k] = rp.fardigheter[k] ?? 0;
   return {
-    ...rp, ras: rasId(), yrkesfardigheter, fardigheter, modersmal: modersmal(),
+    ...rp, ras: rasId(), rasVald: !!rp.ras, yrkesfardigheter, fardigheter, modersmal: modersmal(),
     svardshand: { ...rp.svardshand, slag: rp.svardshand.slag ?? 0 },
     socialtStand: { ...rp.socialtStand, slag: rp.socialtStand.slag ?? 0 },
     startkapital: { ...rp.startkapital, slag: rp.startkapital.slag ?? 0 },
@@ -582,7 +582,7 @@ function stegEgenskaper(res) {
   const kostnad = R.grundegenskaper.kostnad;
   const rader = GRUNDEGENSKAPER.map((g) => el("tr", {},
     el("th", { scope: "row" }, g, info(g)),
-    el("td", {}, markera(tal(`ge-${g}`, rp.grundvarden[g], (v) => { rp.grundvarden[g] = Math.min(18, Math.max(3, v ?? 3)); uppdatera(); }, { min: 3, max: 18 }), rp.grundvarden[g], TOM().grundvarden[g])),
+    el("td", {}, markera(tal(`ge-${g}`, rp.grundvarden[g], (v) => { rp.grundvarden[g] = Math.min(18, Math.max(3, v ?? 3)); uppdatera(); }, { min: 3, max: 18 }), rp.grundvarden[g], STANDARDVARDEN()[g])),
     el("td", { class: "num" }, kostnad[String(rp.grundvarden[g])] ?? "–"),
     el("td", { class: "num" }, fmtMod(ras.mod[g])),
     el("td", { class: "num" }, fmtMod(aldersmod[g])),
@@ -597,7 +597,7 @@ function stegEgenskaper(res) {
       `Rasen och åldern (${R.alder.kategorier.find((k) => k.id === res.alderskategori).namn.toLowerCase()}) sänker ${res.forLagaEgenskaper.map((t) => t.split(" ")[0]).join(" och ")} för mycket. Du kan också välja en annan ålder i steg 2.`) : null,
     el("div", { class: "rad" },
       el("button", { type: "button", class: "knapp", onclick: foreslaGrundvarden }, `Föreslå värden för ${res.ras.namn.toLowerCase()} som ${res.yrke.namn.toLowerCase()}`),
-      autoAnvand.egenskaper ? el("button", { type: "button", class: "knapp", onclick: () => { rp.grundvarden = TOM().grundvarden; rp.stoSteg = 0; autoAnvand.egenskaper = false; uppdatera(); } }, "Återställ") : null,
+      autoAnvand.egenskaper ? el("button", { type: "button", class: "knapp", onclick: () => { rp.grundvarden = STANDARDVARDEN(); rp.stoSteg = 0; autoAnvand.egenskaper = false; uppdatera(); } }, "Återställ") : null,
       el("span", { class: "hjalp" }, "Lägger de högsta värdena där yrkets färdigheter och rasen gör mest nytta och sparar 10 BP till steg 7–10. Du kan justera efteråt.")),
     el("div", { class: "tabellram" }, el("table", { class: "tabell" },
       el("thead", {}, el("tr", {}, ["", "Grundvärde", "BP", "Ras", "Ålder", "Slutvärde"].map((t, i) => el("th", { class: i > 1 ? "num" : "" }, t, t === "BP" ? info("BP") : null)))),
@@ -1218,6 +1218,8 @@ function stegUtrustning(res) {
 function rollformular(res) {
   const g = res.grundegenskaper;
   const h = res.harledda;
+  // Före steg 6 finns inga grundegenskaper, och inget som räknas fram ur dem: rutorna visar "–"
+  const visa = (v) => (res.grundegenskaperSatta && v != null ? v : "–");
   const bpProcent = Math.max(0, Math.min(100, (res.bp.kvar / res.bp.start) * 100));
   const epProcent = Math.max(0, Math.min(100, (res.ep.kvar / res.ep.start) * 100));
   return el("div", { class: "formular" },
@@ -1235,19 +1237,19 @@ function rollformular(res) {
     saknas(res).length ? el("div", { class: "saknaslista", role: "status" }, el("strong", {}, "Kvar att välja"), el("ul", {}, saknas(res).map((f) => el("li", {}, f))))
       : el("p", { class: "klar" }, "Rollpersonen är klar."),
     // Förkortning och värde centrerade; infoikonen längst ned i rutan
-    el("dl", { class: "egenskaper" }, [...GRUNDEGENSKAPER, "STO"].map((k) => el("div", {}, el("dt", {}, k), el("dd", {}, g[k]), el("dd", { class: "egenskap-info" }, info(k))))),
+    el("dl", { class: "egenskaper" }, [...GRUNDEGENSKAPER, "STO"].map((k) => el("div", {}, el("dt", {}, k), el("dd", {}, visa(g[k])), el("dd", { class: "egenskap-info" }, info(k))))),
     el("dl", { class: "nyckelvarden" },
-      el("div", {}, el("dt", {}, "Kroppspoäng", info("KP")), el("dd", {}, h.totalKP)),
-      el("div", {}, el("dt", {}, "Skadebonus", info("SB")), el("dd", {}, h.skadebonus)),
-      el("div", {}, el("dt", {}, "Förflyttning", info("Förflyttning")), el("dd", {}, h.forflyttning)),
+      el("div", {}, el("dt", {}, "Kroppspoäng", info("KP")), el("dd", {}, visa(h.totalKP))),
+      el("div", {}, el("dt", {}, "Skadebonus", info("SB")), el("dd", {}, visa(h.skadebonus))),
+      el("div", {}, el("dt", {}, "Förflyttning", info("Förflyttning")), el("dd", {}, visa(h.forflyttning))),
       el("div", {}, el("dt", {}, "Svärdshand"), el("dd", {}, res.slag.svardshand)),
       el("div", {}, el("dt", {}, "Socialt stånd"), el("dd", {}, res.slag.socialtStand)),
       el("div", {}, el("dt", {}, "Startkapital"), el("dd", {}, sm(res.slag.startkapital))),
-      el("div", {}, el("dt", {}, "Längd"), el("dd", {}, h.langd ?? "–")),
-      el("div", {}, el("dt", {}, "Vikt"), el("dd", {}, h.vikt ?? "–"))),
+      el("div", {}, el("dt", {}, "Längd"), el("dd", {}, visa(h.langd))),
+      el("div", {}, el("dt", {}, "Vikt"), el("dd", {}, visa(h.vikt)))),
     el("h3", {}, "Kroppsdelar"),
     el("ul", { class: "kroppsdelar" }, [0, 1].map(() => el("li", { class: "kolumnrubrik" }, el("span", {}, "Kroppsdel"), el("span", { class: "num" }, "KP"))),
-      h.kroppsdelar.map((d) => el("li", {}, el("span", {}, d.namn), el("span", { class: "num" }, d.kp)))),
+      h.kroppsdelar.map((d) => el("li", {}, el("span", {}, d.namn), el("span", { class: "num" }, visa(d.kp))))),
     res.sarskildFormaga ? [el("h3", {}, "Särskild förmåga"), el("p", {}, el("strong", {}, res.sarskildFormaga.namn), " ", res.sarskildFormaga.effekt)] : null,
     el("p", {}, el("strong", {}, "Yrkesförmåga: "), res.yrke.yrkesformaga),
     el("h3", {}, "Färdigheter", info("B-nivå")),
@@ -1298,6 +1300,7 @@ function saknasPerSteg(res) {
   if (!rp.namn.trim()) lista.kon.push("Namn");
   if (!rp.kon) lista.kon.push("Kön");
   if (rp.sarskildaFormagor.bp && rp.sarskildaFormagor.slag === null) lista.formagor.push("Slaget för särskilda förmågor");
+  if (!res.grundegenskaperSatta) lista.egenskaper.push("Grundegenskaperna");
   lista.egenskaper.push(...res.forLagaEgenskaper);
   lista.formagor.push(...res.saknas);
   // Magiförmågeslaget görs i steg 6 (eller 11 för en sekundär magiskola); misslyckas det ska skolan bytas ut
@@ -1489,6 +1492,11 @@ function visaNotis(text) {
 
 // ------------------------------------------------------------ ritning
 function rita() {
+  // Grundvärdena sätts först när steg 6 öppnas: alla börjar på 10 och kostar BP därifrån
+  if (aktivtSteg === "egenskaper" && !rp.grundvarden) {
+    rp.grundvarden = STANDARDVARDEN();
+    if (!rakna().fel.length) { giltig = structuredClone(rp); spara(); } else rp.grundvarden = null;
+  }
   const res = raknaRollperson(R, motorIndata());
   $(".layout").style.display = vy === "formular" ? "none" : "";
   $("#rf-vy").hidden = vy !== "formular";
