@@ -1,38 +1,53 @@
-// Poängloggen i utvecklarläget: varje post som ger eller tar BP, EP eller pengar, steg för steg.
+// Poängloggen i utvecklarläget: varje post som ger eller tar BP, EP eller pengar, steg för steg, och
+// dessutom grundegenskapernas delar, tärningsslagen och vikten som rollpersonen bär.
 // Loggen är ingen historik. Den räknas fram på nytt ur rollpersonen vid varje ändring, så ett val som byts
 // ut eller ångras försvinner ur loggen (byts rasen syns bara den nya rasen). Summan av posterna jämförs
 // med det som visas på sidan, och stämmer de inte överens sägs det till längst ned i loggen.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, namnFor, alderseffekter, slaUpp } from "./regelmotor.js";
+// Undantaget är ändringar som regelkontrollen stoppade: de är händelser och sparas medan sidan är öppen.
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, namnFor, alderseffekter, slaUpp, sarskildFormaga } from "./regelmotor.js";
 
-const TYPER = [["BP", "BP"], ["EP", "EP"], ["Guld", "Guld (sm)"]];
-const ENHET = { BP: "BP", EP: "EP", Guld: "sm" };
+// [typ, text i filtret, ikryssad från början, etikett på raden]
+const TYPER = [["BP", "BP", true, "BP"], ["EP", "EP", true, "EP"], ["Guld", "Guld", true, "sm"], ["GE", "GE", true, "GE"],
+  ["Slag", "Slag", false, "T"], ["Vikt", "Vikt", false, "kg"], ["Nekad", "Stopp", true, "!"]];
+const ENHET = { BP: "BP", EP: "EP", Guld: "sm", Vikt: "kg" };
+const kgText = (n) => (Math.round(n * 10) / 10).toLocaleString("sv-SE");
 const LAGRING = "chronopia-dev-logg";
 
 // ------------------------------------------------------------ posterna
-// Ger [{ id, steg, typ, text, andring, kvar }] i stegens ordning. kvar är saldot efter posten.
+// Ger [{ id, steg, typ, text, andring, kvar }] i stegens ordning. kvar är saldot efter posten, räknat per typ
+// (för grundegenskaperna per egenskap). Tärningsslagen har ingen ändring, bara visa (slaget).
 export function poster(api) {
   const { R } = api;
   const rp = api.nu();
   const res = api.rakna();
   const synliga = api.synligaSteg(res);
   const lista = [];
-  const lagg = (stegId, typ, id, text, andring) => {
-    const i = synliga.findIndex((s) => s.id === stegId);
-    const steg = stegId === null ? "Start" : i === -1 ? stegId : `${i + 1}. ${synliga[i].namn}`;
-    lista.push({ id: `${stegId}|${typ}|${id}`, steg, typ, text, andring });
+  const lagg = (stegId, typ, id, text, andring, extra = {}) => {
+    lista.push({ id: `${stegId}|${typ}|${id}`, steg: stegEtikett(synliga, stegId), typ, text, andring, ...extra });
   };
   const ras = rasAv(R, rp.ras || "manniska");
   const yrke = yrkeAv(R, rp.yrke);
   const alder = alderseffekter(R, rp.alder);
+  // Grundegenskaperna: en rad per del som ändrar värdet, med egenskapens värde hittills
+  const ge = (stegId, g, id, text, andring) => { if (andring) lagg(stegId, "GE", `${g}-${id}`, `${g}: ${text}`, andring, { saldo: `GE-${g}`, enhet: g }); };
+  const aldersmod = R.alder.effekter[res.alderskategori];
+  const egenskapsbonus = sarskildFormaga(R, api.motorIndata()).tillagg.egenskapsbonus ?? {};
+  const fmt = (n) => (n > 0 ? `+ ${n}` : n < 0 ? `− ${-n}` : "");
 
   lagg(null, "BP", "start", "Startpoäng", R.grundegenskaper.startBP);
 
   // 1. Ras
   lagg("ras", "BP", "ras", rp.ras ? `Ras: ${ras.namn}` : "Ingen ras vald än", -res.bp.utgifter.ras);
+  if (rp.ras) {
+    for (const g of GRUNDEGENSKAPER) ge("ras", g, "ras", `ras (${ras.namn.toLowerCase()})`, ras.mod[g]);
+    ge("ras", "STO", "ras", `normalvärde för ${ras.namn.toLowerCase()}`, ras.sto.normal);
+  }
 
   // 2. Ålder
   if (alder.bp) lagg("alder", "BP", "alder", `Ålder ${rp.alder} år ger extra BP`, alder.bp);
   lagg("alder", "EP", "alder", `Ålder ${rp.alder} år ger start-EP`, alder.ep);
+  const kategori = R.alder.kategorier.find((x) => x.id === res.alderskategori)?.namn.toLowerCase() ?? res.alderskategori;
+  for (const g of GRUNDEGENSKAPER) ge("alder", g, "alder", `ålder ${rp.alder} år (${kategori})`, aldersmod[g]);
 
   // 3. Yrke
   if (yrke.extraBP) lagg("yrke", "BP", "extraBP", `${yrke.namn}: extra BP`, yrke.extraBP.antal);
@@ -55,19 +70,45 @@ export function poster(api) {
     const grund = rp.grundvarden[g];
     lagg("egenskaper", "BP", `ge-${g}`, `${g}: grundvärde ${grund} (blir ${res.grundegenskaper[g]})`, -(R.grundegenskaper.kostnad[String(grund)] ?? 0));
   }
+  if (rp.grundvarden) for (const g of GRUNDEGENSKAPER) ge("egenskaper", g, "grund", "grundvärde", rp.grundvarden[g]);
   const sto = rp.stoSteg ?? 0;
   if (sto) {
     const s = R.grundegenskaper.sto;
     lagg("egenskaper", "BP", "sto", `STO: ${ras.sto.normal} → ${res.grundegenskaper.STO}`, sto > 0 ? -s.hojning[sto - 1] : s.sankning[-sto - 1]);
+    ge("egenskaper", "STO", "steg", sto > 0 ? "höjd med BP" : "sänkt (ger BP)", sto);
+  }
+  // Magiförmågeslaget görs när INT och PSY är bestämda
+  const m = res.magiformaga;
+  if (m.slag !== null && m.slag !== undefined) {
+    lagg("egenskaper", "Slag", "magi", `Magiförmåga: 1T100 ${m.slag}${m.mod ? ` ${fmt(m.mod)} = ${m.slag + m.mod}` : ""}, högst ${m.chans} ((INT+PSY)/2): ${m.lyckat ? "lyckat" : "misslyckat"}`, null, { visa: `${m.slag}` });
   }
 
   // 7–10. BP lagda på slagen
   const slagText = (s, utfall) => (s.slag === null || s.slag === undefined ? "inte slaget än" : `slag ${s.slag}: ${utfall}`);
+  const gjort = (s) => s.slag !== null && s.slag !== undefined;
   const sf = rp.sarskildaFormagor;
   if (sf.bp) lagg("formagor", "BP", "sf", `BP på slaget, ${slagText(sf, res.sarskildFormaga?.namn ?? "ingen förmåga")}`, -sf.bp);
+  if (gjort(sf) && sf.bp) lagg("formagor", "Slag", "sf", `Särskild förmåga: 2T20 ${sf.slag} + ${sf.bp} BP = ${sf.slag + sf.bp}: ${res.sarskildFormaga?.namn ?? "ingen förmåga"}`, null, { visa: `${sf.slag}` });
+  for (const g of [...GRUNDEGENSKAPER, "STO"]) ge("formagor", g, "sf", `särskild förmåga (${res.sarskildFormaga?.namn ?? "?"})`, egenskapsbonus[g]);
   if (rp.svardshand.bp) lagg("svardshand", "BP", "sh", `BP på slaget, ${slagText(rp.svardshand, res.slag.svardshand)}`, -rp.svardshand.bp);
+  if (gjort(rp.svardshand)) {
+    const sh = rp.svardshand;
+    lagg("svardshand", "Slag", "sh", `Svärdshand: 2T6 ${sh.slag}${sh.bp ? ` + ${sh.bp} BP = ${sh.slag + sh.bp}` : ""}: ${res.slag.svardshand}`, null, { visa: `${sh.slag}` });
+  }
   if (rp.socialtStand.bp) lagg("stand", "BP", "ss", `BP på slaget, ${slagText(rp.socialtStand, res.slag.socialtStand)} (halva BP läggs också på startkapitalet)`, -rp.socialtStand.bp);
+  const ss = rp.socialtStand;
+  const rasbonus = ras.slagbonus.socialtStand ?? 0;
+  if (ss.valt) lagg("stand", "Slag", "ss", `Socialt stånd valt utan slag: ${ss.valt} (räknas som ${res.slag.ssResultat})`, null, { visa: "valt" });
+  else if (gjort(ss)) {
+    lagg("stand", "Slag", "ss", `Socialt stånd: 2T6 ${ss.slag}${ss.bp ? ` + ${ss.bp} BP` : ""}${rasbonus ? ` ${fmt(rasbonus)} (ras)` : ""} = ${res.slag.ssResultat}: ${res.slag.socialtStand}`, null, { visa: `${ss.slag}` });
+  }
   if (rp.startkapital.bp) lagg("kapital", "BP", "sk", `BP på slaget, ${slagText(rp.startkapital, `resultat ${res.slag.skResultat}`)}`, -rp.startkapital.bp);
+  if (gjort(rp.startkapital)) {
+    const sk = rp.startkapital;
+    const bonusar = [[Math.ceil(ss.bp / 2), "halva BP från ståndet"], [ras.slagbonus.startkapital ?? 0, "ras"], [yrke.slagbonus?.startkapital ?? 0, "yrke"]].filter(([v]) => v);
+    const summa = sk.slag + sk.bp + bonusar.reduce((a, [v]) => a + v, 0);
+    lagg("kapital", "Slag", "sk", `Startkapital: 2T6 ${sk.slag}${sk.bp ? ` + ${sk.bp} BP` : ""}${bonusar.map(([v, t]) => ` ${fmt(v)} (${t})`).join("")} = ${summa}${summa > res.slag.skResultat ? `, taket ger ${res.slag.skResultat}` : ""}`, null, { visa: `${sk.slag}` });
+  }
   // Startkapitalet: tabellvärdet för slaget gånger ålderns faktor. Det som är över kommer från förmågan Arv.
   // Innan slaget är gjort räknar sidan som om det blev 0, och det gör loggen också.
   const kapital = slaUpp(R.slag.startkapital.tabell, res.slag.skResultat) * alder.kapital;
@@ -92,12 +133,42 @@ export function poster(api) {
     lagg("utrustning", "Guld", `u-${x.namn}`, `Köp: ${x.antal} × ${x.namn} (${x.pris.toLocaleString("sv-SE")} sm/st)`, -x.pris * x.antal);
   }
 
-  const saldo = { BP: 0, EP: 0, Guld: 0 };
-  for (const p of lista) { saldo[p.typ] += p.andring; p.kvar = saldo[p.typ]; }
-  const sidan = { BP: res.bp.kvar, EP: res.ep.kvar, Guld: res.utrustning.kvar };
-  const avvikelser = Object.keys(saldo).filter((t) => Math.round(saldo[t] * 100) !== Math.round(sidan[t] * 100))
-    .map((t) => `${t}: loggen ger ${saldo[t]}, sidan visar ${sidan[t]}`);
+  // Vikten som bärs (s. 100): kläder räknas inte och en buren rustning väger hälften. Bärförmågan är STY kg.
+  const u = res.utrustning;
+  for (const x of u.saker) {
+    const bars = x.kategori === "Kläder" ? 0 : x.kategori === "Rustning" ? x.vikt / 2 : x.vikt;
+    const not = x.kategori === "Kläder" ? ", kläder räknas inte" : x.kategori === "Rustning" ? ", buren rustning räknas till hälften" : "";
+    lagg("utrustning", "Vikt", `v-${x.gratis ? "p" : "k"}-${x.namn}`, `${x.antal} × ${x.namn}${x.gratis ? " (startpaket)" : ""}: ${kgText(x.vikt)} kg${not}`, bars);
+  }
+  if (u.belastning) {
+    lagg("utrustning", "Vikt", "belastning", `Över bärförmågan (STY ${u.barformaga} kg)${u.belastning.mod === null ? `: ${u.belastning.text}` : `: ${tecken(u.belastning.mod)} på förflyttning, SMI och CL i SMI-baserade färdigheter. ${u.belastning.text}`}`, 0, { visa: "för tungt", varning: true });
+  }
+
+  const saldo = { BP: 0, EP: 0, Guld: 0, Vikt: 0 };
+  for (const p of lista) {
+    if (typeof p.andring !== "number") continue;
+    const nyckel = p.saldo ?? p.typ;
+    saldo[nyckel] = Math.round(((saldo[nyckel] ?? 0) + p.andring) * 10) / 10;
+    p.kvar = saldo[nyckel];
+    if (p.typ === "GE") p.kvarText = ""; // slutvärdet står på egenskapens sista rad (nedan)
+    if (p.typ === "Vikt") { p.kvarText = `${kgText(p.kvar)}/${u.barformaga} kg`; if (p.kvar > u.barformaga) p.varning = true; }
+  }
+  // Grundegenskaperna byggs upp av ras, ålder, grundvärde och förmåga; värdet hittills säger inget förrän
+  // alla delar är med, så bara egenskapens sista rad visar slutvärdet (och bara när grundvärdena är satta)
+  if (rp.grundvarden) {
+    const sista = new Map(lista.filter((p) => p.typ === "GE").map((p) => [p.saldo, p]));
+    for (const p of sista.values()) p.kvarText = `= ${p.enhet} ${p.kvar}`;
+  }
+  const sidan = { BP: res.bp.kvar, EP: res.ep.kvar, Guld: u.kvar, Vikt: u.borda };
+  if (rp.ras && res.grundegenskaperSatta) for (const g of [...GRUNDEGENSKAPER, "STO"]) sidan[`GE-${g}`] = res.grundegenskaper[g];
+  const avvikelser = Object.keys(sidan).filter((t) => Math.round((saldo[t] ?? 0) * 10) !== Math.round(sidan[t] * 10))
+    .map((t) => `${t.replace("GE-", "")}: loggen ger ${saldo[t] ?? 0}, sidan visar ${sidan[t]}`);
   return { lista, saldo, sidan, avvikelser };
+}
+
+function stegEtikett(synliga, stegId) {
+  const i = synliga.findIndex((s) => s.id === stegId);
+  return stegId === null ? "Start" : i === -1 ? stegId : `${i + 1}. ${synliga[i].namn}`;
 }
 
 // ------------------------------------------------------------ fönstret
@@ -120,8 +191,8 @@ const STIL = `
 .pl-knapp { all: unset; cursor: pointer; min-width: 12px; padding: 0 3px; flex: none; border-radius: 3px; text-align: center; color: #ece6e2;
   border: 1px solid rgba(255, 255, 255, .25); font-size: 12px; line-height: 18px; }
 .pl-knapp:hover, .pl-knapp:focus-visible { background: rgba(255, 255, 255, .14); }
-.pl-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 5px 8px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
-.pl-filter label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap; }
+.pl-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 3px 8px; padding: 4px 8px; font-size: 11px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
+.pl-filter label { display: inline-flex; align-items: center; gap: 3px; cursor: pointer; white-space: nowrap; }
 .pl-filter input { margin: 0; accent-color: #e0886f; }
 .pl-filter b { font-variant-numeric: tabular-nums; }
 .pl-rader { flex: 1; min-height: 0; overflow-y: auto; margin: 0; padding: 2px 0; list-style: none; overscroll-behavior: contain; }
@@ -136,6 +207,10 @@ const STIL = `
 .pl-rad.noll .pl-andring { color: #b3a7a2; }
 .pl-typ { display: inline-block; min-width: 2.4em; margin-right: 4px; padding: 0 3px; border-radius: 3px; font-size: 10px; font-weight: 700; text-align: center; color: #1d1917; }
 .pl-typ.BP { background: #e3b778; } .pl-typ.EP { background: #8fb8e0; } .pl-typ.Guld { background: #e8d36a; }
+.pl-typ.GE { background: #c9a6e0; } .pl-typ.Slag { background: #b8c2cc; } .pl-typ.Vikt { background: #a8d5c2; } .pl-typ.Nekad { background: #ff8a75; }
+.pl-rad.varning .pl-kvar, .pl-rad.varning .pl-andring { color: #ffb4a3; font-weight: 700; }
+.pl-rad.nekad { background: rgba(200, 60, 40, .22); }
+.pl-rad.nekad .pl-text, .pl-rad.nekad .pl-andring { color: #ffb4a3; }
 @container (min-width: 560px) {
   .pl-rad { grid-template-columns: 11em minmax(0, 1fr) 7em 7em; grid-template-areas: "steg text andring kvar"; }
 }
@@ -153,21 +228,37 @@ const tecken = (n) => (n > 0 ? `+${n.toLocaleString("sv-SE")}` : n < 0 ? `−${(
 
 export function startaPoanglogg(api, { autofyllKnapp } = {}) {
   const { el } = api;
-  let inst = { filter: { BP: true, EP: true, Guld: true }, hojd: null, hel: false, liten: false, synlig: true };
+  const forval = Object.fromEntries(TYPER.map(([typ, , pa]) => [typ, pa]));
+  let inst = { filter: forval, hojd: null, hel: false, liten: false, synlig: true };
   try { inst = { ...inst, ...JSON.parse(localStorage.getItem(LAGRING) ?? "{}") }; } catch { /* frivilligt */ }
+  inst.filter = { ...forval, ...inst.filter }; // typer som har tillkommit sedan inställningen sparades
+  const etikett = Object.fromEntries(TYPER.map(([typ, , , e]) => [typ, e]));
+
+  // Ändringar som regelkontrollen stoppade ("Det går inte: …"). De går inte att räkna fram, så de sparas
+  // som händelser (de senaste 30) och står sist i loggen.
+  const nekade = [];
+  let nekadNr = 0;
+  api.efterNotis((text) => {
+    if (!text.startsWith("Det går inte")) return;
+    const { aktivtSteg } = api.lage();
+    const tid = new Date().toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    nekade.push({ id: `nekad|${++nekadNr}`, steg: stegEtikett(api.synligaSteg(api.rakna()), aktivtSteg), typ: "Nekad",
+      text: `${tid} ${text.replace(/^Det går inte: /, "").replace(/\.$/, "")}`, andring: null, visa: "stoppad" });
+    if (nekade.length > 30) nekade.shift();
+  });
   const sparaInst = () => { try { localStorage.setItem(LAGRING, JSON.stringify(inst)); } catch { /* frivilligt */ } };
 
   document.head.append(el("style", {}, STIL));
   const rader = el("ol", { class: "pl-rader", "aria-live": "polite" });
   const fot = el("div", { class: "pl-fot", role: "alert", hidden: true });
-  const saldoText = Object.fromEntries(TYPER.map(([typ]) => [typ, el("b", { id: `pl-saldo-${typ}` })]));
+  const saldoText = Object.fromEntries(["BP", "EP", "Guld"].map((typ) => [typ, el("b", { id: `pl-saldo-${typ}` })]));
   const helKnapp = el("button", { type: "button", class: "pl-knapp", id: "pl-hel" });
   const litenKnapp = el("button", { type: "button", class: "pl-knapp", id: "pl-liten" });
   const handtag = el("div", { class: "pl-handtag", title: "Dra uppåt för att göra loggen högre" });
   const filter = el("div", { class: "pl-filter" },
-    TYPER.map(([typ, text]) => el("label", { title: `Visa rader för ${text}. Talet är vad som är kvar.` },
+    TYPER.map(([typ, text]) => el("label", { title: `Visa rader för ${{ GE: "grundegenskaper", Slag: "tärningsslag", Vikt: "buren vikt", Nekad: "ändringar som regelkontrollen stoppade" }[typ] ?? text}.${saldoText[typ] ? " Talet är vad som är kvar." : ""}` },
       el("input", { type: "checkbox", id: `pl-filter-${typ}`, checked: inst.filter[typ],
-        onchange: (e) => { inst.filter[typ] = e.target.checked; sparaInst(); ritaLogg(); } }), typ, saldoText[typ])));
+        onchange: (e) => { inst.filter[typ] = e.target.checked; sparaInst(); ritaLogg(); } }), text, saldoText[typ] ?? null)));
   const panel = el("section", { class: "poanglogg", id: "poanglogg", "aria-label": "Poänglogg (utvecklarläge)" },
     handtag,
     el("div", { class: "pl-huvud" }, el("strong", {}, "Poänglogg"), autofyllKnapp ?? null,
@@ -237,20 +328,25 @@ export function startaPoanglogg(api, { autofyllKnapp } = {}) {
 
   let senast = null; // id → ändring vid förra ritningen, för att lysa upp det som är nytt eller ändrat
   let aktuellt = { lista: [] };
+  const andringText = (p) => p.visa ?? `${p.typ === "Vikt" ? `+${kgText(p.andring)}` : tecken(p.andring)} ${p.enhet ?? ENHET[p.typ]}`;
+  const kvarText = (p) => p.kvarText ?? (typeof p.kvar === "number" ? `kvar ${p.kvar.toLocaleString("sv-SE")}` : "");
+  const alla = () => [...aktuellt.lista, ...nekade];
+  const nyckel = (p) => `${p.andring}|${p.visa ?? ""}|${p.text}`;
   function ritaLogg() {
-    const synliga = aktuellt.lista.filter((p) => inst.filter[p.typ]);
+    const synliga = alla().filter((p) => inst.filter[p.typ]);
     const nya = [];
     rader.replaceChildren(...synliga.map((p) => {
-      const ny = senast !== null && senast.get(p.id) !== p.andring;
-      const rad = el("li", { class: `pl-rad ${p.andring > 0 ? "plus" : p.andring < 0 ? "minus" : "noll"}${ny ? " ny" : ""}`, "data-typ": p.typ },
+      const ny = senast !== null && senast.get(p.id) !== nyckel(p);
+      const tecknet = typeof p.andring !== "number" || p.typ === "Vikt" ? "noll" : p.andring > 0 ? "plus" : p.andring < 0 ? "minus" : "noll";
+      const rad = el("li", { class: `pl-rad ${tecknet}${p.varning ? " varning" : ""}${p.typ === "Nekad" ? " nekad" : ""}${ny ? " ny" : ""}`, "data-typ": p.typ },
         el("span", { class: "pl-steg" }, p.steg),
-        el("span", { class: "pl-text" }, el("span", { class: `pl-typ ${p.typ}` }, p.typ === "Guld" ? "sm" : p.typ), p.text),
-        el("span", { class: "pl-andring" }, `${tecken(p.andring)} ${ENHET[p.typ]}`),
-        el("span", { class: "pl-kvar", title: "Kvar efter raden" }, `kvar ${p.kvar.toLocaleString("sv-SE")}`));
+        el("span", { class: "pl-text" }, el("span", { class: `pl-typ ${p.typ}` }, etikett[p.typ]), p.text),
+        el("span", { class: "pl-andring" }, andringText(p)),
+        el("span", { class: "pl-kvar", title: p.typ === "GE" ? "Slutvärdet" : p.typ === "Vikt" ? "Buren vikt hittills av bärförmågan" : "Kvar efter raden" }, kvarText(p)));
       if (ny) nya.push(rad);
       return rad;
     }));
-    if (!synliga.length) rader.append(el("li", { class: "pl-tom" }, "Inga rader. Kryssa i BP, EP eller Guld ovan."));
+    if (!synliga.length) rader.append(el("li", { class: "pl-tom" }, "Inga rader. Kryssa i en typ ovan."));
     // Den första nya raden skrollas fram i loggen (bara inne i loggen, sidan står still)
     if (nya.length) {
       const r = nya[0];
@@ -260,8 +356,8 @@ export function startaPoanglogg(api, { autofyllKnapp } = {}) {
     }
   }
   function kopiera() {
-    const text = ["Steg\tTyp\tHändelse\tÄndring\tKvar", ...aktuellt.lista.filter((p) => inst.filter[p.typ])
-      .map((p) => [p.steg, p.typ, p.text, `${tecken(p.andring)} ${ENHET[p.typ]}`, p.kvar].join("\t"))].join("\n");
+    const text = ["Steg\tTyp\tHändelse\tÄndring\tKvar", ...alla().filter((p) => inst.filter[p.typ])
+      .map((p) => [p.steg, p.typ, p.text, andringText(p), kvarText(p)].join("\t"))].join("\n");
     navigator.clipboard?.writeText(text).then(() => api.visaNotis("Poängloggen är kopierad."), () => api.visaNotis("Kunde inte kopiera."));
   }
 
@@ -270,12 +366,12 @@ export function startaPoanglogg(api, { autofyllKnapp } = {}) {
     let utfall;
     try { utfall = poster(api); } catch (e) { console.error("Poängloggen kunde inte räknas fram", e); return; }
     aktuellt = utfall;
-    for (const [typ] of TYPER) saldoText[typ].textContent = utfall.saldo[typ].toLocaleString("sv-SE");
+    for (const typ of Object.keys(saldoText)) saldoText[typ].textContent = utfall.saldo[typ].toLocaleString("sv-SE");
     ritaLogg();
     // Loggen säger bara till när summan inte stämmer med det som visas på sidan
     fot.hidden = !utfall.avvikelser.length;
     fot.textContent = `Stämmer inte med sidan: ${utfall.avvikelser.join("; ")}`;
-    senast = new Map(utfall.lista.map((p) => [p.id, p.andring]));
+    senast = new Map(alla().map((p) => [p.id, nyckel(p)]));
     placera();
   });
 

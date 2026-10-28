@@ -1524,12 +1524,14 @@ function importera(text) {
   }
 }
 
+const efterNotis = []; // poängloggen i utvecklarläget samlar ändringar som regelkontrollen stoppade
 function visaNotis(text) {
   const n = $("#notis");
   n.textContent = text;
   n.hidden = false;
   clearTimeout(visaNotis.t);
   visaNotis.t = setTimeout(() => { n.hidden = true; }, 6000);
+  for (const fn of efterNotis) fn(text);
 }
 
 // ------------------------------------------------------------ ritning
@@ -1868,7 +1870,7 @@ function startaUtvecklarlage() {
     },
     visaFormular,
     // För poängloggen och den automatiska ifyllningen: läget just nu och en krok som körs efter varje ritning
-    nu: () => rp, uppdatera, rita, saknasPerSteg, synligaSteg, motorIndata, efterRita: (fn) => { efterRita.push(fn); fn(); },
+    nu: () => rp, uppdatera, rita, saknasPerSteg, synligaSteg, motorIndata, efterRita: (fn) => { efterRita.push(fn); fn(); }, efterNotis: (fn) => efterNotis.push(fn),
     lage: () => ({ vy, aktivtSteg, rullar, magiByte, provar }),
     tillatOmslag() { omslag = true; rita(); },
     stangAv() { try { localStorage.setItem("chronopia-dev", "nej"); } catch { /* frivilligt */ } },
