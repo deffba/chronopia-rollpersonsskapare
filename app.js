@@ -97,6 +97,7 @@ let aktivtSteg = "ras";
 let langst = 0; // längsta steg spelaren har kommit till; senare steg är släckta i sidomenyn
 let giltig; // senaste rollperson som följer alla regler
 let nySekundar = ""; // påbörjat val av ny sekundär färdighet
+let nyExtra = ""; // påbörjat val av ny extra yrkesfärdighet i steg 4
 let provar = false;
 let magiByte = null; // platsen där en magiskola byts ut efter ett misslyckat magiförmågeslag
 let autoAnvand = { egenskaper: false, fardigheter: false }; // Återställ visas bara efter en automatisk fördelning
@@ -564,16 +565,74 @@ function stegYrke() {
   ];
 }
 
+// BP för varje extra yrkesfärdighet, i samma prisordning som regelmotorn (s. 27)
+function extraPriser(lista) {
+  const k = R.yrken.extraYrkesfardigheter;
+  let vanliga = 0;
+  return lista.map((nyckel) => {
+    if (fardighetAv(R, nyckel || "x")?.typ === "magiskola") return k.magiskola;
+    vanliga += 1;
+    return vanliga === 1 ? k.forsta : vanliga === 2 ? k.andra : k.darefter;
+  });
+}
+
+// Beskrivningen av färdigheten som är vald i en rullgardin, innan den läggs till
+function valdBeskrivning(nyckel) {
+  const id = (nyckel ?? "").split(":")[0];
+  return id ? el("div", { class: "vald-beskrivning" }, kortBeskrivning(id, true)) : null;
+}
+
 function stegExtra(res) {
   const lista = rp.extraYrkesfardigheter;
   const k = R.yrken.extraYrkesfardigheter;
+  const priser = extraPriser(lista);
+  const yrkesrader = res.fardigheter.filter((f) => f.status === "yrke");
+  // Färdigvalda extra som inte syns bland yrkesfärdigheterna (t.ex. påbörjade i en äldre sparning) listas ändå, så att de går att ta bort
+  const ovriga = lista.filter((n) => !yrkesrader.some((f) => f.nyckel === n));
+  const taBort = (nyckel, namn) => el("button", {
+    type: "button", class: "lank", "aria-label": `Ta bort ${namn}`,
+    onclick: () => { const i = lista.indexOf(nyckel); if (i >= 0) lista.splice(i, 1); uppdatera(); },
+  }, "ta bort");
+  const rad = (nyckel, namn, grundegenskap) => {
+    const i = lista.indexOf(nyckel);
+    return el("tr", {},
+      el("td", {}, namn, fardighetsInfo(nyckel), i >= 0 ? taBort(nyckel, namn) : null),
+      el("td", {}, grundegenskap ?? ""),
+      el("td", {}, i >= 0 ? "Extra" : "Yrket"),
+      el("td", { class: "num" }, i >= 0 ? priser[i] : ""));
+  };
+  const nasta = extraPriser([...lista, nyExtra || "x"]).at(-1);
+  const harRedan = new Set([...yrkesNycklar(), ...lista]);
   return [
     el("p", {}, `Den första extra yrkesfärdigheten kostar ${k.forsta} BP, den andra ${k.andra} BP och varje därefter ${k.darefter} BP. En magiskola kostar ${k.magiskola} BP och kräver ett lyckat magiförmågeslag (1T100 högst (INT+PSY)/2, s. 106). Slaget görs i steg 6, när INT och PSY är bestämda.`),
-    el("ul", { class: "yrkeslista" }, lista.map((nyckel, i) => el("li", {},
-      fardighetsVal(`extra-${i}`, nyckel, (v) => { lista[i] = v; uppdatera(); }, magiMojlig, { yrke: true }),
-      nyckel?.startsWith("stridskonster") ? stridskonstInfo() : null,
-      el("button", { type: "button", class: "knapp liten", onclick: () => { lista.splice(i, 1); uppdatera(); } }, "Ta bort")))),
-    el("button", { type: "button", class: "knapp", onclick: () => { lista.push(""); uppdatera(); } }, "Lägg till yrkesfärdighet"),
+    el("h3", {}, "Dina yrkesfärdigheter"),
+    el("div", { class: "tabellram" }, el("table", { class: "tabell fardighetstabell yrkestabell" },
+      el("thead", {}, el("tr", {}, el("th", {}, "Färdighet"), el("th", {}, "Grundeg."), el("th", {}, "Från"), el("th", { class: "num" }, "BP", info("BP")))),
+      el("tbody", {},
+        yrkesrader.map((f) => rad(f.nyckel, f.namn, f.grundegenskap)),
+        ovriga.map((n) => {
+          const f = fardighetAv(R, (n || "x").split(":")[0]);
+          return rad(n, !f ? n || "Tom rad" : paborjad(n) ? `${f.namn} (inte färdigvald)` : namnFor(R, f, n), f?.grundegenskap);
+        })))),
+    lista.some((n) => n.startsWith("stridskonster")) ? stridskonstInfo() : null,
+    el("h3", {}, "Lägg till en extra yrkesfärdighet"),
+    el("div", { class: "rad" },
+      // Färdigheter som rollpersonen redan har som yrkesfärdighet visas inte; för dem med delval spärras de delval som redan finns
+      fardighetsVal("ny-extra", nyExtra, (v) => { nyExtra = v; rita(); }, (f) => magiMojlig(f) && (f.perVal || !harRedan.has(f.id)), { yrke: true }),
+      el("button", { type: "button", class: "knapp", disabled: paborjad(nyExtra), onclick: () => {
+        if (res.bp.kvar < nasta) {
+          visaNotis(`Det går inte: den extra yrkesfärdigheten kostar ${nasta} BP, och du har bara ${res.bp.kvar} BP kvar.`);
+          return;
+        }
+        if (!lista.includes(nyExtra)) lista.push(nyExtra);
+        nyExtra = "";
+        uppdatera();
+      } }, "Lägg till")),
+    valdBeskrivning(nyExtra),
+    nyExtra.startsWith("stridskonster") ? stridskonstInfo() : null,
+    el("p", { class: res.bp.kvar < nasta ? "hjalp felrad" : "hjalp" },
+      `Nästa extra yrkesfärdighet kostar ${nasta} BP. Du har ${res.bp.kvar} BP kvar.`,
+      res.bp.kvar < nasta ? " Du har inte råd med den." : " Välj färdighet, fyll i vad den gäller och tryck Lägg till."),
   ];
 }
 
@@ -1001,6 +1060,7 @@ function stegFardigheter(res) {
         nySekundar = "";
         uppdatera();
       } }, "Lägg till")),
+    valdBeskrivning(nySekundar),
     nySekundarInfo(res),
     res.magiformaga.behovs ? magiformagaKontroll(res) : null,
   ];
@@ -1774,7 +1834,7 @@ async function start() {
       return;
     }
     avbryt();
-    rp = TOM(); aktivtSteg = "ras"; langst = 0; vy = "steg"; nollstallSpel(); nySekundar = ""; magiByte = null; autoAnvand = { egenskaper: false, fardigheter: false }; utrustningsFilter = ""; uppdatera();
+    rp = TOM(); aktivtSteg = "ras"; langst = 0; vy = "steg"; nollstallSpel(); nySekundar = ""; nyExtra = ""; magiByte = null; autoAnvand = { egenskaper: false, fardigheter: false }; utrustningsFilter = ""; uppdatera();
   });
   $("#visa-spel").addEventListener("click", () => {
     $("#menypanel").hidden = true; $("#menyknapp").setAttribute("aria-expanded", "false");
@@ -1866,7 +1926,7 @@ function startaUtvecklarlage() {
     grundvardesForslag, epFordelning,
     ladda(ny, steg) {
       importera(JSON.stringify(tillFil(ny)));
-      if (rp.namn === ny.namn) { aktivtSteg = steg; vy = "steg"; nySekundar = ""; magiByte = null; utrustningsFilter = ""; rita(); }
+      if (rp.namn === ny.namn) { aktivtSteg = steg; vy = "steg"; nySekundar = ""; nyExtra = ""; magiByte = null; utrustningsFilter = ""; rita(); }
     },
     visaFormular,
     // För poängloggen och den automatiska ifyllningen: läget just nu och en krok som körs efter varje ritning
