@@ -82,8 +82,8 @@ const LARDOMSFORSLAG = ["Kunskap om magi", "Kunskap om religion", "Kunskap om de
 const SKOLOR = [["animism", "Animism"], ["elementarmagi", "Elementarmagi"], ["mentalism", "Mentalism"]];
 
 const TOM = () => ({
-  namn: "", spelare: "", kon: "", ras: "", alder: 21, yrke: "", yrkesval: {}, valfri: "",
-  extraYrkesfardigheter: [], rasval: [], grundvarden: null, // null tills steg 6 öppnas
+  namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",
+  extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
   magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
@@ -109,6 +109,8 @@ let blacksnal = false; // rollformuläret utan färgade ytor
 let medRegler = false; // rollformuläret med sidorna Färdigheterna i korthet
 // Innan en ras är vald räknar motorn som för en människa, men ingen ras visas som vald
 const rasId = () => rp.ras || "manniska";
+// Innan åldern är vald i steg 2 räknar motorn med 21 år (ingen bonus), som när ingen ras är vald
+const alderNu = () => rp.alder ?? 21;
 // Innan ett yrke är valt räknar motorn som för en krigare (som saknar bonusar), men inget yrke visas som valt och det ger inga yrkesfärdigheter
 const yrkeId = () => rp.yrke || "krigare";
 
@@ -225,14 +227,14 @@ function motorIndata() {
   const fardigheter = {};
   for (const k of allaNycklar(yrkesfardigheter)) fardigheter[k] = rp.fardigheter[k] ?? 0;
   return {
-    ...rp, ras: rasId(), rasVald: !!rp.ras, yrke: yrkeId(), yrkesfardigheter, fardigheter, modersmal: modersmal(),
+    ...rp, ras: rasId(), rasVald: !!rp.ras, alder: alderNu(), yrke: yrkeId(), yrkesfardigheter, fardigheter, modersmal: modersmal(),
     svardshand: { ...rp.svardshand, slag: rp.svardshand.slag ?? 0 },
     socialtStand: { ...rp.socialtStand, slag: rp.socialtStand.slag ?? 0 },
     startkapital: { ...rp.startkapital, slag: rp.startkapital.slag ?? 0 },
   };
 }
 
-const sarskildFormaga = () => sfFor(R, { ...rp, ras: rasId(), yrkesfardigheter: yrkesNycklar() }).formaga;
+const sarskildFormaga = () => sfFor(R, { ...rp, ras: rasId(), alder: alderNu(), yrkesfardigheter: yrkesNycklar() }).formaga;
 
 // ------------------------------------------------------------ små kontroller
 // Talfält: ett otillåtet värde ersätts med det närmaste tillåtna mellan det nya och det gamla.
@@ -470,7 +472,7 @@ function stegRas() {
 function fortsattSparad() {
   const s = sparadVidStart;
   if (!s) return null;
-  const beskr = [rasAv(R, s.rp.ras)?.namn, yrkeAv(R, s.rp.yrke)?.namn, `${s.rp.alder} år`].filter(Boolean).join(", ");
+  const beskr = [rasAv(R, s.rp.ras)?.namn, yrkeAv(R, s.rp.yrke)?.namn, s.rp.alder == null ? null : `${s.rp.alder} år`].filter(Boolean).join(", ");
   return el("div", { class: "rutor" }, el("div", {},
     el("p", {}, el("strong", {}, "Du har en sparad rollperson från förra gången: "), `${s.rp.namn || "Namnlös"} (${beskr}).`),
     el("div", { class: "rad" },
@@ -482,13 +484,13 @@ function fortsattSparad() {
 
 function stegAlder() {
   const ras = rasAv(R, rasId());
-  const kat = alderskategori(R, ras, rp.alder);
-  const eff = R.alder.effekter[kat];
-  const efter = R.alder.efterAr.find((r) => r.max === null || rp.alder <= r.max);
+  const vald = rp.alder != null;
+  const kat = vald ? alderskategori(R, ras, rp.alder) : null;
+  const efter = vald ? R.alder.efterAr.find((r) => r.max === null || rp.alder <= r.max) : null;
   const katNamn = Object.fromEntries(R.alder.kategorier.map((k) => [k.id, k.namn]));
   return [
     el("div", { class: "rad" },
-      falt("Ålder i år", tal("alder", rp.alder, (v) => { rp.alder = v ?? ras.alder.vuxen[0]; uppdatera(); }, { min: 1, bred: true })),
+      falt("Ålder i år", tal("alder", rp.alder, (v) => { rp.alder = v; uppdatera(); }, { min: 1, bred: true })),
       el("button", { type: "button", class: "knapp", onclick: () => { rp.alder = ras.alder.vuxen[0]; uppdatera(); } }, `Enkel metod: ${ras.alder.vuxen[0]} år`)),
     el("p", { class: "hjalp" }, "Klicka på en kategori i tabellen för att välja dess lägsta ålder och justera sedan i rutan ovan. Du kan också skriva in valfri ålder direkt."),
     el("div", { class: "tabellram" }, el("table", { class: "tabell" },
@@ -498,7 +500,9 @@ function stegAlder() {
         el("td", { class: "num" }, ras.alder[k.id][1] === null ? `${ras.alder[k.id][0]}+` : ras.alder[k.id].join("–")),
         GRUNDEGENSKAPER.map((g) => el("td", { class: "num" }, fmtMod(R.alder.effekter[k.id][g])))))))),
     el("p", { class: "hjalp" }, "Ålderns modifikationer läggs på grundegenskaperna i steg 6. Blir något slutvärde för lågt justerar du grundvärdena där."),
-    el("p", { class: "summering" }, `${rp.alder} år räknas som ${katNamn[kat].toLowerCase()}. Det ger +${efter.bp} BP, startkapital ×${String(efter.kapital).replace(".", ",")} och ${efter.ep} EP till färdigheter.`),
+    el("p", { class: "summering" }, vald
+      ? `${rp.alder} år räknas som ${katNamn[kat].toLowerCase()}. Det ger +${efter.bp} BP, startkapital ×${String(efter.kapital).replace(".", ",")} och ${efter.ep} EP till färdigheter.`
+      : "Välj en ålder: skriv in den, klicka på en kategori eller använd enkel metod."),
   ];
 }
 
@@ -587,7 +591,8 @@ function yrketsVal() {
           const ny = [...varden]; ny[j] = v; satt(ny);
         }, { yrke: true })))),
       post.maste ? el("p", { class: "hjalp" }, `${post.maste.join(" och ")} ingår alltid för det här yrket (s. 24–25).`) : null,
-      hjalpFor(post.fardighet));
+      // Instruktionen behövs bara när något av valen går att skriva in själv
+      post.antal > (post.maste?.length ?? 0) ? hjalpFor(post.fardighet) : null);
   });
   const hantverk = yrkesNycklar().filter((k) => k.startsWith("hantverk:"));
   const bonus = yrke.startbonus?.find((b) => b.valEttAv);
@@ -742,11 +747,36 @@ let manuellaSlag = false; // spelaren skriver in slagen själv i stället för a
 const utkastSlag = {}; // inskrivna slag som ännu inte är bekräftade, per slag-id
 let nyssSlaget = null; // id för slaget vars resultat precis har landat
 const rulltid = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? 300 : 2500);
-const tarningsIkon = () => {
+// T20 ritas som en sexhörning med en triangel i mitten (som en tjugosidig tärning sedd rakt framifrån)
+const T20_FORM = '<polygon points="12,2 20.7,7 20.7,17 12,22 3.3,17 3.3,7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>'
+  + '<polygon points="12,5.5 18.2,16.2 5.8,16.2" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round" opacity=".55"/>';
+const T20_KANTER = '<path d="M12 2v3.5M20.7 7l-2.5 9.2M3.3 7l2.5 9.2M12 22l-6.2-5.8M12 22l6.2-5.8M3.3 17l2.5-.8M20.7 17l-2.5-.8M3.3 7L12 5.5M20.7 7L12 5.5" stroke="currentColor" stroke-width=".8" opacity=".45"/>';
+const tarningsIkon = (sidor = 6) => {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", "tarning"); svg.setAttribute("aria-hidden", "true");
+  if (sidor === 20) { svg.innerHTML = T20_FORM + T20_KANTER; return svg; }
   svg.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
     + [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="currentColor"/>`).join("");
+  return svg;
+};
+// Två tärningar (1–6) som ger summan, för ett inskrivet slag där bara summan är känd. Den första väljs
+// slumpvis (eller så jämnt som möjligt) bland de värden som går, den andra får resten.
+function delaSumma(summa, slump = true, sidor = 6) {
+  const lagst = Math.max(1, summa - sidor), hogst = Math.min(sidor, summa - 1);
+  const forsta = slump ? lagst + Math.floor(Math.random() * (hogst - lagst + 1)) : Math.ceil(summa / 2);
+  return [forsta, summa - forsta];
+}
+// En tärning för ett visst värde: en sexsidig med prickar, en T20 (sexhörning) med siffran
+const PRICKAR = { 1: [[12, 12]], 2: [[8, 8], [16, 16]], 3: [[7, 7], [12, 12], [17, 17]], 4: [[8, 8], [16, 8], [8, 16], [16, 16]],
+  5: [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]], 6: [[8, 7], [16, 7], [8, 12], [16, 12], [8, 17], [16, 17]] };
+const tarningsSida = (v, sidor = 6) => {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", sidor === 6 ? "tarning sida" : "tarning sida t20"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", String(v));
+  svg.innerHTML = sidor === 6
+    ? '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
+      + PRICKAR[v].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.8" fill="currentColor"/>`).join("")
+    : '<polygon points="12,1.5 21,6.75 21,17.25 12,22.5 3,17.25 3,6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+      + `<text x="12" y="15.6" text-anchor="middle" font-size="${v > 9 ? 9 : 10}" font-weight="700" fill="currentColor" font-family="sans-serif">${v}</text>`;
   return svg;
 };
 // Tärningsrutan ligger i slagfältet. Vid klick snurrar tärningen medan "Slår …" pulserar;
@@ -755,7 +785,7 @@ const TONING = 400;
 // Rutans text. Rutan kan visa "Slå 2T6", "Slår …" och slaget; de två första ligger osynliga i samma ruta
 // (via CSS), så att rutan är lika bred som sin längsta text och inte ändrar storlek under slaget.
 const rutText = (synlig, text, klass = "") => el("span", { class: `rutetext ${klass}`.trim(), "data-a": text, "data-b": "Slår …" }, el("span", {}, synlig));
-function tarningsKnapp(id, text, sla) {
+function tarningsKnapp(id, text, sla, sidor = 6) {
   const rullarNu = rullar === id;
   return el("button", {
     type: "button", class: "knapp tarningsknapp i-falt" + (rullarNu ? " rullar" : ""), id: `${id}-sla`,
@@ -767,10 +797,10 @@ function tarningsKnapp(id, text, sla) {
       if (tid > TONING * 2) setTimeout(() => document.getElementById(`${id}-sla`)?.classList.add("tona-ut"), tid - TONING);
       setTimeout(() => { rullar = null; nyssSlaget = id; sla(); }, tid);
     },
-  }, tarningsIkon(), rutText(rullarNu ? "Slår …" : text, text, rullarNu ? "pulsera" : ""));
+  }, tarningsIkon(sidor), rutText(rullarNu ? "Slår …" : text, text, rullarNu ? "pulsera" : ""));
 }
 // Med manuella slag skriver spelaren in slaget och bekräftar det med tärningsrutan
-function bekraftaSlag(id, min, max, satt) {
+function bekraftaSlag(id, min, max, satt, sidor = 6) {
   const giltigt = (v) => Number.isInteger(v) && v >= min && v <= max;
   const knapp = el("button", {
     type: "button", class: "knapp tarningsknapp", id: `${id}-sla`, disabled: !giltigt(utkastSlag[id]),
@@ -780,7 +810,7 @@ function bekraftaSlag(id, min, max, satt) {
       delete utkastSlag[id];
       nyssSlaget = id; satt(v);
     },
-  }, tarningsIkon(), el("span", {}, "Bekräfta slag"));
+  }, tarningsIkon(sidor), el("span", {}, "Bekräfta slag"));
   const falt = el("input", {
     type: "number", id: `${id}-slag`, class: "tal", min, max, step: 1, value: utkastSlag[id] ?? "",
     title: `${min}–${max}`,
@@ -790,18 +820,30 @@ function bekraftaSlag(id, min, max, satt) {
   return { falt, knapp };
 }
 // Slagfältet (och, med manuella slag, bekräfta-knappen som läggs sist i raden)
-function slagKontroll(id, etikett, text, min, max, satt, slumpa) {
-  if (!manuellaSlag) return { slagfalt: falt(etikett, tarningsKnapp(id, text, () => satt(slumpa()))), knapp: null };
-  const b = bekraftaSlag(id, min, max, satt);
+function slagKontroll(id, etikett, text, min, max, satt, slumpa, sidor = 6) {
+  if (!manuellaSlag) return { slagfalt: falt(etikett, tarningsKnapp(id, text, () => satt(slumpa()), sidor)), knapp: null };
+  const b = bekraftaSlag(id, min, max, satt, sidor);
   return { slagfalt: falt(etikett, b.falt), knapp: b.knapp };
 }
 const inteSlaget = () => (manuellaSlag ? "Skriv in slaget och bekräfta det." : "Slå tärningen.");
 // Låst fält som visar ett gjort val (lagda BP, bonus). Tal visas i ett sifferfält precis som innan det låstes,
 // så att siffran inte flyttar sig.
 const lastFalt = (id, varde) => el("input", { type: typeof varde === "number" ? "number" : "text", id, class: "tal last", value: varde, readonly: true, "aria-readonly": "true", tabindex: -1 });
-// Tärningsrutan när slaget har landat: tärningen ligger kvar på samma plats och slaget står bredvid den
-const landatSlag = (id, varde, text) => el("div", { class: "knapp tarningsknapp i-falt landad" + (nyssSlaget === id ? " nytt" : ""), id: `${id}-slag`, "data-varde": varde },
-  tarningsIkon(), rutText(varde, text, "slagvarde"));
+// Tärningsrutan när slaget har landat: tärningen ligger kvar på samma plats och slaget står bredvid den.
+// Slaget visas som tärningar: T6 med prickar, T20 med siffran. Bonusar (lagda BP, ras, yrke …) står var för sig
+// efter tärningarna, t.ex. ⚃ + ⚁ + 2 + 4. Saknas tärningarna (slag sparat före den här versionen) delas summan upp.
+// Andra tärningar (T3, T4 …) visas som summan.
+function landatSlag(id, varde, text, { tarningar = null, bonusar = [], sidor = 6, antal = 2 } = {}) {
+  bonusar = bonusar.filter(Boolean);
+  const summan = (t) => Array.isArray(t) && t.length === antal && t.every((x) => x >= 1 && x <= sidor) && t.reduce((a, b) => a + b, 0) === varde;
+  if (!summan(tarningar) && varde >= antal && varde <= antal * sidor) tarningar = antal === 1 ? [varde] : antal === 2 ? delaSumma(varde, false, sidor) : null;
+  const kanda = (sidor === 6 || sidor === 20) && summan(tarningar);
+  const bonusText = bonusar.map((b) => (b > 0 ? ` + ${b}` : ` − ${-b}`)).join("");
+  const innehall = kanda ? el("span", { class: "slagvarde tarningsrad" }, tarningar.flatMap((t, i) => [i ? " + " : null, tarningsSida(t, sidor)]), bonusText)
+    : rutText(`${varde}${bonusText}`, text, "slagvarde");
+  return el("div", { class: "knapp tarningsknapp i-falt landad" + (kanda ? " med-tarningar" : "") + (nyssSlaget === id ? " nytt" : ""), id: `${id}-slag`, "data-varde": varde },
+    kanda ? null : tarningsIkon(sidor), innehall);
+}
 // Utvecklarläget kan låsa upp ett gjort slag så att det går att slå om. Det görs utan regelkontroll:
 // utan slaget kan till exempel inköpen kosta mer än startkapitalet tills det är slaget igen.
 let omslag = false;
@@ -813,20 +855,28 @@ const omslagKnapp = (id) => (omslag ? el("button", { type: "button", class: "kna
     spara();
     rita();
   } }, "Lås upp") : null);
-// Resultatet under slaget; det lyser upp när tärningen nyss har landat
-const resultat = (id, text) => el("div", { class: "resultat" },
-  el("span", { class: "etikett" }, "Resultat"), el("p", { class: "summering" + (nyssSlaget === id ? " nytt" : "") }, text));
+// Resultatet under slaget som punkter (text, lista med rader eller { rader, total }); det lyser upp när tärningen
+// nyss har landat. En total står på en egen rad under punkterna.
+const resultat = (id, tolkning) => {
+  const { rader, total } = typeof tolkning === "string" || Array.isArray(tolkning) ? { rader: tolkning } : tolkning;
+  return el("div", { class: "resultat" },
+    el("span", { class: "etikett" }, "Resultat"), el("ul", { class: "punkter summering resultatlista" + (nyssSlaget === id ? " nytt" : "") }, [].concat(rader).filter(Boolean).map((t) => el("li", {}, t))),
+    total ? el("p", { class: "resultat-total", id: `${id}-total` }, total) : null);
+};
 
 const bpFaltet = (etikett, kontroll) => { const f = falt(etikett, kontroll); f.classList.add("bp-falt"); return f; };
 
-// bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget; de visas som punkter och summeras i ett eget fält
-function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, bonusar = []) {
+// bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget; de visas som punkter (med extraRader sist).
+// Lagda BP räknas också som en bonus när de är fler än 0, men står bara i BP-fältet, inte bland punkterna.
+// Bonusarna visas var för sig i tärningsrutan, t.ex. 2T6+2+4.
+function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = []) {
   const s = rp[nyckel];
-  const bonus = bonusar.reduce((a, [, v]) => a + v, 0);
-  const bonuslista = bonusar.length ? el("ul", { class: "punkter bonuslista" }, bonusar.map(([t, v]) => el("li", {}, `${t}: ${fmtMod(v)}`))) : null;
+  const bonusar = [s.bp > 0 ? ["BP lagda", s.bp] : null, ...fastaBonusar].filter(Boolean);
+  const punkter = [...fastaBonusar.map(([t, v]) => `${t}: ${fmtMod(v)}`), ...extraRader];
+  const bonuslista = punkter.length ? el("ul", { class: "punkter bonuslista" }, punkter.map((t) => el("li", {}, t))) : null;
   const [n, sidor] = tarning === "2T20" ? [2, 20] : [2, 6];
+  tarning += bonusar.map(([, v]) => (v > 0 ? `+${v}` : `−${-v}`)).join("");
   const satt = (falt, v) => { rp[nyckel][falt] = v; efter(); uppdatera(); };
-  const bonusfalt = bonus ? falt("Bonus", lastFalt(`${id}-bonus`, fmtMod(bonus))) : null;
   // När slaget är gjort ligger det fast: BP och slag går inte att ändra i efterhand
   if (s.slag !== null && s.slag !== undefined) {
     return [
@@ -834,18 +884,19 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
       bonuslista,
       el("div", { class: "rad" },
         bpFaltet("BP lagda", lastFalt(`${id}-bp`, s.bp)),
-        falt(`Slag (${tarning})`, landatSlag(id, s.slag, `Slå ${tarning}`)),
-        bonusfalt,
+        falt(`Slag (${tarning})`, landatSlag(id, s.slag, `Slå ${tarning}`, { tarningar: s.tarningar, bonusar: bonusar.map(([, v]) => v), sidor })),
         omslagKnapp(id)),
       resultat(id, tolkning),
     ];
   }
-  const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => satt("slag", v), () => slaT(n, sidor));
+  // Varje tärning sparas också, så att den kan visas med sina prickar (ett inskrivet slag delas upp på två tärningar)
+  const sla = () => { const t = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sidor)); rp[nyckel].tarningar = t; return t.reduce((a, b) => a + b, 0); };
+  const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => { if (manuellaSlag) rp[nyckel].tarningar = delaSumma(v, true, sidor); satt("slag", v); }, sla, sidor);
   const bpFalt = rullar === id ? lastFalt(`${id}-bp`, s.bp ?? 0) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
   return [
     el("p", {}, hjalp),
     bonuslista,
-    el("div", { class: "rad" }, bpFaltet("BP att lägga", bpFalt), slagfalt, bonusfalt, knapp),
+    el("div", { class: "rad" }, bpFaltet("BP att lägga", bpFalt), slagfalt, knapp),
     el("p", { class: "summering" }, tolkning),
   ];
 }
@@ -876,7 +927,7 @@ function stegFormagor() {
   const s = rp.sarskildaFormagor;
   const tolkning = !s.bp ? "Lägg minst 1 BP för att få slå (högst 40)." :
     s.slag === null || s.slag === undefined ? inteSlaget() :
-    `${s.slag} + ${s.bp} = ${s.slag + s.bp}: ${sf?.namn}. ${sf?.effekt} (s. ${sf?.sida})`;
+    [`Resultat: ${s.slag + s.bp}.`, `${sf?.namn}: ${sf?.effekt} (s. ${sf?.sida})`];
   // Byts förmågan ut gäller inte de gamla valen längre
   const nollstall = () => {
     const ny = sfFor(R, { ...rp, ras: rasId(), yrkesfardigheter: yrkesNycklar() }).formaga;
@@ -1141,7 +1192,7 @@ function stegSvardshand(res) {
     return [el("p", { class: "summering" }, `Den särskilda förmågan ger ${sf.namn.toLowerCase()} rollperson, så du behöver inte slå (s. 32).`)];
   }
   return slagSteg("sh", "svardshand", "Svärdshand", "2T6",
-    rp.svardshand.slag === null ? inteSlaget() : `${rp.svardshand.slag} + ${rp.svardshand.bp} = ${rp.svardshand.slag + rp.svardshand.bp}: ${res.slag.svardshand}.`,
+    rp.svardshand.slag === null ? inteSlaget() : [`Resultat: ${rp.svardshand.slag + rp.svardshand.bp}.`, `Svärdshand: ${res.slag.svardshand}.`],
     "Slå 2T6 plus lagda BP: 2–11 höger, 12–14 vänster, 15–18 dubbelhänt, 19+ ambidextriös.");
 }
 
@@ -1159,9 +1210,8 @@ function stegStand(res) {
     el("p", { class: "hjalp" }, "Huvudregeln är att slå. Om spelledaren går med på det kan du välja stånd direkt. Då räknas det lägsta slagresultatet för det ståndet, och du lägger inga BP här."),
     valLista("valt-stand", "", tabell.map(([, n]) => [n, `${n} (${standsvarde(tabell, n)}+)`]), (v) => { if (v) { rp.socialtStand = { bp: 0, slag: null, valt: v }; uppdatera(); } }, "Välj stånd …")) : null;
   return [...slagSteg("ss", "socialtStand", "Socialt stånd", "2T6",
-    rp.socialtStand.slag === null ? inteSlaget() :
-      `${rp.socialtStand.slag} + ${rp.socialtStand.bp}${bonus ? ` + ${bonus} (${ras.namn.toLowerCase()})` : ""} = ${res.slag.ssResultat}: ${res.slag.socialtStand}.`,
-    "Slå 2T6 plus lagda BP. Socialt stånd påverkar läs- och skrivkunnighet i modersmålet och taket för startkapitalet.",
+    rp.socialtStand.slag === null ? inteSlaget() : [`Resultat: ${res.slag.ssResultat}.`, `Socialt stånd: ${res.slag.socialtStand}.`],
+    "Slå 2T6 plus lagda BP. Socialt stånd påverkar läs- och skrivkunnighet i modersmålet och taket för startkapitalet. Hälften av de BP du lägger här (avrundat uppåt) läggs också som bonus på slaget för startkapital i steg 10.",
     undefined, bonus ? [[`Ras (${ras.namn.toLowerCase()})`, bonus]] : []), valja];
 }
 
@@ -1175,10 +1225,14 @@ function stegKapital(res) {
     ras.slagbonus.startkapital ? [`Ras (${ras.namn.toLowerCase()})`, ras.slagbonus.startkapital] : null,
     yrke.slagbonus?.startkapital ? [`Yrke (${yrke.namn.toLowerCase()})`, yrke.slagbonus.startkapital] : null,
   ].filter(Boolean);
+  const utanTak = rp.startkapital.slag + rp.startkapital.bp + bonusar.reduce((a, [, v]) => a + v, 0);
   return slagSteg("sk", "startkapital", "Startkapital", "2T6",
-    rp.startkapital.slag === null ? inteSlaget() :
-      `Resultat ${res.slag.skResultat} (taket är socialt stånd ${res.slag.ssResultat} + ${yrke.kapitaltak ?? 10}). Ålder ger ×${String(alderEff.kapital).replace(".", ",")}: ${sm(res.slag.startkapital)}.`,
-    `Slå 2T6 plus lagda BP. Bonusarna nedan läggs på slaget. Resultatet kan inte bli högre än socialt stånd + ${yrke.kapitaltak ?? 10}.`, undefined, bonusar);
+    rp.startkapital.slag === null ? inteSlaget() : { rader: [
+      `Resultat: ${res.slag.skResultat}${utanTak > res.slag.skResultat ? ` (${utanTak} före taket)` : ""}.`,
+      `Åldersbonus: ×${String(alderEff.kapital).replace(".", ",")}.`],
+    total: `Totalt startkapital: ${sm(res.slag.startkapital)}` },
+    `Slå 2T6 plus lagda BP. Bonusarna nedan läggs på slaget. Resultatet kan inte bli högre än socialt stånd + ${yrke.kapitaltak ?? 10}.`, undefined, bonusar,
+    [`Tak för startkapital: ${res.slag.ssResultat + (yrke.kapitaltak ?? 10)}`]);
 }
 
 // EP per FV för en ny sekundär färdighet (s. 35–36)
@@ -1490,7 +1544,7 @@ function rollformular(res) {
     el("div", { class: "formular-huvud" },
       el("h2", {}, el("input", { id: "formular-namn", class: "namnfalt", type: "text", value: rp.namn, placeholder: "Namnlös rollperson", "aria-label": "Rollpersonens namn",
         onchange: (e) => { rp.namn = e.target.value; uppdatera(); } })),
-      el("p", {}, [rp.ras ? res.ras.namn : null, rp.yrke ? res.yrke.namn : null, `${rp.alder} år`, rp.kon].filter(Boolean).join(" · "))),
+      el("p", {}, [rp.ras ? res.ras.namn : null, rp.yrke ? res.yrke.namn : null, rp.alder == null ? null : `${rp.alder} år`, rp.kon].filter(Boolean).join(" · "))),
     vy === "spel" ? el("dl", { class: "nyckelvarden" },
       el("div", {}, el("dt", {}, "Osparade EP", info("EP")), el("dd", {}, spelPotter(spelCtx(res)).ep)),
       el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, rp.spel.hjaltepoang ?? 0))) : el("div", { class: "potter" },
@@ -1547,6 +1601,7 @@ function saknasPerSteg(res) {
   const ras = rasAv(R, rasId());
   const klar = (v) => !paborjad(v ?? "");
   if (!rp.ras) lista.ras.push("Ras");
+  if (rp.alder == null) lista.alder.push("Ålder");
   const valfriRas = ras.primara.find((p) => p.valfri);
   if (valfriRas && !rp.rasval.some(klar)) lista.ras.push(`Rasens valfria ${valfriRas.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`);
   if (!rp.yrke) lista.yrke.push("Yrke");
@@ -1590,6 +1645,14 @@ function saknasPerSteg(res) {
 function saknas(res) {
   const perSteg = saknasPerSteg(res);
   return synligaSteg(res).flatMap((st, i) => perSteg[st.id].map((t) => `${t} (steg ${i + 1})`));
+}
+
+// En färdighet som är vald i listan men inte tillagd med Lägg till (steg 4 och 11) spärrar vägen framåt.
+// Ger felmeddelandet, eller null.
+function ejTillagd(stegId) {
+  const utkast = { extra: nyExtra, fardigheter: nySekundar }[stegId];
+  if (!utkast) return null;
+  return `Du har valt ${namnFor(R, fardighetAv(R, utkast), utkast)} men inte tryckt Lägg till. Tryck Lägg till eller töm valet innan du går vidare.`;
 }
 
 // Första steget som har obligatoriska val kvar; senare steg går inte att öppna.
@@ -1821,11 +1884,15 @@ function ritaVy() {
   if (STEG.findIndex((s) => s.id === aktivtSteg) > grans) aktivtSteg = STEG[grans].id;
   langst = Math.max(langst, STEG.findIndex((s) => s.id === aktivtSteg));
   const oppna = Math.min(grans, langst);
+  const tillagg = ejTillagd(aktivtSteg);
   const rail = $("#steg");
   rail.replaceChildren(...STEG.map((s, i) => el("li", {},
     el("button", { type: "button", class: "steg-knapp" + (s.id === aktivtSteg ? " aktiv" : ""), "aria-current": s.id === aktivtSteg ? "step" : null,
       disabled: i > oppna, title: i > oppna ? "Gör klart de tidigare stegen först" : null,
-      onclick: () => { aktivtSteg = s.id; uppdatera(); $("#arbetsyta").focus({ preventScroll: true }); } },
+      onclick: () => {
+        if (tillagg && i > STEG.findIndex((x) => x.id === aktivtSteg)) { visaNotis(tillagg); return; }
+        aktivtSteg = s.id; uppdatera(); $("#arbetsyta").focus({ preventScroll: true });
+      } },
     el("span", { class: "steg-nr" }, i + 1), el("span", { class: "steg-namn" }, s.namn),
     s.bp ? el("span", { class: "steg-bp" }, bpForSteg(s.id, res)) : null))));
 
@@ -1856,7 +1923,9 @@ function ritaVy() {
     baraMagi ? el("p", { class: "hjalp magi-ledning" }, "Rollpersonen har en magiskola men är inte magiker. När du går vidare avgör ett magiförmågeslag om rollpersonen kan lära sig magi.") : el("span"),
     el("nav", { class: "steg-fot", "aria-label": "Föregående och nästa steg" },
       index > 0 ? el("button", { type: "button", class: "knapp", onclick: () => { aktivtSteg = STEG[index - 1].id; uppdatera(); } }, `← ${STEG[index - 1].namn}`) : el("span"),
-      index < STEG.length - 1 ? el("div", { class: "nasta-kolumn" }, magiGorOm(steg.id), el("button", { type: "button", class: "knapp primar", id: "nasta-steg", disabled: index + 1 > grans && !baraMagi, onclick: () => {
+      index < STEG.length - 1 ? el("div", { class: "nasta-kolumn" }, magiGorOm(steg.id), el("button", { type: "button", class: "knapp primar" + (tillagg ? " sparrad" : ""), id: "nasta-steg",
+        disabled: index + 1 > grans && !baraMagi, "aria-disabled": tillagg ? "true" : null, onclick: () => {
+        if (tillagg) { visaNotis(tillagg); return; }
         if (baraMagi) { oppnaMagiModal(STEG[index + 1].id); return; }
         aktivtSteg = STEG[index + 1].id; uppdatera();
       } }, baraMagi ? "MAGIFÖRMÅGESLAG" : `${STEG[index + 1].namn} →`)) : magiGorOm(steg.id) ?? el("span")));

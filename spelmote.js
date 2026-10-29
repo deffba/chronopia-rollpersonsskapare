@@ -95,8 +95,8 @@ function fardighetsvaljare(ctx, utkast, idPrefix, { avB = false, onval }) {
 
 // Tärningsruta för ett slag i ett utkast. satt(v) sparar slaget.
 function slag(ctx, id, etikett, tarning, varde, satt, [n, sidor]) {
-  if (varde !== null && varde !== undefined) return ctx.falt(etikett, ctx.landatSlag(id, varde, `Slå ${tarning}`));
-  const { slagfalt, knapp } = ctx.slagKontroll(id, etikett, `Slå ${tarning}`, n, n * sidor, (v) => { satt(v); ctx.rita(); }, () => ctx.slaT(n, sidor));
+  if (varde !== null && varde !== undefined) return ctx.falt(etikett, ctx.landatSlag(id, varde, `Slå ${tarning}`, { sidor, antal: n }));
+  const { slagfalt, knapp } = ctx.slagKontroll(id, etikett, `Slå ${tarning}`, n, n * sidor, (v) => { satt(v); ctx.rita(); }, () => ctx.slaT(n, sidor), sidor);
   return [slagfalt, knapp];
 }
 
@@ -512,7 +512,7 @@ function forbFormaga(ctx, p) {
       ctx.falt("HP att lägga", siffra(ctx, "forb-sf-hp", Math.min(forb.formagaHp, hogst), (n) => { forb.formagaHp = n; }, { min: S.min, max: hogst })),
       slag(ctx, "forb-sf", `Slag (${S.tarning})`, S.tarning, null, (v) => { forb.formaga = { hp: Math.min(forb.formagaHp, hogst), slag: v, val: [] }; }, [2, 20])),
     f && traff ? [
-      el("div", { class: "rad" }, ctx.falt("HP lagda", el("input", { class: "tal last", value: f.hp, readonly: true })), ctx.falt(`Slag (${S.tarning})`, ctx.landatSlag("forb-sf", f.slag, `Slå ${S.tarning}`))),
+      el("div", { class: "rad" }, ctx.falt("HP lagda", el("input", { class: "tal last", value: f.hp, readonly: true })), ctx.falt(`Slag (${S.tarning})`, ctx.landatSlag("forb-sf", f.slag, `Slå ${S.tarning}`, { sidor: 20 }))),
       el("p", { class: "summering" }, `${f.slag} + ${f.hp * S.bonusPerHp} = ${f.slag + f.hp * S.bonusPerHp}: ${traff.namn}. ${traff.effekt} (s. ${traff.sida})`),
       valen.length ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, valen)] : null,
       traff.regel ? null : el("p", { class: "hjalp" }, "Förmågan påverkar inga värden på formuläret, men står med bland särskilda förmågor.")] : null,
