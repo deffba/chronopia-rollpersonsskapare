@@ -70,7 +70,7 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
     }
   }
 
-  // Magiförmågeslaget görs i steg 6 eller 11, beroende på var magiskolan kom ifrån
+  // Magiförmågeslaget slås direkt (utan modalen) när det är det som återstår i steget
   if (slag && kvar.includes("Magiförmågeslaget") && rp.magiformaga?.slag == null) rp.magiformaga = { slag: slaT(1, 100) };
 
   if (steg === "formagor") fyllFormaga(api, autoDelval, anvanda, slag);
@@ -165,7 +165,7 @@ export function startaAutofyll(api, autoDelval) {
     vantar = false;
     if (!pa) return;
     const l = api.lage();
-    if (l.vy !== "steg" || l.rullar || l.magiByte || l.provar || document.querySelector("#magidialog")) return;
+    if (l.vy !== "steg" || l.rullar || l.magiModal || l.provar) return;
     const kvar = api.saknasPerSteg(api.rakna())[l.aktivtSteg] ?? [];
     const signatur = `${l.aktivtSteg}|${JSON.stringify(kvar)}|${JSON.stringify(api.nu())}`;
     if (upplast !== l.aktivtSteg) upplast = null;
