@@ -1715,9 +1715,9 @@ function stegExport(res) {
   return [
     el("p", { class: "summering" }, `${rp.namn} är klar: ${res.ras.namn.toLowerCase()}, ${res.yrke.namn.toLowerCase()}, ${rp.alder} år.`),
     el("p", {}, "Spara rollpersonen som en JSON-fil. Filen kan läsas in igen med knappen Läs in fil högst upp, till exempel för att fortsätta på en annan dator."),
-    el("p", {}, "Rollformuläret ser ut som bokens (s. 11–12) och kan skrivas ut eller sparas som PDF. Det du skriver i det under spel, som erf och pengar, sparas i samma fil."),
+    el("p", {}, "Rollformuläret ser ut som bokens (s. 11–12) och kan laddas ner som PDF, färdigt att skriva ut eller fylla i på datorn. Det du skriver i rollformuläret här på sidan under spel, som erf och pengar, sparas i JSON-filen."),
     el("div", { class: "rad" },
-      el("button", { type: "button", class: "knapp primar", id: "pdf-direkt", onclick: skrivUtDirekt }, "Skriv ut eller spara som PDF"),
+      el("button", { type: "button", class: "knapp primar", id: "pdf-direkt", onclick: laddaNerPdf }, "Ladda ner rollformuläret som PDF"),
       el("button", { type: "button", class: "knapp", onclick: visaFormular }, "Visa rollformuläret"),
       el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
       el("button", { type: "button", class: "knapp", onclick: () => kopiera(text) }, "Kopiera JSON")),
@@ -1960,14 +1960,14 @@ function ritaFormularVy(res) {
   vyEl.replaceChildren(
     el("div", { class: "rf-verktyg" },
       el("button", { type: "button", class: "knapp", onclick: () => { vy = harLogg() ? "spel" : "steg"; rita(); } }, harLogg() ? "← Tillbaka till spelmötena" : "← Tillbaka till stegen"),
-      el("button", { type: "button", class: "knapp primar", onclick: skrivUt }, "Skriv ut eller spara som PDF"),
+      el("button", { type: "button", class: "knapp primar", id: "pdf-ladda-ner", onclick: laddaNerPdf }, "Ladda ner som PDF"),
       el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
       el("label", {}, el("input", { type: "checkbox", id: "blacksnal", checked: blacksnal,
         onchange: (e) => { blacksnal = e.target.checked; vyEl.classList.toggle("rf-blacksnal", blacksnal); } }), "Spara bläck"),
       el("label", {}, el("input", { type: "checkbox", id: "med-regler", checked: medRegler,
         onchange: (e) => { medRegler = e.target.checked; rita(); } }), "Ta med färdigheterna i korthet"),
       el("p", { class: "hjalp" }, "Skriv direkt i de gula fälten. Det sparas i rollpersonen och följer med när du laddar ner filen. ",
-        harLogg() ? "Grundegenskaper, FV och KP ändras under Spelmöten (Förbättra). " : "Grundegenskaper, FV och KP ändras i stegen. ", "Välj A4 och skala 100 % när du skriver ut.")),
+        harLogg() ? "Grundegenskaper, FV och KP ändras under Spelmöten (Förbättra). " : "Grundegenskaper, FV och KP ändras i stegen. ")),
     ...(kvar.length ? [el("div", { class: "saknaslista rf-ofardig" }, el("strong", {}, "Rollpersonen är inte klar än"), el("ul", {}, kvar.map((t) => el("li", {}, t))))] : []),
     el("div", { class: "rf-sidor" }, rollformularSidor({ R, rp, res, el, sakNamn, andrat: sparaFormular, medRegler })));
   if (medRegler) {
@@ -1977,25 +1977,35 @@ function ritaFormularVy(res) {
   }
 }
 
-// Utskriftsdialogen föreslår sidans titel som filnamn för PDF:en, så titeln är rollpersonens namn medan den visas
+// Utskriftsdialogen (Ctrl+P eller Cmd+P) föreslår sidans titel som filnamn, så titeln är rollpersonens namn medan den visas
 const SIDTITEL = document.title;
 function namnSomTitel() { document.title = rp.namn.trim() || SIDTITEL; }
-function skrivUt() {
-  namnSomTitel();
-  window.print();
-}
 
-// Rollformuläret som PDF direkt från steg 14: formuläret ritas i den dolda vyn, som bara syns i utskriften
-function skrivUtDirekt() {
-  const vyEl = $("#rf-vy");
-  vyEl.classList.toggle("rf-blacksnal", blacksnal);
-  vyEl.replaceChildren(el("div", { class: "rf-sidor" }, rollformularSidor({ R, rp, res: rakna(), el, sakNamn, andrat: sparaFormular })));
-  document.body.classList.add("rf-direkt");
-  window.addEventListener("afterprint", () => {
-    document.body.classList.remove("rf-direkt");
-    if (vy !== "formular") vyEl.replaceChildren();
-  }, { once: true });
-  skrivUt();
+// Rollformuläret som PDF-fil (formularpdf.js), med rollpersonens namn som filnamn. Samma fil i alla webbläsare.
+const pdfNamn = () => `${(rp.namn.trim() || "Rollformulär").replace(/[\\/:*?"<>|]+/g, "-")}.pdf`;
+async function laddaNerPdf(e) {
+  const knapp = e?.currentTarget;
+  const text = knapp?.textContent;
+  if (knapp) { knapp.disabled = true; knapp.textContent = "Skapar PDF …"; }
+  try {
+    const { rollformularPdf } = await import("./formularpdf.js");
+    const pdf = await rollformularPdf({
+      sidor: rollformularSidor({ R, rp, res: rakna(), el, sakNamn, andrat: sparaFormular, medRegler }),
+      blacksnal, titel: rp.namn.trim(), efterTypsnitt: (rot) => { if (medRegler) delaRegelsidor(rot, el); },
+    });
+    const url = URL.createObjectURL(new Blob([pdf], { type: "application/pdf" }));
+    const a = el("a", { href: url, download: pdfNamn() });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    visaNotis(`${pdfNamn()} laddas ner.`);
+  } catch (fel) {
+    console.error(fel);
+    visaNotis("Det gick inte att skapa PDF:en. Kontrollera nätverket och försök igen.");
+  } finally {
+    if (knapp) { knapp.disabled = false; knapp.textContent = text; }
+  }
 }
 
 // Vid stegbyte glider sidan snabbt upp till toppen i stället för att hoppa dit

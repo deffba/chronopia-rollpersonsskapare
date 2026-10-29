@@ -4,7 +4,7 @@ En rollpersonsskapare för Chronopia (Drakar och Demoner). Den följer kapitlet 
 
 ## Rollformulär och sparade filer
 
-Knappen Rollformulär visar rollpersonen på ett formulär i samma layout som bokens (s. 11–12). En tredje sida läggs till bara om något inte får plats, och om man vill även sidor med rollpersonens färdigheter i korthet. Det skrivs ut på A4 med webbläsarens Skriv ut, eller sparas som PDF därifrån. Under spel kan man skriva direkt i formuläret: erf (osparade erfarenhetspoäng per färdighet), hjältepoäng, pengar, egen utrustning samt utseende och bakgrund. Det sparas i rollpersonen.
+Knappen Rollformulär visar rollpersonen på ett formulär i samma layout som bokens (s. 11–12). En tredje sida läggs till bara om något inte får plats, och om man vill även sidor med rollpersonens färdigheter i korthet. Knappen Ladda ner som PDF ger en PDF-fil i A4 som ser likadan ut i alla webbläsare, även i mobilen. Fälten man fyller i under spel går att fylla i direkt i PDF:en också. Under spel kan man skriva direkt i formuläret: erf (osparade erfarenhetspoäng per färdighet), hjältepoäng, pengar, egen utrustning samt utseende och bakgrund. Det sparas i rollpersonen.
 
 Rollpersonen sparas som en JSON-fil med formatnamn och versionsnummer (`sparformat.js`, version 2), så att den kan läsas in igen. Filer i äldre versioner läses också in.
 
@@ -47,6 +47,7 @@ Slå på GitHub Pages för grenen `main` (rotkatalogen) under Settings → Pages
 
 - `index.html`, `app.js`: gränssnittet.
 - `formular.js`, `formular.css`: rollformuläret för utskrift.
+- `formularpdf.js`: gör rollformuläret till en PDF-fil med pdf-lib (`vendor/`) och typsnitten i `typsnitt/`. Formuläret ritas i en dold kopia och mäts upp, så layouten finns bara i `formular.js` och `formular.css`.
 - `utvecklarlage.js`, `testrollpersoner.js`, `autofyll.js`, `poanglogg.js`: utvecklarläget med testrollpersoner, autofyll och poänglogg.
 - `sparformat.js`: filformatet för sparade rollpersoner (version 2).
 - `utveckling.js`: regellogiken efter skapandet. Räknar fram den utvecklade rollpersonen ur loggen och kontrollerar varje post.
