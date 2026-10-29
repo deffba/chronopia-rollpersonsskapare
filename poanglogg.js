@@ -26,7 +26,7 @@ export function poster(api) {
     lista.push({ id: `${stegId}|${typ}|${id}`, steg: stegEtikett(synliga, stegId), typ, text, andring, ...extra });
   };
   const ras = rasAv(R, rp.ras || "manniska");
-  const yrke = yrkeAv(R, rp.yrke);
+  const yrke = yrkeAv(R, rp.yrke || "krigare"); // som i app.js: inget yrke valt räknas som krigare, som saknar bonusar
   const alder = alderseffekter(R, rp.alder);
   // Grundegenskaperna: en rad per del som ändrar värdet, med egenskapens värde hittills
   const ge = (stegId, g, id, text, andring) => { if (andring) lagg(stegId, "GE", `${g}-${id}`, `${g}: ${text}`, andring, { saldo: `GE-${g}`, enhet: g }); };
