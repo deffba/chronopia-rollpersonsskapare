@@ -830,13 +830,14 @@ const inteSlaget = () => (manuellaSlag ? "Skriv in slaget och bekräfta det." : 
 // så att siffran inte flyttar sig.
 const lastFalt = (id, varde) => el("input", { type: typeof varde === "number" ? "number" : "text", id, class: "tal last", value: varde, readonly: true, "aria-readonly": "true", tabindex: -1 });
 // Tärningsrutan när slaget har landat: tärningen ligger kvar på samma plats och slaget står bredvid den.
-// Med bonusar (lagda BP, ras, yrke …) visas varje tärning för sig och varje bonus efter, t.ex. ⚃ + ⚁ + 2 + 4.
-// Saknas tärningarna (slag sparat före den här versionen) delas summan upp på två tärningar.
-function landatSlag(id, varde, text, { tarningar = null, bonusar = [], sidor = 6 } = {}) {
+// Slaget visas som tärningar: T6 med prickar, T20 med siffran. Bonusar (lagda BP, ras, yrke …) står var för sig
+// efter tärningarna, t.ex. ⚃ + ⚁ + 2 + 4. Saknas tärningarna (slag sparat före den här versionen) delas summan upp.
+// Andra tärningar (T3, T4 …) visas som summan.
+function landatSlag(id, varde, text, { tarningar = null, bonusar = [], sidor = 6, antal = 2 } = {}) {
   bonusar = bonusar.filter(Boolean);
-  const summan = (t) => Array.isArray(t) && t.length === 2 && t.every((x) => x >= 1 && x <= sidor) && t[0] + t[1] === varde;
-  if (bonusar.length && !summan(tarningar) && varde >= 2 && varde <= 2 * sidor) tarningar = delaSumma(varde, false, sidor);
-  const kanda = bonusar.length > 0 && summan(tarningar);
+  const summan = (t) => Array.isArray(t) && t.length === antal && t.every((x) => x >= 1 && x <= sidor) && t.reduce((a, b) => a + b, 0) === varde;
+  if (!summan(tarningar) && varde >= antal && varde <= antal * sidor) tarningar = antal === 1 ? [varde] : antal === 2 ? delaSumma(varde, false, sidor) : null;
+  const kanda = (sidor === 6 || sidor === 20) && summan(tarningar);
   const bonusText = bonusar.map((b) => (b > 0 ? ` + ${b}` : ` − ${-b}`)).join("");
   const innehall = kanda ? el("span", { class: "slagvarde tarningsrad" }, tarningar.flatMap((t, i) => [i ? " + " : null, tarningsSida(t, sidor)]), bonusText)
     : rutText(`${varde}${bonusText}`, text, "slagvarde");

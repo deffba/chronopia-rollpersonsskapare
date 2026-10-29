@@ -95,7 +95,7 @@ function fardighetsvaljare(ctx, utkast, idPrefix, { avB = false, onval }) {
 
 // Tärningsruta för ett slag i ett utkast. satt(v) sparar slaget.
 function slag(ctx, id, etikett, tarning, varde, satt, [n, sidor]) {
-  if (varde !== null && varde !== undefined) return ctx.falt(etikett, ctx.landatSlag(id, varde, `Slå ${tarning}`, { sidor }));
+  if (varde !== null && varde !== undefined) return ctx.falt(etikett, ctx.landatSlag(id, varde, `Slå ${tarning}`, { sidor, antal: n }));
   const { slagfalt, knapp } = ctx.slagKontroll(id, etikett, `Slå ${tarning}`, n, n * sidor, (v) => { satt(v); ctx.rita(); }, () => ctx.slaT(n, sidor), sidor);
   return [slagfalt, knapp];
 }
