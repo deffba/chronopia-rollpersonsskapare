@@ -1066,7 +1066,7 @@ function oppnaMagiModal(vidare = null) {
       : el("button", { type: "button", class: "magi-knapp", id: "magimodal-forlikas", onclick: () => (bytesPlatser().length ? visaByte(knapp) : stangMagiModal(false)) }, "FÖRLIKAS MED ÖDET");
     utfall.replaceChildren(
       el("h2", {}, mf.lyckat ? "SLAGET LYCKADES!" : "SLAGET MISSLYCKADES!"),
-      el("p", { class: "magi-brodtext" }, mf.lyckat ? "Du kan använda magi." : "Magins vindar blåser ej åt ditt håll ..."),
+      el("p", { class: "magi-brodtext" }, mf.lyckat ? "Du känner magins kraft i hela ditt väsen." : "Magins vindar blåser ej åt ditt håll ..."),
       el("p", { class: "magi-detalj" }, detalj),
       knapp);
     setTimeout(() => knapp.focus({ preventScroll: true }), reducerad ? 0 : 700);
