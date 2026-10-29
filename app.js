@@ -824,7 +824,7 @@ const resultat = (id, text) => el("div", { class: "resultat" },
 
 const bpFaltet = (etikett, kontroll) => { const f = falt(etikett, kontroll); f.classList.add("bp-falt"); return f; };
 
-// bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget; de visas som punkter och summeras i ett eget fält
+// bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget; de visas som punkter och summeras i tärningsrutan
 function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, bonusar = []) {
   const s = rp[nyckel];
   const bonus = bonusar.reduce((a, [, v]) => a + v, 0);
@@ -833,7 +833,6 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
   // Tärningsrutan visar en fast bonus tillsammans med tärningarna, t.ex. 2T6+4
   if (bonus) tarning += bonus > 0 ? `+${bonus}` : `−${-bonus}`;
   const satt = (falt, v) => { rp[nyckel][falt] = v; efter(); uppdatera(); };
-  const bonusfalt = bonus ? falt("Bonus", lastFalt(`${id}-bonus`, fmtMod(bonus))) : null;
   // När slaget är gjort ligger det fast: BP och slag går inte att ändra i efterhand
   if (s.slag !== null && s.slag !== undefined) {
     return [
@@ -842,7 +841,6 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
       el("div", { class: "rad" },
         bpFaltet("BP lagda", lastFalt(`${id}-bp`, s.bp)),
         falt(`Slag (${tarning})`, landatSlag(id, s.slag, `Slå ${tarning}`)),
-        bonusfalt,
         omslagKnapp(id)),
       resultat(id, tolkning),
     ];
@@ -852,7 +850,7 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
   return [
     el("p", {}, hjalp),
     bonuslista,
-    el("div", { class: "rad" }, bpFaltet("BP att lägga", bpFalt), slagfalt, bonusfalt, knapp),
+    el("div", { class: "rad" }, bpFaltet("BP att lägga", bpFalt), slagfalt, knapp),
     el("p", { class: "summering" }, tolkning),
   ];
 }
