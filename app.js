@@ -858,12 +858,14 @@ const resultat = (id, tolkning) => {
 
 const bpFaltet = (etikett, kontroll) => { const f = falt(etikett, kontroll); f.classList.add("bp-falt"); return f; };
 
-// bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget. Lagda BP räknas också som en bonus när de är fler än 0.
-// Bonusarna visas som punkter och var för sig i tärningsrutan, t.ex. 2T6+2+4.
-function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = []) {
+// bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget; de visas som punkter (med extraRader sist).
+// Lagda BP räknas också som en bonus när de är fler än 0, men står bara i BP-fältet, inte bland punkterna.
+// Bonusarna visas var för sig i tärningsrutan, t.ex. 2T6+2+4.
+function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = []) {
   const s = rp[nyckel];
   const bonusar = [s.bp > 0 ? ["BP lagda", s.bp] : null, ...fastaBonusar].filter(Boolean);
-  const bonuslista = bonusar.length ? el("ul", { class: "punkter bonuslista" }, bonusar.map(([t, v]) => el("li", {}, `${t}: ${fmtMod(v)}`))) : null;
+  const punkter = [...fastaBonusar.map(([t, v]) => `${t}: ${fmtMod(v)}`), ...extraRader];
+  const bonuslista = punkter.length ? el("ul", { class: "punkter bonuslista" }, punkter.map((t) => el("li", {}, t))) : null;
   const [n, sidor] = tarning === "2T20" ? [2, 20] : [2, 6];
   tarning += bonusar.map(([, v]) => (v > 0 ? `+${v}` : `−${-v}`)).join("");
   const satt = (falt, v) => { rp[nyckel][falt] = v; efter(); uppdatera(); };
@@ -1219,10 +1221,10 @@ function stegKapital(res) {
   return slagSteg("sk", "startkapital", "Startkapital", "2T6",
     rp.startkapital.slag === null ? inteSlaget() : { rader: [
       `Resultat: ${res.slag.skResultat}${utanTak > res.slag.skResultat ? ` (${utanTak} före taket)` : ""}.`,
-      `Tak: ${res.slag.ssResultat + (yrke.kapitaltak ?? 10)} (socialt stånd ${res.slag.ssResultat} + ${yrke.kapitaltak ?? 10}).`,
       `Åldersbonus: ×${String(alderEff.kapital).replace(".", ",")}.`],
     total: `Totalt startkapital: ${sm(res.slag.startkapital)}` },
-    `Slå 2T6 plus lagda BP. Bonusarna nedan läggs på slaget. Resultatet kan inte bli högre än socialt stånd + ${yrke.kapitaltak ?? 10}.`, undefined, bonusar);
+    `Slå 2T6 plus lagda BP. Bonusarna nedan läggs på slaget. Resultatet kan inte bli högre än socialt stånd + ${yrke.kapitaltak ?? 10}.`, undefined, bonusar,
+    [`Tak för startkapital: ${res.slag.ssResultat + (yrke.kapitaltak ?? 10)}`]);
 }
 
 // EP per FV för en ny sekundär färdighet (s. 35–36)
