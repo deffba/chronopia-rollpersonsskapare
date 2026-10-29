@@ -747,9 +747,14 @@ let manuellaSlag = false; // spelaren skriver in slagen själv i stället för a
 const utkastSlag = {}; // inskrivna slag som ännu inte är bekräftade, per slag-id
 let nyssSlaget = null; // id för slaget vars resultat precis har landat
 const rulltid = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? 300 : 2500);
-const tarningsIkon = () => {
+// T20 ritas som en sexhörning med en triangel i mitten (som en tjugosidig tärning sedd rakt framifrån)
+const T20_FORM = '<polygon points="12,2 20.7,7 20.7,17 12,22 3.3,17 3.3,7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>'
+  + '<polygon points="12,5.5 18.2,16.2 5.8,16.2" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round" opacity=".55"/>';
+const T20_KANTER = '<path d="M12 2v3.5M20.7 7l-2.5 9.2M3.3 7l2.5 9.2M12 22l-6.2-5.8M12 22l6.2-5.8M3.3 17l2.5-.8M20.7 17l-2.5-.8M3.3 7L12 5.5M20.7 7L12 5.5" stroke="currentColor" stroke-width=".8" opacity=".45"/>';
+const tarningsIkon = (sidor = 6) => {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", "tarning"); svg.setAttribute("aria-hidden", "true");
+  if (sidor === 20) { svg.innerHTML = T20_FORM + T20_KANTER; return svg; }
   svg.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
     + [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="currentColor"/>`).join("");
   return svg;
@@ -761,15 +766,17 @@ function delaSumma(summa, slump = true, sidor = 6) {
   const forsta = slump ? lagst + Math.floor(Math.random() * (hogst - lagst + 1)) : Math.ceil(summa / 2);
   return [forsta, summa - forsta];
 }
-// En tärning för ett visst värde: en sexsidig med prickar, en större (T20) med siffran
+// En tärning för ett visst värde: en sexsidig med prickar, en T20 (sexhörning) med siffran
 const PRICKAR = { 1: [[12, 12]], 2: [[8, 8], [16, 16]], 3: [[7, 7], [12, 12], [17, 17]], 4: [[8, 8], [16, 8], [8, 16], [16, 16]],
   5: [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]], 6: [[8, 7], [16, 7], [8, 12], [16, 12], [8, 17], [16, 17]] };
 const tarningsSida = (v, sidor = 6) => {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", "tarning sida"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", String(v));
-  svg.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
-    + (sidor === 6 ? PRICKAR[v].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.8" fill="currentColor"/>`).join("")
-      : `<text x="12" y="16.2" text-anchor="middle" font-size="${v > 9 ? 10 : 11}" font-weight="700" fill="currentColor" font-family="sans-serif">${v}</text>`);
+  svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", sidor === 6 ? "tarning sida" : "tarning sida t20"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", String(v));
+  svg.innerHTML = sidor === 6
+    ? '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
+      + PRICKAR[v].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.8" fill="currentColor"/>`).join("")
+    : '<polygon points="12,1.5 21,6.75 21,17.25 12,22.5 3,17.25 3,6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+      + `<text x="12" y="15.6" text-anchor="middle" font-size="${v > 9 ? 9 : 10}" font-weight="700" fill="currentColor" font-family="sans-serif">${v}</text>`;
   return svg;
 };
 // Tärningsrutan ligger i slagfältet. Vid klick snurrar tärningen medan "Slår …" pulserar;
@@ -778,7 +785,7 @@ const TONING = 400;
 // Rutans text. Rutan kan visa "Slå 2T6", "Slår …" och slaget; de två första ligger osynliga i samma ruta
 // (via CSS), så att rutan är lika bred som sin längsta text och inte ändrar storlek under slaget.
 const rutText = (synlig, text, klass = "") => el("span", { class: `rutetext ${klass}`.trim(), "data-a": text, "data-b": "Slår …" }, el("span", {}, synlig));
-function tarningsKnapp(id, text, sla) {
+function tarningsKnapp(id, text, sla, sidor = 6) {
   const rullarNu = rullar === id;
   return el("button", {
     type: "button", class: "knapp tarningsknapp i-falt" + (rullarNu ? " rullar" : ""), id: `${id}-sla`,
@@ -790,10 +797,10 @@ function tarningsKnapp(id, text, sla) {
       if (tid > TONING * 2) setTimeout(() => document.getElementById(`${id}-sla`)?.classList.add("tona-ut"), tid - TONING);
       setTimeout(() => { rullar = null; nyssSlaget = id; sla(); }, tid);
     },
-  }, tarningsIkon(), rutText(rullarNu ? "Slår …" : text, text, rullarNu ? "pulsera" : ""));
+  }, tarningsIkon(sidor), rutText(rullarNu ? "Slår …" : text, text, rullarNu ? "pulsera" : ""));
 }
 // Med manuella slag skriver spelaren in slaget och bekräftar det med tärningsrutan
-function bekraftaSlag(id, min, max, satt) {
+function bekraftaSlag(id, min, max, satt, sidor = 6) {
   const giltigt = (v) => Number.isInteger(v) && v >= min && v <= max;
   const knapp = el("button", {
     type: "button", class: "knapp tarningsknapp", id: `${id}-sla`, disabled: !giltigt(utkastSlag[id]),
@@ -803,7 +810,7 @@ function bekraftaSlag(id, min, max, satt) {
       delete utkastSlag[id];
       nyssSlaget = id; satt(v);
     },
-  }, tarningsIkon(), el("span", {}, "Bekräfta slag"));
+  }, tarningsIkon(sidor), el("span", {}, "Bekräfta slag"));
   const falt = el("input", {
     type: "number", id: `${id}-slag`, class: "tal", min, max, step: 1, value: utkastSlag[id] ?? "",
     title: `${min}–${max}`,
@@ -813,9 +820,9 @@ function bekraftaSlag(id, min, max, satt) {
   return { falt, knapp };
 }
 // Slagfältet (och, med manuella slag, bekräfta-knappen som läggs sist i raden)
-function slagKontroll(id, etikett, text, min, max, satt, slumpa) {
-  if (!manuellaSlag) return { slagfalt: falt(etikett, tarningsKnapp(id, text, () => satt(slumpa()))), knapp: null };
-  const b = bekraftaSlag(id, min, max, satt);
+function slagKontroll(id, etikett, text, min, max, satt, slumpa, sidor = 6) {
+  if (!manuellaSlag) return { slagfalt: falt(etikett, tarningsKnapp(id, text, () => satt(slumpa()), sidor)), knapp: null };
+  const b = bekraftaSlag(id, min, max, satt, sidor);
   return { slagfalt: falt(etikett, b.falt), knapp: b.knapp };
 }
 const inteSlaget = () => (manuellaSlag ? "Skriv in slaget och bekräfta det." : "Slå tärningen.");
@@ -834,7 +841,7 @@ function landatSlag(id, varde, text, { tarningar = null, bonusar = [], sidor = 6
   const innehall = kanda ? el("span", { class: "slagvarde tarningsrad" }, tarningar.flatMap((t, i) => [i ? " + " : null, tarningsSida(t, sidor)]), bonusText)
     : rutText(`${varde}${bonusText}`, text, "slagvarde");
   return el("div", { class: "knapp tarningsknapp i-falt landad" + (kanda ? " med-tarningar" : "") + (nyssSlaget === id ? " nytt" : ""), id: `${id}-slag`, "data-varde": varde },
-    kanda ? null : tarningsIkon(), innehall);
+    kanda ? null : tarningsIkon(sidor), innehall);
 }
 // Utvecklarläget kan låsa upp ett gjort slag så att det går att slå om. Det görs utan regelkontroll:
 // utan slaget kan till exempel inköpen kosta mer än startkapitalet tills det är slaget igen.
@@ -883,7 +890,7 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
   }
   // Varje tärning sparas också, så att den kan visas med sina prickar (ett inskrivet slag delas upp på två tärningar)
   const sla = () => { const t = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sidor)); rp[nyckel].tarningar = t; return t.reduce((a, b) => a + b, 0); };
-  const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => { if (manuellaSlag) rp[nyckel].tarningar = delaSumma(v, true, sidor); satt("slag", v); }, sla);
+  const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => { if (manuellaSlag) rp[nyckel].tarningar = delaSumma(v, true, sidor); satt("slag", v); }, sla, sidor);
   const bpFalt = rullar === id ? lastFalt(`${id}-bp`, s.bp ?? 0) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
   return [
     el("p", {}, hjalp),
