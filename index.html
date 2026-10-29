@@ -303,7 +303,12 @@ input.tal.last { background: var(--yta-2); color: var(--dampad); font-weight: 40
 .magislag { display: grid; gap: 10px; }
 .magislag > * { margin: 0; }
 .resultat .summering { padding-top: 0; }
-.summering.nytt { animation: markera 1.8s ease-out both; border-radius: var(--rad); }
+.resultat .resultatlista { margin-top: 0; padding: 0 0 0 18px; }
+/* Landat slag med bonus: tärningarna med prickar, plus bonusen */
+.tarningsrad { display: inline-flex; align-items: center; gap: 6px; }
+.tarningsknapp.landad .tarning.sida { color: var(--text); width: 1.7em; height: 1.7em; }
+.tarningsknapp.landad.nytt .tarningsrad { animation: tona-in .5s ease-out both; }
+.summering.nytt, .resultatlista.nytt { animation: markera 1.8s ease-out both; border-radius: var(--rad); }
 @keyframes bop { 0% { transform: scale(.4) rotate(-30deg); } 60% { transform: scale(1.35) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
 @keyframes markera { 0% { background: var(--accent-svag); box-shadow: 0 0 0 6px var(--accent-svag); } 100% { background: transparent; box-shadow: 0 0 0 6px transparent; } }
 @media (prefers-reduced-motion: reduce) { .tarningsknapp.rullar .tarning, .tarningsknapp.rullar .pulsera, .tarningsknapp.tona-ut span, .tarningsknapp.landad.nytt .slagvarde > span { animation: none; } }
