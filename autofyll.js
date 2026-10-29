@@ -1,5 +1,5 @@
 // Automatisk ifyllning i utvecklarläget. När den är på fylls stegets obligatoriska val i så fort steget visas:
-// listor och textfält som är tomma, särskilda förmågans val, startpaketets vapen och alla tärningsslag.
+// listor och textfält som är tomma, åldern (enkel metod), särskilda förmågans val, startpaketets vapen och alla tärningsslag.
 // Ras och yrke väljer spelaren själv, och knapparna Föreslå värden och Fördela EP används aldrig.
 // Bara tomma val fylls i, så det som spelaren själv har valt ändras inte. Byts yrket fylls det nya yrkets val i.
 import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, varukatalog } from "./regelmotor.js";
@@ -27,6 +27,9 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
     const valfriRas = rasAv(R, rp.ras).primara.find((p) => p.valfri)?.valfri;
     if (valfriRas && !rp.rasval.some(klar)) rp.rasval = [`${valfriRas}:${delval(valfriRas)}`];
   }
+
+  // Åldern sätts med enkel metod: rasens lägsta vuxna ålder (s. 16)
+  if (steg === "alder" && rp.alder == null) rp.alder = rasAv(R, rp.ras || "manniska").alder.vuxen[0];
 
   if (steg === "extra") {
     const yrke = yrkeAv(R, rp.yrke);
