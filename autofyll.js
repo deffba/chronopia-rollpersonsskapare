@@ -80,9 +80,11 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
 
   // Slagen i steg 8–10 görs med de BP som är lagda (inga från början). Ett upplåst slag slås inte om automatiskt.
   if (slag) {
-    if (steg === "svardshand" && rp.svardshand.slag === null) rp.svardshand = { ...rp.svardshand, slag: slaT(2, 6) };
-    if (steg === "stand" && rp.socialtStand.slag === null && !rp.socialtStand.valt) rp.socialtStand = { ...rp.socialtStand, slag: slaT(2, 6) };
-    if (steg === "kapital" && rp.startkapital.slag === null) rp.startkapital = { ...rp.startkapital, slag: slaT(2, 6) };
+    // Tärningarna sparas var för sig, som när spelaren slår, så att de kan visas med prickar
+    const t2T6 = () => { const tarningar = [slaT(1, 6), slaT(1, 6)]; return { tarningar, slag: tarningar[0] + tarningar[1] }; };
+    if (steg === "svardshand" && rp.svardshand.slag === null) rp.svardshand = { ...rp.svardshand, ...t2T6() };
+    if (steg === "stand" && rp.socialtStand.slag === null && !rp.socialtStand.valt) rp.socialtStand = { ...rp.socialtStand, ...t2T6() };
+    if (steg === "kapital" && rp.startkapital.slag === null) rp.startkapital = { ...rp.startkapital, ...t2T6() };
   }
 
   if (steg === "fardigheter") {
