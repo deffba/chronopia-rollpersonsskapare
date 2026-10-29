@@ -27,7 +27,8 @@ export function poster(api) {
   };
   const ras = rasAv(R, rp.ras || "manniska");
   const yrke = yrkeAv(R, rp.yrke || "krigare"); // som i app.js: inget yrke valt räknas som krigare, som saknar bonusar
-  const alder = alderseffekter(R, rp.alder);
+  const ar = rp.alder ?? 21; // som i app.js: ingen ålder vald räknas som 21 år
+  const alder = alderseffekter(R, ar);
   // Grundegenskaperna: en rad per del som ändrar värdet, med egenskapens värde hittills
   const ge = (stegId, g, id, text, andring) => { if (andring) lagg(stegId, "GE", `${g}-${id}`, `${g}: ${text}`, andring, { saldo: `GE-${g}`, enhet: g }); };
   const aldersmod = R.alder.effekter[res.alderskategori];
@@ -44,10 +45,10 @@ export function poster(api) {
   }
 
   // 2. Ålder
-  if (alder.bp) lagg("alder", "BP", "alder", `Ålder ${rp.alder} år ger extra BP`, alder.bp);
-  lagg("alder", "EP", "alder", `Ålder ${rp.alder} år ger start-EP`, alder.ep);
+  if (alder.bp) lagg("alder", "BP", "alder", `Ålder ${ar} år ger extra BP`, alder.bp);
+  lagg("alder", "EP", "alder", rp.alder == null ? "Ingen ålder vald än, räknas som 21 år tills vidare" : `Ålder ${ar} år ger start-EP`, alder.ep);
   const kategori = R.alder.kategorier.find((x) => x.id === res.alderskategori)?.namn.toLowerCase() ?? res.alderskategori;
-  for (const g of GRUNDEGENSKAPER) ge("alder", g, "alder", `ålder ${rp.alder} år (${kategori})`, aldersmod[g]);
+  for (const g of GRUNDEGENSKAPER) ge("alder", g, "alder", `ålder ${ar} år (${kategori})`, aldersmod[g]);
 
   // 3. Yrke
   if (yrke.extraBP) lagg("yrke", "BP", "extraBP", `${yrke.namn}: extra BP`, yrke.extraBP.antal);

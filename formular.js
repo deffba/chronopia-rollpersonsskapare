@@ -91,7 +91,7 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
           falt("Socialt stånd", 8, text(res.slag.socialtStand), "s2"),
           falt("Yrke", 5, text(rp.yrke ? res.yrke.namn : ""), "s2"),
           falt("Svärdshand", 7, text(res.slag.svardshand), "s2"),
-          falt("Ålder", 9, text(`${rp.alder} år`), "s2"))),
+          falt("Ålder", 9, text(rp.alder == null ? "" : `${rp.alder} år`), "s2"))),
       el("div", { class: "rf-kropp1" },
         el("div", { class: "rf-vanster" },
           el("div", { class: "rf-lista rf-egenskaper" }, rubrik("Grundegenskap", ["Värde"]),
