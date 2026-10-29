@@ -1036,7 +1036,7 @@ function oppnaMagiModal(vidare = null) {
     ritaVal();
     modal.classList.add("byte");
     panel.replaceChildren(rubrik,
-      el("p", { class: "magi-byte-text" }, "Magins vindar undflyr dig, välj en annan färdighet"),
+      el("p", { class: "magi-byte-text" }, "Magin förkastar dig. Glöm dina drömmar och satsa på något du kan."),
       listor, fel, el("div", { class: "magi-byte-fot" }, gaVidare));
     panel.setAttribute("aria-labelledby", "magimodal-byte-rubrik");
     // Knappen glider upp och blir rubriken
