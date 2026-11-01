@@ -1,5 +1,5 @@
 // Steg 3: yrke.
-import { yrkeAv, fardighetAv, paborjad } from "../regelmotor.js";
+import { yrkeAv, fardighetAv, paborjad, valbaraYrken } from "../regelmotor.js";
 import { S, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
 import { delvalKontroll, fardighetsInfo, fardighetsVal, hjalpFor, kortBeskrivning, valLista } from "../ui/kontroller.js";
@@ -9,7 +9,7 @@ import { stridskonstInfo } from "./fardigheter.js";
 // Steg 3: yrket väljs med kort som rasen i steg 1. Yrkesfärdigheterna visas bara; valen inom dem görs i steg 4.
 export function stegYrke() {
   const yrke = yrkeAv(S.R, yrkeId());
-  const kort = S.R.yrken.lista.map((y) => el("button", {
+  const kort = valbaraYrken(S.R).map((y) => el("button", {
     type: "button", class: "valkort yrkeskort" + (y.id === S.rp.yrke ? " valt" : ""), "aria-pressed": y.id === S.rp.yrke ? "true" : "false", "data-yrke": y.id,
     onclick: () => {
       // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1

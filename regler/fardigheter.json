@@ -453,7 +453,10 @@
       "sida": 62,
       "perVal": "kultur",
       "gruppYrke": true,
-      "beskrivning": "Kännedom om en kulturs seder, gester, tabun, högtider, gudar och klädsel. Kräver FV 15 för att smälta in. Lärs separat för varje kultur."
+      "beskrivning": "Kännedom om en kulturs seder, gester, tabun, högtider, gudar och klädsel. Kräver FV 15 för att smälta in. Lärs separat för varje kultur.",
+      "ovrigaKulturer": [
+        "Staden Chronopia"
+      ]
     },
     {
       "id": "kanna-magi",
@@ -859,7 +862,8 @@
     {
       "id": "drakonitiska",
       "namn": "Drakonitiska",
-      "maxFvAndra": 5
+      "maxFvAndra": 5,
+      "utanTakFor": "drakonit"
     },
     {
       "id": "uraldriga",

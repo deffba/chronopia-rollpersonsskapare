@@ -134,7 +134,7 @@ function autoDelval(api, rp, fid, anvanda) {
   }
   if (fid === "hantverk") return R.fardigheter.hantverk.map(([n]) => n).find(ledig);
   if (fid === "kanna-magi") return ["animism", "elementarmagi", "mentalism"].find(ledig);
-  if (fid === "kulturkannedom") return ["Staden Chronopia", ...R.raser.map((r) => r.namn)].find(ledig);
+  if (fid === "kulturkannedom") return [...(fardighetAv(R, "kulturkannedom").ovrigaKulturer ?? []), ...R.raser.map((r) => r.namn)].find(ledig);
   const f = fardighetAv(R, fid);
   const forslag = { stad: "Chronopia", kontinent: "Chronopias kontinent", djur: "Hästar", instrument: "Luta", stil: "Testkonst", amne: "Kunskap om magi" }[f?.perVal];
   return [forslag, ...Array.from({ length: 9 }, (_, i) => `Test ${i + 1}`)].filter(Boolean).find(ledig);

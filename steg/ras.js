@@ -1,5 +1,5 @@
 // Steg 1: ras.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, valbaraRaser } from "../regelmotor.js";
 import { nollstallSpel } from "../spelmote.js";
 import { RAS_SEKUNDAR_INFO, RASFORMAGOR } from "../texter.js";
 import { S, harLogg, uppdatera } from "../tillstand.js";
@@ -9,7 +9,7 @@ import { delvalKontroll, falt, fardighetsInfo, infoKnapp } from "../ui/kontrolle
 // ------------------------------------------------------------ stegen
 export function stegRas() {
   const valt = S.rp.ras ? rasAv(S.R, S.rp.ras) : null;
-  const kort = S.R.raser.map((r) => el("button", {
+  const kort = valbaraRaser(S.R).map((r) => el("button", {
     type: "button", class: "valkort raskort" + (r.id === S.rp.ras ? " valt" : ""), "aria-pressed": r.id === S.rp.ras ? "true" : "false",
     onclick: () => {
       // Ett tryck på den valda rasen avmarkerar den

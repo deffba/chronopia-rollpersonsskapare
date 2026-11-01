@@ -1,5 +1,4 @@
 // Stegen och förklarande texter som visas i appen.
-import { S } from "./tillstand.js";
 
 export const STEG = [
   { id: "ras", namn: "Ras", sida: "14–16", bp: true },
@@ -64,7 +63,5 @@ export const RASFORMAGOR = {
 };
 export const RAS_SEKUNDAR_INFO = "Färdigheter som är primära för de flesta men sekundära för den här rasen. Rollpersonen får ingen baschans i dem och de kostar som sekundära färdigheter, om de inte väljs som yrkesfärdigheter (s. 14–16).";
 
-export const KULTURER = () => [...S.R.raser.map((r) => r.namn), "Staden Chronopia"];
 
 export const LARDOMSFORSLAG = ["Kunskap om magi", "Kunskap om religion", "Kunskap om demoner", "Kunskap om odöda", "Kunskap om språk"];
-export const SKOLOR = [["animism", "Animism"], ["elementarmagi", "Elementarmagi"], ["mentalism", "Mentalism"]];

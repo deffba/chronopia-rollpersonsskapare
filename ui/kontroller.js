@@ -1,7 +1,7 @@
 // Små kontroller: tal, listor, knappar och info-cirklar.
-import { fardighetAv, tvahandsvapen, vapengrupp } from "../regelmotor.js";
+import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
-import { DELVAL_HJALP, FORKLARINGAR, KULTURER, SKOLOR, SPRAK_HJALP } from "../texter.js";
+import { DELVAL_HJALP, FORKLARINGAR, SPRAK_HJALP } from "../texter.js";
 import { S, modersmal, rakna, uppdatera, yrkesNycklar } from "../tillstand.js";
 import { el } from "./dom.js";
 
@@ -145,14 +145,14 @@ export function delvalKontroll(id, fardighetId, varde, onchange, { yrke = false 
       gruppLista(`${id}-a`, a, vapen, (v) => onchange(v && b ? `${v}+${b}` : v ? `${v}+` : ""), "Första vapnet …"),
       gruppLista(`${id}-b`, b, vapen, (v) => onchange(a && v ? `${a}+${v}` : ""), "Andra vapnet …"));
   }
-  if (fardighetId === "kulturkannedom") return valLista(id, varde, markeraValda(KULTURER().map((k) => [k, k]), redanValda(fardighetId, varde)), onchange, "Välj kultur …");
+  if (fardighetId === "kulturkannedom") return valLista(id, varde, markeraValda(kulturer(S.R).map((k) => [k, k]), redanValda(fardighetId, varde)), onchange, "Välj kultur …");
   if (fardighetId === "tala" || fardighetId === "lasa-skriva") return sprakLista(id, fardighetId, varde, onchange, yrke);
   if (fardighetId === "hantverk") {
     const lista = valLista(id, varde, markeraValda(S.R.fardigheter.hantverk.map(([n, g]) => [n, `${n} (${g})`]), redanValda(fardighetId, varde)), onchange, "Välj hantverk …");
     const text = S.R.fardigheter.hantverkBeskrivning?.[varde];
     return text ? el("div", { class: "delval-med-text" }, lista, el("p", { class: "fbeskr" }, text)) : lista;
   }
-  if (fardighetId === "kanna-magi") return valLista(id, varde, markeraValda(SKOLOR, redanValda(fardighetId, varde)), onchange, "Välj skola …");
+  if (fardighetId === "kanna-magi") return valLista(id, varde, markeraValda(magiskolor(S.R).map((f) => [f.id, f.namn]), redanValda(fardighetId, varde)), onchange, "Välj skola …");
   const f = fardighetAv(S.R, fardighetId);
   const lista = fardighetId === "lardom" ? "lardomar" : null;
   return el("input", {

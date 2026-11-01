@@ -125,7 +125,6 @@ function allaNycklar(yrkesfardigheter) {
   const mangd = new Set();
   for (const f of S.R.fardigheter.lista) if (f.typ === "primar" && !ras.sekundara.includes(f.id)) mangd.add(f.id);
   for (const p of ras.primara) if (typeof p === "string") mangd.add(p);
-  if (ras.id === "ljusalv") mangd.add("vapen:Långbåge");
   for (const k of S.rp.rasval) mangd.add(k);
   for (const s of m.tala) mangd.add(`tala:${s}`);
   for (const s of m.lasaSkriva) mangd.add(`lasa-skriva:${s}`);
