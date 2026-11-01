@@ -17,6 +17,13 @@ export function slaUpp(tabell, varde) {
   return undefined;
 }
 
+// Det som går att välja. Här kopplas bokvalet in när expansionerna läggs till; i dag är allt med.
+export const valbaraRaser = (regler) => regler.raser;
+export const valbaraYrken = (regler) => regler.yrken.lista;
+export const magiskolor = (regler) => regler.fardigheter.lista.filter((f) => f.typ === "magiskola");
+// Kulturer för Kulturkännedom: rasernas kulturer och de övriga i färdighetens data (s. 62)
+export const kulturer = (regler) => [...valbaraRaser(regler).map((r) => r.namn), ...(fardighetAv(regler, "kulturkannedom").ovrigaKulturer ?? [])];
+
 export function rasAv(regler, id) {
   return regler.raser.find((r) => r.id === id);
 }
@@ -214,12 +221,11 @@ export function status(regler, rp, nyckel) {
   const id = f.id;
   const val = nyckel.split(":")[1];
   if (rp.yrkesfardigheter.some((k) => k.startsWith(id + ":")) && f.gruppYrke) return "yrke";
-  if (id === "lardom" && rp.yrke === "lard-man") return "yrke";
+  if (yrkeAv(regler, rp.yrke)?.yrkesgrupper?.includes(id)) return "yrke"; // t.ex. all lärdom för lärd man
   if (id === "kanna-magi" && yrkeAv(regler, rp.yrke)?.magiker) return "primar";
   if (nyckel === "lardom:Kunskap om magi" && yrkeAv(regler, rp.yrke)?.magiker) return "yrke";
   if (rp.rasval?.includes(nyckel)) return "primar";
   if (ras.primara.includes(id) || ras.primara.includes(nyckel)) return "primar";
-  if (id === "vapen" && ras.id === "ljusalv" && val === "Långbåge") return "primar";
   if (f.typ === "primar" && !ras.sekundara.includes(id)) return "primar";
   return "sekundar";
 }
@@ -509,7 +515,7 @@ function takFor(regler, rp, nyckel, f, varden, fvHittills) {
   if (f.typ === "magiskola" && yrkeAv(regler, rp.yrke).skolTak) tak = Math.min(tak, varden.INT);
   // Drakonitiska kan aldrig bli högre än FV 5 för andra än drakoniter (s. 64)
   const sprak = regler.fardigheter.sprak.find((x) => x.id === nyckel.split(":")[1]);
-  if (f.id === "tala" && sprak?.maxFvAndra && rp.ras !== "drakonit") tak = Math.min(tak, sprak.maxFvAndra);
+  if (f.id === "tala" && sprak?.maxFvAndra && rp.ras !== sprak.utanTakFor) tak = Math.min(tak, sprak.maxFvAndra);
   return tak + (rp.sarskildaFormagor?.takBonus?.[nyckel] ?? 0);
 }
 

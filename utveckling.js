@@ -55,7 +55,7 @@ function takFor(regler, rpm, nyckel, f, st, varden, fvNu) {
     tak = Math.min(tak, Math.max(0, ...ls));
   }
   const sprak = regler.fardigheter.sprak.find((x) => x.id === nyckel.split(":")[1]);
-  if (f.id === "tala" && sprak?.maxFvAndra && rpm.ras !== "drakonit") tak = Math.min(tak, sprak.maxFvAndra);
+  if (f.id === "tala" && sprak?.maxFvAndra && rpm.ras !== sprak.utanTakFor) tak = Math.min(tak, sprak.maxFvAndra);
   return tak + (rpm.sarskildaFormagor?.takBonus?.[nyckel] ?? 0);
 }
 

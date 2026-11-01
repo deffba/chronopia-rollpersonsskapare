@@ -335,7 +335,10 @@
       "valfri": true,
       "automatiska": [],
       "stamning": "Kunskap är den enda skatt som ingen tjuv kan ta.",
-      "beskrivning": "Forskare, skrivare och vetenskapsman som läser och talar många språk. Den lärde mannen känner historien, geografin och folken, och all slags lärdom räknas som yrkesfärdigheter."
+      "beskrivning": "Forskare, skrivare och vetenskapsman som läser och talar många språk. Den lärde mannen känner historien, geografin och folken, och all slags lärdom räknas som yrkesfärdigheter.",
+      "yrkesgrupper": [
+        "lardom"
+      ]
     },
     {
       "id": "lonnmordare",
