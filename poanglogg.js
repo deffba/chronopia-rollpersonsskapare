@@ -169,7 +169,7 @@ export function poster(api) {
 
 function stegEtikett(synliga, stegId) {
   const i = synliga.findIndex((s) => s.id === stegId);
-  return stegId === null ? "Start" : i === -1 ? stegId : `${i + 1}. ${synliga[i].namn}`;
+  return stegId === null ? "Start" : i === -1 ? stegId : `${i}. ${synliga[i].namn}`;
 }
 
 // ------------------------------------------------------------ fönstret

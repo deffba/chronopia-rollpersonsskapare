@@ -1,4 +1,5 @@
 const { chromium } = require('playwright');
+const { tillRas } = require('./hjalp.cjs');
 const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? 'PASS' : 'FAIL'} ${namn}${info ? ' — ' + info : ''}`);
 (async () => {
   const b = await chromium.launch();
@@ -45,7 +46,7 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
     if (sel.length) { for (const v of sel[0].alt) { await p.selectOption('#' + esc(sel[0].id), v); if (await p.locator('#' + esc(sel[0].id)).inputValue() === v) break; } continue; }
     const t = await p.locator('.steg-innehall input[type=text]:not([readonly])').evaluateAll(s => s.filter(x => !x.value).map(x => x.id)); if (t.length) { await p.fill('#' + esc(t[0]), 'Kross' + i); await p.press('#' + esc(t[0]), 'Tab'); continue; }
     return false; } }
-  const ny = async () => { await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/'); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort'); };
+  const ny = async () => { await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/'); await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p); };
   async function tillSteg6(ras, yrke, alderRad) {
     await ny(); await p.locator('.raskort', { hasText: ras }).click(); await fyll(); await nasta();
     if (alderRad) await p.locator('tr.valbar', { hasText: alderRad }).click();
@@ -82,7 +83,7 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
   ok('ingen ras förvald vid start', await p.locator('.raskort.valt').count() === 0);
   ok('husregler visas inte', await p.locator('text=Husregler och tolkningar').count() === 0);
   await p.locator('.raskort', { hasText: 'Dvärg' }).click();
-  await p.reload(); await p.waitForSelector('.raskort');
+  await p.reload(); await tillRas(p);
   ok('efter omladdning: ingen ras vald', await p.locator('.raskort.valt').count() === 0);
   ok('sparad rollperson erbjuds', await p.locator('#fortsatt-sparad').count() === 1);
   await p.click('#fortsatt-sparad');
@@ -112,7 +113,7 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
   await fyll(); await nasta();
   // manuellt slag i svärdshand
   ok('inget sifferfält för slaget utan manuella slag', await p.locator('#sh-slag').count() === 0 && await p.locator('.falt', { hasText: 'Slag (2T6)' }).locator('#sh-sla').count() === 1);
-  await p.click('#menyknapp'); await p.check('#manuella-slag'); await p.click('h1');
+  await p.click('#menyknapp'); await p.check('#manuella-slag'); await p.click('.steg-huvud h2');
   ok('menyn stängs vid klick utanför', await p.locator('#menypanel').isHidden());
   ok('Bekräfta slag spärrad utan värde', (await p.locator('#sh-sla').textContent()).includes('Bekräfta slag') && await p.locator('#sh-sla').isDisabled());
   await p.fill('#sh-slag', '13');
@@ -211,9 +212,10 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
 
   // 8. Äldre delar: Ny rollperson, stilbyte, smal skärm
   await p.click('#menyknapp');
-  ok('menyn: Ny, Läs in fil, Rollformulär, manuella slag, tema sist', await p.evaluate(() => { const ids = [...document.querySelectorAll('#menypanel button, #menypanel input')].filter(e => !e.hidden).map(e => e.id || e.dataset.stil); return ids.join(','); }) === 'ny,importfil,visa-formular,manuella-slag,klassisk,modern');
+  ok('menyn: Startsidan, Ny, Läs in fil, Rollformulär, manuella slag, tema sist', await p.evaluate(() => { const ids = [...document.querySelectorAll('#menypanel button, #menypanel input')].filter(e => !e.hidden).map(e => e.id || e.dataset.stil); return ids.join(','); }) === 'till-start,ny,importfil,visa-formular,manuella-slag,klassisk,modern');
   await p.click('#ny'); ok('Ny rollperson kräver bekräftelse', (await p.locator('#ny').textContent()).includes('Bekräfta'));
-  await p.click('#ny'); ok('Ny rollperson börjar om', (await rubrik()) === 'Ras' && await p.locator('.raskort.valt').count() === 0);
+  await p.click('#ny'); ok('Ny rollperson börjar om i steg 0', (await rubrik()) === 'Böcker'); await tillRas(p); ok('Ny rollperson: ingen ras vald', (await rubrik()) === 'Ras' && await p.locator('.raskort.valt').count() === 0);
+  if (await p.locator('#menypanel').isHidden()) await p.click('#menyknapp');
   await p.click('.stilval button[data-stil="modern"]');
   ok('stilbyte till Modern', await p.evaluate(() => document.documentElement.dataset.stil) !== 'klassisk');
   await p.click('.stilval button[data-stil="klassisk"]');

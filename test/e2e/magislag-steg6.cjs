@@ -1,4 +1,5 @@
 // Magiförmågeslaget i steg 6: knappen heter MAGIFÖRMÅGESLAG, ett misslyckat slag byts i modalen (GÅ VIDARE),
+const { tillRas } = require('./hjalp.cjs');
 // inget "null" i sidan, och utvecklarlägets knappar (lyckat/misslyckat, Gör om).
 const { chromium } = require('playwright');
 (async () => {
@@ -12,7 +13,7 @@ const { chromium } = require('playwright');
     const nasta = async () => { await alderKlar(); if (await p.locator('#sf-modal-fortsatt:not([disabled])').count()) await p.click('#sf-modal-fortsatt'); await p.locator('.steg-fot .primar').click(); };
     await p.goto(url);
     await p.evaluate(([m, d]) => { localStorage.clear(); localStorage.setItem('chronopia-manuella-slag', m ? 'ja' : 'nej'); if (d) localStorage.setItem('chronopia-dev', 'ja'); }, [manuell, dev]);
-    await p.reload(); await p.waitForSelector('.raskort');
+    await p.reload(); await tillRas(p);
     await p.locator('.raskort').first().click(); await p.waitForTimeout(150); await nasta(); await nasta();
     await p.click('[data-yrke="krigare"]'); await nasta(); await p.waitForTimeout(200);
     await p.selectOption('#valfri-f', 'animism'); await p.waitForTimeout(150);

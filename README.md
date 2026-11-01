@@ -2,6 +2,14 @@
 
 En rollpersonsskapare för Chronopia (Drakar och Demoner). Den följer kapitlet Rollpersonen (s. 8–38) och färdighetskapitlet (s. 39–72) steg för steg och visar ett levande rollformulär med BP, EP och regelkontroll.
 
+## Startsidan
+
+Appen öppnar på en startsida med stora val: **Skapa rollperson** (stegen nedan), **Ladda ned rollformulär** (ett tomt formulär som ifyllbar PDF) och **Regelresonemang** (husreglerna i `regler/husregler.json` och regelbesluten i `regler/regelbeslut.md`). Redigera rollperson, Förbättra rollperson och Kampanj är markerade som *kommer snart*. Titeln och menyvalet Startsidan leder tillbaka.
+
+Skapandet börjar med **steg 0, Böcker**: vilka böcker rollpersonen skapas med. Böckerna står i `regler/bocker.json` (grupp, status `inlagd` eller `kommerSnart`, och `kraver` för obligatoriska beroenden). Grundreglerna är alltid med; expansionerna visas med *(Kommer snart!)* tills de är inlagda. Valet sparas i rollpersonen (`rp.bocker`) och låses när en ras är vald. Övriga steg har kvar sina nummer 1–13.
+
+Längst ner står appens version och när sidan senast publicerades (`version.json`).
+
 ## Rollformulär och sparade filer
 
 Knappen Rollformulär visar rollpersonen på ett formulär i samma layout som bokens (s. 11–12). En tredje sida läggs till bara om något inte får plats, och om man vill även sidor med rollpersonens färdigheter i korthet. Knappen Ladda ner som PDF ger en PDF-fil i A4 som ser likadan ut i alla webbläsare, även i mobilen. Fälten man fyller i under spel går att fylla i direkt i PDF:en också. Under spel kan man skriva direkt i formuläret: erf (osparade erfarenhetspoäng per färdighet), hjältepoäng, pengar, egen utrustning samt utseende och bakgrund. Det sparas i rollpersonen.
@@ -41,7 +49,9 @@ python3 -m http.server
 
 ## Publicera
 
-Slå på GitHub Pages för grenen `main` (rotkatalogen) under Settings → Pages.
+Sidan publiceras på GitHub Pages med arbetsflödet `.github/workflows/pages.yml` vid varje push till `main`. Det skriver in publiceringstiden och commit i `version.json` innan sidan laddas upp. Under Settings → Pages ska källan (Build and deployment → Source) vara **GitHub Actions**.
+
+Versionsnumret i `version.json` (`version`) höjs för hand enligt semver: tredje siffran för rättningar, andra för nya funktioner, första för stora förändringar (till exempel ändrat filformat).
 
 ## Struktur
 
@@ -57,7 +67,8 @@ Slå på GitHub Pages för grenen `main` (rotkatalogen) under Settings → Pages
 - `utveckling.js`: regellogiken efter skapandet. Räknar fram den utvecklade rollpersonen ur loggen och kontrollerar varje post.
 - `spelmote.js`: gränssnittet för spelmöten, träning, förbättring och logg.
 - `regelmotor.js`: all regellogik (BP, EP, grundegenskaper, härledda värden, färdigheter). Har inga beroenden.
-- `regler/*.json`: reglerna som data, med sidhänvisningar. `husregler.json` beskriver hur oklara regler har tolkats.
+- `regler/*.json`: reglerna som data, med sidhänvisningar. `husregler.json` beskriver hur oklara regler i grundreglerna har tolkats, `regelbeslut.md` regelbesluten för expansionerna (visas under Regelresonemang), `bocker.json` böckerna i steg 0.
+- `ui/startsida.js`: startsidan och sidan Regelresonemang.
 - Reglerna ändras direkt i `regler/*.json` (tidigare genererades de av Python-skript i `verktyg/`, som är borttagna). Det som går att välja (`valbaraRaser`, `valbaraYrken`, `magiskolor`, `kulturer` i `regelmotor.js`) hämtas på ett ställe, där bokvalet för expansionerna ska kopplas in. `test/regler.test.mjs` kontrollerar att filerna går att läsa och att id:n är unika.
 - `test/brutus.test.mjs`: kontrollerar motorn mot bokens exempel Brutus. `test/sparformat.test.mjs`: filformatet. `test/utveckling.test.mjs`: utvecklingen efter skapandet. Kör alla med `npm test` (Node 20 eller senare).
 - `test/e2e/`: webbläsartester med Playwright som klickar igenom appen. Kör `npm install` en gång och sedan `npm run e2e` (tar några minuter). `npm run e2e -- --alla` kör även alla 192 kombinationer av ras och yrke (ca 15 min), och `npm run e2e -- kontroll pdf` kör bara de testerna som nämns. Testet `pdf` kräver `pdfinfo` (poppler). Skripten i `test/e2e/verktyg/` är hjälpmedel, inte tester: `skapa.cjs` skapar rollpersonsfiler för alla kombinationer och `visa.cjs` tar skärmbilder av rollformuläret.

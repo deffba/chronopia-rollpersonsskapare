@@ -1,4 +1,5 @@
 // Spelmötesdelen för en magiker: ny besvärjelse genom ensamträning, FV i den, och en särskild förmåga för HP.
+const { tillRas } = require('./hjalp.cjs');
 // SF_SLUMP=0.3 låser tärningen för förmågeslaget (0.3 ger 14 + 24 = 38, Mångsidig, som kräver två olika val).
 const { chromium } = require('playwright');
 const fs = require('fs');
@@ -11,7 +12,7 @@ const BILDER = process.argv[3] || null;
   const ok = []; const fel = [];
   const koll = (namn, villkor, info = '') => (villkor ? ok : fel).push(namn + (villkor ? '' : ' ' + info));
   const notis = async () => (await p.locator('#notis').textContent()).trim();
-  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev'); await p.waitForSelector('.raskort');
+  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev'); await tillRas(p);
   await p.setInputFiles('#importfil', { name: 'rp.json', mimeType: 'application/json', buffer: fs.readFileSync(FIL) });
   await p.waitForTimeout(300);
   await p.click('#menyknapp'); await p.click('#visa-spel');

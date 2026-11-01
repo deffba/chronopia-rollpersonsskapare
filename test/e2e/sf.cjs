@@ -1,4 +1,5 @@
 const { chromium } = require('playwright');
+const { tillRas } = require('./hjalp.cjs');
 const RASER = ['Dimalv','Drakonit','Dvärg','Goblin','Halvalv','Högländare','Ljusalv','Människa','Orch','Stadsalv','Troll','Wongos'];
 const YRKEN = ['animist','bard','elementarmagiker','gladiator','gycklare','hantverkare','krigare','kopman','lard-man','lonnmordare','mentalist','munk','paladin','resenar','tjuv','arkemagiker'];
 const [RAS, YRKE] = [process.argv[2] ?? 'Människa', process.argv[3] ?? 'krigare'];
@@ -6,7 +7,7 @@ const [RAS, YRKE] = [process.argv[2] ?? 'Människa', process.argv[3] ?? 'krigare
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 1400, height: 1000 } });
   let errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
-  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await p.waitForSelector('.raskort');
+  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await tillRas(p);
   const nastaOk = async () => !(await p.locator('.steg-fot .primar').isDisabled());
   const alderKlar = async () => { if (await p.locator('#alder').count() && !(await p.inputValue('#alder'))) await p.click('.steg-innehall button:has-text("Enkel metod")'); }; // åldern är tom från början (steg 2)
   const nasta = async () => { await alderKlar(); if (await p.locator('#sf-modal-fortsatt:not([disabled])').count()) await p.click('#sf-modal-fortsatt'); await p.locator('.steg-fot .primar').click(); };
@@ -30,7 +31,7 @@ const [RAS, YRKE] = [process.argv[2] ?? 'Människa', process.argv[3] ?? 'krigare
   }
   function CSS_escape(s) { return s.replace(/([:+.])/g, '\\$1'); }
 
-  await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort');
+  await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p);
   await p.locator('.raskort', { hasText: RAS }).click(); await fyll(); await nasta(); await nasta();
   await p.click(`[data-yrke="${YRKE}"]`); await nasta(); await fyll(); await nasta();
   await p.fill('#namn', 'Test'); await p.press('#namn', 'Tab'); await p.locator('#kon .valknapp').first().click(); await nasta();
@@ -40,7 +41,7 @@ const [RAS, YRKE] = [process.argv[2] ?? 'Människa', process.argv[3] ?? 'krigare
   for (let mal = 3; mal <= 80; mal++) {
     // Sidan börjar alltid med en ny rollperson; den sparade öppnas med Fortsätt med den. Slagen skrivs in (manuella slag).
     await p.evaluate((b) => { localStorage.setItem('chronopia-rollperson-v2', b); localStorage.setItem('chronopia-manuella-slag', 'ja'); }, bild);
-    await p.reload(); await p.click('#fortsatt-sparad'); await p.waitForSelector('#sf-bp');
+    await p.reload(); await tillRas(p); await p.click('#fortsatt-sparad'); await p.waitForSelector('#sf-bp');
     const bp = Math.max(1, mal - 40), slag = mal - bp;
     await p.fill('#sf-bp', String(bp)); await p.press('#sf-bp', 'Tab');
     await p.fill('#sf-slag', String(slag)); await p.click('#sf-sla');

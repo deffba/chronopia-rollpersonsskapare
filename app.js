@@ -7,6 +7,7 @@ import { laggTill, angraSenaste, kontrolleraPost } from "./utveckling.js";
 import { spelInnehall, spelDelar, aktivDel, valjDel, nollstallSpel, spelPotter } from "./spelmote.js";
 import { stegAlder } from "./steg/alder.js";
 import { stegBesvarjelser } from "./steg/besvarjelser.js";
+import { stegBocker } from "./steg/bocker.js";
 import { grundvardesForslag, stegEgenskaper } from "./steg/egenskaper.js";
 import { filnamn, laddaNer, stegExport } from "./steg/export.js";
 import { epFordelning, stegFardigheter } from "./steg/fardigheter.js";
@@ -24,6 +25,7 @@ import { $, el, slaT } from "./ui/dom.js";
 import { falt, fardighetsVal, gruppLista, info, infoKnapp, valLista } from "./ui/kontroller.js";
 import { magiGorOm, magiMisslyckat, magiModal, magiPlatser, MAGISLAG, oppnaMagiModal } from "./ui/magimodal.js";
 import { rollformular, sakNamn } from "./ui/sammanfattning.js";
+import { regelresonemang, startsida } from "./ui/startsida.js";
 import { landatSlag, rullar, slagKontroll, tarningsIkon, valjFardighet } from "./ui/tarningar.js";
 
 // ------------------------------------------------------------ export och import
@@ -40,7 +42,7 @@ function importera(text) {
     S.langst = STEG.length - 1; // en inläst rollperson är redan genomgången
     nollstallSpel();
     // En rollperson som har spelats öppnas i spelmötesdelen; skapandet är då låst
-    S.vy = harLogg() ? "spel" : S.vy === "spel" ? "steg" : S.vy;
+    S.vy = harLogg() ? "spel" : S.vy === "formular" ? "formular" : "steg";
     visaNotis(`${S.rp.namn || "Rollpersonen"} är inläst.`);
     uppdatera();
   } catch (e) {
@@ -76,7 +78,7 @@ function foljHistorik() {
   else history.replaceState({ plats }, "");
 }
 function gaTillPlats(plats) {
-  if (plats === "formular") S.vy = "formular";
+  if (["formular", "start", "regler"].includes(plats)) S.vy = plats;
   else if (plats === "spel") S.vy = S.spelSynlig && !saknas(rakna()).length ? "spel" : "steg";
   else { S.vy = "steg"; S.aktivtSteg = plats; } // ritaVy flyttar tillbaka till första ofärdiga steget om det behövs
   rita();
@@ -90,8 +92,12 @@ function ritaVy() {
   }
   const res = rakna();
   if (S.vy === "steg" && harLogg()) S.vy = "spel"; // efter första posten går skapandet inte att ändra
-  $(".layout").style.display = S.vy === "formular" ? "none" : "";
+  const helsida = ["start", "regler"].includes(S.vy);
+  $(".layout").style.display = S.vy === "formular" || helsida ? "none" : "";
   $("#rf-vy").hidden = S.vy !== "formular";
+  $("#start-vy").hidden = !helsida;
+  document.body.dataset.vy = S.vy;
+  if (helsida) { ritaHelsida(); return; }
   $("#visa-formular").setAttribute("aria-pressed", String(S.vy === "formular"));
   $("#visa-spel").setAttribute("aria-pressed", String(S.vy === "spel"));
   if (S.vy === "formular") { ritaFormularVy(res); return; }
@@ -112,13 +118,13 @@ function ritaVy() {
         if (tillagg && i > STEG.findIndex((x) => x.id === S.aktivtSteg)) { visaNotis(tillagg); return; }
         S.aktivtSteg = s.id; uppdatera(); $("#arbetsyta").focus({ preventScroll: true });
       } },
-    el("span", { class: "steg-nr" }, i + 1), el("span", { class: "steg-namn" }, s.namn),
+    el("span", { class: "steg-nr" }, i), el("span", { class: "steg-namn" }, s.namn), // steg 0 är böckerna
     s.bp ? el("span", { class: "steg-bp" }, bpForSteg(s.id, res)) : null))));
 
   const steg = STEG.find((s) => s.id === S.aktivtSteg);
   const index = STEG.indexOf(steg);
   const innehall = {
-    ras: stegRas, alder: stegAlder, yrke: stegYrke, extra: stegExtra, kon: stegKon, egenskaper: stegEgenskaper,
+    bocker: stegBocker, ras: stegRas, alder: stegAlder, yrke: stegYrke, extra: stegExtra, kon: stegKon, egenskaper: stegEgenskaper,
     formagor: stegFormagor, svardshand: stegSvardshand, stand: stegStand, kapital: stegKapital, fardigheter: stegFardigheter,
     besvarjelser: stegBesvarjelser, utrustning: stegUtrustning, export: stegExport,
   }[steg.id](res);
@@ -131,7 +137,7 @@ function ritaVy() {
   $("#arbetsyta").replaceChildren(
     el("header", { class: "steg-huvud" },
       el("div", { class: "steg-titel" },
-        el("span", { class: "eyebrow" }, `Steg ${index + 1} av ${STEG.length}${steg.sida === "–" ? "" : ` · s. ${steg.sida}`}`),
+        el("span", { class: "eyebrow" }, `Steg ${index} av ${STEG.length - 1}${steg.sida === "–" ? "" : ` · s. ${steg.sida}`}`),
         el("h2", {}, steg.namn)),
       el("dl", { class: "steg-potter", "aria-label": "Kvar att spendera" },
         el("div", { class: res.bp.kvar < 0 ? "over" : "" }, el("dt", {}, "BP kvar", info("BP")), el("dd", {}, res.bp.kvar)),
@@ -164,6 +170,16 @@ function ritaVy() {
     if (!sfModal.contains(document.activeElement)) sfModal.querySelector("select:not([disabled]), button:not([disabled]), button")?.focus({ preventScroll: true });
   } else if (!magiModal) document.body.classList.remove("dialog-oppen");
   S.nyssSlaget = null;
+}
+
+// ------------------------------------------------------------ startsidan och regelresonemang (ui/startsida.js)
+export function visaStart() { S.vy = "start"; rita(); window.scrollTo(0, 0); }
+function ritaHelsida() {
+  const sida = S.vy === "start"
+    ? startsida({ skapa: () => { S.vy = "steg"; rita(); window.scrollTo(0, 0); }, laddaNerTomt: laddaNerTomPdf, regler: () => { S.vy = "regler"; rita(); window.scrollTo(0, 0); } })
+    : regelresonemang({ tillbaka: visaStart, rita });
+  $("#start-vy").replaceChildren(el("h2", { class: "start-rubrik" }, S.vy === "start" ? "Välkommen" : "Regelresonemang"), sida);
+  S.ritatSteg = S.vy;
 }
 
 // ------------------------------------------------------------ spelmöten och förbättring (spelmote.js)
@@ -280,23 +296,28 @@ function namnSomTitel() { document.title = S.rp.namn.trim() || SIDTITEL; }
 
 // Rollformuläret som PDF-fil (formularpdf.js), med rollpersonens namn som filnamn. Samma fil i alla webbläsare.
 const pdfNamn = () => `${(S.rp.namn.trim() || "Rollformulär").replace(/[\\/:*?"<>|]+/g, "-")}.pdf`;
-export async function laddaNerPdf(e) {
+export const laddaNerPdf = (e) => skapaPdf(e, {
+  rp: S.rp, res: () => rakna(), medRegler: S.medRegler, blacksnal: S.blacksnal, titel: S.rp.namn.trim(), namn: pdfNamn(), andrat: sparaFormular });
+// Ett tomt rollformulär: samma formulär utan värden, med ifyllbara fält
+export const laddaNerTomPdf = (e) => { const rp = TOM(); return skapaPdf(e, {
+  rp, res: () => raknaFor(rp), tom: true, medRegler: false, blacksnal: false, titel: "Rollformulär", namn: "Rollformulär.pdf", andrat: () => {} }); };
+async function skapaPdf(e, { rp, res, tom = false, medRegler, blacksnal, titel, namn, andrat }) {
   const knapp = e?.currentTarget;
   const text = knapp?.textContent;
   if (knapp) { knapp.disabled = true; knapp.textContent = "Skapar PDF …"; }
   try {
     const { rollformularPdf } = await import("./formularpdf.js");
     const pdf = await rollformularPdf({
-      sidor: rollformularSidor({ R: S.R, rp: S.rp, res: rakna(), el, sakNamn, andrat: sparaFormular, medRegler: S.medRegler }),
-      blacksnal: S.blacksnal, titel: S.rp.namn.trim(), efterTypsnitt: (rot) => { if (S.medRegler) delaRegelsidor(rot, el); },
+      sidor: rollformularSidor({ R: S.R, rp, res: res(), el, sakNamn, andrat, medRegler, tom }),
+      blacksnal, titel, efterTypsnitt: (rot) => { if (medRegler) delaRegelsidor(rot, el); },
     });
     const url = URL.createObjectURL(new Blob([pdf], { type: "application/pdf" }));
-    const a = el("a", { href: url, download: pdfNamn() });
+    const a = el("a", { href: url, download: namn });
     document.body.append(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60000);
-    visaNotis(`${pdfNamn()} laddas ner.`);
+    visaNotis(`${namn} laddas ner.`);
   } catch (fel) {
     console.error(fel);
     visaNotis("Det gick inte att skapa PDF:en. Kontrollera nätverket och försök igen.");
@@ -332,11 +353,11 @@ async function start() {
     const sparad = JSON.parse(localStorage.getItem(LAGRING) ?? "null");
     if (sparad?.rp?.ras) {
       S.rp = fyllUt(sparad.rp);
-      if (!rakna().fel.length) S.sparadVidStart = { rp: S.rp, aktivtSteg: sparad.aktivtSteg ?? "ras", langst: sparad.langst ?? 0 };
+      if (!rakna().fel.length) S.sparadVidStart = { rp: S.rp, aktivtSteg: sparad.aktivtSteg ?? "bocker", langst: sparad.langst ?? 0 };
     }
   } catch { /* ingen sparad rollperson */ }
   S.rp = TOM();
-  S.aktivtSteg = "ras";
+  S.aktivtSteg = "bocker";
   S.langst = 0;
   S.giltig = structuredClone(S.rp);
   const lardomar = el("datalist", { id: "lardomar" }, LARDOMSFORSLAG.map((t) => el("option", { value: t })));
@@ -360,8 +381,14 @@ async function start() {
       return;
     }
     avbryt();
-    S.rp = TOM(); S.aktivtSteg = "ras"; S.langst = 0; S.vy = "steg"; nollstallSpel(); S.nySekundar = ""; S.nyExtra = ""; S.autoAnvand = { egenskaper: false, fardigheter: false }; S.utrustningsFilter = ""; uppdatera();
+    S.rp = TOM(); S.aktivtSteg = "bocker"; S.langst = 0; S.vy = "steg"; nollstallSpel(); S.nySekundar = ""; S.nyExtra = ""; S.autoAnvand = { egenskaper: false, fardigheter: false }; S.utrustningsFilter = ""; uppdatera();
   });
+  $("#till-start").addEventListener("click", () => {
+    $("#menypanel").hidden = true; $("#menyknapp").setAttribute("aria-expanded", "false");
+    visaStart();
+  });
+  $("#hem").addEventListener("click", (e) => { e.preventDefault(); visaStart(); });
+  visaVersion();
   $("#visa-spel").addEventListener("click", () => {
     $("#menypanel").hidden = true; $("#menyknapp").setAttribute("aria-expanded", "false");
     oppnaSpel();
@@ -429,6 +456,16 @@ async function start() {
   window.addEventListener("popstate", (e) => { if (e.state?.plats) gaTillPlats(e.state.plats); });
   startaUtvecklarlage();
   rita();
+}
+
+// Versionen och när sidan senast publicerades står i version.json. Publiceringen (GitHub Actions) fyller i tid och commit.
+async function visaVersion() {
+  try {
+    const v = await (await fetch("version.json", { cache: "no-store" })).json();
+    const tid = v.publicerad ? new Date(v.publicerad).toLocaleString("sv-SE", { dateStyle: "medium", timeStyle: "short" }) : null;
+    $("#version").textContent = [`v${v.version}`, tid ? `uppdaterad ${tid}` : "lokal version", v.commit].filter(Boolean).join(" · ");
+    if (v.publicerad) $("#version").title = `Publicerad ${v.publicerad}`;
+  } catch { /* versionen är bara information */ }
 }
 
 // ------------------------------------------------------------ utvecklarläge (utvecklarlage.js)

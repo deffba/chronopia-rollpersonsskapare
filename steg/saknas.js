@@ -55,7 +55,7 @@ export function saknasPerSteg(res) {
 
 export function saknas(res) {
   const perSteg = saknasPerSteg(res);
-  return synligaSteg(res).flatMap((st, i) => perSteg[st.id].map((t) => `${t} (steg ${i + 1})`));
+  return synligaSteg(res).flatMap((st, i) => perSteg[st.id].map((t) => `${t} (steg ${i})`));
 }
 
 // En färdighet som är vald i listan men inte tillagd med Lägg till (steg 4 och 11) spärrar vägen framåt.

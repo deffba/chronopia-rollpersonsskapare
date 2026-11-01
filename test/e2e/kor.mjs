@@ -26,6 +26,7 @@ const allaKombinationer = (ut) => { const rader = ut.split("\n").filter((r) => r
 
 const TESTER = [
   { namn: "kontroll", ok: passFail },
+  { namn: "startsida", args: ["$UT"], ok: passFail },
   { namn: "fixar", ok: passFail },
   { namn: "formagor", ok: passFail },
   { namn: "nyheter", ok: passFail },

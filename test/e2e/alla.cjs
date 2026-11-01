@@ -1,4 +1,5 @@
 const { chromium } = require('playwright');
+const { tillRas } = require('./hjalp.cjs');
 const RASER = ['Dimalv','Drakonit','Dvärg','Goblin','Halvalv','Högländare','Ljusalv','Människa','Orch','Stadsalv','Troll','Wongos'];
 const YRKEN = ['animist','bard','elementarmagiker','gladiator','gycklare','hantverkare','krigare','kopman','lard-man','lonnmordare','mentalist','munk','paladin','resenar','tjuv','arkemagiker'];
 const [from, to] = [Number(process.argv[2] ?? 0), Number(process.argv[3] ?? 999)];
@@ -6,7 +7,7 @@ const [from, to] = [Number(process.argv[2] ?? 0), Number(process.argv[3] ?? 999)
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 1400, height: 1000 }, reducedMotion: 'reduce' });
   let errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
-  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await p.waitForSelector('.raskort');
+  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await tillRas(p);
   const nastaOk = async () => !(await p.locator('.steg-fot .primar').isDisabled());
   const alderKlar = async () => { if (await p.locator('#alder').count() && !(await p.inputValue('#alder'))) await p.click('.steg-innehall button:has-text("Enkel metod")'); }; // åldern är tom från början (steg 2)
   const nasta = async () => { await alderKlar(); if (await p.locator('#sf-modal-fortsatt:not([disabled])').count()) await p.click('#sf-modal-fortsatt'); await p.locator('.steg-fot .primar').click(); };
@@ -66,7 +67,7 @@ const [from, to] = [Number(process.argv[2] ?? 0), Number(process.argv[3] ?? 999)
     errs = [];
     const fel = async (vad) => { resultat.push(`${ras}/${yrke}: ${vad}`); };
     try {
-      await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort');
+      await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p);
       await p.locator('.raskort', { hasText: ras }).click();
       let r = await fyll(); if (r !== true) { await fel('ras ' + r); continue; } await nasta();
       await nasta(); // ålder
@@ -116,7 +117,7 @@ const [from, to] = [Number(process.argv[2] ?? 0), Number(process.argv[3] ?? 999)
       if (!(await nastaOk())) { await fel('utrustning spärrad: ' + await p.locator('.saknaslista').first().textContent().catch(() => '?')); continue; }
       await nasta();
       const json = await p.locator('#exportruta').inputValue();
-      await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort');
+      await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p);
       await p.setInputFiles('#importfil', { name: 'test.json', mimeType: 'application/json', buffer: Buffer.from(json) });
       await p.waitForFunction(() => document.querySelector('#notis')?.textContent.trim(), null, { timeout: 5000 }).catch(() => {});
       const notis = await p.locator('#notis').textContent();

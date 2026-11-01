@@ -1,0 +1,40 @@
+# Publicerar appen på GitHub Pages vid varje push till main.
+# Före publiceringen skrivs tiden och commit in i version.json, så att sidfoten visar när sidan senast uppdaterades.
+# Kräver att Pages använder källan "GitHub Actions" (Settings → Pages → Build and deployment → Source).
+name: Publicera på GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publicera:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skriv publiceringstid och commit i version.json
+        run: |
+          jq --arg tid "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg commit "$(git rev-parse --short HEAD)" \
+            '.publicerad = $tid | .commit = $commit' version.json > version.tmp && mv version.tmp version.json
+          cat version.json
+      - name: Ta bort det som inte hör till sidan
+        run: rm -rf .git .github test node_modules
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

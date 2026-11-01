@@ -1,10 +1,11 @@
 const { chromium } = require('playwright');
+const { tillRas } = require('./hjalp.cjs');
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1400, height: 1000 }, reducedMotion: 'reduce' });
   const errs = []; p.on('pageerror', e => errs.push(e.message));
   const alderKlar = async () => { if (await p.locator('#alder').count() && !(await p.inputValue('#alder'))) await p.click('.steg-innehall button:has-text("Enkel metod")'); }; // åldern är tom från början (steg 2)
   const nasta = async () => { await alderKlar(); if (await p.locator('#sf-modal-fortsatt:not([disabled])').count()) await p.click('#sf-modal-fortsatt'); await p.locator('.steg-fot .primar').click(); };
-  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort');
+  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p);
   await p.locator('.raskort').first().click(); await p.waitForTimeout(150); await nasta(); await nasta();
   await p.click('[data-yrke="krigare"]'); await nasta(); await p.waitForTimeout(200);
   const r = [];

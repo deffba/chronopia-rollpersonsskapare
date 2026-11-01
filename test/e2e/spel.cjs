@@ -1,4 +1,5 @@
 // Spelmötesdelen: spelmöte, träning, förbättring, logg och ångra, export och import.
+const { tillRas } = require('./hjalp.cjs');
 const { chromium } = require('playwright');
 const fs = require('fs');
 const FIL = process.argv[2] || 'Högländare-krigare.json';
@@ -11,9 +12,9 @@ const BILDER = process.argv[3] || null;
   const koll = (namn, villkor, info = '') => (villkor ? ok : fel).push(namn + (villkor ? '' : ' ' + info));
   const bild = async (namn) => { if (BILDER) await p.screenshot({ path: `${BILDER}/${namn}.png`, fullPage: true }); };
   const notis = async () => (await p.locator('#notis').textContent()).trim();
-  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev=av'); await p.waitForSelector('.raskort');
+  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev=av'); await tillRas(p);
   koll('knappen dold utan utvecklarläge', await p.locator('#visa-spel').isHidden());
-  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev'); await p.waitForSelector('.raskort');
+  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev'); await tillRas(p);
   await p.evaluate(() => localStorage.clear());
   const json = fs.readFileSync(FIL, 'utf8');
   await p.setInputFiles('#importfil', { name: 'rp.json', mimeType: 'application/json', buffer: Buffer.from(json) });
@@ -108,7 +109,7 @@ const BILDER = process.argv[3] || null;
   // Export och import behåller loggen
   const fil = await p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp);
   koll('loggen sparas lokalt', fil.utveckling.logg.length === 2);
-  await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort');
+  await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p);
   const ut = JSON.stringify({ format: 'chronopia-rollperson', version: 2, sparad: new Date().toISOString(), rollperson: fil });
   await p.setInputFiles('#importfil', { name: 'rp.json', mimeType: 'application/json', buffer: Buffer.from(ut) });
   await p.waitForTimeout(300);

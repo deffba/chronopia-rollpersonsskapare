@@ -1,4 +1,5 @@
 // PDF-nedladdningen: rollformuläret blir en PDF-fil direkt, utan utskriftsdialog, med samma sidor i alla fönsterstorlekar.
+const { tillRas } = require('./hjalp.cjs');
 // Kör: node pdf.cjs <rollperson.json> <utmapp> (körs med `npm run e2e`)
 const { chromium, devices } = require('playwright');
 const fs = require('fs');
@@ -9,7 +10,7 @@ async function kor(b, namn, opts, medRegler = false, blacksnal = false) {
   const p = await ctx.newPage();
   const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
   let printad = false;
-  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort');
+  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p);
   await p.evaluate(() => { window.print = () => { window.__printad = true; }; });
   await p.setInputFiles('#importfil', { name: 't.json', mimeType: 'application/json', buffer: fs.readFileSync(process.argv[2]) });
   await p.waitForTimeout(300);
