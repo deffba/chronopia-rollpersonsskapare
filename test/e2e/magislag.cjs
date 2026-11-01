@@ -1,4 +1,5 @@
 // Magiförmågeslaget i modalen: misslyckat (skolan tas bort och döljs), lyckat (gäller globalt), manuellt och vanligt slag.
+const { tillRas } = require('./hjalp.cjs');
 const { chromium } = require('playwright');
 const fs = require('fs');
 const BILDER = process.argv[2] || null;
@@ -15,7 +16,7 @@ const BILDER = process.argv[2] || null;
     p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
     await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html');
     await p.evaluate((m) => { localStorage.clear(); localStorage.setItem('chronopia-manuella-slag', m ? 'ja' : 'nej'); }, manuell);
-    await p.reload(); await p.waitForSelector('.raskort');
+    await p.reload(); await tillRas(p);
     await p.setInputFiles('#importfil', { name: 'rp.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(fil)) });
     await p.waitForTimeout(300);
     await p.locator('.steg-knapp', { has: p.locator('.steg-namn', { hasText: /^Färdigheter$/ }) }).click();

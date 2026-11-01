@@ -1,4 +1,5 @@
 // Rollformuläret: fält som fylls i sparas, följer med i filen och läses in igen; utskriften blir A4-sidor.
+const { tillRas } = require('./hjalp.cjs');
 // Kör med en sparad rollperson: node formular.cjs Dimalv-magi.json (körs med `npm run e2e`)
 const { chromium } = require('playwright');
 const fs = require('fs');
@@ -8,7 +9,7 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
   const ctx = await b.newContext({ viewport: { width: 1300, height: 900 }, acceptDownloads: true });
   const p = await ctx.newPage();
   const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
-  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort');
+  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p);
   await p.setInputFiles('#importfil', { name: 't.json', mimeType: 'application/json', buffer: fs.readFileSync(process.argv[2]) });
   await p.waitForTimeout(200);
   await p.click('#menyknapp'); await p.click('#visa-formular');
@@ -38,7 +39,7 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
   ok('filen har spelfälten', spel.spelledare === 'Kim' && spel.hjaltepoang === 3 && spel.utrustning[0]?.namn === 'Rep (10 m)' && spel.pengar?.bors?.sm === '123' && fil.rollperson.anteckningar.startsWith('Skuld'), JSON.stringify(spel));
   ok('erf sparas per färdighetsnyckel', Object.values(spel.erf).includes(4), JSON.stringify(spel.erf));
   // läs in den nedladdade filen i en ny sida
-  await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort');
+  await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p);
   await p.setInputFiles('#importfil', { name: 'ny.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(fil)) });
   await p.waitForTimeout(200);
   ok('nedladdad fil läses in', (await p.locator('#notis').textContent()).includes('inläst'));

@@ -1,4 +1,5 @@
 // Backlogpunkterna 1, 2, 4, 6 och 8: PDF-filnamn, PDF direkt från steg 14, bakåtknappen, kortens storlek, inget förvalt yrke.
+const { tillRas } = require('./hjalp.cjs');
 // Körs med `npm run e2e` (startar en egen server).
 const { chromium } = require('playwright');
 const fs = require('fs');
@@ -12,7 +13,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   const alderKlar = async () => { if (await p.locator('#alder').count() && !(await p.inputValue('#alder'))) await p.click('.steg-innehall button:has-text("Enkel metod")'); }; // åldern är tom från början (steg 2)
   const nasta = async () => { await alderKlar(); if (await p.locator('#sf-modal-fortsatt:not([disabled])').count()) await p.click('#sf-modal-fortsatt'); await p.click('.steg-fot .knapp.primar'); await p.waitForTimeout(150); };
 
-  await p.goto(URL + '?dev=av'); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort');
+  await p.goto(URL + '?dev=av'); await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p);
   // 6: korten är större, texten centrerad, yrkena fyra i bredd
   const ras = await p.locator('.raskort').first().evaluate(e => ({ w: e.getBoundingClientRect().width, align: getComputedStyle(e).textAlign }));
   ok('raskorten bredare (rutnätet 468 px) och centrerade', ras.w > 140 && ras.align === 'center', JSON.stringify(ras));
@@ -54,7 +55,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   ok('valen finns kvar', await p.locator('.yrkeskort.valt[data-yrke="tjuv"]').count() === 1);
 
   // 4 med utvecklarläget: det är kvar efter bakåt
-  await p.goto(URL + '?dev'); await p.waitForFunction(() => window.chronopiaDev); await p.waitForSelector('.raskort');
+  await p.goto(URL + '?dev'); await p.waitForFunction(() => window.chronopiaDev); await tillRas(p);
   await p.click('#menyknapp'); await p.selectOption('#dev-lage', 'export'); await p.click('#dev-krigare'); await p.waitForTimeout(300);
   ok('testrollpersonen på steg 14', /Spara|Exportera/.test(await rubrik()) || await p.locator('#pdf-direkt').count() === 1, await rubrik());
   const steg14 = await rubrik();

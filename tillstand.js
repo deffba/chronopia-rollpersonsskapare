@@ -5,10 +5,11 @@ import { TOMT_SPEL, TOM_UTVECKLING } from "./sparformat.js";
 import { utvecklad } from "./utveckling.js";
 import { rita, visaNotis } from "./app.js";
 
-export const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning", "erfarenhet"];
+export const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning", "erfarenhet", "bocker"];
 export const LAGRING = "chronopia-rollperson-v2";
 
 export const TOM = () => ({
+  bocker: ["grund"], // böckerna rollpersonen skapas med (steg 0); grundreglerna är alltid med
   namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",
   extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false }, svardshand: { bp: 0, slag: null },
@@ -25,7 +26,7 @@ export const fyllUt = (data) => ({ ...TOM(), ...data,
 export const S = {
   R: undefined, // regeldata
   rp: undefined, // rollpersonen (spelarens val)
-  aktivtSteg: "ras",
+  aktivtSteg: "bocker",
   langst: 0, // längsta steg spelaren har kommit till; senare steg är släckta i sidomenyn
   giltig: undefined, // senaste rollperson som följer alla regler
   nySekundar: "", // påbörjat val av ny sekundär färdighet
@@ -35,7 +36,7 @@ export const S = {
   spelSynlig: false, // spelmötesdelen visas tills vidare bara i utvecklarläget
   ritatSteg: null, // steget som visades senast; byts det skrollas sidan upp
   sparadVidStart: null, // rollpersonen från förra besöket; sidan börjar ändå alltid med en ny
-  vy: "steg", // "steg", "spel" (spelmöten och förbättring) eller "formular" (rollformuläret för utskrift)
+  vy: "start", // "start" (startsidan), "regler" (regelresonemang), "steg", "spel" (spelmöten och förbättring) eller "formular" (rollformuläret för utskrift)
   blacksnal: false, // rollformuläret utan färgade ytor
   medRegler: false, // rollformuläret med sidorna Färdigheterna i korthet
   manuellaSlag: false, // spelaren skriver in slagen själv i stället för att slå (valet finns i menyn)

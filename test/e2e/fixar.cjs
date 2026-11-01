@@ -1,4 +1,5 @@
 // Backlogpunkterna 3, 5 och 7 samt åldern: ingen instruktionstext för förbestämda färdigheter, bonusen i tärningsrutan,
+const { tillRas } = require('./hjalp.cjs');
 // nästa steg spärrat när en vald färdighet inte är tillagd, åldern tom från början och enkel metod vid autofyll.
 // Körs med `npm run e2e` (startar en egen server).
 const { chromium } = require('playwright');
@@ -8,7 +9,7 @@ const YRKEN = ['animist','bard','elementarmagiker','gladiator','gycklare','hantv
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 1400, height: 1000 }, reducedMotion: 'reduce' });
   let errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
-  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await p.waitForSelector('.raskort');
+  await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html'); await tillRas(p);
   const nastaOk = async () => !(await p.locator('.steg-fot .primar').isDisabled());
   const alderKlar = async () => { if (await p.locator('#alder').count() && !(await p.inputValue('#alder'))) await p.click('.steg-innehall button:has-text("Enkel metod")'); }; // åldern är tom från början (steg 2)
   const nasta = async () => { await alderKlar(); if (await p.locator('#sf-modal-fortsatt:not([disabled])').count()) await p.click('#sf-modal-fortsatt'); await p.locator('.steg-fot .primar').click(); };
@@ -67,7 +68,7 @@ const YRKEN = ['animist','bard','elementarmagiker','gladiator','gycklare','hantv
   let antalFel = 0; const ok = (namn, villkor, extra = '') => { console.log(`${villkor ? 'PASS' : 'FAIL'} ${namn}${extra ? ' — ' + extra : ''}`); if (!villkor) antalFel++; };
   const rubrik = () => p.locator('.steg-huvud h2').textContent();
   const knapp = () => p.locator('.steg-fot .primar');
-  const ny = async (q = '?dev=av') => { await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html' + q); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('.raskort'); };
+  const ny = async (q = '?dev=av') => { await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html' + q); await p.evaluate(() => localStorage.clear()); await p.reload(); await tillRas(p); };
 
   // Åldern
   await ny();
@@ -174,7 +175,7 @@ const YRKEN = ['animist','bard','elementarmagiker','gladiator','gycklare','hantv
 
   // Autofyll i utvecklarläget sätter enkel metod
   await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev');
-  await p.evaluate(() => { localStorage.clear(); localStorage.setItem('chronopia-dev-autofyll', 'ja'); }); await p.reload(); await p.waitForSelector('.raskort');
+  await p.evaluate(() => { localStorage.clear(); localStorage.setItem('chronopia-dev-autofyll', 'ja'); }); await p.reload(); await tillRas(p);
   await p.locator('.raskort', { hasText: 'Dimalv' }).click(); await p.waitForTimeout(150); await knapp().click(); await p.waitForTimeout(300);
   const auto = await p.inputValue('#alder');
   const vuxen = await p.locator('.steg-innehall button:has-text("Enkel metod")').textContent();

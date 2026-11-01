@@ -1,4 +1,5 @@
 // Utvecklarläget: testrollpersonerna byggs giltiga (efter önskemål och helt automatiskt),
+const { tillRas } = require('./hjalp.cjs');
 // automatiken klarar alla ras × yrke, och menyn laddar, öppnar rollformuläret, laddar ner och stängs av.
 // Körs med `npm run e2e` (startar en egen server).
 const { chromium } = require('playwright');
@@ -8,7 +9,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   const p = await b.newPage({ viewport: { width: 1400, height: 1000 }, reducedMotion: 'reduce', acceptDownloads: true });
   const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
   let fel = 0; const ok = (namn, villkor, extra = '') => { console.log(`${villkor ? 'PASS' : 'FAIL'} ${namn}${extra ? ' — ' + extra : ''}`); if (!villkor) fel++; };
-  await p.goto(URL); await p.waitForSelector('.raskort'); await p.waitForTimeout(300);
+  await p.goto(URL); await tillRas(p); await p.waitForTimeout(300);
   ok('inget utvecklarläge utan ?dev', await p.locator('.utvecklarlage').count() === 0);
   await p.click('.raskort'); await p.waitForTimeout(100);
   ok('ingen lås upp-knapp utan ?dev', await p.locator('.omslag').count() === 0);
@@ -62,7 +63,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   ok('ladda ner alla', filer.length === 3, filer.join(', '));
   await p.goto(URL); await p.waitForSelector('.utvecklarlage', { state: 'attached' });
   ok('valet sparas i webbläsaren', true);
-  await p.goto(URL + '?dev=av'); await p.waitForSelector('.raskort'); await p.waitForTimeout(300);
+  await p.goto(URL + '?dev=av'); await tillRas(p); await p.waitForTimeout(300);
   ok('?dev=av stänger av', await p.locator('.utvecklarlage').count() === 0);
   ok('inga konsolfel', !errs.length, errs[0] || '');
   await b.close();

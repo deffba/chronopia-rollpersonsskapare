@@ -1,4 +1,5 @@
 // Autofyll i utvecklarläget med en magiskola som valfri yrkesfärdighet: slaget görs automatiskt i steg 6;
+const { tillRas } = require('./hjalp.cjs');
 // lyckas det visas ingen modal, misslyckas det öppnas modalen med resultatet och FÖRLIKAS MED ÖDET.
 const { chromium } = require('playwright');
 (async () => {
@@ -13,7 +14,7 @@ const { chromium } = require('playwright');
   for (let varv = 0; varv < 40 && (!sett.lyckat || !sett.misslyckat); varv++) {
     await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev');
     await p.evaluate(() => { localStorage.clear(); localStorage.setItem('chronopia-dev-autofyll', 'ja'); });
-    await p.reload(); await p.waitForSelector('.raskort');
+    await p.reload(); await tillRas(p);
     await p.locator('.raskort').first().click(); await p.waitForTimeout(150); await nasta(); await p.waitForTimeout(150);
     await nasta(); await p.click('[data-yrke="krigare"]'); await nasta(); await p.waitForTimeout(300);
     await p.selectOption('#valfri-f', 'animism'); await p.waitForTimeout(200);

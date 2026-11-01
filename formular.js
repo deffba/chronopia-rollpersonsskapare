@@ -8,7 +8,10 @@ const RADER = { formagor: 6, primar: 25, yrke: 12, sprak: 11, sekundar: 33, vape
 const NAMN = { STY: "Styrka", FYS: "Fysik", SMI: "Smidighet", INT: "Intelligens", PSY: "Psyke", KAR: "Karisma", STO: "Storlek" };
 const STATUSNAMN = { primar: "Primär", yrke: "Yrke", sekundar: "Sekundär" };
 
-export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler = false }) {
+export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, medRegler = false, tom = false }) {
+  // Ett tomt formulär (tom: true) har samma layout men inga värden; rutorna för KP och PSY ritas i ett fast antal
+  const res = tom ? tomtResultat(raknat) : raknat;
+  const antalRutor = (n, tomt) => (tom ? tomt : n);
   const spel = rp.spel;
   const g = res.grundegenskaper;
   const h = res.harledda;
@@ -144,8 +147,8 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
     }
   }
   const kroppsdel = (d) => el("div", { class: `rf-kroppsdel del-${d.id}` },
-    el("div", { class: "rf-del-namn" }, d.namn.replace("Höger", "H.").replace("Vänster", "V."), el("span", {}, `(${d.kp})`)),
-    rutor(d.kp, "kp"),
+    el("div", { class: "rf-del-namn" }, d.namn.replace("Höger", "H.").replace("Vänster", "V."), el("span", {}, tom ? "(  )" : `(${d.kp})`)),
+    rutor(antalRutor(d.kp, 8), "kp"),
     el("div", { class: "rf-del-rad" }, el("span", {}, "Rustning"), el("span", { class: "rf-linje" }, rustning[d.id]?.namn.join(", ") ?? "")),
     el("div", { class: "rf-del-rad" }, el("span", {}, "Abs"), el("span", { class: "rf-linje" }, rustning[d.id]?.abs || "")));
   const delar = Object.fromEntries(h.kroppsdelar.map((d) => [d.id, d]));
@@ -189,11 +192,11 @@ export function rollformularSidor({ R, rp, res, el, sakNamn, andrat, medRegler =
             el("div", { class: "rf-strid-v" },
               el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Skadebonus"), el("span", { class: "rf-ruta-stor" }, h.skadebonus, el("span", { class: "rf-nr" }, 19))),
               el("div", { class: "rf-strid-rad rf-strid-etiketter" }, el("span"), el("span", {}, "Normal"), el("span", {}, "Maximal")),
-              el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Bärförmåga"), el("span", { class: "rf-ruta-stor" }, `${res.utrustning.barformaga} kg`), el("span", { class: "rf-ruta-stor" }, `${res.utrustning.barformaga * maxGange} kg`)),
+              el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Bärförmåga"), el("span", { class: "rf-ruta-stor" }, tom ? "" : `${res.utrustning.barformaga} kg`), el("span", { class: "rf-ruta-stor" }, tom ? "" : `${res.utrustning.barformaga * maxGange} kg`)),
               el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Förflyttning"), el("span", { class: "rf-ruta-stor" }, h.forflyttning, el("span", { class: "rf-nr" }, 20)), el("span", { class: "rf-ruta-stor" }))),
             el("div", { class: "rf-strid-h" },
-              el("div", { class: "rf-poang" }, el("span", { class: "rf-bar" }, "Tot. KP"), el("span", { class: "rf-ruta-stor" }, h.totalKP, el("span", { class: "rf-nr" }, 13)), rutor(h.totalKP, "tio")),
-              el("div", { class: "rf-poang" }, el("span", { class: "rf-bar" }, "PSY"), el("span", { class: "rf-ruta-stor" }, g.PSY, el("span", { class: "rf-nr" }, 12)), rutor(g.PSY, "tio")))),
+              el("div", { class: "rf-poang" }, el("span", { class: "rf-bar" }, "Tot. KP"), el("span", { class: "rf-ruta-stor" }, h.totalKP, el("span", { class: "rf-nr" }, 13)), rutor(antalRutor(h.totalKP, 20), "tio")),
+              el("div", { class: "rf-poang" }, el("span", { class: "rf-bar" }, "PSY"), el("span", { class: "rf-ruta-stor" }, g.PSY, el("span", { class: "rf-nr" }, 12)), rutor(antalRutor(g.PSY, 20), "tio")))),
           lista("rf-vapen", rubrik("Vapen/sköld", ["FV", "Skada", "BV", "Längd", "Räckv", "Erf", "Vikt"]), vapenrader, Math.max(RADER.vapen, vapenrader.length), 8)),
         el("div", { class: "rf-hoger2" },
           lista("rf-besvarjelser", rubrik("Besvärjelser", ["erf", "FV"]), res.besvarjelser.map((b) => el("div", { class: "rf-rad" },
@@ -319,3 +322,11 @@ export function delaRegelsidor(rot, el) {
 
 // Gubben på sida 2, ritad i bokens stil: en stående figur i kontur.
 const GUBBE = `<svg viewBox="0 0 100 260" aria-hidden="true" focusable="false"><path d="M50 6c-9 0-14 7-14 16 0 7 3 13 7 16v6c-9 2-19 4-24 9-5 6-7 22-9 36-2 13-4 26-2 34 1 4 6 5 8 1 2-6 3-20 6-32l4-17c1 14 0 30-1 42-2 18-6 40-6 60 0 17 1 34 3 46 1 5 9 5 11 1l3-18c1-14 2-36 6-56 2-10 4-14 8-14s6 4 8 14c4 20 5 42 6 56l3 18c2 4 10 4 11-1 2-12 3-29 3-46 0-20-4-42-6-60-1-12-2-28-1-42l4 17c3 12 4 26 6 32 2 4 7 3 8-1 2-8 0-21-2-34-2-14-4-30-9-36-5-5-15-7-24-9v-6c4-3 7-9 7-16 0-9-5-16-14-16z"/></svg>`;
+
+// Rollpersonens uträknade värden utan innehåll, för ett tomt rollformulär. Strukturen (kroppsdelarna) behålls.
+function tomtResultat(res) {
+  return { ...res, ras: null, yrke: res.yrke, sarskildFormaga: null, extraFormagor: [], fardigheter: [], besvarjelser: [],
+    grundegenskaper: {}, slag: { ...res.slag, socialtStand: "", svardshand: "" },
+    harledda: { ...res.harledda, skadebonus: "", forflyttning: "", totalKP: "", langd: "", vikt: "", kroppsdelar: res.harledda.kroppsdelar.map((d) => ({ ...d, kp: "" })) },
+    utrustning: { ...res.utrustning, saker: [], kvar: "" } };
+}

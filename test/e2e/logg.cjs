@@ -1,4 +1,5 @@
 // Utvecklarlägets autofyll och poänglogg. Körs med `npm run e2e` (startar en egen server).
+const { tillRas } = require('./hjalp.cjs');
 // Autofyll: dvärg tjuv går att klicka igenom till sista steget utan att fylla i något (utom BP på särskild förmåga),
 // alla särskilda förmågor med val fylls i. Loggen: ras som byts ut försvinner, saldot stämmer för testrollpersonerna,
 // filter, dra högre (aldrig lägre än standard), helskärm och Esc.
@@ -14,7 +15,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   const nasta = async () => { await alderKlar(); if (await p.locator('#sf-modal-fortsatt:not([disabled])').count()) await p.click('#sf-modal-fortsatt'); await p.click('.steg-fot .knapp.primar'); await p.waitForTimeout(200); return p.locator('.steg-huvud h2').textContent(); };
   await p.goto(URL + '?dev'); await p.waitForSelector('#poanglogg');
   await p.evaluate(() => { localStorage.setItem('chronopia-dev-autofyll', 'nej'); localStorage.removeItem('chronopia-dev-logg'); localStorage.setItem('chronopia-manuella-slag', 'nej'); });
-  await p.reload(); await p.waitForSelector('#poanglogg');
+  await p.reload(); await p.waitForSelector('#poanglogg', { state: 'attached' }); await tillRas(p);
   const rail = await p.locator('.stegrail').boundingBox(); const box = await p.locator('#poanglogg').boundingBox();
   ok('loggen ligger under stegen', Math.abs(box.x - rail.x) < 1 && Math.abs(box.width - rail.width) < 1 && box.y > rail.y + rail.height, JSON.stringify(box));
   ok('filter från början: Slag och Vikt av, resten på', JSON.stringify(await p.locator('.pl-filter input').evaluateAll(i => i.map(x => x.checked))) === JSON.stringify([true, true, true, true, false, false, true]));
@@ -35,7 +36,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   ok('inga EP fördelade automatiskt', !(await rader()).some(t => /: FV \d+ → /.test(t)));
   ok('saldot stämmer', await p.locator('.pl-fot').isHidden());
   // Särskilda förmågor med val, med manuella slag
-  await p.evaluate(() => localStorage.setItem('chronopia-manuella-slag', 'ja')); await p.reload(); await p.waitForSelector('#poanglogg');
+  await p.evaluate(() => localStorage.setItem('chronopia-manuella-slag', 'ja')); await p.reload(); await p.waitForSelector('#poanglogg', { state: 'attached' }); await tillRas(p);
   await p.click('.raskort:has-text("Människa")'); await p.waitForTimeout(150);
   for (let i = 0; i < 6 && await p.locator('.steg-huvud h2').textContent() !== 'Särskilda förmågor'; i++) {
     if (await p.locator('.steg-huvud h2').textContent() === 'Yrke') { await p.click('[data-yrke="krigare"]'); await p.waitForTimeout(100); } // inget yrke är förvalt
@@ -63,7 +64,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   const typer = await p.locator('.pl-rad').evaluateAll(r => r.map(x => x.dataset.typ));
   ok('grundegenskaper, slag och vikt i loggen', ['GE', 'Slag', 'Vikt'].every(t => typer.includes(t)));
   ok('slutvärde för alla sju grundegenskaper', (await p.locator('.pl-rad[data-typ="GE"] .pl-kvar').allTextContents()).filter(Boolean).length === 7);
-  await p.click('.steg-knapp >> nth=5'); await p.waitForTimeout(150);
+  await p.click('.steg-knapp >> nth=6'); await p.waitForTimeout(150); // nth=0 är steg 0 (Böcker)
   await p.fill('#ge-STY', '18'); await p.press('#ge-STY', 'Enter'); await p.waitForTimeout(200);
   ok('stoppad ändring loggas i rött', (await p.locator('.pl-rad.nekad').count()) === 1 && /för mycket/.test(await p.locator('.pl-rad.nekad').textContent()));
   ok('saldot stämmer efter stoppet', await p.locator('.pl-fot').isHidden());

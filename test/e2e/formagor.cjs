@@ -1,4 +1,5 @@
 // Steg 7, särskilda förmågor: rutan för att avstå, korten, att tabellen står kvar när BP ändras,
+const { tillRas } = require('./hjalp.cjs');
 // och flikar + rullgardin när det finns fler tabeller (testas med en påhittad tabell i stället för en expansion).
 // Körs med `npm run e2e` (startar en egen server). Kör med LANG=C.UTF-8.
 const { chromium } = require('playwright');
@@ -11,8 +12,8 @@ const BILD = process.env.BILD; // katalog för skärmbilder (valfritt)
     const p = await b.newPage({ viewport: { width: 1400, height: 1000 }, reducedMotion: 'reduce' });
     p.errs = []; p.on('pageerror', e => p.errs.push(e.message)); p.on('console', m => m.type() === 'error' && p.errs.push(m.text()));
     if (route) await p.route('**/regler/sarskilda-formagor.json', route);
-    await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev'); await p.waitForSelector('.raskort');
-    await p.evaluate(() => { localStorage.clear(); localStorage.setItem('chronopia-dev', 'ja'); }); await p.reload(); await p.waitForSelector('.raskort');
+    await p.goto((process.env.E2E_BAS || 'http://localhost:8766') + '/index.html?dev'); await tillRas(p);
+    await p.evaluate(() => { localStorage.clear(); localStorage.setItem('chronopia-dev', 'ja'); }); await p.reload(); await tillRas(p);
     await p.click('#menyknapp'); await p.selectOption('#dev-lage', 'formagor'); await p.click('#dev-krigare'); await p.waitForTimeout(150);
     await p.click('#sf-las-upp'); await p.waitForTimeout(100);
     return p;

@@ -1,0 +1,17 @@
+{
+  "grupper": ["Kärnböcker", "Rasböcker", "Mörkerböcker"],
+  "lista": [
+    { "id": "grund", "namn": "Chronopia (grundreglerna)", "grupp": "Kärnböcker", "status": "inlagd", "alltid": true, "kraver": [] },
+    { "id": "vr", "namn": "Vapen & rustningar i Chronopia", "grupp": "Kärnböcker", "status": "kommerSnart", "kraver": [] },
+    { "id": "magi", "namn": "Magi i Chronopia", "grupp": "Kärnböcker", "status": "kommerSnart", "kraver": [] },
+    { "id": "dvargar", "namn": "Dvärgar i Chronopia", "grupp": "Rasböcker", "status": "kommerSnart", "kraver": ["vr"] },
+    { "id": "alver", "namn": "Alver i Chronopia", "grupp": "Rasböcker", "status": "kommerSnart", "kraver": ["vr", "magi"],
+      "rekommenderar": [
+        { "bok": "dvargar", "varfor": "krävs för Stormfågels mekanik" },
+        { "bok": "morkrets-vaktare", "varfor": "krävs för Spindelmästarens mörkermagi" }
+      ] },
+    { "id": "svartblod", "namn": "Svartblod", "grupp": "Rasböcker", "status": "kommerSnart", "kraver": ["vr"] },
+    { "id": "morkrets-vaktare", "namn": "Mörkrets väktare", "grupp": "Mörkerböcker", "status": "kommerSnart", "kraver": [] },
+    { "id": "morkrets-krigare", "namn": "Mörkrets krigare", "grupp": "Mörkerböcker", "status": "kommerSnart", "kraver": ["vr", "magi", "morkrets-vaktare"] }
+  ]
+}

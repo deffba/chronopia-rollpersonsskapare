@@ -1,6 +1,8 @@
 // Stegen och förklarande texter som visas i appen.
 
+// Steg 0 (böckerna) räknas som steg 0, så att de vanliga stegen behåller numren 1–13 som i boken.
 export const STEG = [
+  { id: "bocker", namn: "Böcker", sida: "–" },
   { id: "ras", namn: "Ras", sida: "14–16", bp: true },
   { id: "alder", namn: "Ålder", sida: "16–17" },
   { id: "yrke", namn: "Yrke", sida: "18–26" },
