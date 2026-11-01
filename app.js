@@ -934,6 +934,7 @@ function valjFardighet(id, bland, varde, onchange) {
 // så att de står kvar när steget ritas om (t.ex. när BP ändras).
 let formageFlik = null;
 let oppetFormagekort = null; // { tabell, nr, vanster, uppat }
+let formageModal = false; // modalen med förmågan som slaget gav; öppnas när tärningen har landat
 
 // Korten för en tabell. Ett kort visar slaget och namnet; ett klick fäller upp det över korten bredvid
 // (rutnätet ändrar inte storlek), ett nytt klick fäller ihop det. Kortet öppnar sig åt det håll där det finns plats.
@@ -974,6 +975,8 @@ function stegFormagor() {
   // Byts förmågan ut gäller inte de gamla valen längre. BP här betyder att spelaren inte längre avstår.
   const nollstall = () => {
     if (rp.sarskildaFormagor.bp) rp.sarskildaFormagor.avstar = false;
+    if (oslaget && rp.sarskildaFormagor.slag != null) formageModal = true; // slaget har just landat
+    if (rp.sarskildaFormagor.slag == null) formageModal = false;
     const ny = sfFor(R, { ...motorIndata(), sarskildaFormagor: rp.sarskildaFormagor }).formaga;
     if (ny?.namn !== rp.sarskildaFormagor.formaga) rp.sarskildaFormagor.val = [];
     rp.sarskildaFormagor.formaga = ny?.namn;
@@ -1011,12 +1014,34 @@ function stegFormagor() {
     } }, tabeller.map((t) => el("option", { value: t.id, selected: t.id === tabell?.id }, `${t.namn} (${t.tarning})`))))
     : falt("Tabell", lastFalt("sf-tabell", tabell?.namn ?? ""));
   // Spelaren måste uttryckligen avstå för att gå vidare utan BP här
-  const avsta = oslaget ? el("label", { class: "avsta" },
-    el("input", { type: "checkbox", id: "sf-avsta", checked: !!s.avstar, disabled: rullar === "sf", onchange: (e) => {
+  // Med lagda BP går rutan inte att kryssa i, och texten är struken
+  const avsta = oslaget ? el("label", { class: "avsta" + (s.bp ? " inaktiv" : "") },
+    el("input", { type: "checkbox", id: "sf-avsta", checked: !!s.avstar, disabled: rullar === "sf" || !!s.bp, onchange: (e) => {
       rp.sarskildaFormagor = { ...rp.sarskildaFormagor, avstar: e.target.checked, ...(e.target.checked ? { bp: 0 } : {}) };
       uppdatera();
     } }),
     el("span", {}, el("strong", {}, "Jag vill inte lägga BP på särskilda förmågor."), " Utan BP får rollpersonen ingen särskild förmåga.")) : null;
+
+  // Modalen när slaget har landat: förmågan, vad den gör och valen den kräver. Den stängs med FORTSÄTT när valen är gjorda.
+  const ingaVarden = "Förmågan påverkar inga värden på rollformuläret. Skriv in den i anteckningarna om den behöver beskrivas mer.";
+  const visaModal = formageModal && !oslaget && !!sf && rullar === null;
+  let modal = null;
+  if (visaModal) {
+    const svar = sfFor(R, motorIndata());
+    const klar = !svar.saknas.length && !svar.fel.length;
+    const fortsatt = el("button", { type: "button", class: "knapp primar", id: "sf-modal-fortsatt", disabled: !klar,
+      onclick: () => { formageModal = false; rita(); } }, "FORTSÄTT");
+    modal = el("div", { class: "dialog-bakgrund", id: "sf-modal" },
+      el("div", { class: "dialog formagedialog", role: "dialog", "aria-modal": "true", "aria-labelledby": "sf-modal-namn" },
+        el("p", { class: "eyebrow" }, tabeller.length > 1 ? `Särskild förmåga · ${tabell.namn}` : "Särskild förmåga"),
+        el("h2", { id: "sf-modal-namn" }, sf.namn),
+        el("p", { class: "formagedialog-slag" }, `Slaget blev ${s.slag} + ${s.bp} BP = ${s.slag + s.bp}.`),
+        el("p", { class: "formagedialog-effekt" }, sf.effekt, el("span", { class: "formagekort-sida" }, ` (s. ${sf.sida})`)),
+        delar.length ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
+        !sf.regel ? el("p", { class: "hjalp" }, ingaVarden) : null,
+        !klar && delar.length ? el("p", { class: "hjalp" }, "Gör valen ovan för att gå vidare.") : null,
+        el("div", { class: "dialog-fot" }, fortsatt)));
+  }
 
   const visad = tabeller.find((t) => t.id === formageFlik) ?? tabell ?? tabeller[0];
   const flikar = flera ? el("div", { class: "flikar", role: "tablist", id: "sf-flikar" }, tabeller.map((t) => el("button", {
@@ -1028,13 +1053,17 @@ function stegFormagor() {
     ...slagSteg("sf", "sarskildaFormagor", "Särskilda förmågor", tabell?.tarning ?? "2T20", tolkning,
       `Lägg 1–40 BP och slå ${tabell?.tarning ?? "2T20"}. Summan avgör förmågan. SL får justera resultatet.`, nollstall, [], [],
       { fore: tabellval, kanSla: !!s.bp, under: avsta }),
-    delar.length ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
-    sf && !sf.regel ? el("p", { class: "hjalp" }, "Förmågan påverkar inga värden på rollformuläret. Skriv in den i anteckningarna om den behöver beskrivas mer.") : null,
-    el("h3", {}, flera ? "Tabellerna" : `Tabellen (s. ${visad?.sida})`),
-    flikar,
-    flera ? el("p", { class: "hjalp" }, `${visad.namn}, ${visad.tarning}+BP (s. ${visad.sida}). Tryck på en förmåga för att läsa om den.`)
-      : el("p", { class: "hjalp" }, "Tryck på en förmåga för att läsa om den. Siffrorna är summan av slaget och de lagda BP."),
-    visad ? formagekort(visad, visad === tabell ? sf : null) : null,
+    // Valen står i modalen så länge den är öppen (samma id får inte finnas två gånger)
+    delar.length && !visaModal ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
+    sf && !sf.regel ? el("p", { class: "hjalp" }, ingaVarden) : null,
+    visaModal ? modal : null,
+    // Tabellen ritas under stegets knappar (ritaVy flyttar den dit), eftersom den är lång
+    el("div", { class: "steg-innehall efter-fot" },
+      el("h3", {}, flera ? "Tabellerna" : `Tabellen (s. ${visad?.sida})`),
+      flikar,
+      flera ? el("p", { class: "hjalp" }, `${visad.namn}, ${visad.tarning}+BP (s. ${visad.sida}). Tryck på en förmåga för att läsa om den.`)
+        : el("p", { class: "hjalp" }, "Tryck på en förmåga för att läsa om den. Siffrorna är summan av slaget och de lagda BP."),
+      visad ? formagekort(visad, visad === tabell ? sf : null) : null),
   ];
 }
 
@@ -1968,6 +1997,8 @@ function ritaVy() {
     formagor: stegFormagor, svardshand: stegSvardshand, stand: stegStand, kapital: stegKapital, fardigheter: stegFardigheter,
     besvarjelser: stegBesvarjelser, utrustning: stegUtrustning, export: stegExport,
   }[steg.id](res);
+  // Ett steg kan lägga en del under knapparna (t.ex. förmågetabellen i steg 7)
+  const efterFot = Array.isArray(innehall) && innehall.at(-1)?.classList?.contains("efter-fot") ? innehall.pop() : null;
   const kvar = saknasPerSteg(res)[steg.id];
   // Är magiförmågeslaget det enda som återstår i steget öppnar Nästa-knappen modalen med slaget
   const baraMagi = kvar.length > 0 && kvar.every((t) => t === MAGISLAG) && index === grans;
@@ -1993,13 +2024,20 @@ function ritaVy() {
         if (tillagg) { visaNotis(tillagg); return; }
         if (baraMagi) { oppnaMagiModal(STEG[index + 1].id); return; }
         aktivtSteg = STEG[index + 1].id; uppdatera();
-      } }, baraMagi ? "MAGIFÖRMÅGESLAG" : `${STEG[index + 1].namn} →`)) : magiGorOm(steg.id) ?? el("span")));
+      } }, baraMagi ? "MAGIFÖRMÅGESLAG" : `${STEG[index + 1].namn} →`)) : magiGorOm(steg.id) ?? el("span")),
+    efterFot ?? el("span"));
   $("#formular").replaceChildren(rollformular(res));
   if (ritatSteg !== null && ritatSteg !== aktivtSteg) skrollaUpp();
   ritatSteg = aktivtSteg;
   // Dialogen visas först när tärningen har landat
   // Ett misslyckat magiförmågeslag med magiskolor kvar (t.ex. efter autofyll eller en lägre INT) visas i modalen
   if (!magiModal && !rullar && magiMisslyckat(res) && magiPlatser().length) oppnaMagiModal();
+  // Förmågans modal (steg 7) ritas med steget; sidan bakom rullar inte, och fokus flyttas in i modalen
+  const sfModal = $("#sf-modal");
+  if (sfModal) {
+    document.body.classList.add("dialog-oppen");
+    if (!sfModal.contains(document.activeElement)) sfModal.querySelector("select:not([disabled]), button:not([disabled]), button")?.focus({ preventScroll: true });
+  } else if (!magiModal) document.body.classList.remove("dialog-oppen");
   nyssSlaget = null;
 }
 

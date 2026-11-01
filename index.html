@@ -202,6 +202,13 @@ input.tal.bred { width: 6rem; }
 .formagekort-effekt { grid-column: 2; font-size: .9rem; line-height: 1.35; padding-bottom: 2px; }
 .formagekort-sida { color: var(--dampad); }
 .avsta { display: flex; align-items: baseline; gap: 8px; margin-top: 10px; cursor: pointer; max-width: 68ch; }
+.avsta.inaktiv { cursor: default; color: var(--dampad); }
+.avsta.inaktiv span { text-decoration: line-through; }
+.formagedialog { width: min(100%, 620px); }
+.formagedialog h2 { color: var(--accent-text); }
+.formagedialog .eyebrow { margin: 0; }
+.formagedialog-slag { color: var(--dampad); font-size: .92rem; }
+.formagedialog .yrkeslista { margin: 0; }
 .avsta input { flex: none; width: 1.05rem; height: 1.05rem; accent-color: var(--accent); transform: translateY(2px); }
 
 .bniva { display: inline-block; min-width: 2.2em; text-align: left; margin-left: 6px; font-size: .78rem; color: var(--accent-text); font-weight: 700; }
@@ -429,7 +436,7 @@ body.dialog-oppen { overflow: hidden; }
 #notis {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 8px; box-shadow: var(--skugga);
-  max-width: min(560px, calc(100vw - 32px)); font-size: .92rem; z-index: 20;
+  max-width: min(560px, calc(100vw - 32px)); font-size: .92rem; z-index: 60; /* över dialogerna, så att "Det går inte" syns även där */
 }
 #exportruta { width: 100%; display: block; font: .8rem/1.4 ui-monospace, monospace; }
 
