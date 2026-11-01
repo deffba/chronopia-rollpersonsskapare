@@ -1,7 +1,7 @@
 // Gränssnittet för Chronopia-rollpersonsskaparen. All regellogik finns i regelmotor.js.
 import {
   GRUNDEGENSKAPER, STANDARDVARDEN, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor, tvahandsvapen,
-  paborjad, standsvarde, vapengrupp, passarBland, skolFV, besvarjelsePris, kanAnvandaVapen, varukatalog, namnFor,
+  paborjad, standsvarde, vapengrupp, passarBland, tillgangligaFormagetabeller, formagetabell, tarningAv, slagIntervall, skolFV, besvarjelsePris, kanAnvandaVapen, varukatalog, namnFor,
 } from "./regelmotor.js";
 import { rollformularSidor, delaRegelsidor } from "./formular.js";
 import { tillFil, franFil, TOMT_SPEL, TOM_UTVECKLING } from "./sparformat.js";
@@ -84,13 +84,16 @@ const SKOLOR = [["animism", "Animism"], ["elementarmagi", "Elementarmagi"], ["me
 const TOM = () => ({
   namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",
   extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas
-  stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [] }, svardshand: { bp: 0, slag: null },
+  stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
   magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
   spel: TOMT_SPEL(), utveckling: TOM_UTVECKLING(),
 });
 // En sparad rollperson kompletteras med fält som har tillkommit sedan den sparades
-const fyllUt = (data) => ({ ...TOM(), ...data, spel: { ...TOMT_SPEL(), ...(data.spel ?? {}) }, utveckling: { ...TOM_UTVECKLING(), ...(data.utveckling ?? {}) } });
+// En rollperson från före rutan "Jag vill inte lägga BP" som inte har lagt BP räknas som att den avstod.
+const fyllUt = (data) => ({ ...TOM(), ...data,
+  ...(data.sarskildaFormagor && !("avstar" in data.sarskildaFormagor) ? { sarskildaFormagor: { ...data.sarskildaFormagor, avstar: !data.sarskildaFormagor.bp } } : {}),
+  spel: { ...TOMT_SPEL(), ...(data.spel ?? {}) }, utveckling: { ...TOM_UTVECKLING(), ...(data.utveckling ?? {}) } });
 
 let R; // regeldata
 let rp; // rollpersonen (spelarens val)
@@ -234,7 +237,7 @@ function motorIndata() {
   };
 }
 
-const sarskildFormaga = () => sfFor(R, { ...rp, ras: rasId(), alder: alderNu(), yrkesfardigheter: yrkesNycklar() }).formaga;
+const sarskildFormaga = () => sfFor(R, { ...rp, ras: rasId(), alder: alderNu(), yrke: yrkeId(), yrkesfardigheter: yrkesNycklar() }).formaga;
 
 // ------------------------------------------------------------ små kontroller
 // Talfält: ett otillåtet värde ersätts med det närmaste tillåtna mellan det nya och det gamla.
@@ -869,12 +872,14 @@ const bpFaltet = (etikett, kontroll) => { const f = falt(etikett, kontroll); f.c
 // bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget; de visas som punkter (med extraRader sist).
 // Lagda BP räknas också som en bonus när de är fler än 0, men står bara i BP-fältet, inte bland punkterna.
 // Bonusarna visas var för sig i tärningsrutan, t.ex. 2T6+2+4.
-function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = []) {
+// Tillval: fore = fält som står före slaget (t.ex. vilken tabell som slås på), kanSla = false spärrar tärningen,
+// under = det som står direkt under raden med slaget.
+function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = [], { fore = null, kanSla = true, under = null } = {}) {
   const s = rp[nyckel];
   const bonusar = [s.bp > 0 ? ["BP lagda", s.bp] : null, ...fastaBonusar].filter(Boolean);
   const punkter = [...fastaBonusar.map(([t, v]) => `${t}: ${fmtMod(v)}`), ...extraRader];
   const bonuslista = punkter.length ? el("ul", { class: "punkter bonuslista" }, punkter.map((t) => el("li", {}, t))) : null;
-  const [n, sidor] = tarning === "2T20" ? [2, 20] : [2, 6];
+  const { n, sidor } = tarningAv(tarning);
   tarning += bonusar.map(([, v]) => (v > 0 ? `+${v}` : `−${-v}`)).join("");
   const satt = (falt, v) => { rp[nyckel][falt] = v; efter(); uppdatera(); };
   // När slaget är gjort ligger det fast: BP och slag går inte att ändra i efterhand
@@ -884,7 +889,8 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
       bonuslista,
       el("div", { class: "rad" },
         bpFaltet("BP lagda", lastFalt(`${id}-bp`, s.bp)),
-        falt(`Slag (${tarning})`, landatSlag(id, s.slag, `Slå ${tarning}`, { tarningar: s.tarningar, bonusar: bonusar.map(([, v]) => v), sidor })),
+        fore,
+        falt(`Slag (${tarning})`, landatSlag(id, s.slag, `Slå ${tarning}`, { tarningar: s.tarningar, bonusar: bonusar.map(([, v]) => v), sidor, antal: n })),
         omslagKnapp(id)),
       resultat(id, tolkning),
     ];
@@ -892,11 +898,13 @@ function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {},
   // Varje tärning sparas också, så att den kan visas med sina prickar (ett inskrivet slag delas upp på två tärningar)
   const sla = () => { const t = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sidor)); rp[nyckel].tarningar = t; return t.reduce((a, b) => a + b, 0); };
   const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => { if (manuellaSlag) rp[nyckel].tarningar = delaSumma(v, true, sidor); satt("slag", v); }, sla, sidor);
+  if (!kanSla) for (const e of [slagfalt, knapp].filter(Boolean)) for (const k of e.matches("button, input") ? [e] : e.querySelectorAll("button, input")) k.disabled = true;
   const bpFalt = rullar === id ? lastFalt(`${id}-bp`, s.bp ?? 0) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
   return [
     el("p", {}, hjalp),
     bonuslista,
-    el("div", { class: "rad" }, bpFaltet("BP att lägga", bpFalt), slagfalt, knapp),
+    el("div", { class: "rad" }, bpFaltet("BP att lägga", bpFalt), fore, slagfalt, knapp),
+    under,
     el("p", { class: "summering" }, tolkning),
   ];
 }
@@ -922,15 +930,51 @@ function valjFardighet(id, bland, varde, onchange) {
   return fardighetsVal(id, varde, onchange, (f) => !magi(f) && f.typ !== "sprak" && kan(f));
 }
 
+// Vilken tabell som visas i förmågekorten (flikarna) och vilket kort som är uppfällt. Ligger utanför rollpersonen,
+// så att de står kvar när steget ritas om (t.ex. när BP ändras).
+let formageFlik = null;
+let oppetFormagekort = null; // { tabell, nr, vanster, uppat }
+
+// Korten för en tabell. Ett kort visar slaget och namnet; ett klick fäller upp det över korten bredvid
+// (rutnätet ändrar inte storlek), ett nytt klick fäller ihop det. Kortet öppnar sig åt det håll där det finns plats.
+function formagekort(tabell, traff) {
+  const oppet = oppetFormagekort?.tabell === tabell.id ? oppetFormagekort : null;
+  return el("div", { class: "formagekort", id: `sf-kort-${tabell.id}`, role: "list", lang: "sv" }, tabell.rader.map((x, nr) => {
+    const arOppet = oppet?.nr === nr;
+    return el("div", { class: "formageplats", role: "listitem" }, el("button", {
+      type: "button", class: "formagekort-knapp" + (x === traff ? " markerad" : "") + (arOppet ? " oppen" : "")
+        + (arOppet && oppet.vanster ? " vanster" : "") + (arOppet && oppet.uppat ? " uppat" : ""),
+      "aria-expanded": arOppet ? "true" : "false", "data-namn": x.namn,
+      onclick: (e) => {
+        if (arOppet) oppetFormagekort = null;
+        else {
+          const kort = e.currentTarget.getBoundingClientRect(), natet = e.currentTarget.closest(".formagekort").getBoundingClientRect();
+          oppetFormagekort = { tabell: tabell.id, nr,
+            vanster: kort.left + kort.width / 2 > natet.left + natet.width / 2, uppat: kort.top + kort.height / 2 > natet.top + natet.height / 2 };
+        }
+        rita();
+      },
+    },
+    el("span", { class: "formagekort-slag" }, slagIntervall(x)),
+    el("span", { class: "formagekort-namn" }, x.namn),
+    arOppet ? el("span", { class: "formagekort-effekt" }, x.effekt, el("span", { class: "formagekort-sida" }, ` (s. ${x.sida})`)) : null));
+  }));
+}
+
 function stegFormagor() {
   const sf = sarskildFormaga();
   const s = rp.sarskildaFormagor;
-  const tolkning = !s.bp ? "Lägg minst 1 BP för att få slå (högst 40)." :
-    s.slag === null || s.slag === undefined ? inteSlaget() :
+  const oslaget = s.slag === null || s.slag === undefined;
+  const tabeller = tillgangligaFormagetabeller(R, motorIndata());
+  const tabell = formagetabell(R, motorIndata()) ?? tabeller[0];
+  const tolkning = s.avstar ? "Rollpersonen får ingen särskild förmåga." :
+    !s.bp ? "Lägg minst 1 BP för att få slå (högst 40), eller kryssa i rutan om du inte vill lägga BP här." :
+    oslaget ? inteSlaget() :
     [`Resultat: ${s.slag + s.bp}.`, `${sf?.namn}: ${sf?.effekt} (s. ${sf?.sida})`];
-  // Byts förmågan ut gäller inte de gamla valen längre
+  // Byts förmågan ut gäller inte de gamla valen längre. BP här betyder att spelaren inte längre avstår.
   const nollstall = () => {
-    const ny = sfFor(R, { ...rp, ras: rasId(), yrkesfardigheter: yrkesNycklar() }).formaga;
+    if (rp.sarskildaFormagor.bp) rp.sarskildaFormagor.avstar = false;
+    const ny = sfFor(R, { ...motorIndata(), sarskildaFormagor: rp.sarskildaFormagor }).formaga;
     if (ny?.namn !== rp.sarskildaFormagor.formaga) rp.sarskildaFormagor.val = [];
     rp.sarskildaFormagor.formaga = ny?.namn;
   };
@@ -957,20 +1001,40 @@ function stegFormagor() {
     }
     return null;
   }).filter(Boolean);
-  // Det är lätt att missa att BP ska läggas här, så en varning visas tills BP är lagda
-  const oslaget = s.slag === null || s.slag === undefined;
+
+  // Har rollpersonen fler tabeller att välja på (expansioner) väljs tabellen i en rullgardin bredvid tärningsrutan.
+  // Med bara grundreglernas tabell visas varken rullgardin eller flikar.
+  const flera = tabeller.length > 1;
+  const tabellval = !flera ? null : oslaget && rullar !== "sf"
+    ? falt("Tabell", el("select", { id: "sf-tabell", onchange: (e) => {
+      rp.sarskildaFormagor.tabell = e.target.value; formageFlik = e.target.value; nollstall(); uppdatera();
+    } }, tabeller.map((t) => el("option", { value: t.id, selected: t.id === tabell?.id }, `${t.namn} (${t.tarning})`))))
+    : falt("Tabell", lastFalt("sf-tabell", tabell?.namn ?? ""));
+  // Spelaren måste uttryckligen avstå för att gå vidare utan BP här
+  const avsta = oslaget ? el("label", { class: "avsta" },
+    el("input", { type: "checkbox", id: "sf-avsta", checked: !!s.avstar, disabled: rullar === "sf", onchange: (e) => {
+      rp.sarskildaFormagor = { ...rp.sarskildaFormagor, avstar: e.target.checked, ...(e.target.checked ? { bp: 0 } : {}) };
+      uppdatera();
+    } }),
+    el("span", {}, el("strong", {}, "Jag vill inte lägga BP på särskilda förmågor."), " Utan BP får rollpersonen ingen särskild förmåga.")) : null;
+
+  const visad = tabeller.find((t) => t.id === formageFlik) ?? tabell ?? tabeller[0];
+  const flikar = flera ? el("div", { class: "flikar", role: "tablist", id: "sf-flikar" }, tabeller.map((t) => el("button", {
+    type: "button", class: "valknapp" + (t === visad ? " vald" : ""), role: "tab", "aria-selected": t === visad ? "true" : "false", "data-tabell": t.id,
+    onclick: () => { formageFlik = t.id; rita(); },
+  }, t.namn))) : null;
+
   return [
-    oslaget && !s.bp ? el("div", { class: "varning", role: "note" },
-      el("strong", {}, "Glöm inte att lägga BP här. "),
-      "Utan BP får rollpersonen ingen särskild förmåga, och BP som blir över kan bara växlas mot EP (5 EP per BP).") : null,
-    ...slagSteg("sf", "sarskildaFormagor", "Särskilda förmågor", "2T20", tolkning,
-      "Lägg 1–40 BP och slå 2T20. Summan avgör förmågan. SL får justera resultatet.", nollstall),
+    ...slagSteg("sf", "sarskildaFormagor", "Särskilda förmågor", tabell?.tarning ?? "2T20", tolkning,
+      `Lägg 1–40 BP och slå ${tabell?.tarning ?? "2T20"}. Summan avgör förmågan. SL får justera resultatet.`, nollstall, [], [],
+      { fore: tabellval, kanSla: !!s.bp, under: avsta }),
     delar.length ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
     sf && !sf.regel ? el("p", { class: "hjalp" }, "Förmågan påverkar inga värden på rollformuläret. Skriv in den i anteckningarna om den behöver beskrivas mer.") : null,
-    el("details", { class: "fakta" }, el("summary", {}, "Hela tabellen (s. 30–32)"),
-      el("div", { class: "tabellram" }, el("table", { class: "tabell" }, el("tbody", {}, R["sarskilda-formagor"].map((x) => el("tr", { class: x === sf ? "markerad" : "" },
-        el("td", { class: "num" }, x.slag[1] === null ? `${x.slag[0]}+` : x.slag[0] === x.slag[1] ? x.slag[0] : x.slag.join("–")),
-        el("td", {}, el("strong", {}, x.namn), " ", x.effekt))))))),
+    el("h3", {}, flera ? "Tabellerna" : `Tabellen (s. ${visad?.sida})`),
+    flikar,
+    flera ? el("p", { class: "hjalp" }, `${visad.namn}, ${visad.tarning}+BP (s. ${visad.sida}). Tryck på en förmåga för att läsa om den.`)
+      : el("p", { class: "hjalp" }, "Tryck på en förmåga för att läsa om den. Siffrorna är summan av slaget och de lagda BP."),
+    visad ? formagekort(visad, visad === tabell ? sf : null) : null,
   ];
 }
 
@@ -1622,6 +1686,7 @@ function saknasPerSteg(res) {
   if (!rp.namn.trim()) lista.kon.push("Namn");
   if (!rp.kon) lista.kon.push("Kön");
   if (rp.sarskildaFormagor.bp && rp.sarskildaFormagor.slag === null) lista.formagor.push("Slaget för särskilda förmågor");
+  if (!rp.sarskildaFormagor.bp && !rp.sarskildaFormagor.avstar) lista.formagor.push("Lägg BP på särskilda förmågor, eller kryssa i att du inte vill det");
   if (!res.grundegenskaperSatta) lista.egenskaper.push("Grundegenskaperna");
   lista.egenskaper.push(...res.forLagaEgenskaper);
   lista.formagor.push(...res.saknas);

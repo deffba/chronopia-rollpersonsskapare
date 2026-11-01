@@ -2,7 +2,7 @@
 // Spelmöten, träning och förbättringar förs in som poster i loggen (utveckling.js). Varje post
 // kontrolleras mot reglerna innan den förs in, så att rollpersonen aldrig hamnar i ett otillåtet läge.
 // Byggstenarna (el, falt, tärningsrutor …) kommer från app.js, som för rollformuläret (formular.js).
-import { GRUNDEGENSKAPER, fardighetAv, status, epPerFV, besvarjelsePris, slaUpp, skolFV } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, fardighetAv, status, epPerFV, besvarjelsePris, slaUpp, skolFV, formagetabell } from "./regelmotor.js";
 import {
   kravdaHpSlag, psyOkning, psyMod, traning, traningsdagar, borsen, besvarjelseAv, laggTill,
 } from "./utveckling.js";
@@ -483,7 +483,7 @@ function forbFormaga(ctx, p) {
   const S = R.erfarenhet.hjaltepoang.sarskildFormaga;
   const hp = hpTillganglig(ctx, p);
   const f = forb.formaga;
-  const tabell = R["sarskilda-formagor"];
+  const tabell = formagetabell(R, ctx.rp()).rader;
   const traff = f ? tabell.find(({ slag: [a, b] }) => f.slag + f.hp * S.bonusPerHp >= a && (b === null || f.slag + f.hp * S.bonusPerHp <= b)) : null;
   const hogst = Math.min(S.max, hp + (f?.hp ?? 0));
   const val = (i) => f?.val?.[i];

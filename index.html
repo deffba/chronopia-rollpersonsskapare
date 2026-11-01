@@ -184,6 +184,26 @@ input.tal.bred { width: 6rem; }
 .tabell .fel { color: var(--fel); }
 .tabell tr.markerad { background: var(--accent-svag); }
 .fardighetstabell td:first-child { min-width: 12rem; }
+/* Särskilda förmågor (steg 7): tabellen som kort. Ett uppfällt kort läggs över korten bredvid, så rutnätet behåller sin storlek */
+.formagekort { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 3.4rem; gap: 6px; width: min(100%, 900px); margin-top: 6px; }
+@media (max-width: 560px) { .formagekort { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.formageplats { position: relative; min-width: 0; }
+.formagekort-knapp { position: absolute; inset: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; align-content: center; gap: 2px 8px;
+  padding: 6px 8px; text-align: left; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--linje); border-radius: 8px; cursor: pointer; overflow: hidden; }
+.formagekort-knapp:hover { border-color: var(--accent); }
+.formagekort-knapp.markerad { border-color: var(--accent); background: var(--accent-svag); box-shadow: inset 0 0 0 1px var(--accent); }
+.formagekort-slag { min-width: 2.6em; font: 700 .85rem var(--sans); font-variant-numeric: tabular-nums; color: var(--accent-text); text-align: right; }
+.formagekort-namn { font-size: .95rem; line-height: 1.15; font-weight: 600; overflow-wrap: break-word; hyphens: auto; }
+.formagekort-knapp.oppen { z-index: 6; width: calc(200% + 6px); bottom: auto; min-height: 100%; align-content: start; overflow: visible;
+  background: var(--yta); border-color: var(--accent); box-shadow: var(--skugga), 0 6px 18px rgba(0, 0, 0, .25); }
+.formagekort-knapp.oppen.markerad { background: var(--accent-svag); }
+.formagekort-knapp.oppen.vanster { left: auto; right: 0; }
+.formagekort-knapp.oppen.uppat { top: auto; bottom: 0; }
+.formagekort-effekt { grid-column: 2; font-size: .9rem; line-height: 1.35; padding-bottom: 2px; }
+.formagekort-sida { color: var(--dampad); }
+.avsta { display: flex; align-items: baseline; gap: 8px; margin-top: 10px; cursor: pointer; max-width: 68ch; }
+.avsta input { flex: none; width: 1.05rem; height: 1.05rem; accent-color: var(--accent); transform: translateY(2px); }
+
 .bniva { display: inline-block; min-width: 2.2em; text-align: left; margin-left: 6px; font-size: .78rem; color: var(--accent-text); font-weight: 700; }
 .pris { font: 600 .8rem var(--sans); color: var(--dampad); letter-spacing: 0; }
 .stegare { display: flex; align-items: center; gap: 8px; }

@@ -2,7 +2,7 @@
 // listor och textfält som är tomma, åldern (enkel metod), särskilda förmågans val, startpaketets vapen och alla tärningsslag.
 // Ras och yrke väljer spelaren själv, och knapparna Föreslå värden och Fördela EP används aldrig.
 // Bara tomma val fylls i, så det som spelaren själv har valt ändras inte. Byts yrket fylls det nya yrkets val i.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, varukatalog } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, varukatalog, formagetabell, tarningAv } from "./regelmotor.js";
 
 const LAGRING = "chronopia-dev-autofyll";
 const slaT = (antal, sidor) => Array.from({ length: antal }, () => 1 + Math.floor(Math.random() * sidor)).reduce((a, b) => a + b, 0);
@@ -113,8 +113,11 @@ function fyllFormaga(api, autoDelval, anvanda, slag) {
   const { R } = api;
   const rp = api.nu();
   const s = rp.sarskildaFormagor;
+  // Utan lagda BP kryssas rutan i: rollpersonen avstår från särskilda förmågor
+  if (!s.bp && !s.avstar && (s.slag === null || s.slag === undefined)) rp.sarskildaFormagor = { ...s, avstar: true };
   if (slag && s.bp && (s.slag === null || s.slag === undefined)) {
-    rp.sarskildaFormagor = { ...s, slag: slaT(2, 20), val: [] };
+    const { n, sidor } = tarningAv(formagetabell(R, api.motorIndata())?.tarning ?? "2T20");
+    rp.sarskildaFormagor = { ...s, slag: slaT(n, sidor), val: [] };
     rp.sarskildaFormagor.formaga = api.rakna().sarskildFormaga?.namn;
   }
   const sf = api.rakna().sarskildFormaga;

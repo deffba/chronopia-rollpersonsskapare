@@ -85,7 +85,7 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
     // Särskild förmåga. Kräver förmågan val som receptet inte har, prövas andra slag tills en förmåga utan val kommer upp.
     const sf = recept.sarskildFormaga ?? { bp: 5, slag: 10 };
     const provaSlag = (slag) => {
-      r.sarskildaFormagor = { bp: sf.bp, slag, val: [] };
+      r.sarskildaFormagor = { bp: sf.bp, slag, val: [], avstar: !sf.bp };
       const res = api.rakna();
       r.sarskildaFormagor.formaga = res.sarskildFormaga?.namn;
       return !res.fel.length && !res.saknas.length;
