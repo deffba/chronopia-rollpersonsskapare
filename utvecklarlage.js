@@ -26,7 +26,7 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
   const rp = api.med(api.TOM(), (nu) => {
     const r = nu();
     Object.assign(r, { namn: recept.namn, spelare: "Test", kon: recept.kon, ras: recept.ras, alder: recept.alder, yrke: recept.yrke,
-      anteckningar: recept.anteckningar ?? "" });
+      anteckningar: recept.anteckningar ?? "", bocker: ["grund", ...(recept.bocker ?? [])], niva: recept.niva ?? 0 });
     const ras = rasAv(R, r.ras);
     const yrke = yrkeAv(R, r.yrke);
     const anvanda = new Set();
@@ -82,17 +82,28 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
     r.grundvarden = api.grundvardesForslag() ?? r.grundvarden;
     if (api.rakna().magiformaga.behovs) r.magiformaga = { slag: 1 };
 
-    // Särskild förmåga. Kräver förmågan val som receptet inte har, prövas andra slag tills en förmåga utan val kommer upp.
-    const sf = recept.sarskildFormaga ?? { bp: 5, slag: 10 };
-    const provaSlag = (slag) => {
-      r.sarskildaFormagor = { bp: sf.bp, slag, val: [], avstar: !sf.bp };
-      const res = api.rakna();
-      r.sarskildaFormagor.formaga = res.sarskildFormaga?.namn;
-      return !res.fel.length && !res.saknas.length;
-    };
-    if (!provaSlag(onskat(sf.slag) ?? 0)) {
-      const slag = Array.from({ length: 39 }, (_, i) => i + 2).find(provaSlag);
-      if (slag === undefined) provaSlag(sf.slag);
+    // Särskilda förmågor, en per slag som erfarenhetsnivån ger. Kräver förmågan val som receptet inte har
+    // (val: förmågans val, t.ex. hjältepoängens slag), prövas andra slag tills en förmåga utan val kommer upp.
+    const sfLista = [].concat(recept.sarskildFormaga ?? { bp: 5, slag: 10 });
+    r.sarskildaFormagor = { bp: 0, slag: null, val: [], avstar: true, fler: [] };
+    sfLista.forEach((sf, i) => {
+      const satt = (o) => { if (i === 0) r.sarskildaFormagor = { ...o, fler: r.sarskildaFormagor.fler }; else r.sarskildaFormagor.fler[i - 1] = o; };
+      const provaSlag = (slag, val = []) => {
+        satt({ bp: sf.bp, slag, val, avstar: !sf.bp, ...(sf.tabell ? { tabell: sf.tabell } : {}) });
+        const res = api.rakna();
+        const o = i === 0 ? r.sarskildaFormagor : r.sarskildaFormagor.fler[i - 1];
+        o.formaga = res.sarskildaFormagorna?.[i]?.namn;
+        return !res.fel.length && !res.saknas.length;
+      };
+      if (!provaSlag(onskat(sf.slag) ?? 0, onskat(sf.val) ?? [])) {
+        const slag = Array.from({ length: 39 }, (_, j) => j + 1).find((x) => provaSlag(x));
+        if (slag === undefined) provaSlag(sf.slag, sf.val);
+      }
+    });
+    // Hjältepoäng från förmågorna används till grundegenskaper (RB-003)
+    if (onskat(recept.hjaltepoangKop)) {
+      r.hjaltepoangKop = { ...recept.hjaltepoangKop };
+      if (api.rakna().fel.length) r.hjaltepoangKop = {};
     }
 
     // Svärdshand, socialt stånd och startkapital med fasta slag

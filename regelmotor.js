@@ -17,12 +17,32 @@ export function slaUpp(tabell, varde) {
   return undefined;
 }
 
-// Det som går att välja. Här kopplas bokvalet in när expansionerna läggs till; i dag är allt med.
-export const valbaraRaser = (regler) => regler.raser;
-export const valbaraYrken = (regler) => regler.yrken.lista;
-export const magiskolor = (regler) => regler.fardigheter.lista.filter((f) => f.typ === "magiskola");
+// Böckerna. Varje regelpost kan ha kalla: { bok, sida } (regler/bocker.json). En post utan kalla hör till grundreglerna.
+// Rollpersonen skapas med böckerna i rp.bocker (steg 0); grundreglerna är alltid med.
+export const bokFor = (post) => post?.kalla?.bok ?? "grund";
+export const valdaBocker = (rp) => ["grund", ...(rp?.bocker ?? []), ...(rp?.expansioner ?? [])];
+export const iBocker = (post, rp) => valdaBocker(rp).includes(bokFor(post));
+export const bokNamn = (regler, id) => regler.bocker?.lista.find((b) => b.id === id)?.namn ?? id;
+// Sidhänvisning för en post: "s. 30" i grundreglerna, "Vapen & rustningar s. 3" i en expansion
+export const kallText = (regler, post, grundSida) => (bokFor(post) === "grund" ? grundSida : `${bokNamn(regler, bokFor(post))} s. ${post.kalla.sida}`);
+
+// Det som går att välja med rollpersonens böcker
+export const valbaraRaser = (regler, rp) => regler.raser.filter((r) => iBocker(r, rp));
+export const valbaraYrken = (regler, rp) => regler.yrken.lista.filter((y) => iBocker(y, rp));
+export const magiskolor = (regler, rp) => regler.fardigheter.lista.filter((f) => f.typ === "magiskola" && iBocker(f, rp));
 // Kulturer för Kulturkännedom: rasernas kulturer och de övriga i färdighetens data (s. 62)
-export const kulturer = (regler) => [...valbaraRaser(regler).map((r) => r.namn), ...(fardighetAv(regler, "kulturkannedom").ovrigaKulturer ?? [])];
+export const kulturer = (regler, rp) => [...valbaraRaser(regler, rp).map((r) => r.namn), ...(fardighetAv(regler, "kulturkannedom").ovrigaKulturer ?? [])];
+
+// Erfarenhetsnivån (V&R s. 3 och de andra expansionerna, RB-001): BP från start och antal särskilda förmågor.
+// Nivåerna kommer från den första valda boken som har nivåer; utan en sådan bok gäller grundreglerna (en nivå).
+export function nivaer(regler, rp) {
+  const bok = (regler.bocker?.lista ?? []).find((b) => b.nivaer && valdaBocker(rp).includes(b.id));
+  return bok ? bok.nivaer.lista.map((n) => ({ ...n, bok: bok.id, sida: bok.nivaer.sida })) : null;
+}
+export function nivaFor(regler, rp) {
+  const lista = nivaer(regler, rp);
+  return lista?.[rp?.niva ?? 0] ?? { namn: null, bp: regler.grundegenskaper.startBP, formagor: 1 };
+}
 
 export function rasAv(regler, id) {
   return regler.raser.find((r) => r.id === id);
@@ -312,21 +332,31 @@ export function raknaRollperson(regler, indata) {
   const fel = [...sf.fel];
   const alderEff = alderseffekter(regler, rp.alder);
 
-  const bpStart = regler.grundegenskaper.startBP + alderEff.bp + (yrke.extraBP?.antal ?? 0);
+  const niva = nivaFor(regler, rp);
+  if ((rp.niva ?? 0) > 0 && !nivaer(regler, rp)?.[rp.niva]) fel.push("Erfarenhetsnivån finns inte med de valda böckerna (steg 0)");
+  // Rasen och yrket måste finnas i de valda böckerna
+  if (rp.rasVald !== false && !iBocker(ras, rp)) fel.push(`${ras.namn} finns i ${bokNamn(regler, bokFor(ras))}, som inte är vald (steg 0)`);
+  if (!iBocker(yrke, rp)) fel.push(`${yrke.namn} finns i ${bokNamn(regler, bokFor(yrke))}, som inte är vald (steg 0)`);
+  const bpStart = niva.bp + alderEff.bp + (yrke.extraBP?.antal ?? 0);
   const ge = raknaGrundegenskaper(regler, rp);
   fel.push(...ge.fel);
   const bpUtgifter = {
     ras: rp.rasVald === false ? 0 : ras.bp, // ingen ras vald än: motorn räknar som för en människa, men inget kostar
     extraYrkesfardigheter: kostnadExtraYrken(regler, rp.extraYrkesfardigheter),
     grundegenskaper: ge.bp,
-    sarskildaFormagor: rp.sarskildaFormagor?.bp ?? 0,
+    sarskildaFormagor: sf.bp,
     svardshand: rp.svardshand.bp,
     socialtStand: rp.socialtStand.bp,
     startkapital: rp.startkapital.bp,
   };
   const bpKvar = bpStart - Object.values(bpUtgifter).reduce((a, b) => a + b, 0);
+  // Högst 40 BP per slag på grundreglernas tabell (s. 30), 20 på V&R:s (s. 14)
+  sf.perSlag.forEach(({ tabell }, i) => {
+    const bp = formageslag(regler, rp)[i].bp ?? 0;
+    const max = tabell?.maxBP ?? regler.slag.sarskildaFormagor.maxBP;
+    if (bp > max) fel.push(`Högst ${max} BP per slag på ${tabell?.id === "grund" || !tabell ? "grundreglernas tabell (s. 30)" : `tabellen ${tabell.namn} (s. ${tabell.sida})`}`);
+  });
   if (bpKvar < 0) fel.push(`${-bpKvar} BP för mycket har spenderats (s. 13)`);
-  if ((rp.sarskildaFormagor?.bp ?? 0) > regler.slag.sarskildaFormagor.maxBP) fel.push("Högst 40 BP på särskilda förmågor (s. 30)");
 
   const harledda = raknaHarledda(regler, ge.varden, rp.harleddaJustering);
   const slag = raknaSlag(regler, rp, ras, yrke, alderEff);
@@ -386,7 +416,7 @@ export function raknaRollperson(regler, indata) {
 
   return {
     ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, grundegenskaperSatta: ge.satta, harledda, slag, magiformaga,
-    sarskildFormaga: sf.formaga, saknas: sf.saknas, vantar, forLagaEgenskaper: ge.forLaga,
+    sarskildFormaga: sf.formaga, sarskildaFormagorna: sf.formagor, hjaltepoang: sf.hjaltepoang, niva, saknas: sf.saknas, vantar, forLagaEgenskaper: ge.forLaga,
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
@@ -549,36 +579,108 @@ export function passarBland(regler, rp, nyckel, bland) {
 
 // Tabellerna för särskilda förmågor. sarskilda-formagor.json är antingen grundreglernas tabell (en lista med rader)
 // eller { tabeller: [{ id, namn, tarning, sida, kraver?, rader }] } när expansionernas tabeller läggs in.
-// kraver: { expansion?, raser?, yrken? } – en tabell som rollpersonen inte har tillgång till visas inte alls.
+// kraver: { bok?, raser?, yrken? } – en tabell som rollpersonen inte har tillgång till visas inte alls.
+// maxBP: högst så många BP per slag (grundreglerna 40, s. 30; V&R 20, s. 14).
 export function formagetabeller(regler) {
   const data = regler["sarskilda-formagor"];
   if (Array.isArray(data)) {
-    return [{ id: "grund", namn: "Grundreglerna", tarning: regler.slag?.sarskildaFormagor?.tarning ?? "2T20", sida: "30–32", rader: data }];
+    return [{ id: "grund", namn: "Grundreglerna", tarning: regler.slag?.sarskildaFormagor?.tarning ?? "2T20", sida: "30–32", maxBP: regler.slag?.sarskildaFormagor?.maxBP ?? 40, rader: data }];
   }
   return data.tabeller;
 }
 const tabellTillganglig = (t, rp) => {
   const k = t.kraver ?? {};
-  if (k.expansion && !(rp.expansioner ?? []).includes(k.expansion)) return false;
+  const bok = k.bok ?? k.expansion;
+  if (bok && !valdaBocker(rp).includes(bok)) return false;
   if (k.raser && !k.raser.includes(rp.ras)) return false;
   if (k.yrken && !k.yrken.includes(rp.yrke)) return false;
   return true;
 };
 export const tillgangligaFormagetabeller = (regler, rp) => formagetabeller(regler).filter((t) => tabellTillganglig(t, rp));
-// Tabellen som rollpersonen slår på: den valda, annars den första som rollpersonen har tillgång till
-export function formagetabell(regler, rp) {
-  const id = rp.sarskildaFormagor?.tabell;
+// Tabellen som rollpersonen slår på: den valda, annars den första som rollpersonen har tillgång till.
+// s är slaget (rp.sarskildaFormagor eller ett av de fler slagen på högre nivåer).
+export function formagetabell(regler, rp, s = rp.sarskildaFormagor) {
+  const id = s?.tabell;
   return id ? formagetabeller(regler).find((t) => t.id === id) : tillgangligaFormagetabeller(regler, rp)[0];
+}
+// Slagen för särskilda förmågor: ett per förmåga som erfarenhetsnivån ger (RB-001). Det första är rp.sarskildaFormagor,
+// de övriga ligger i rp.sarskildaFormagor.fler.
+export function formageslag(regler, rp) {
+  const s = rp.sarskildaFormagor ?? {};
+  const antal = nivaFor(regler, rp).formagor;
+  return Array.from({ length: antal }, (_, i) => (i === 0 ? s : s.fler?.[i - 1] ?? { bp: 0, slag: null, val: [], avstar: false }));
 }
 export const tarningAv = (tarning) => { const [, n, sidor] = /^(\d+)T(\d+)$/.exec(tarning); return { n: +n, sidor: +sidor }; };
 export const slagIntervall = ({ slag: [fran, till] }) => (till === null ? `${fran}+` : fran === till ? `${fran}` : `${fran}–${till}`);
 
-// Vilken särskild förmåga rollpersonen har och vad den ger, utifrån spelarens val (s. 30–32).
-// rp.sarskildaFormagor.val[i] är valen för förmågans i:te effekt.
+// Vilka särskilda förmågor rollpersonen har och vad de ger, utifrån spelarens val (s. 30–32).
+// Varje slag räknas för sig (enFormaga) och effekterna läggs ihop. formaga är det första slagets förmåga
+// (för rollpersoner med en förmåga), formagor alla slagens. Hjältepoäng från förmågorna kan användas redan
+// vid skapandet (RB-003): rp.hjaltepoangKop är grundegenskaper som höjs för 5 HP per poäng (s. 76).
 export function sarskildFormaga(regler, rp) {
   const s = rp.sarskildaFormagor ?? {};
-  const svar = { formaga: null, fel: [], saknas: [], magiformaga: 0, tillagg: {} };
-  const tabell = formagetabell(regler, rp);
+  const slag = formageslag(regler, rp);
+  const flera = slag.length > 1;
+  const svar = { formaga: null, formagor: [], perSlag: [], fel: [], saknas: [], magiformaga: 0, bp: 0, hjaltepoang: null, tillagg: {} };
+  const fvBonus = [];
+  const fvMinst = [];
+  const takBonus = {};
+  const andrad = {};
+  const egenskapsbonus = {};
+  const harledda = { kpFaktor: 1, forflyttningBonus: 0 };
+  let arv = 0;
+  let svardshand;
+  let hp = 0;
+  let hpSlagna = true;
+  slag.forEach((sl, nr) => {
+    const r = enFormaga(regler, rp, sl);
+    const pre = flera ? `Förmåga ${nr + 1}: ` : "";
+    svar.perSlag.push(r);
+    svar.fel.push(...r.fel.map((t) => pre + t));
+    svar.saknas.push(...r.saknas.map((t) => pre + t));
+    svar.bp += sl.bp ?? 0;
+    svar.formagor.push(r.formaga);
+    svar.magiformaga += r.magiformaga;
+    const d = r.delar;
+    fvBonus.push(...d.fvBonus);
+    fvMinst.push(...d.fvMinst);
+    for (const [k, v] of Object.entries(d.takBonus)) takBonus[k] = (takBonus[k] ?? 0) + v;
+    Object.assign(andrad, d.andrad);
+    for (const [g, m] of Object.entries(d.egenskapsbonus)) egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + m;
+    harledda.kpFaktor = Math.max(harledda.kpFaktor, d.kpFaktor);
+    harledda.forflyttningBonus += d.forflyttningBonus;
+    arv += d.arv;
+    if (d.svardshand !== undefined) svardshand = d.svardshand;
+    if (d.hp !== null) { hp += d.hp ?? 0; if (d.hp === undefined) hpSlagna = false; }
+  });
+  // Slag utöver nivåns antal får inte ha BP (t.ex. kvar från en högre nivå)
+  (s.fler ?? []).slice(slag.length - 1).forEach((sl) => { if (sl?.bp) svar.fel.push("Rollpersonen har inte fler särskilda förmågor på den här nivån"); });
+  svar.formaga = svar.formagor[0];
+  const kop = rp.hjaltepoangKop ?? {};
+  const spenderat = Object.values(kop).reduce((a, n) => a + n, 0) * (regler.erfarenhet?.hjaltepoang.egenskap.hp ?? 5);
+  const harHp = svar.perSlag.some((r) => r.delar.hp !== null);
+  if (harHp || spenderat) {
+    svar.hjaltepoang = { totalt: hp, spenderat, kvar: hp - spenderat, slagna: hpSlagna };
+    if (spenderat > hp) svar.fel.push(`Rollpersonen har bara ${hp} hjältepoäng (RB-003)`);
+    for (const [g, n] of Object.entries(kop)) {
+      if (!GRUNDEGENSKAPER.includes(g) || !Number.isInteger(n) || n < 0) svar.fel.push("Hjältepoäng kan bara höja STY, FYS, SMI, INT, PSY och KAR (s. 76)");
+      else egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + n;
+    }
+  }
+  svar.tillagg = {
+    sarskildaFormagor: { ...s, fvBonus, fvMinst, takBonus, status: andrad },
+    egenskapsbonus, harleddaJustering: harledda, arv,
+    svardshand: { ...rp.svardshand, overstyrd: svardshand },
+  };
+  return svar;
+}
+
+// Ett slag på en tabell för särskilda förmågor. s = { bp, slag, val, tabell, avstar }.
+export function enFormaga(regler, rp, s) {
+  const svar = { formaga: null, tabell: null, fel: [], saknas: [], magiformaga: 0,
+    delar: { fvBonus: [], fvMinst: [], takBonus: {}, andrad: {}, egenskapsbonus: {}, kpFaktor: 1, forflyttningBonus: 0, arv: 0, svardshand: undefined, hp: null } };
+  const tabell = formagetabell(regler, rp, s);
+  svar.tabell = tabell;
   if (s.tabell && (!tabell || !tabellTillganglig(tabell, rp))) svar.fel.push(`Rollpersonen kan inte slå på tabellen ${tabell?.namn ?? s.tabell}`);
   if (s.avstar && s.bp) svar.fel.push("Du har kryssat i att du inte vill lägga BP på särskilda förmågor");
   if (!s.bp || s.slag === null || s.slag === undefined || !tabell) return svar;
@@ -586,14 +688,7 @@ export function sarskildFormaga(regler, rp) {
   const formaga = tabell.rader.find(({ slag: [fran, till] }) => summa >= fran && (till === null || summa <= till));
   if (!formaga) return svar;
   svar.formaga = formaga;
-  const fvBonus = [];
-  const fvMinst = [];
-  const takBonus = {};
-  const andrad = {};
-  const egenskapsbonus = {};
-  let harledda = { kpFaktor: 1, forflyttningBonus: 0 };
-  let arv = 0;
-  let svardshand;
+  const d = svar.delar;
   (formaga.regel ?? []).forEach((del, i) => {
     const val = s.val?.[i];
     if (del.typ === "fv") {
@@ -615,12 +710,12 @@ export function sarskildFormaga(regler, rp) {
         });
       }
       for (const k of nycklar) {
-        if (del.fv) (del.minst ? fvMinst : fvBonus).push({ fardighet: k, fv: del.fv });
-        if (del.tak) takBonus[k] = (takBonus[k] ?? 0) + del.fv;
-        if (del.status) andrad[k] = del.status;
+        if (del.fv) (del.minst ? d.fvMinst : d.fvBonus).push({ fardighet: k, fv: del.fv });
+        if (del.tak) d.takBonus[k] = (d.takBonus[k] ?? 0) + del.fv;
+        if (del.status) d.andrad[k] = del.status;
       }
     } else if (del.typ === "egenskap") {
-      for (const [g, m] of Object.entries(del.mod)) egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + m;
+      for (const [g, m] of Object.entries(del.mod)) d.egenskapsbonus[g] = (d.egenskapsbonus[g] ?? 0) + m;
     } else if (del.typ === "egenskapVal") {
       const lage = val?.lage;
       const valda = (val?.egenskaper ?? []).filter(Boolean);
@@ -629,17 +724,19 @@ export function sarskildFormaga(regler, rp) {
       if (valda.length > antal || new Set(valda).size !== valda.length || valda.some((g) => !GRUNDEGENSKAPER.includes(g))) {
         svar.fel.push(`${formaga.namn}: +1 på tre olika grundegenskaper eller +2 på en (s. 32)`);
       }
-      for (const g of valda) egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + (lage === "en" ? 2 : 1);
-    } else if (del.typ === "forflyttning") harledda = { ...harledda, forflyttningBonus: del.varde };
-    else if (del.typ === "kpFaktor") harledda = { ...harledda, kpFaktor: del.varde };
-    else if (del.typ === "kapital") arv = del.varde;
-    else if (del.typ === "svardshand") svardshand = del.varde;
-    else if (del.typ === "magiformaga") svar.magiformaga = del.varde;
+      for (const g of valda) d.egenskapsbonus[g] = (d.egenskapsbonus[g] ?? 0) + (lage === "en" ? 2 : 1);
+    } else if (del.typ === "forflyttning") d.forflyttningBonus += del.varde;
+    else if (del.typ === "kpFaktor") d.kpFaktor = Math.max(d.kpFaktor, del.varde);
+    else if (del.typ === "kapital") d.arv += del.varde;
+    else if (del.typ === "svardshand") d.svardshand = del.varde;
+    else if (del.typ === "magiformaga") svar.magiformaga += del.varde;
+    else if (del.typ === "hjaltepoang") {
+      // Hjältepoängen slås när förmågan har kommit upp (t.ex. 3T20 för Hjälte, V&R s. 15). val = { slag, tarningar }
+      const { n, sidor } = tarningAv(del.tarning);
+      if (!Number.isInteger(val?.slag)) { svar.saknas.push(`Slå ${del.tarning} för hjältepoängen (${formaga.namn})`); d.hp = undefined; }
+      else if (val.slag < n || val.slag > n * sidor) svar.fel.push(`${formaga.namn}: hjältepoängen är ${del.tarning}, ${n}–${n * sidor}`);
+      else d.hp = val.slag;
+    }
   });
-  svar.tillagg = {
-    sarskildaFormagor: { ...s, fvBonus, fvMinst, takBonus, status: andrad },
-    egenskapsbonus, harleddaJustering: harledda, arv,
-    svardshand: { ...rp.svardshand, overstyrd: svardshand },
-  };
   return svar;
 }

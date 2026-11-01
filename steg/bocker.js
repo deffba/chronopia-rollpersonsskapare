@@ -1,6 +1,7 @@
 // Steg 0: vilka böcker rollpersonen skapas med. Grundreglerna är alltid med.
 // Böckerna står i regler/bocker.json. En bok som inte är inlagd än visas med "(Kommer snart!)" och går inte att välja.
 // Valet sparas i rollpersonen (rp.bocker) och låses när skapandet har börjat, det vill säga när en ras är vald.
+import { nivaer } from "../regelmotor.js";
 import { S, uppdatera } from "../tillstand.js";
 import { el } from "../ui/dom.js";
 
@@ -19,6 +20,7 @@ export function valjBok(id, pa) {
     for (const k of bokAv(id)?.kraver ?? []) if (!behovs.has(k) && !S.rp.bockerManuellt?.includes(k)) valda.delete(k);
   }
   S.rp.bocker = S.R.bocker.lista.filter((b) => b.alltid || valda.has(b.id)).map((b) => b.id);
+  if (!nivaer(S.R, S.rp)?.[S.rp.niva]) S.rp.niva = 0; // utan en bok med nivåer gäller grundreglernas 125 BP
   uppdatera();
 }
 
@@ -40,12 +42,24 @@ export function stegBocker() {
         bok.alltid ? el("span", { class: "bok-status" }, "Alltid med") : null,
         !bok.alltid && kravd.length ? el("span", { class: "bok-status" }, `Låst – krävs av ${kravd.join(", ")}`) : null));
   };
+  // Erfarenhetsnivån: BP från start och antal särskilda förmågor (V&R s. 3, RB-001)
+  const lista = nivaer(S.R, S.rp);
+  const nivaval = lista ? el("section", { class: "bokgrupp", id: "nivaval" },
+    el("h3", {}, "Erfarenhetsnivå"),
+    el("p", { class: "hjalp" }, `Hur erfaren rollpersonen är när den skapas. Nivån ger bakgrundspoäng från start och hur många gånger du slår för särskilda förmågor i steg 7 (s. ${lista[0].sida}).`),
+    el("ul", { class: "boklista" }, lista.map((n, i) => el("li", { class: "bokrad" + ((S.rp.niva ?? 0) === i ? " vald" : "") },
+      el("label", {},
+        el("input", { type: "radio", name: "niva", "data-niva": i, checked: (S.rp.niva ?? 0) === i, disabled: last,
+          onchange: () => { S.rp.niva = i; uppdatera(); } }),
+        el("span", { class: "boknamn" }, n.namn),
+        el("span", { class: "bok-status" }, `${n.bp} BP · ${n.formagor} särskild${n.formagor > 1 ? "a" : ""} förmåg${n.formagor > 1 ? "or" : "a"}`),
+        el("span", { class: "bok-status niva-text" }, n.beskrivning)))))) : null;
   return [
     el("p", { class: "hjalp" }, "Välj vilka böcker rollpersonen ska skapas med. Spelledaren bestämmer vilka böcker som gäller i kampanjen. ",
       "Grundreglerna är alltid med. Expansionerna läggs in i appen efter hand."),
     last ? el("p", { class: "hjalp bok-last" }, "Valet är låst eftersom skapandet har börjat. Börja om med Ny rollperson i menyn för att välja andra böcker.") : null,
     el("div", { class: "bokgrupper" }, S.R.bocker.grupper.map((g) => el("section", { class: "bokgrupp" },
       el("h3", {}, g),
-      el("ul", { class: "boklista" }, S.R.bocker.lista.filter((b) => b.grupp === g).map(rad))))),
+      el("ul", { class: "boklista" }, S.R.bocker.lista.filter((b) => b.grupp === g).map(rad)))), nivaval),
   ];
 }

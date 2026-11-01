@@ -1,5 +1,5 @@
 // Steg 1: ras.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, valbaraRaser } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, valbaraRaser, kallText } from "../regelmotor.js";
 import { nollstallSpel } from "../spelmote.js";
 import { RAS_SEKUNDAR_INFO, RASFORMAGOR } from "../texter.js";
 import { S, harLogg, uppdatera } from "../tillstand.js";
@@ -9,7 +9,7 @@ import { delvalKontroll, falt, fardighetsInfo, infoKnapp } from "../ui/kontrolle
 // ------------------------------------------------------------ stegen
 export function stegRas() {
   const valt = S.rp.ras ? rasAv(S.R, S.rp.ras) : null;
-  const kort = valbaraRaser(S.R).map((r) => el("button", {
+  const kort = valbaraRaser(S.R, S.rp).sort((a, b) => a.namn.localeCompare(b.namn, "sv")).map((r) => el("button", {
     type: "button", class: "valkort raskort" + (r.id === S.rp.ras ? " valt" : ""), "aria-pressed": r.id === S.rp.ras ? "true" : "false",
     onclick: () => {
       // Ett tryck på den valda rasen avmarkerar den
@@ -34,7 +34,7 @@ export function stegRas() {
     huvud,
     el("div", { class: "valinfo" },
       el("h3", { class: "valrubrik" }, valt.namn),
-      valt.beskrivning ? el("p", { class: "vallore" }, valt.beskrivning, " (s. 14–16)") : null,
+      valt.beskrivning ? el("p", { class: "vallore" }, valt.beskrivning, ` (${kallText(S.R, valt, "s. 14–16")})`) : null,
       el("dl", { class: "valdata" },
         el("div", {}, el("dt", {}, "BP"), el("dd", {}, valt.bp)),
         el("div", {}, el("dt", {}, "Grundegenskaper"), el("dd", {}, GRUNDEGENSKAPER.filter((g) => valt.mod[g]).map((g) => `${g} ${valt.mod[g] > 0 ? "+" : "−"}${Math.abs(valt.mod[g])}`).join(" · ") || "Inga modifikationer")),

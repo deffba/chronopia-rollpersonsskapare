@@ -29,6 +29,7 @@ const TESTER = [
   { namn: "startsida", args: ["$UT"], ok: passFail },
   { namn: "fixar", ok: passFail },
   { namn: "formagor", ok: passFail },
+  { namn: "vr", ok: passFail },
   { namn: "nyheter", ok: passFail },
   { namn: "dev", ok: passFail },
   { namn: "logg", ok: passFail },

@@ -126,3 +126,11 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Motivering:** Färre nya färdigheter gör appen enklare. Luftskeppsflygning handlar om att förstå maskinen, därav INT.
 - **Påverkar:** Dvärgars och Alvers yrken och klanförmågor.
 - **Beslutat:** 2026-11-01, Deffba.
+
+## RB-015 Hjältepoäng vid skapandet
+- **Fråga:** Vad kan hjältepoäng från förmågan Hjälte (V&R s. 15) köpa när rollpersonen skapas?
+- **Källor:** *Vapen & rustningar* s. 14–15. Grundreglerna om hjältepoäng.
+- **Beslut:** Vid skapandet köper 5 HP +1 i en grundegenskap (inte STO). Poäng som blir över följer med som vanliga hjältepoäng i spel. Att köpa ytterligare en särskild förmåga för HP hanteras inte i skaparen.
+- **Motivering:** Håller skaparen enkel; extra förmågor kan läggas till senare via utvecklingsflödet.
+- **Påverkar:** Steg 7, rollformulärets hjältepoäng.
+- **Beslutat:** 2026-11-01, preliminärt: väntar på Deffbas bekräftelse.

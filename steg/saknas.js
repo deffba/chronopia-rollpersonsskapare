@@ -1,7 +1,7 @@
 // Vad som saknas i varje steg, och vilka steg som syns.
-import { rasAv, yrkeAv, fardighetAv, paborjad, skolFV, namnFor } from "../regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, paborjad, skolFV, namnFor, formageslag } from "../regelmotor.js";
 import { STEG } from "../texter.js";
-import { S, rasId, yrkeId, yrkesNycklar } from "../tillstand.js";
+import { S, motorIndata, rasId, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { MAGISLAG } from "../ui/magimodal.js";
 
 // Val som ännu inte är gjorda, per steg. Ett steg med obligatoriska val kvar går inte att lämna framåt.
@@ -31,8 +31,13 @@ export function saknasPerSteg(res) {
   if (S.rp.extraYrkesfardigheter.some((k) => !klar(k))) lista.extra.push("En extra yrkesfärdighet är inte färdigvald (välj klart eller ta bort den)");
   if (!S.rp.namn.trim()) lista.kon.push("Namn");
   if (!S.rp.kon) lista.kon.push("Kön");
-  if (S.rp.sarskildaFormagor.bp && S.rp.sarskildaFormagor.slag === null) lista.formagor.push("Slaget för särskilda förmågor");
-  if (!S.rp.sarskildaFormagor.bp && !S.rp.sarskildaFormagor.avstar) lista.formagor.push("Lägg BP på särskilda förmågor, eller kryssa i att du inte vill det");
+  // Ett slag per särskild förmåga som erfarenhetsnivån ger (RB-001)
+  const slagen = formageslag(S.R, motorIndata());
+  slagen.forEach((sf, i) => {
+    const nr = slagen.length > 1 ? ` ${i + 1}` : "";
+    if (sf.bp && (sf.slag === null || sf.slag === undefined)) lista.formagor.push(slagen.length > 1 ? `Slaget för särskild förmåga${nr}` : "Slaget för särskilda förmågor");
+    if (!sf.bp && !sf.avstar) lista.formagor.push(slagen.length > 1 ? `Lägg BP på särskild förmåga${nr}, eller kryssa i att du inte vill det` : "Lägg BP på särskilda förmågor, eller kryssa i att du inte vill det");
+  });
   if (!res.grundegenskaperSatta) lista.egenskaper.push("Grundegenskaperna");
   lista.egenskaper.push(...res.forLagaEgenskaper);
   lista.formagor.push(...res.saknas);

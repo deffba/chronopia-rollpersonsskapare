@@ -22,7 +22,7 @@ export function rollformular(res) {
       el("p", {}, [S.rp.ras ? res.ras.namn : null, S.rp.yrke ? res.yrke.namn : null, S.rp.alder == null ? null : `${S.rp.alder} år`, S.rp.kon].filter(Boolean).join(" · "))),
     S.vy === "spel" ? el("dl", { class: "nyckelvarden" },
       el("div", {}, el("dt", {}, "Osparade EP", info("EP")), el("dd", {}, spelPotter(spelCtx(res)).ep)),
-      el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, S.rp.spel.hjaltepoang ?? 0))) : el("div", { class: "potter" },
+      el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, (S.rp.spel.hjaltepoang ?? 0) + (res.hjaltepoang?.kvar ?? 0)))) : el("div", { class: "potter" },
       el("div", { class: "pott" + (res.bp.kvar < 0 ? " over" : "") }, el("span", { class: "etikett" }, "BP kvar", info("BP")),
         el("span", { class: "pott-tal" }, res.bp.kvar), el("span", { class: "matare" }, el("span", { style: `width:${bpProcent}%` })),
         el("span", { class: "hjalp" }, `av ${res.bp.start}`)),
@@ -45,7 +45,8 @@ export function rollformular(res) {
     el("h3", {}, "Kroppsdelar"),
     el("ul", { class: "kroppsdelar" }, [0, 1].map(() => el("li", { class: "kolumnrubrik" }, el("span", {}, "Kroppsdel"), el("span", { class: "num" }, "KP"))),
       h.kroppsdelar.map((d) => el("li", {}, el("span", {}, d.namn), el("span", { class: "num" }, visa(d.kp))))),
-    [res.sarskildFormaga, ...res.extraFormagor].filter(Boolean).map((f, i) => [i === 0 ? el("h3", {}, "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
+    [...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...res.extraFormagor].filter(Boolean).map((f, i, alla) => [i === 0 ? el("h3", {}, alla.length > 1 ? "Särskilda förmågor" : "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
+    res.hjaltepoang?.totalt ? el("p", {}, el("strong", {}, "Hjältepoäng: "), `${res.hjaltepoang.kvar} av ${res.hjaltepoang.totalt} kvar`) : null,
     S.rp.yrke ? el("p", {}, el("strong", {}, "Yrkesförmåga: "), res.yrke.yrkesformaga) : null,
     el("h3", {}, "Färdigheter", info("B-nivå")),
     el("ul", { class: "fardighetsrader" }, kolumnrubrik("Färdighet", "FV"), res.fardigheter.filter((f) => f.fv > 0).map((f) =>

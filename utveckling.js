@@ -212,7 +212,7 @@ export function psyOkning(regler, { magiker, psy, slag, t3 = 0, mod = 0 }) {
 
 export function psyMod(regler, res) {
   const tabell = regler.erfarenhet.psyHojning.sarskildFormagaMod;
-  return summa([res.sarskildFormaga, ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => tabell[f.namn] ?? 0));
+  return summa([...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => tabell[f.namn] ?? 0));
 }
 
 const MAGI = ["kanna-magi", "magisk-kanalisering", "magistudier"];
@@ -400,7 +400,9 @@ export function kontrolleraPost(regler, rpFore, rpEfter, resFore, resEfter, post
   // Det som posten ändrar får inte gå under noll
   const spel = rpEfter.spel;
   for (const [k, n] of Object.entries(spel.erf)) if (n < 0) fel.push(`${namn(k)}: bara ${rpFore.spel.erf[k] ?? 0} EP finns`);
-  if (spel.hjaltepoang < 0) fel.push(`Rollpersonen har bara ${rpFore.spel.hjaltepoang ?? 0} hjältepoäng`);
+  // Hjältepoäng som blev över vid skapandet (RB-003) hör också till rollpersonens hjältepoäng
+  const hpStart = resFore.hjaltepoang?.kvar ?? 0;
+  if (spel.hjaltepoang + hpStart < 0) fel.push(`Rollpersonen har bara ${(rpFore.spel.hjaltepoang ?? 0) + hpStart} hjältepoäng`);
   const kvar = resFore.utrustning.kvar;
   const bors = borsen(spel, kvar);
   for (const m of Object.keys(post.mynt ?? {})) {

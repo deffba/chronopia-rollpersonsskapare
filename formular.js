@@ -13,6 +13,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const res = tom ? tomtResultat(raknat) : raknat;
   const antalRutor = (n, tomt) => (tom ? tomt : n);
   const spel = rp.spel;
+  const hpStart = tom ? 0 : raknat.hjaltepoang?.kvar ?? 0;
   const g = res.grundegenskaper;
   const h = res.harledda;
 
@@ -74,7 +75,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   // Särskilda förmågor med en kort förklaring: rasens, den slagna, yrkesförmågan och stridskonstens tekniker
   const formagor = [
     ...(res.ras?.formagor ?? []).map((t) => ({ namn: t, text: `Rasförmåga (${res.ras.namn.toLowerCase()})` })),
-    ...[res.sarskildFormaga, ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
+    ...[...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
     rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: res.yrke.yrkesformaga } : null,
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
   ].filter(Boolean);
@@ -109,7 +110,8 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
                 fyll(formagor.slice(0, RADER.formagor).map((f) => el("div", { class: "rf-rad" }, el("span", { class: "rf-cell rf-namn rf-formaga", title: f.text },
                   el("strong", {}, f.namn), el("span", {}, f.text)))), RADER.formagor, 1)),
               el("div", { class: "rf-hjaltepoang" }, el("span", {}, "Hjältepoäng"),
-                inmatning(spel.hjaltepoang || "", (v) => { spel.hjaltepoang = Math.max(0, heltal(v) ?? 0); }, { inputmode: "numeric", "aria-label": "Hjältepoäng" })),
+                // Hjältepoäng som blev över vid skapandet (RB-003) räknas in; spel.hjaltepoang är det som har ändrats sedan
+                inmatning((spel.hjaltepoang ?? 0) + hpStart || "", (v) => { spel.hjaltepoang = Math.max(0, heltal(v) ?? 0) - hpStart; }, { inputmode: "numeric", "aria-label": "Hjältepoäng" })),
               lista("rf-fardigheter", rubrik("Yrkesfärdigheter", ["erf", "FV"], 16), listor.yrke.map(fardighetsrad), RADER.yrke),
               lista("rf-sprak", rubrik("Språk (INT)", ["FV", "B-FV"], 17), sprak.slice(0, RADER.sprak).map((f) => el("div", { class: "rf-rad" },
                 el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-namntext" }, f.namn), sidhanvisning(sidaFor(f.nyckel))),

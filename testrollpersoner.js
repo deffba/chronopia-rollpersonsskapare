@@ -76,4 +76,34 @@ export const TESTROLLPERSONER = [
     kop: ["Kåpa (magiker-, präst-)", "Oljelykta (6 timmar)", "Lampolja (1 timme)"],
     anteckningar: "Testrollperson från utvecklarläget. Har lämnat dimskogarna för stadens bibliotek.",
   },
+  {
+    // Vapen & rustningar: hjältenivån (175 BP, tre särskilda förmågor) och V&R:s förmågetabell med hjältepoäng
+    id: "vr-hjalte",
+    etikett: "Sabran, krigare (V&R, hjälte)",
+    namn: "Zahra Ökenvind",
+    kon: "Kvinna",
+    bocker: ["vr"],
+    niva: 2,
+    ras: "sabran",
+    alder: 26,
+    yrke: "krigare",
+    val: {
+      hantverk: ["Läderarbete"],
+      tala: ["hoglandska"],
+      "tva-vapen": "Kortsvärd+Dolk",
+      "undre-varlden": "Chronopia",
+      vapen: ["Kortsvärd", "Dolk", "Kortbåge"],
+    },
+    valfri: "overlevnad",
+    sarskildFormaga: [
+      { bp: 20, slag: 15, tabell: "vr", val: [{ slag: 33, tarningar: [12, 9, 12] }] }, // 35: Hjälte, 33 hjältepoäng
+      { bp: 5, slag: 18, tabell: "vr" }, // 23: Blodshämnd
+      { bp: 5, slag: 37, tabell: "grund" }, // 42: Vapenvan
+    ],
+    hjaltepoangKop: { SMI: 2, PSY: 2 }, // 20 av de 33 hjältepoängen
+    slag: { svardshand: 8, socialtStand: 8, startkapital: 9 },
+    startpaketVapen: "Dolk",
+    kop: ["Harnesk: Läder", "Läderhuva"],
+    anteckningar: "Testrollperson från utvecklarläget. Ökenkrigare som har gjort sig ett namn i Chronopia.",
+  },
 ];

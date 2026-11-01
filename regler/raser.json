@@ -814,5 +814,207 @@
       16
     ],
     "beskrivning": "Kortvuxna, med gulaktig hy, breda munnar, platta ansikten och stora trubbiga hörntänder som ger ett barnsligt och komiskt intryck. Trots det är de respekterade köpmän och mästerliga förhandlare, och de långa livet och alla handelsresor gör dem ofta visa."
+  },
+  {
+    "id": "latracier",
+    "namn": "Latracier",
+    "bp": 30,
+    "mod": {
+      "STY": 2,
+      "FYS": 3,
+      "SMI": 1,
+      "INT": 0,
+      "PSY": 0,
+      "KAR": 0
+    },
+    "sto": {
+      "min": 10,
+      "max": 20,
+      "normal": 15
+    },
+    "alder": {
+      "ung": [
+        16,
+        20
+      ],
+      "vuxen": [
+        21,
+        45
+      ],
+      "medelalders": [
+        46,
+        60
+      ],
+      "gammal": [
+        61,
+        70
+      ],
+      "uraldrig": [
+        71,
+        100
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "hoglandska",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "hoglandska"
+    ],
+    "formagor": [],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {},
+    "sida": [
+      3
+    ],
+    "kalla": {
+      "bok": "vr",
+      "sida": 3
+    },
+    "beslut": [
+      "RB-005",
+      "RB-006"
+    ],
+    "beskrivning": "Ett högrest och stolt folk från de nordliga vidderna, nästan lika storvuxna som högländarna. Hemma är de kända för sin disciplin och sin trohet mot klanfursten. I Chronopia känner man dem som krigarna i kejsarens Svarta garde."
+  },
+  {
+    "id": "mulvak",
+    "namn": "Mulvak",
+    "bp": 0,
+    "mod": {
+      "STY": -2,
+      "FYS": 1,
+      "SMI": 3,
+      "INT": 0,
+      "PSY": 0,
+      "KAR": -2
+    },
+    "sto": {
+      "min": 3,
+      "max": 5,
+      "normal": 4
+    },
+    "alder": {
+      "ung": [
+        16,
+        20
+      ],
+      "vuxen": [
+        21,
+        45
+      ],
+      "medelalders": [
+        46,
+        60
+      ],
+      "gammal": [
+        61,
+        70
+      ],
+      "uraldrig": [
+        71,
+        100
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "chronos"
+    ],
+    "formagor": [
+      "Präglas på en herre och lyder den utan förbehåll; förlorar den sin herre präglas den på första person som ger en order",
+      "Helt orädd: slår aldrig på Skräcktabellen, inte ens under påverkan av magi",
+      "Utan herre blir den förvirrad, ledsen och irrationell"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {},
+    "sida": [
+      3
+    ],
+    "kalla": {
+      "bok": "vr",
+      "sida": 3
+    },
+    "beslut": [
+      "RB-006"
+    ],
+    "beskrivning": "En liten, upprättgående och ödlelik varelse med stort huvud och smal svans. Trots storleken är mulvaker starka och orädda. Ingen vet säkert var de kommer ifrån, men alla föds med ett behov av att tjäna en herre."
+  },
+  {
+    "id": "sabran",
+    "namn": "Sabran",
+    "bp": 20,
+    "mod": {
+      "STY": 0,
+      "FYS": 2,
+      "SMI": 0,
+      "INT": 0,
+      "PSY": 2,
+      "KAR": 0
+    },
+    "sto": {
+      "min": 9,
+      "max": 19,
+      "normal": 14
+    },
+    "alder": {
+      "ung": [
+        16,
+        20
+      ],
+      "vuxen": [
+        21,
+        45
+      ],
+      "medelalders": [
+        46,
+        60
+      ],
+      "gammal": [
+        61,
+        70
+      ],
+      "uraldrig": [
+        71,
+        100
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "chronos"
+    ],
+    "formagor": [
+      "Klarar tre dagar utan mat och vatten utan att påverkas; därefter försämras hälsan som för en människa"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {},
+    "sida": [
+      3
+    ],
+    "kalla": {
+      "bok": "vr",
+      "sida": 3
+    },
+    "beslut": [
+      "RB-006"
+    ],
+    "beskrivning": "Ett stolt ökenfolk från vidderna öster om Chronopia, med solbränd hy och färgglada svepningar av finaste siden. Sabraner säger vad de tänker, även när det inte är hälsosamt, och är kända för sina finurliga gasvapen."
   }
 ]

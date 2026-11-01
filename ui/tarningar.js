@@ -108,9 +108,10 @@ export function landatSlag(id, varde, text, { tarningar = null, bonusar = [], si
     kanda ? null : tarningsIkon(sidor), innehall);
 }
 const SLAGETS_VAL = { sf: "sarskildaFormagor", sh: "svardshand", ss: "socialtStand", sk: "startkapital", magiformaga: "magiformaga" };
-const omslagKnapp = (id) => (S.omslag ? el("button", { type: "button", class: "knapp omslag", id: `${id}-las-upp`,
+const omslagKnapp = (id, hamta) => (S.omslag ? el("button", { type: "button", class: "knapp omslag", id: `${id}-las-upp`,
   title: "Utvecklarläge: ta bort slaget och slå om", onclick: () => {
-    S.rp[SLAGETS_VAL[id]] = { ...S.rp[SLAGETS_VAL[id]], slag: null };
+    if (hamta) hamta().slag = null;
+    else S.rp[SLAGETS_VAL[id]] = { ...S.rp[SLAGETS_VAL[id]], slag: null };
     S.giltig = structuredClone(S.rp);
     spara();
     rita();
@@ -131,14 +132,17 @@ const bpFaltet = (etikett, kontroll) => { const f = falt(etikett, kontroll); f.c
 // Bonusarna visas var för sig i tärningsrutan, t.ex. 2T6+2+4.
 // Tillval: fore = fält som står före slaget (t.ex. vilken tabell som slås på), kanSla = false spärrar tärningen,
 // under = det som står direkt under raden med slaget.
+// nyckel är namnet på slaget i rollpersonen (t.ex. "svardshand") eller en funktion som ger slaget
+// (t.ex. ett av de fler slagen för särskilda förmågor).
 export function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = [], { fore = null, kanSla = true, under = null } = {}) {
-  const s = S.rp[nyckel];
+  const hamta = typeof nyckel === "function" ? nyckel : () => S.rp[nyckel];
+  const s = hamta();
   const bonusar = [s.bp > 0 ? ["BP lagda", s.bp] : null, ...fastaBonusar].filter(Boolean);
   const punkter = [...fastaBonusar.map(([t, v]) => `${t}: ${fmtMod(v)}`), ...extraRader];
   const bonuslista = punkter.length ? el("ul", { class: "punkter bonuslista" }, punkter.map((t) => el("li", {}, t))) : null;
   const { n, sidor } = tarningAv(tarning);
   tarning += bonusar.map(([, v]) => (v > 0 ? `+${v}` : `−${-v}`)).join("");
-  const satt = (falt, v) => { S.rp[nyckel][falt] = v; efter(); uppdatera(); };
+  const satt = (falt, v) => { hamta()[falt] = v; efter(); uppdatera(); };
   // När slaget är gjort ligger det fast: BP och slag går inte att ändra i efterhand
   if (s.slag !== null && s.slag !== undefined) {
     return [
@@ -148,13 +152,13 @@ export function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = ()
         bpFaltet("BP lagda", lastFalt(`${id}-bp`, s.bp)),
         fore,
         falt(`Slag (${tarning})`, landatSlag(id, s.slag, `Slå ${tarning}`, { tarningar: s.tarningar, bonusar: bonusar.map(([, v]) => v), sidor, antal: n })),
-        omslagKnapp(id)),
+        omslagKnapp(id, typeof nyckel === "function" ? hamta : null)),
       resultat(id, tolkning),
     ];
   }
   // Varje tärning sparas också, så att den kan visas med sina prickar (ett inskrivet slag delas upp på två tärningar)
-  const sla = () => { const t = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sidor)); S.rp[nyckel].tarningar = t; return t.reduce((a, b) => a + b, 0); };
-  const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => { if (S.manuellaSlag) S.rp[nyckel].tarningar = delaSumma(v, true, sidor); satt("slag", v); }, sla, sidor);
+  const sla = () => { const t = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sidor)); hamta().tarningar = t; return t.reduce((a, b) => a + b, 0); };
+  const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => { if (S.manuellaSlag) hamta().tarningar = delaSumma(v, true, sidor); satt("slag", v); }, sla, sidor);
   if (!kanSla) for (const e of [slagfalt, knapp].filter(Boolean)) for (const k of e.matches("button, input") ? [e] : e.querySelectorAll("button, input")) k.disabled = true;
   const bpFalt = rullar === id ? lastFalt(`${id}-bp`, s.bp ?? 0) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
   return [

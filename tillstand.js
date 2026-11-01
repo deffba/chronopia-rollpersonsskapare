@@ -10,9 +10,11 @@ export const LAGRING = "chronopia-rollperson-v2";
 
 export const TOM = () => ({
   bocker: ["grund"], // böckerna rollpersonen skapas med (steg 0); grundreglerna är alltid med
+  niva: 0, // erfarenhetsnivån (steg 0) när en vald bok har nivåer, t.ex. V&R:s krigare, veteran och hjälte (RB-001)
+  hjaltepoangKop: {}, // grundegenskaper som höjs med hjältepoäng från särskilda förmågor (RB-003), 5 HP per poäng
   namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",
   extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas
-  stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false }, svardshand: { bp: 0, slag: null },
+  stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false, fler: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
   magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
   spel: TOMT_SPEL(), utveckling: TOM_UTVECKLING(),

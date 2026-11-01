@@ -2,7 +2,7 @@
 // listor och textfält som är tomma, åldern (enkel metod), särskilda förmågans val, startpaketets vapen och alla tärningsslag.
 // Ras och yrke väljer spelaren själv, och knapparna Föreslå värden och Fördela EP används aldrig.
 // Bara tomma val fylls i, så det som spelaren själv har valt ändras inte. Byts yrket fylls det nya yrkets val i.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, varukatalog, formagetabell, tarningAv } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, varukatalog, formagetabell, formageslag, tarningAv } from "./regelmotor.js";
 
 const LAGRING = "chronopia-dev-autofyll";
 const slaT = (antal, sidor) => Array.from({ length: antal }, () => 1 + Math.floor(Math.random() * sidor)).reduce((a, b) => a + b, 0);
@@ -108,43 +108,55 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
   return JSON.stringify(rp) !== fore;
 }
 
-// Särskilda förmågor: slaget görs när BP är lagda, och sedan förmågans val
+// Särskilda förmågor: slaget görs när BP är lagda, och sedan förmågans val. Ger erfarenhetsnivån flera
+// förmågor (RB-001) fylls varje slag i för sig; hjältepoäng slås men används inte.
 function fyllFormaga(api, autoDelval, anvanda, slag) {
   const { R } = api;
   const rp = api.nu();
-  const s = rp.sarskildaFormagor;
-  // Utan lagda BP kryssas rutan i: rollpersonen avstår från särskilda förmågor
-  if (!s.bp && !s.avstar && (s.slag === null || s.slag === undefined)) rp.sarskildaFormagor = { ...s, avstar: true };
-  if (slag && s.bp && (s.slag === null || s.slag === undefined)) {
-    const { n, sidor } = tarningAv(formagetabell(R, api.motorIndata())?.tarning ?? "2T20");
-    rp.sarskildaFormagor = { ...s, slag: slaT(n, sidor), val: [] };
-    rp.sarskildaFormagor.formaga = api.rakna().sarskildFormaga?.namn;
-  }
-  const sf = api.rakna().sarskildFormaga;
-  (sf?.regel ?? []).forEach((del, i) => {
-    const val = rp.sarskildaFormagor.val ?? [];
-    const satt = (v) => { const ny = [...(rp.sarskildaFormagor.val ?? [])]; ny[i] = v; rp.sarskildaFormagor = { ...rp.sarskildaFormagor, val: ny }; };
-    const gar = () => !api.rakna().fel.length;
-    if (del.typ === "fv" && del.valj) {
-      const valda = [].concat(val[i] ?? []);
-      for (let j = 0; j < del.valj; j++) {
-        if (valda[j]) continue;
-        for (const nyckel of kandidater(api, autoDelval, del.bland, anvanda)) {
-          if (valda.includes(nyckel) || !passarBland(R, api.motorIndata(), nyckel, del.bland)) continue;
-          valda[j] = nyckel;
-          satt([...valda]);
-          if (gar()) { anvanda.add(nyckel); break; }
-          valda[j] = undefined;
-          satt([...valda]);
+  const antal = formageslag(R, api.motorIndata()).length;
+  for (let nr = 0; nr < antal; nr++) {
+    const hamta = () => (nr === 0 ? rp.sarskildaFormagor : rp.sarskildaFormagor.fler[nr - 1]);
+    const satt = (o) => { if (nr === 0) rp.sarskildaFormagor = o; else { rp.sarskildaFormagor.fler = [...rp.sarskildaFormagor.fler]; rp.sarskildaFormagor.fler[nr - 1] = o; } };
+    if (nr > 0) { rp.sarskildaFormagor.fler ??= []; while (rp.sarskildaFormagor.fler.length < nr) rp.sarskildaFormagor.fler.push({ bp: 0, slag: null, val: [], avstar: false }); }
+    const s = hamta();
+    // Utan lagda BP kryssas rutan i: rollpersonen avstår från förmågan
+    if (!s.bp && !s.avstar && (s.slag === null || s.slag === undefined)) satt({ ...s, avstar: true });
+    if (slag && s.bp && (s.slag === null || s.slag === undefined)) {
+      const { n, sidor } = tarningAv(formagetabell(R, api.motorIndata(), s)?.tarning ?? "2T20");
+      satt({ ...s, slag: slaT(n, sidor), val: [] });
+      hamta().formaga = api.rakna().sarskildaFormagorna?.[nr]?.namn;
+    }
+    const sf = api.rakna().sarskildaFormagorna?.[nr];
+    (sf?.regel ?? []).forEach((del, i) => {
+      const val = hamta().val ?? [];
+      const sattVal = (v) => { const ny = [...(hamta().val ?? [])]; ny[i] = v; satt({ ...hamta(), val: ny }); };
+      const gar = () => !api.rakna().fel.length;
+      if (del.typ === "fv" && del.valj) {
+        const valda = [].concat(val[i] ?? []);
+        for (let j = 0; j < del.valj; j++) {
+          if (valda[j]) continue;
+          for (const nyckel of kandidater(api, autoDelval, del.bland, anvanda)) {
+            if (valda.includes(nyckel) || !passarBland(R, api.motorIndata(), nyckel, del.bland)) continue;
+            valda[j] = nyckel;
+            sattVal([...valda]);
+            if (gar()) { anvanda.add(nyckel); break; }
+            valda[j] = undefined;
+            sattVal([...valda]);
+          }
         }
       }
-    }
-    if (del.typ === "egenskapVal" && !(val[i]?.lage && val[i].egenskaper?.length)) {
-      const forsok = [{ lage: "tre", egenskaper: ["STY", "FYS", "SMI"] }, { lage: "tre", egenskaper: ["INT", "PSY", "KAR"] },
-        ...GRUNDEGENSKAPER.map((g) => ({ lage: "en", egenskaper: [g] }))];
-      for (const v of forsok) { satt(v); if (gar()) break; }
-    }
-  });
+      if (del.typ === "egenskapVal" && !(val[i]?.lage && val[i].egenskaper?.length)) {
+        const forsok = [{ lage: "tre", egenskaper: ["STY", "FYS", "SMI"] }, { lage: "tre", egenskaper: ["INT", "PSY", "KAR"] },
+          ...GRUNDEGENSKAPER.map((g) => ({ lage: "en", egenskaper: [g] }))];
+        for (const v of forsok) { sattVal(v); if (gar()) break; }
+      }
+      if (del.typ === "hjaltepoang" && slag && !Number.isInteger(val[i]?.slag)) {
+        const { n, sidor } = tarningAv(del.tarning);
+        const tarningar = Array.from({ length: n }, () => slaT(1, sidor));
+        sattVal({ slag: tarningar.reduce((a, b) => a + b, 0), tarningar });
+      }
+    });
+  }
 }
 
 // Färdigheter som en förmåga kan gälla, med ett påhittat delval där färdigheten lärs per stad, språk osv.
