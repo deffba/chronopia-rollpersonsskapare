@@ -541,14 +541,44 @@ export function passarBland(regler, rp, nyckel, bland) {
   return f.id === bland;
 }
 
+// Tabellerna för särskilda förmågor. sarskilda-formagor.json är antingen grundreglernas tabell (en lista med rader)
+// eller { tabeller: [{ id, namn, tarning, sida, kraver?, rader }] } när expansionernas tabeller läggs in.
+// kraver: { expansion?, raser?, yrken? } – en tabell som rollpersonen inte har tillgång till visas inte alls.
+export function formagetabeller(regler) {
+  const data = regler["sarskilda-formagor"];
+  if (Array.isArray(data)) {
+    return [{ id: "grund", namn: "Grundreglerna", tarning: regler.slag?.sarskildaFormagor?.tarning ?? "2T20", sida: "30–32", rader: data }];
+  }
+  return data.tabeller;
+}
+const tabellTillganglig = (t, rp) => {
+  const k = t.kraver ?? {};
+  if (k.expansion && !(rp.expansioner ?? []).includes(k.expansion)) return false;
+  if (k.raser && !k.raser.includes(rp.ras)) return false;
+  if (k.yrken && !k.yrken.includes(rp.yrke)) return false;
+  return true;
+};
+export const tillgangligaFormagetabeller = (regler, rp) => formagetabeller(regler).filter((t) => tabellTillganglig(t, rp));
+// Tabellen som rollpersonen slår på: den valda, annars den första som rollpersonen har tillgång till
+export function formagetabell(regler, rp) {
+  const id = rp.sarskildaFormagor?.tabell;
+  return id ? formagetabeller(regler).find((t) => t.id === id) : tillgangligaFormagetabeller(regler, rp)[0];
+}
+export const tarningAv = (tarning) => { const [, n, sidor] = /^(\d+)T(\d+)$/.exec(tarning); return { n: +n, sidor: +sidor }; };
+export const slagIntervall = ({ slag: [fran, till] }) => (till === null ? `${fran}+` : fran === till ? `${fran}` : `${fran}–${till}`);
+
 // Vilken särskild förmåga rollpersonen har och vad den ger, utifrån spelarens val (s. 30–32).
 // rp.sarskildaFormagor.val[i] är valen för förmågans i:te effekt.
 export function sarskildFormaga(regler, rp) {
   const s = rp.sarskildaFormagor ?? {};
   const svar = { formaga: null, fel: [], saknas: [], magiformaga: 0, tillagg: {} };
-  if (!s.bp || s.slag === null || s.slag === undefined) return svar;
+  const tabell = formagetabell(regler, rp);
+  if (s.tabell && (!tabell || !tabellTillganglig(tabell, rp))) svar.fel.push(`Rollpersonen kan inte slå på tabellen ${tabell?.namn ?? s.tabell}`);
+  if (s.avstar && s.bp) svar.fel.push("Du har kryssat i att du inte vill lägga BP på särskilda förmågor");
+  if (!s.bp || s.slag === null || s.slag === undefined || !tabell) return svar;
   const summa = s.slag + s.bp;
-  const formaga = regler["sarskilda-formagor"].find(({ slag: [fran, till] }) => summa >= fran && (till === null || summa <= till));
+  const formaga = tabell.rader.find(({ slag: [fran, till] }) => summa >= fran && (till === null || summa <= till));
+  if (!formaga) return svar;
   svar.formaga = formaga;
   const fvBonus = [];
   const fvMinst = [];
