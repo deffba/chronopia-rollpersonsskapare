@@ -1,4 +1,5 @@
 // Spelmötesdelen för en magiker: ny besvärjelse genom ensamträning, FV i den, och en särskild förmåga för HP.
+// SF_SLUMP=0.3 låser tärningen för förmågeslaget (0.3 ger 14 + 24 = 38, Mångsidig, som kräver två olika val).
 const { chromium } = require('playwright');
 const fs = require('fs');
 const FIL = process.argv[2] || 'Dimalv-arkemagiker.json';
@@ -39,14 +40,14 @@ const BILDER = process.argv[3] || null;
   koll('besvärjelsen kan höjas', n > 0, String(n));
   await p.locator('.spel-steg button', { hasText: '4. Särskild förmåga' }).click();
   await p.fill('#forb-sf-hp', '12'); await p.press('#forb-sf-hp', 'Tab');
-  await p.click('#forb-sf-sla'); await p.waitForTimeout(400);
+  if (process.env.SF_SLUMP) await p.evaluate((x) => { Math.random = () => x; }, Number(process.env.SF_SLUMP)); await p.click('#forb-sf-sla'); await p.waitForTimeout(400);
   const resultat = await p.locator('.summering').last().textContent();
   koll('förmågan slås', /\+ 24 = /.test(resultat), resultat);
   // Fyll i val om förmågan kräver det
   for (let i = 0; i < 6; i++) {
     const g = p.locator('.spel-steginnehall .valknappar:not(.gjort)').first();
     if (await g.count()) { await g.locator('.valknapp:not([disabled])').first().click(); continue; }
-    const sel = await p.locator('.spel-steginnehall select').evaluateAll(s => s.filter(x => !x.value).map(x => ({ id: x.id, v: [...x.options].find(o => o.value && !o.disabled)?.value })));
+    const sel = await p.locator('.spel-steginnehall select').evaluateAll(s => { const valda = new Set(s.map(x => x.value).filter(Boolean)); return s.filter(x => !x.value).map(x => ({ id: x.id, v: [...x.options].find(o => o.value && !o.disabled && !valda.has(o.value))?.value })); }); // olika val i varje lista (t.ex. Mångsidig: två olika färdigheter)
     if (sel.length && sel[0].v) { await p.selectOption('#' + sel[0].id.replace(/([:+.])/g, '\\$1'), sel[0].v); continue; }
     const txt = await p.locator('.spel-steginnehall input[type=text]').evaluateAll(s => s.filter(x => !x.value && !x.readOnly).map(x => x.id));
     if (txt.length) { await p.fill('#' + txt[0], 'Test'); await p.press('#' + txt[0], 'Tab'); continue; }
