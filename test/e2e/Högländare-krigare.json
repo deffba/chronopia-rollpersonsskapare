@@ -1,0 +1,115 @@
+{
+  "format": "chronopia-rollperson",
+  "version": 2,
+  "sparad": "2026-10-28T22:00:14.308Z",
+  "rollperson": {
+    "namn": "Högländare krigare",
+    "spelare": "",
+    "kon": "Man",
+    "ras": "hoglandare",
+    "alder": 21,
+    "yrke": "krigare",
+    "yrkesval": {
+      "1": [
+        "Smide"
+      ],
+      "3": [
+        "chronos"
+      ],
+      "4": "Parerdolk+Parerdolk",
+      "5": "Test9",
+      "6": [
+        "Dolk",
+        "Kortsvärd",
+        "Kroksabel"
+      ]
+    },
+    "valfri": "administration:Test10",
+    "extraYrkesfardigheter": [],
+    "rasval": [
+      "vapen:Parerdolk"
+    ],
+    "grundvarden": {
+      "SMI": 15,
+      "INT": 14,
+      "STY": 12,
+      "KAR": 11,
+      "FYS": 10,
+      "PSY": 8
+    },
+    "stoSteg": 0,
+    "sarskildaFormagor": {
+      "bp": 5,
+      "slag": 18,
+      "val": [
+        [
+          "tva-vapen:Parerdolk+Parerdolk"
+        ]
+      ],
+      "formaga": "Tvåhandskämpe"
+    },
+    "svardshand": {
+      "bp": 0,
+      "slag": 6
+    },
+    "socialtStand": {
+      "bp": 0,
+      "slag": 9
+    },
+    "startkapital": {
+      "bp": 0,
+      "slag": 5
+    },
+    "sekundara": [],
+    "fardigheter": {
+      "vapen:Dolk": 12,
+      "vapen:Kortsvärd": 12,
+      "vapen:Kroksabel": 12,
+      "muta": 9,
+      "administration:Test10": 9,
+      "dra-vapen": 9,
+      "hantverk:Smide": 9,
+      "undre-varlden:Test9": 9,
+      "hoppa": 7,
+      "klattra": 7,
+      "vapen:Parerdolk": 7,
+      "smyga": 6,
+      "forsta-hjalpen": 6,
+      "gomma-sig": 6,
+      "lyssna": 6,
+      "slagsmal": 6,
+      "spara": 6,
+      "vardera": 6,
+      "tva-vapen:Parerdolk+Parerdolk": 9,
+      "kopsla": 3,
+      "sjunga": 3,
+      "overtala": 3
+    },
+    "magiformaga": {
+      "slag": null
+    },
+    "stridskonstTekniker": {},
+    "stridskonstFardig": {},
+    "besvarjelser": {},
+    "utrustning": {
+      "Arbalestlod (10 st)": 1
+    },
+    "startpaket": {
+      "valt": true,
+      "vapen": "Parerdolk"
+    },
+    "anteckningar": "",
+    "spel": {
+      "spelledare": "",
+      "hjaltepoang": 0,
+      "erf": {},
+      "pengar": null,
+      "utrustning": [],
+      "borttaget": {},
+      "anteckningar": ""
+    },
+    "utveckling": {
+      "logg": []
+    }
+  }
+}
