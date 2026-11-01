@@ -1,1922 +1,47 @@
-// Gränssnittet för Chronopia-rollpersonsskaparen. All regellogik finns i regelmotor.js.
-import {
-  GRUNDEGENSKAPER, STANDARDVARDEN, raknaRollperson, rasAv, yrkeAv, fardighetAv, alderskategori, slaUpp, sarskildFormaga as sfFor, tvahandsvapen,
-  paborjad, standsvarde, vapengrupp, passarBland, tillgangligaFormagetabeller, formagetabell, tarningAv, slagIntervall, skolFV, besvarjelsePris, kanAnvandaVapen, varukatalog, namnFor,
-} from "./regelmotor.js";
+// Gränssnittet för Chronopia-rollpersonsskaparen: startar appen, ritar vyerna och kopplar ihop modulerna.
+// All regellogik finns i regelmotor.js. Stegen ligger i steg/, gemensamma kontroller i ui/.
+import { STANDARDVARDEN, fardighetAv, paborjad, namnFor } from "./regelmotor.js";
 import { rollformularSidor, delaRegelsidor } from "./formular.js";
-import { tillFil, franFil, TOMT_SPEL, TOM_UTVECKLING } from "./sparformat.js";
-import { utvecklad, laggTill, angraSenaste, kontrolleraPost } from "./utveckling.js";
-import { Tarning100 } from "./tarning100.js";
+import { tillFil, franFil } from "./sparformat.js";
+import { laggTill, angraSenaste, kontrolleraPost } from "./utveckling.js";
 import { spelInnehall, spelDelar, aktivDel, valjDel, nollstallSpel, spelPotter } from "./spelmote.js";
-
-const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning", "erfarenhet"];
-const LAGRING = "chronopia-rollperson-v2";
-
-const STEG = [
-  { id: "ras", namn: "Ras", sida: "14–16", bp: true },
-  { id: "alder", namn: "Ålder", sida: "16–17" },
-  { id: "yrke", namn: "Yrke", sida: "18–26" },
-  { id: "extra", namn: "Yrkesfärdigheter", sida: "18–27", bp: true },
-  { id: "kon", namn: "Kön och namn", sida: "27" },
-  { id: "egenskaper", namn: "Grundegenskaper", sida: "27–29", bp: true },
-  { id: "formagor", namn: "Särskilda förmågor", sida: "30–32", bp: true },
-  { id: "svardshand", namn: "Svärdshand", sida: "32", bp: true },
-  { id: "stand", namn: "Socialt stånd", sida: "33", bp: true },
-  { id: "kapital", namn: "Startkapital", sida: "33", bp: true },
-  { id: "fardigheter", namn: "Färdigheter", sida: "34–38" },
-  { id: "besvarjelser", namn: "Besvärjelser", sida: "36, 106–129" },
-  { id: "utrustning", namn: "Utrustning", sida: "38, 89–102" },
-  { id: "export", namn: "Spara och exportera", sida: "–" },
-];
-
-// Förklaringar till förkortningar, visas i små info-cirklar.
-const FORKLARINGAR = {
-  BP: "BP (bakgrundspoäng) är poängen du bygger rollpersonen med i steg 1–10: 125 från start plus åldersbonus. Det som blir över ger 5 EP per BP till färdigheterna (husregel).",
-  EP: "EP (erfarenhetspoäng) köper FV i färdigheter: 2 EP per FV för primära, 3 för yrkesfärdigheter och 5 för sekundära (20 för en magiskola som sekundär).",
-  FV: "FV (färdighetsvärde) visar hur bra rollpersonen är på något. Man slår 1T20, och ett resultat lika med eller under värdet lyckas. Vid start får FV inte vara högre än grundegenskapen.",
-  BC: "BC (baschans) är gratis FV vid start i alla primära färdigheter och yrkesfärdigheter. Den beror på grundegenskapen. Sekundära färdigheter har ingen BC.",
-  CL: "CL är FV med modifikationer för en viss situation. Det är CL man slår mot.",
-  KP: "KP (kroppspoäng) visar hur mycket skada rollpersonen tål, totalt och per kroppsdel. Totalen är (STO+FYS)/2, avrundat uppåt.",
-  SB: "SB (skadebonus) läggs till skadan i närstrid. Den beror på STY+STO.",
-  STY: "STY (styrka) är muskelkraft. Den ger skadebonus tillsammans med STO och avgör vilka vapen rollpersonen orkar hantera (vapnens STY-krav).",
-  FYS: "FYS (fysik) är uthållighet och motståndskraft. Den ger kroppspoäng tillsammans med STO.",
-  SMI: "SMI (smidighet) är snabbhet och fingerfärdighet. Den är grund för många rörelsefärdigheter och vapen och påverkar förflyttningen.",
-  INT: "INT (intelligens) är förstånd och minne. Den är grund för kunskapsfärdigheter och språk.",
-  PSY: "PSY (psyke) är viljestyrka och intuition. Den är grund för bland annat Upptäcka fara och är viktig för magi, eftersom magiförmågeslaget beror på (INT+PSY)/2.",
-  KAR: "KAR (karisma) är utstrålning och övertalningsförmåga. Den är grund för sociala färdigheter som Bluffa, Köpslå och Övertala.",
-  STO: "STO (storlek) avgör längd och vikt. Den påverkar kroppspoäng, skadebonus och förflyttning. Rasen ger ett normalvärde, och det kostar BP att ändra det.",
-  "B-nivå": "Kategori B-färdigheter (till exempel språk, Geografi och Lärdom) anges som nivå B0–B5 i stället för som ett vanligt FV: B0 = 0, B1 = 1–4, B2 = 5–10, B3 = 11–15, B4 = 16–19 och B5 = 20+ (s. 43).",
-  Förflyttning: "Förflyttning är hur många rutor rollpersonen kan flytta per stridsrunda. En ruta är 1,5 m. Den beror på STO+FYS+SMI.",
-  T: "T betyder tärning. 1T20 är en tjugosidig tärning, 2T6 är två sexsidiga tärningar som läggs ihop och 1T100 är ett procentslag.",
-};
-
-// Hjälptexter för färdigheter där spelaren själv skriver vad färdigheten gäller (s. 56–71).
-const DELVAL_HJALP = {
-  administration: "Skriv namnet på en stad, till exempel Chronopia. Färdigheten är kunskap om hur stadens förvaltning fungerar: ämbetsmän, tillstånd, skatter och vägen genom byråkratin. Den lärs separat för varje stad. Är den en yrkesfärdighet räknas alla städer som yrkesfärdigheter, men varje stad köps för sig (s. 56).",
-  "undre-varlden": "Skriv namnet på en stad, till exempel Chronopia. Färdigheten är kontakter och kunskap om stadens undre värld: tjuvar, gäng, hälare och var man får tag i olagliga varor och tjänster. Den lärs separat för varje stad (s. 71).",
-  geografi: "Skriv namnet på en kontinent eller ett större landområde. Färdigheten är kunskap om länder, vägar, städer och folk där, till exempel för att hitta rätt eller veta vad som väntar på en resa. Den lärs separat för varje kontinent (s. 59).",
-  kulturkannedom: "Välj vilken ras eller vilket folks kultur det gäller. Staden Chronopia räknas som en egen kultur. Färdigheten är kunskap om seder, lagar, tro och etikett, så att rollpersonen kan bete sig rätt och förstå andra (s. 62).",
-  lardom: "Skriv ett kunskapsområde, till exempel Kunskap om religion eller Kunskap om magi. Varje lärdomsfärdighet är en egen färdighet och används för att veta saker inom området. FV kan aldrig bli högre än rollpersonens FV i Läsa/Skriva (s. 63–64).",
-  djurhelning: "Skriv vilken sorts djur det gäller, till exempel hästar eller hundar. Färdigheten används för att vårda och hela sjuka eller skadade djur av den sorten (s. 58).",
-  djurtraning: "Skriv vilken sorts djur det gäller, till exempel hästar eller hundar. Färdigheten används för att dressera och lära djur av den sorten att lyda (s. 58).",
-  "spela-instrument": "Skriv vilket instrument det gäller, till exempel luta eller flöjt. Färdigheten lärs separat för varje instrument. Är den en yrkesfärdighet räknas alla instrument som yrkesfärdigheter (s. 68).",
-  stridskonster: "Skriv namnet på stridsstilen. Färdigheten används för obeväpnad strid med särskilda tekniker, som sparkar och dubbelslag. FV gäller alla tekniker i stilen. Teknikerna väljs i steg 11 och bestämmer vad varje FV kostar (s. 68–69).",
-};
-
-const SPRAK_HJALP = {
-  tala: "Tala är förmågan att prata och förstå ett språk. Den visas som en B-nivå: på låga nivåer klarar rollpersonen enkla ord och fraser, på B4 talar den flytande som de flesta infödda. Välj ett språk som inte redan är ditt modersmål (s. 70).",
-  "lasa-skriva": "Läsa/Skriva är förmågan att läsa och skriva ett språk. Den är skild från Tala: man kan tala ett språk utan att kunna läsa det. FV i Läsa/Skriva är också taket för lärdomsfärdigheter, Historia och Alkemi. Vissa språk, som orchiska, saknar skriftspråk (s. 66).",
-};
-
-// Rasförmågor med regeleffekter (s. 30). Förmågor som förklarar sig själva har ingen text.
-const RASFORMAGOR = {
-  Mörkersyn: "Ser ungefär som en katt: ganska bra även när det är mycket mörkt, men det krävs någon ljuskälla. En molnig natt är som skymning, en stjärnklar natt med fullmåne som mitt på dagen. Dimma och rök skymmer sikten helt. Bländande besvärjelser bländar dubbelt så länge (s. 30).",
-  Infrasyn: "Ser värme och ser därför bra även i kolsvart mörker, helt utan ljuskälla, och rakt genom dimma och rök. Bländas av extremt starka värmekällor. Till skillnad från mörkersyn behövs inget ljus (s. 30).",
-};
-const RAS_SEKUNDAR_INFO = "Färdigheter som är primära för de flesta men sekundära för den här rasen. Rollpersonen får ingen baschans i dem och de kostar som sekundära färdigheter, om de inte väljs som yrkesfärdigheter (s. 14–16).";
-const infoKnapp = (text, etikett) => el("button", { type: "button", class: "info", "data-tip": text, "aria-label": etikett }, "i");
-
-const KULTURER = () => [...R.raser.map((r) => r.namn), "Staden Chronopia"];
-
-const LARDOMSFORSLAG = ["Kunskap om magi", "Kunskap om religion", "Kunskap om demoner", "Kunskap om odöda", "Kunskap om språk"];
-const SKOLOR = [["animism", "Animism"], ["elementarmagi", "Elementarmagi"], ["mentalism", "Mentalism"]];
-
-const TOM = () => ({
-  namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",
-  extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas
-  stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false }, svardshand: { bp: 0, slag: null },
-  socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
-  magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
-  spel: TOMT_SPEL(), utveckling: TOM_UTVECKLING(),
-});
-// En sparad rollperson kompletteras med fält som har tillkommit sedan den sparades
-// En rollperson från före rutan "Jag vill inte lägga BP" som inte har lagt BP räknas som att den avstod.
-const fyllUt = (data) => ({ ...TOM(), ...data,
-  ...(data.sarskildaFormagor && !("avstar" in data.sarskildaFormagor) ? { sarskildaFormagor: { ...data.sarskildaFormagor, avstar: !data.sarskildaFormagor.bp } } : {}),
-  spel: { ...TOMT_SPEL(), ...(data.spel ?? {}) }, utveckling: { ...TOM_UTVECKLING(), ...(data.utveckling ?? {}) } });
-
-let R; // regeldata
-let rp; // rollpersonen (spelarens val)
-let aktivtSteg = "ras";
-let langst = 0; // längsta steg spelaren har kommit till; senare steg är släckta i sidomenyn
-let giltig; // senaste rollperson som följer alla regler
-let nySekundar = ""; // påbörjat val av ny sekundär färdighet
-let nyExtra = ""; // påbörjat val av ny extra yrkesfärdighet i steg 4
-let provar = false;
-let autoAnvand = { egenskaper: false, fardigheter: false }; // Återställ visas bara efter en automatisk fördelning
-let spelSynlig = false; // spelmötesdelen visas tills vidare bara i utvecklarläget
-let ritatSteg = null; // steget som visades senast; byts det skrollas sidan upp
-let sparadVidStart = null; // rollpersonen från förra besöket; sidan börjar ändå alltid med en ny
-let vy = "steg"; // "steg", "spel" (spelmöten och förbättring) eller "formular" (rollformuläret för utskrift)
-let blacksnal = false; // rollformuläret utan färgade ytor
-let medRegler = false; // rollformuläret med sidorna Färdigheterna i korthet
-// Innan en ras är vald räknar motorn som för en människa, men ingen ras visas som vald
-const rasId = () => rp.ras || "manniska";
-// Innan åldern är vald i steg 2 räknar motorn med 21 år (ingen bonus), som när ingen ras är vald
-const alderNu = () => rp.alder ?? 21;
-// Innan ett yrke är valt räknar motorn som för en krigare (som saknar bonusar), men inget yrke visas som valt och det ger inga yrkesfärdigheter
-const yrkeId = () => rp.yrke || "krigare";
-
-const $ = (sel, rot = document) => rot.querySelector(sel);
-const el = (tagg, attr = {}, ...barn) => {
-  const e = document.createElement(tagg);
-  for (const [k, v] of Object.entries(attr)) {
-    if (v === undefined || v === null || v === false) continue;
-    if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
-    else if (k === "class") e.className = v;
-    else if (k === "html") e.innerHTML = v;
-    else e.setAttribute(k, v === true ? "" : v);
-  }
-  for (const b of barn.flat(Infinity)) if (b !== null && b !== undefined && b !== false) e.append(b.nodeType ? b : String(b));
-  return e;
-};
-const slaT = (antal, sidor) => Array.from({ length: antal }, () => 1 + Math.floor(Math.random() * sidor)).reduce((a, b) => a + b, 0);
-const sm = (n) => n.toLocaleString("sv-SE") + " sm";
-const kg = (n) => n.toLocaleString("sv-SE");
-
-function spara() {
-  try { localStorage.setItem(LAGRING, JSON.stringify({ rp, aktivtSteg, langst })); } catch { /* lagring är frivillig */ }
-}
-
-// Rollpersonen med allt som har förts in under spel (utveckling.js). Utan logg är det rollpersonen vid skapandet.
-const rakna = () => { const indata = motorIndata(); return utvecklad(R, indata, raknaRollperson(R, indata)); };
-// Samma uträkning för en annan rollperson, t.ex. ett utkast i spelmötesdelen
-function raknaFor(annan) {
-  const fore = rp;
-  rp = annan;
-  try { return rakna(); } finally { rp = fore; }
-}
-const harLogg = () => (rp.utveckling?.logg?.length ?? 0) > 0;
-
-// Varje ändring kontrolleras mot reglerna. Bryter den mot någon regel återställs rollpersonen
-// till senaste giltiga läge, så att det aldrig går att skapa en otillåten rollperson.
-function uppdatera() {
-  if (provar) return;
-  const fel = rakna().fel;
-  if (fel.length) {
-    rp = structuredClone(giltig);
-    visaNotis(`Det går inte: ${fel[0]}.`);
-  } else {
-    giltig = structuredClone(rp);
-    if (rp.ras) sparadVidStart = null; // en ny rollperson ersätter den sparade
-    spara();
-  }
-  rita();
-}
-
-// ------------------------------------------------------------ från val till motorns indata
-function delval(f) {
-  return f.perVal || null;
-}
-
-function yrkesNycklar() {
-  if (!rp.yrke) return [];
-  const yrke = yrkeAv(R, yrkeId());
-  const nycklar = [];
-  yrke.fardigheter.forEach((post, i) => {
-    const val = rp.yrkesval[i];
-    if (typeof post === "string") {
-      const f = fardighetAv(R, post);
-      if (!delval(f)) nycklar.push(post);
-      else if (val) nycklar.push(`${post}:${val}`);
-    } else if (post.valEn) {
-      if (!val?.id) return;
-      const f = fardighetAv(R, val.id);
-      if (!delval(f)) nycklar.push(val.id);
-      else if (val.sub) nycklar.push(`${val.id}:${val.sub}`);
-    } else {
-      const valda = [].concat(val ?? []);
-      post.maste?.forEach((m, j) => { valda[j] = m; });
-      for (const v of valda) if (v) nycklar.push(`${post.fardighet}:${v}`);
-    }
-  });
-  if (rp.valfri && yrke.valfri) nycklar.push(rp.valfri);
-  return nycklar.filter((k) => !paborjad(k));
-}
-
-function modersmal() {
-  const ras = rasAv(R, rasId());
-  return {
-    tala: ras.talaModersmal.map((x) => x.sprak),
-    lasaSkriva: ras.lasaSkrivaModersmal.map((x) => (typeof x === "string" ? x : x.sprak)),
-  };
-}
-
-function allaNycklar(yrkesfardigheter) {
-  const ras = rasAv(R, rasId());
-  const yrke = yrkeAv(R, yrkeId());
-  const m = modersmal();
-  const mangd = new Set();
-  for (const f of R.fardigheter.lista) if (f.typ === "primar" && !ras.sekundara.includes(f.id)) mangd.add(f.id);
-  for (const p of ras.primara) if (typeof p === "string") mangd.add(p);
-  if (ras.id === "ljusalv") mangd.add("vapen:Långbåge");
-  for (const k of rp.rasval) mangd.add(k);
-  for (const s of m.tala) mangd.add(`tala:${s}`);
-  for (const s of m.lasaSkriva) mangd.add(`lasa-skriva:${s}`);
-  for (const k of yrkesfardigheter) mangd.add(k);
-  for (const k of rp.extraYrkesfardigheter) mangd.add(k);
-  for (const k of rp.sekundara) mangd.add(k);
-  const sf = sfFor(R, { ...rp, ras: rasId(), yrkesfardigheter, extraYrkesfardigheter: rp.extraYrkesfardigheter }).tillagg.sarskildaFormagor;
-  for (const b of [...(sf?.fvBonus ?? []), ...(sf?.fvMinst ?? [])]) mangd.add(b.fardighet);
-  if (yrke.magiker) {
-    mangd.add("lardom:Kunskap om magi");
-    for (const k of [...mangd]) if (fardighetAv(R, k)?.typ === "magiskola") mangd.add(`kanna-magi:${k}`);
-  }
-  return [...mangd].filter((k) => !paborjad(k) && fardighetAv(R, k));
-}
-
-function motorIndata() {
-  const yrkesfardigheter = yrkesNycklar();
-  const fardigheter = {};
-  for (const k of allaNycklar(yrkesfardigheter)) fardigheter[k] = rp.fardigheter[k] ?? 0;
-  return {
-    ...rp, ras: rasId(), rasVald: !!rp.ras, alder: alderNu(), yrke: yrkeId(), yrkesfardigheter, fardigheter, modersmal: modersmal(),
-    svardshand: { ...rp.svardshand, slag: rp.svardshand.slag ?? 0 },
-    socialtStand: { ...rp.socialtStand, slag: rp.socialtStand.slag ?? 0 },
-    startkapital: { ...rp.startkapital, slag: rp.startkapital.slag ?? 0 },
-  };
-}
-
-const sarskildFormaga = () => sfFor(R, { ...rp, ras: rasId(), alder: alderNu(), yrke: yrkeId(), yrkesfardigheter: yrkesNycklar() }).formaga;
-
-// ------------------------------------------------------------ små kontroller
-// Talfält: ett otillåtet värde ersätts med det närmaste tillåtna mellan det nya och det gamla.
-function tal(id, varde, onchange, { min, max, steg = 1, bred } = {}) {
-  return el("input", {
-    type: "number", id, value: varde ?? "", min, max, step: steg, class: bred ? "tal bred" : "tal",
-    onchange: (e) => {
-      let nytt = e.target.value === "" ? null : Math.round(Number(e.target.value));
-      if (nytt !== null && min !== undefined) nytt = Math.max(min, nytt);
-      if (nytt !== null && max !== undefined) nytt = Math.min(max, nytt);
-      if (nytt === null || varde === null || varde === undefined || nytt === varde) { onchange(nytt); return; }
-      const riktning = nytt > varde ? -1 : 1;
-      let forstaFel = null;
-      provar = true;
-      for (let v = nytt; v !== varde; v += riktning) {
-        rp = structuredClone(giltig);
-        onchange(v);
-        const fel = rakna().fel;
-        if (!fel.length) {
-          if (v !== nytt) visaNotis(`${v} är närmast tillåtna värde: ${forstaFel}.`);
-          provar = false;
-          uppdatera();
-          return;
-        }
-        forstaFel ??= fel[0];
-      }
-      provar = false;
-      rp = structuredClone(giltig);
-      visaNotis(`Det går inte: ${forstaFel}.`);
-      rita();
-    },
-  });
-}
-
-function falt(etikett, kontroll, hjalp) {
-  // En grupp valknappar får inte ligga i en label: ett klick på etiketten skulle välja första knappen
-  // Detsamma gäller tärningsrutan: ett klick på etiketten skulle slå
-  return el(kontroll?.classList?.contains("valknappar") || kontroll?.classList?.contains("tarningsknapp") ? "div" : "label", { class: "falt" }, el("span", { class: "etikett" }, etikett), kontroll, hjalp ? el("span", { class: "hjalp" }, hjalp) : null);
-}
-
-function valLista(id, varde, alternativ, onchange, tomText = "Välj …") {
-  if (alternativ.length > 0 && alternativ.length <= 4) return valKnappar(id, varde, alternativ, onchange);
-  return el("select", { id, onchange: (e) => onchange(e.target.value) },
-    el("option", { value: "" }, tomText),
-    alternativ.map(([v, t, { disabled } = {}]) => el("option", { value: v, selected: v === varde, disabled }, t)));
-}
-
-// Få alternativ visas som knappar i stället för en rullgardin. Det valda lyser, de andra stryks
-// över men går att klicka på för att byta. Ett nytt klick på det valda gör valet ogjort.
-function valKnappar(id, varde, alternativ, onchange) {
-  const valt = alternativ.some(([v]) => v === varde);
-  return el("div", { id, class: "valknappar" + (valt ? " gjort" : ""), role: "group" },
-    alternativ.map(([v, t, { disabled } = {}]) => el("button", {
-      type: "button", class: "valknapp" + (v === varde ? " vald" : valt ? " bortvald" : ""), "aria-pressed": v === varde ? "true" : "false", disabled,
-      "data-varde": v, onclick: () => onchange(v === varde ? "" : v), // ett klick på det valda tar bort valet
-    }, t)));
-}
-
-// Vapnen ordnade i bokens vapengrupper (s. 72). Gruppen beror på STY, så ett tungt svärd hamnar bland tvåhandsvapnen.
-function vapenGrupper(enhandsNarstrid = false) {
-  const v = R.vapen;
-  const varden = rakna().grundegenskaper;
-  // Två vapen: bara närstridsvapen som rollpersonen kan hålla med en hand (s. 71–72)
-  const lista = enhandsNarstrid ? v.narstrid.filter((x) => x.grupp !== "slagsmal" && !tvahandsvapen(R, x.namn, varden))
-    : [...v.narstrid.filter((x) => x.grupp !== "slagsmal"), ...v.projektil, ...v.kast, ...v.skoldar];
-  const sty = varden.STY;
-  const grupper = new Map(R.vapen.grupper.map((g) => [g.id, []]));
-  for (const x of lista) grupper.get(vapengrupp(R, x.namn, sty))?.push([x.namn, x.namn]);
-  return R.vapen.grupper.filter((g) => grupper.get(g.id).length).map((g) => [g.namn, grupper.get(g.id)]);
-}
-
-// Rullgardin med rubriker: en tom rad och "– Grupp –" före varje grupp
-function gruppLista(id, varde, grupper, onchange, tomText = "Välj …") {
-  return el("select", { id, onchange: (e) => onchange(e.target.value) },
-    el("option", { value: "" }, tomText),
-    grupper.map(([namn, alt], i) => [
-      i > 0 ? el("option", { disabled: true, value: "", "aria-hidden": "true" }, "") : null,
-      el("option", { disabled: true, value: "", class: "grupprubrik" }, `– ${namn} –`),
-      alt.map(([v, t, extra]) => el("option", { value: v, selected: v === varde, disabled: extra?.disabled }, t))]));
-}
-
-// Färgar ett talfält grönt eller rött när värdet ligger över eller under utgångsvärdet
-// (grundvärde 10 för grundegenskaper, baschansen för färdigheter)
-function markera(falt, varde, bas) {
-  if (varde > bas) falt.classList.add("upp");
-  else if (varde < bas) falt.classList.add("ner");
-  return falt;
-}
-
-// Liten info-cirkel som förklarar en förkortning
-function info(kort) {
-  const text = FORKLARINGAR[kort];
-  if (!text) return null;
-  return el("button", { type: "button", class: "info", "data-tip": text, "aria-label": `Vad betyder ${kort}?` }, "i");
-}
-const medInfo = (text, kort = text) => [text, info(kort)];
-
-// Info-cirkel med en kort beskrivning av en färdighet (s. 48–72)
-function fardighetsInfo(nyckel) {
-  const f = fardighetAv(R, nyckel ?? "");
-  if (!f?.beskrivning) return null;
-  return el("button", { type: "button", class: "info", "data-tip": `${f.beskrivning} (s. ${f.sida})`, "aria-label": `Om ${f.namn}` }, "i");
-}
-// Beskrivning som skrivs ut under en yrkesfärdighet i steg 4
-function kortBeskrivning(id, namn = null) {
-  const f = fardighetAv(R, id ?? "");
-  if (!f?.beskrivning) return null;
-  return el("p", { class: "fbeskr" }, namn ? el("strong", {}, `${f.namn}: `) : null, `${f.beskrivning} (s. ${f.sida})`);
-}
-
-function hjalpFor(fardighetId) {
-  const text = DELVAL_HJALP[fardighetId] ?? SPRAK_HJALP[fardighetId];
-  return text ? el("p", { class: "hjalp delvalhjalp" }, text) : null;
-}
-
-// Delval för färdigheter som lärs separat per vapen, språk, hantverk, stad …
-// Delval som rollpersonen redan har som yrkes-, ras- eller sekundär färdighet (utom det som är valt i just den här listan)
-function redanValda(fardighetId, varde) {
-  const valda = new Set([...yrkesNycklar(), ...rp.extraYrkesfardigheter, ...rp.sekundara, ...(rp.rasval ?? [])]
-    .filter((k) => k?.startsWith(`${fardighetId}:`)).map((k) => k.split(":")[1]));
-  valda.delete(varde);
-  return valda;
-}
-// Gör redan valda alternativ ovalbara, som "Snickare (redan vald)"
-const markeraValda = (alt, valda) => alt.map(([v, t]) => (valda.has(v) ? [v, `${t} (redan vald)`, { disabled: true }] : [v, t]));
-
-function delvalKontroll(id, fardighetId, varde, onchange, { yrke = false } = {}) {
-  if (fardighetId === "vapen") {
-    const valda = redanValda("vapen", varde);
-    return gruppLista(id, varde, vapenGrupper().map(([g, alt]) => [g, markeraValda(alt, valda)]), onchange, "Välj vapen …");
-  }
-  if (fardighetId === "tva-vapen") {
-    // Två närstridsvapen som kan hållas med en hand var (s. 71)
-    const [a, b] = (varde ?? "").split("+");
-    const vapen = vapenGrupper(true);
-    return el("div", { class: "rad" },
-      gruppLista(`${id}-a`, a, vapen, (v) => onchange(v && b ? `${v}+${b}` : v ? `${v}+` : ""), "Första vapnet …"),
-      gruppLista(`${id}-b`, b, vapen, (v) => onchange(a && v ? `${a}+${v}` : ""), "Andra vapnet …"));
-  }
-  if (fardighetId === "kulturkannedom") return valLista(id, varde, markeraValda(KULTURER().map((k) => [k, k]), redanValda(fardighetId, varde)), onchange, "Välj kultur …");
-  if (fardighetId === "tala" || fardighetId === "lasa-skriva") return sprakLista(id, fardighetId, varde, onchange, yrke);
-  if (fardighetId === "hantverk") {
-    const lista = valLista(id, varde, markeraValda(R.fardigheter.hantverk.map(([n, g]) => [n, `${n} (${g})`]), redanValda(fardighetId, varde)), onchange, "Välj hantverk …");
-    const text = R.fardigheter.hantverkBeskrivning?.[varde];
-    return text ? el("div", { class: "delval-med-text" }, lista, el("p", { class: "fbeskr" }, text)) : lista;
-  }
-  if (fardighetId === "kanna-magi") return valLista(id, varde, markeraValda(SKOLOR, redanValda(fardighetId, varde)), onchange, "Välj skola …");
-  const f = fardighetAv(R, fardighetId);
-  const lista = fardighetId === "lardom" ? "lardomar" : null;
-  return el("input", {
-    id, type: "text", value: varde ?? "", list: lista, maxlength: 125,
-    placeholder: { stad: "t.ex. Chronopia", kontinent: "t.ex. Chronopias kontinent", kultur: "t.ex. Dvärgar", djur: "t.ex. Hästar", instrument: "t.ex. Luta", stil: "t.ex. Högländarkross", kombination: "t.ex. Kortsvärd+Dolk", amne: "t.ex. Kunskap om religion" }[f.perVal] ?? "",
-    onchange: (e) => onchange(e.target.value.trim()),
-  });
-}
-
-// Språk som går att välja. Språk utan skrift och språk som inte får vara yrkesfärdighet visas inte;
-// modersmål och språk som redan är valda visas gråa (s. 64, 70).
-function sprakLista(id, fardighetId, varde, onchange, yrke) {
-  const m = modersmal();
-  const egna = fardighetId === "tala" ? m.tala : m.lasaSkriva;
-  const valda = new Set([...yrkesNycklar(), ...rp.extraYrkesfardigheter, ...rp.sekundara]
-    .filter((k) => k.startsWith(`${fardighetId}:`)).map((k) => k.split(":")[1]));
-  valda.delete(varde);
-  const alt = R.fardigheter.sprak
-    .filter((s) => fardighetId === "tala" || (s.skriftsprak !== false && !s.endastTala))
-    .filter((s) => !yrke || (!s.aldrigYrke && (!s.endastPrimarFor || s.endastPrimarFor === rp.ras)))
-    .map((s) => (egna.includes(s.id) ? [s.id, `${s.namn} (modersmål)`, { disabled: true }]
-      : valda.has(s.id) ? [s.id, `${s.namn} (redan vald)`, { disabled: true }] : [s.id, s.namn]));
-  return valLista(id, varde, alt, onchange, "Välj språk …");
-}
-
-function fardighetsVal(idPrefix, nyckel, onchange, filter = () => true, val = {}) {
-  const [id, sub] = (nyckel ?? "").split(":");
-  const lista = R.fardigheter.lista.filter(filter).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
-  const f = id ? fardighetAv(R, id) : null;
-  return el("div", { class: "rad" },
-    valLista(`${idPrefix}-f`, id, lista.map((x) => [x.id, x.namn]), (v) => onchange(v ? (fardighetAv(R, v).perVal ? `${v}:` : v) : "")),
-    f?.perVal ? delvalKontroll(`${idPrefix}-d`, id, sub, (v) => onchange(`${id}:${v}`), val) : null,
-    f?.perVal ? hjalpFor(id) : null);
-}
-
-// ------------------------------------------------------------ stegen
-function stegRas() {
-  const valt = rp.ras ? rasAv(R, rp.ras) : null;
-  const kort = R.raser.map((r) => el("button", {
-    type: "button", class: "valkort raskort" + (r.id === rp.ras ? " valt" : ""), "aria-pressed": r.id === rp.ras ? "true" : "false",
-    onclick: () => {
-      // Ett tryck på den valda rasen avmarkerar den
-      rp.ras = r.id === rp.ras ? "" : r.id; rp.rasval = []; rp.stoSteg = 0;
-      uppdatera();
-    },
-  },
-  el("span", { class: "valkort-namn" }, r.namn)));
-  const huvud = el("div", { class: "valkort-rutnat liten" }, kort);
-  if (!valt) return [huvud, el("p", { class: "hjalp" }, "Välj rollpersonens ras genom att klicka på ett av korten."), fortsattSparad()];
-  const extra = [];
-  if (valt.primara.some((p) => p.valfri === "vapen")) {
-    extra.push(falt("Valfri vapenfärdighet som primär (s. 71)",
-      delvalKontroll("rasval-vapen", "vapen", rp.rasval[0]?.split(":")[1], (v) => { rp.rasval = v ? [`vapen:${v}`] : []; uppdatera(); })));
-  }
-  if (valt.primara.some((p) => p.valfri === "hantverk")) {
-    extra.push(falt("Valfritt hantverk som primär (s. 59)",
-      delvalKontroll("rasval-hantverk", "hantverk", rp.rasval[0]?.split(":")[1], (v) => { rp.rasval = v ? [`hantverk:${v}`] : []; uppdatera(); })));
-  }
-  const sprak = (lista) => lista.map((x) => R.fardigheter.sprak.find((s) => s.id === (x.sprak ?? x))?.namn ?? x).join(", ") || "inget skriftspråk";
-  return [
-    huvud,
-    el("div", { class: "valinfo" },
-      el("h3", { class: "valrubrik" }, valt.namn),
-      valt.beskrivning ? el("p", { class: "vallore" }, valt.beskrivning, " (s. 14–16)") : null,
-      el("dl", { class: "valdata" },
-        el("div", {}, el("dt", {}, "BP"), el("dd", {}, valt.bp)),
-        el("div", {}, el("dt", {}, "Grundegenskaper"), el("dd", {}, GRUNDEGENSKAPER.filter((g) => valt.mod[g]).map((g) => `${g} ${valt.mod[g] > 0 ? "+" : "−"}${Math.abs(valt.mod[g])}`).join(" · ") || "Inga modifikationer")),
-        el("div", {}, el("dt", {}, "STO"), el("dd", {}, `${valt.sto.min}–${valt.sto.max} (normalt ${valt.sto.normal})`)))),
-    el("div", { class: "rutor" },
-      el("div", {}, el("h4", {}, "Särskilt för ", valt.namn.toLowerCase()),
-        el("ul", { class: "punkter" },
-          valt.formagor.map((t) => el("li", {}, t, RASFORMAGOR[t] ? infoKnapp(RASFORMAGOR[t], `Om ${t.toLowerCase()}`) : null)),
-          valt.primara.length ? el("li", {}, "Extra primära färdigheter: ", valt.primara.map((p, i) => [i ? ", " : "",
-            typeof p === "string" ? [p.split(":")[1] ?? fardighetAv(R, p).namn, fardighetsInfo(p.split(":")[0])]
-              : [p.valfri === "vapen" ? "valfri vapenfärdighet" : "valfritt hantverk", fardighetsInfo(p.valfri)]])) : null,
-          valt.sekundara.length ? el("li", {}, "Sekundära för rasen: ", valt.sekundara.map((p) => fardighetAv(R, p).namn).join(", "),
-            infoKnapp(RAS_SEKUNDAR_INFO, "Vad betyder sekundära för rasen?")) : null,
-          valt.startbonus.map((b) => el("li", {}, `+${b.bc} på BC i ${fardighetAv(R, b.fardighet).namn}`, fardighetsInfo(b.fardighet))),
-          Object.entries(valt.slagbonus).map(([k, v]) => el("li", {}, `+${v} på slaget för ${k === "socialtStand" ? "socialt stånd" : "startkapital"}`,
-            infoKnapp(k === "socialtStand" ? "Läggs på slaget för socialt stånd i steg 9. Ett högre stånd ger bättre läs- och skrivkunnighet i modersmålet och ett högre tak för startkapitalet (s. 33)." : "Läggs på slaget för startkapital i steg 10 och ger mer pengar att köpa utrustning för (s. 33).", "Om bonusen"))),
-          el("li", {}, "Talar: ", sprak(valt.talaModersmal)),
-          el("li", {}, "Läser och skriver: ", sprak(valt.lasaSkrivaModersmal)))),
-      extra.length ? el("div", { class: "rasval-extra" }, extra) : null),
-  ];
-}
-
-// Erbjuder rollpersonen från förra besöket tills spelaren har börjat på en ny
-function fortsattSparad() {
-  const s = sparadVidStart;
-  if (!s) return null;
-  const beskr = [rasAv(R, s.rp.ras)?.namn, yrkeAv(R, s.rp.yrke)?.namn, s.rp.alder == null ? null : `${s.rp.alder} år`].filter(Boolean).join(", ");
-  return el("div", { class: "rutor" }, el("div", {},
-    el("p", {}, el("strong", {}, "Du har en sparad rollperson från förra gången: "), `${s.rp.namn || "Namnlös"} (${beskr}).`),
-    el("div", { class: "rad" },
-      el("button", { type: "button", class: "knapp", id: "fortsatt-sparad", onclick: () => {
-        rp = structuredClone(s.rp); aktivtSteg = s.aktivtSteg; langst = s.langst; sparadVidStart = null; nollstallSpel(); if (harLogg()) vy = "spel"; uppdatera();
-      } }, "Fortsätt med den"),
-      el("span", { class: "hjalp" }, "Väljer du en ras börjar du på en ny rollperson, och den sparade försvinner."))));
-}
-
-function stegAlder() {
-  const ras = rasAv(R, rasId());
-  const vald = rp.alder != null;
-  const kat = vald ? alderskategori(R, ras, rp.alder) : null;
-  const efter = vald ? R.alder.efterAr.find((r) => r.max === null || rp.alder <= r.max) : null;
-  const katNamn = Object.fromEntries(R.alder.kategorier.map((k) => [k.id, k.namn]));
-  return [
-    el("div", { class: "rad" },
-      falt("Ålder i år", tal("alder", rp.alder, (v) => { rp.alder = v; uppdatera(); }, { min: 1, bred: true })),
-      el("button", { type: "button", class: "knapp", onclick: () => { rp.alder = ras.alder.vuxen[0]; uppdatera(); } }, `Enkel metod: ${ras.alder.vuxen[0]} år`)),
-    el("p", { class: "hjalp" }, "Klicka på en kategori i tabellen för att välja dess lägsta ålder och justera sedan i rutan ovan. Du kan också skriva in valfri ålder direkt."),
-    el("div", { class: "tabellram" }, el("table", { class: "tabell" },
-      el("thead", {}, el("tr", {}, el("th", {}, "Kategori"), el("th", {}, `${ras.namn}, år`), GRUNDEGENSKAPER.map((g) => el("th", { class: "num" }, g, info(g))))),
-      el("tbody", {}, R.alder.kategorier.map((k) => el("tr", { class: "valbar" + (k.id === kat ? " markerad" : ""), onclick: () => { rp.alder = ras.alder[k.id][0]; uppdatera(); $("#alder")?.focus(); } },
-        el("td", {}, el("button", { type: "button", class: "radknapp", "aria-label": `Välj ${k.namn.toLowerCase()}: ${ras.alder[k.id][0]} år` }, k.namn)),
-        el("td", { class: "num" }, ras.alder[k.id][1] === null ? `${ras.alder[k.id][0]}+` : ras.alder[k.id].join("–")),
-        GRUNDEGENSKAPER.map((g) => el("td", { class: "num" }, fmtMod(R.alder.effekter[k.id][g])))))))),
-    el("p", { class: "hjalp" }, "Ålderns modifikationer läggs på grundegenskaperna i steg 6. Blir något slutvärde för lågt justerar du grundvärdena där."),
-    el("p", { class: "summering" }, vald
-      ? `${rp.alder} år räknas som ${katNamn[kat].toLowerCase()}. Det ger +${efter.bp} BP, startkapital ×${String(efter.kapital).replace(".", ",")} och ${efter.ep} EP till färdigheter.`
-      : "Välj en ålder: skriv in den, klicka på en kategori eller använd enkel metod."),
-  ];
-}
-
-const fmtMod = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : "0");
-
-// Steg 3: yrket väljs med kort som rasen i steg 1. Yrkesfärdigheterna visas bara; valen inom dem görs i steg 4.
-function stegYrke() {
-  const yrke = yrkeAv(R, yrkeId());
-  const kort = R.yrken.lista.map((y) => el("button", {
-    type: "button", class: "valkort yrkeskort" + (y.id === rp.yrke ? " valt" : ""), "aria-pressed": y.id === rp.yrke ? "true" : "false", "data-yrke": y.id,
-    onclick: () => {
-      // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1
-      rp.yrke = y.id === rp.yrke ? "" : y.id; rp.yrkesval = {}; rp.valfri = ""; rp.hantverkBonus = ""; uppdatera();
-    },
-  }, el("span", { class: "valkort-namn" }, y.namn.replace(/^(.{5,})(magiker)$/, "$1\u00ad$2")))); // Elementar-magiker avstavas om namnet inte får plats
-  if (!rp.yrke) return [el("div", { class: "valkort-rutnat liten fyra" }, kort), el("p", { class: "hjalp" }, "Välj rollpersonens yrke genom att klicka på ett av korten.")];
-  const namn = (x) => fardighetAv(R, x)?.namn ?? x;
-  const punkt = (text, id, val) => el("li", {}, text, id ? fardighetsInfo(id) : null, val ? el("span", { class: "sida" }, ` (${val})`) : null);
-  const punkter = yrke.fardigheter.map((post, i) => {
-    const val = rp.yrkesval[i];
-    if (typeof post === "string") return punkt(namn(post), post, typeof val === "string" && !paborjad(val) ? val : null);
-    if (post.valEn) {
-      const text = post.valEn.map((x) => (typeof x === "string" ? namn(x) : `${namn(x.fardighet)} (${x.antal})`)).join(" eller ");
-      return punkt(text, null, val?.id ? [namn(val.id), val.sub].filter(Boolean).join(": ") : null);
-    }
-    if (post.antal === null) return punkt(`${namn(post.fardighet)} (alla)`, post.fardighet);
-    const valda = [].concat(val ?? []);
-    post.maste?.forEach((m, j) => { valda[j] = m; });
-    return punkt(`${namn(post.fardighet)} (${post.antal})`, post.fardighet, valda.filter((v) => v && !paborjad(v)).join(", ") || null);
-  });
-  if (yrke.valfri) punkter.push(punkt("En valfri färdighet", null, rp.valfri && !paborjad(rp.valfri) ? namn(rp.valfri.split(":")[0]) + (rp.valfri.split(":")[1] ? `: ${rp.valfri.split(":")[1]}` : "") : null));
-  if (yrke.automatiska.length) punkter.push(punkt("Känna magi och Kunskap om magi, automatiskt med samma FV som magiskolan (s. 62, 64)", null));
-  const bonus = yrke.startbonus?.find((b) => b.valEttAv);
-  return [
-    el("div", { class: "valkort-rutnat liten fyra" }, kort),
-    el("div", { class: "valinfo" },
-      el("h3", { class: "valrubrik" }, yrke.namn),
-      yrke.stamning ? el("p", { class: "vallore" }, yrke.stamning) : null,
-      yrke.beskrivning ? el("p", { class: "yrkestext" }, yrke.beskrivning, el("span", { class: "sida" }, ` (s. ${yrke.sida})`)) : null,
-      el("dl", { class: "valdata bred" },
-        el("div", {}, el("dt", {}, "Yrkesförmåga"), el("dd", {}, yrke.yrkesformaga)))),
-    el("div", { class: "rutor" },
-      el("div", {}, el("h4", {}, "Yrkesfärdigheter"),
-        el("ul", { class: "punkter" }, punkter),
-        el("p", { class: "hjalp" }, "Siffran inom parentes är hur många du väljer. ",
-          bonus ? `Ett av hantverken får FV ${bonus.bc} gratis. ` : "",
-          "Vilka vapen, språk, hantverk och andra delval det blir väljer du i steg 4, där du också kan köpa fler yrkesfärdigheter."))),
-  ];
-}
-
-// Valen inom yrkets färdigheter (vapen, språk, hantverk, alternativ och den valfria färdigheten). Visas i steg 4.
-function yrketsVal() {
-  const yrke = yrkeAv(R, yrkeId());
-  const rader = yrke.fardigheter.map((post, i) => {
-    const id = `yrke-${i}`;
-    const satt = (v) => { rp.yrkesval[i] = v; uppdatera(); };
-    if (typeof post === "string") {
-      const f = fardighetAv(R, post) ?? { namn: post };
-      return el("li", {}, el("span", { class: "fnamn" }, f.namn), kortBeskrivning(post),
-        f.perVal ? delvalKontroll(id, post, rp.yrkesval[i], satt, { yrke: true }) : null, f.perVal ? hjalpFor(post) : null,
-        post === "stridskonster" ? stridskonstInfo() : null);
-    }
-    if (post.valEn) {
-      const val = rp.yrkesval[i] ?? {};
-      const alt = post.valEn.map((x) => (typeof x === "string" ? x : x.fardighet));
-      const f = val.id ? fardighetAv(R, val.id) : null;
-      return el("li", {}, el("span", { class: "fnamn" }, alt.map((a) => fardighetAv(R, a).namn).join(" eller ")),
-        val.id ? kortBeskrivning(val.id) : alt.map((a) => kortBeskrivning(a, true)),
-        el("div", { class: "rad" },
-          valLista(id, val.id, alt.map((a) => [a, fardighetAv(R, a).namn]), (v) => satt({ id: v })),
-          f?.perVal ? delvalKontroll(`${id}-d`, val.id, val.sub, (v) => satt({ ...val, sub: v }), { yrke: true }) : null),
-        f?.perVal ? hjalpFor(val.id) : null);
-    }
-    const f = fardighetAv(R, post.fardighet);
-    if (post.antal === null) {
-      return el("li", {}, el("span", { class: "fnamn" }, `${f.namn} (obegränsat)`), kortBeskrivning(post.fardighet),
-        el("p", { class: "hjalp" }, "Alla lärdomsfärdigheter räknas som yrkesfärdigheter för en lärd man. Lägg till dem i steg 11, Färdigheter."));
-    }
-    const varden = [].concat(rp.yrkesval[i] ?? []);
-    // Ett förbestämt val (t.ex. Kunskap om religion för munk och paladin) ligger först och går inte att ändra
-    post.maste?.forEach((m, j) => { varden[j] = m; });
-    return el("li", {}, el("span", { class: "fnamn" }, `${f.namn} (${post.antal})`), kortBeskrivning(post.fardighet),
-      el("div", { class: "rad" }, Array.from({ length: post.antal }, (_, j) => (j < (post.maste?.length ?? 0)
-        ? el("span", { class: "fast" }, varden[j])
-        : delvalKontroll(`${id}-${j}`, post.fardighet, varden[j], (v) => {
-          const ny = [...varden]; ny[j] = v; satt(ny);
-        }, { yrke: true })))),
-      post.maste ? el("p", { class: "hjalp" }, `${post.maste.join(" och ")} ingår alltid för det här yrket (s. 24–25).`) : null,
-      // Instruktionen behövs bara när något av valen går att skriva in själv
-      post.antal > (post.maste?.length ?? 0) ? hjalpFor(post.fardighet) : null);
-  });
-  const hantverk = yrkesNycklar().filter((k) => k.startsWith("hantverk:"));
-  const bonus = yrke.startbonus?.find((b) => b.valEttAv);
-  if (bonus) {
-    rader.push(el("li", {}, el("span", { class: "fnamn" }, `FV ${bonus.bc} gratis i ett hantverk`),
-      valLista("hantverksbonus", rp.hantverkBonus, hantverk.map((k) => [k, k.split(":")[1]]), (v) => { rp.hantverkBonus = v; uppdatera(); }, hantverk.length ? "Välj hantverk …" : "Välj hantverk ovan först"),
-      el("p", { class: "hjalp" }, `Hantverkaren får FV ${bonus.bc} i ett av sina tre hantverk utan att betala EP (s. 21).`)));
-  }
-  const yrkesrader = rader;
-  return [
-    el("h3", {}, `Yrkesfärdigheter för ${yrke.namn.toLowerCase()}`),
-    el("ul", { class: "yrkeslista" }, yrkesrader,
-      yrke.valfri ? el("li", {}, el("span", { class: "fnamn" }, "En valfri färdighet"),
-        rp.valfri ? kortBeskrivning(rp.valfri.split(":")[0]) : null,
-        fardighetsVal("valfri", rp.valfri, (v) => { rp.valfri = v; uppdatera(); }, (f) => f.typ !== "primar" && magiMojlig(f), { yrke: true }),
-        magiInfo(rp.valfri),
-        rp.valfri?.startsWith("stridskonster") ? stridskonstInfo() : null,
-        rp.valfri ? null : el("p", { class: "hjalp" }, "Vilken sekundär färdighet som helst, som blir en yrkesfärdighet. Primära färdigheter har rollpersonen redan. En magiskola kräver ett lyckat magiförmågeslag. Det slås när du går vidare från steg 6, när INT och PSY är bestämda.")) : null),
-    yrke.automatiska.length ? el("p", { class: "hjalp" }, "Får automatiskt Känna magi och Kunskap om magi med samma FV som i sin magiskola (s. 62, 64).") : null,
-  ];
-}
-
-// BP för varje extra yrkesfärdighet, i samma prisordning som regelmotorn (s. 27)
-function extraPriser(lista) {
-  const k = R.yrken.extraYrkesfardigheter;
-  let vanliga = 0;
-  return lista.map((nyckel) => {
-    if (fardighetAv(R, nyckel || "x")?.typ === "magiskola") return k.magiskola;
-    vanliga += 1;
-    return vanliga === 1 ? k.forsta : vanliga === 2 ? k.andra : k.darefter;
-  });
-}
-
-// Beskrivningen av färdigheten som är vald i en rullgardin, innan den läggs till
-function valdBeskrivning(nyckel) {
-  const id = (nyckel ?? "").split(":")[0];
-  return id ? el("div", { class: "vald-beskrivning" }, kortBeskrivning(id, true)) : null;
-}
-
-function stegExtra(res) {
-  const lista = rp.extraYrkesfardigheter;
-  const k = R.yrken.extraYrkesfardigheter;
-  const priser = extraPriser(lista);
-  const yrkesrader = res.fardigheter.filter((f) => f.status === "yrke");
-  // Färdigvalda extra som inte syns bland yrkesfärdigheterna (t.ex. påbörjade i en äldre sparning) listas ändå, så att de går att ta bort
-  const ovriga = lista.filter((n) => !yrkesrader.some((f) => f.nyckel === n));
-  const taBort = (nyckel, namn) => el("button", {
-    type: "button", class: "lank", "aria-label": `Ta bort ${namn}`,
-    onclick: () => { const i = lista.indexOf(nyckel); if (i >= 0) lista.splice(i, 1); uppdatera(); },
-  }, "ta bort");
-  const rad = (nyckel, namn, grundegenskap) => {
-    const i = lista.indexOf(nyckel);
-    return el("tr", {},
-      el("td", {}, namn, fardighetsInfo(nyckel), i >= 0 ? taBort(nyckel, namn) : null),
-      el("td", {}, grundegenskap ?? ""),
-      el("td", {}, i >= 0 ? "Extra" : "Yrket"),
-      el("td", { class: "num" }, i >= 0 ? priser[i] : ""));
-  };
-  const nasta = extraPriser([...lista, nyExtra || "x"]).at(-1);
-  const harRedan = new Set([...yrkesNycklar(), ...lista]);
-  return [
-    ...yrketsVal(),
-    el("h3", {}, "Fler yrkesfärdigheter"),
-    el("p", {}, `Den första extra yrkesfärdigheten kostar ${k.forsta} BP, den andra ${k.andra} BP och varje därefter ${k.darefter} BP. En magiskola kostar ${k.magiskola} BP och kräver ett lyckat magiförmågeslag (1T100 högst (INT+PSY)/2, s. 106). Slaget görs när du går vidare från steg 6, när INT och PSY är bestämda.`),
-    el("h4", {}, "Dina yrkesfärdigheter"),
-    el("div", { class: "tabellram" }, el("table", { class: "tabell fardighetstabell yrkestabell" },
-      el("thead", {}, el("tr", {}, el("th", {}, "Färdighet"), el("th", {}, "Grundeg."), el("th", {}, "Från"), el("th", { class: "num" }, "BP", info("BP")))),
-      el("tbody", {},
-        yrkesrader.map((f) => rad(f.nyckel, f.namn, f.grundegenskap)),
-        ovriga.map((n) => {
-          const f = fardighetAv(R, (n || "x").split(":")[0]);
-          return rad(n, !f ? n || "Tom rad" : paborjad(n) ? `${f.namn} (inte färdigvald)` : namnFor(R, f, n), f?.grundegenskap);
-        })))),
-    lista.some((n) => n.startsWith("stridskonster")) ? stridskonstInfo() : null,
-    el("h4", {}, "Lägg till en extra yrkesfärdighet"),
-    el("div", { class: "rad" },
-      // Färdigheter som rollpersonen redan har som yrkesfärdighet visas inte; för dem med delval spärras de delval som redan finns
-      fardighetsVal("ny-extra", nyExtra, (v) => { nyExtra = v; rita(); }, (f) => magiMojlig(f) && (f.perVal || !harRedan.has(f.id)), { yrke: true }),
-      el("button", { type: "button", class: "knapp", disabled: paborjad(nyExtra), onclick: () => {
-        if (res.bp.kvar < nasta) {
-          visaNotis(`Det går inte: den extra yrkesfärdigheten kostar ${nasta} BP, och du har bara ${res.bp.kvar} BP kvar.`);
-          return;
-        }
-        if (!lista.includes(nyExtra)) lista.push(nyExtra);
-        nyExtra = "";
-        uppdatera();
-      } }, "Lägg till")),
-    magiInfo(nyExtra),
-    valdBeskrivning(nyExtra),
-    nyExtra.startsWith("stridskonster") ? stridskonstInfo() : null,
-    el("p", { class: res.bp.kvar < nasta ? "hjalp felrad" : "hjalp" },
-      `Nästa extra yrkesfärdighet kostar ${nasta} BP. Du har ${res.bp.kvar} BP kvar.`,
-      res.bp.kvar < nasta ? " Du har inte råd med den." : " Välj färdighet, fyll i vad den gäller och tryck Lägg till."),
-  ];
-}
-
-function stegKon() {
-  return [
-    el("div", { class: "rad" },
-      falt("Namn", el("input", { id: "namn", type: "text", value: rp.namn, onchange: (e) => { rp.namn = e.target.value; uppdatera(); } })),
-      falt("Spelare", el("input", { id: "spelare", type: "text", value: rp.spelare, onchange: (e) => { rp.spelare = e.target.value; uppdatera(); } })),
-      falt("Kön", valLista("kon", rp.kon, [["Man", "Man"], ["Kvinna", "Kvinna"]], (v) => { rp.kon = v; uppdatera(); }), "Påverkar inte spelvärdena (s. 27).")),
-    falt("Utseende och bakgrund", el("textarea", { id: "anteckningar", rows: 5, onchange: (e) => { rp.anteckningar = e.target.value; uppdatera(); } }, rp.anteckningar)),
-  ];
-}
-
-function stegEgenskaper(res) {
-  const ras = rasAv(R, rasId());
-  const aldersmod = R.alder.effekter[res.alderskategori];
-  const kostnad = R.grundegenskaper.kostnad;
-  const rader = GRUNDEGENSKAPER.map((g) => el("tr", {},
-    el("th", { scope: "row" }, g, info(g)),
-    el("td", {}, markera(tal(`ge-${g}`, rp.grundvarden[g], (v) => { rp.grundvarden[g] = Math.min(18, Math.max(3, v ?? 3)); uppdatera(); }, { min: 3, max: 18 }), rp.grundvarden[g], STANDARDVARDEN()[g])),
-    el("td", { class: "num" }, kostnad[String(rp.grundvarden[g])] ?? "–"),
-    el("td", { class: "num" }, fmtMod(ras.mod[g])),
-    el("td", { class: "num" }, fmtMod(aldersmod[g])),
-    el("td", { class: "num stor" + (res.grundegenskaper[g] < 3 ? " fel" : "") }, res.grundegenskaper[g])));
-  const s = R.grundegenskaper.sto;
-  const steg = rp.stoSteg;
-  const stoBP = steg > 0 ? s.hojning[steg - 1] : steg < 0 ? -s.sankning[-steg - 1] : 0;
-  return [
-    el("p", {}, "Köp ett grundvärde (3–18) för varje grundegenskap. Ras och ålder läggs på efteråt. Alla slutvärden måste bli minst 3."),
-    res.forLagaEgenskaper.length ? el("div", { class: "varning", role: "note" },
-      el("strong", {}, "Höj grundvärdet så att slutvärdet blir minst 3. "),
-      `Rasen och åldern (${R.alder.kategorier.find((k) => k.id === res.alderskategori).namn.toLowerCase()}) sänker ${res.forLagaEgenskaper.map((t) => t.split(" ")[0]).join(" och ")} för mycket. Du kan också välja en annan ålder i steg 2.`) : null,
-    el("div", { class: "rad" },
-      el("button", { type: "button", class: "knapp", onclick: foreslaGrundvarden }, `Föreslå värden för ${res.ras.namn.toLowerCase()} som ${res.yrke.namn.toLowerCase()}`),
-      autoAnvand.egenskaper ? el("button", { type: "button", class: "knapp", onclick: () => { rp.grundvarden = STANDARDVARDEN(); rp.stoSteg = 0; autoAnvand.egenskaper = false; uppdatera(); } }, "Återställ") : null,
-      el("span", { class: "hjalp" }, "Lägger de högsta värdena där yrkets färdigheter och rasen gör mest nytta och sparar 10 BP till steg 7–10. Du kan justera efteråt.")),
-    el("div", { class: "tabellram" }, el("table", { class: "tabell" },
-      el("thead", {}, el("tr", {}, ["", "Grundvärde", "BP", "Ras", "Ålder", "Slutvärde"].map((t, i) => el("th", { class: i > 1 ? "num" : "" }, t, t === "BP" ? info("BP") : null)))),
-      el("tbody", {}, rader,
-        el("tr", {}, el("th", { scope: "row" }, "STO", info("STO")),
-          el("td", {}, el("div", { class: "stegare" },
-            el("button", { type: "button", class: "knapp liten", "aria-label": "Sänk STO", disabled: steg <= -5 || ras.sto.normal + steg <= ras.sto.min, onclick: () => { rp.stoSteg -= 1; uppdatera(); } }, "−"),
-            el("span", {}, steg === 0 ? "normal" : fmtMod(steg)),
-            el("button", { type: "button", class: "knapp liten", "aria-label": "Höj STO", disabled: steg >= 5 || ras.sto.normal + steg >= ras.sto.max, onclick: () => { rp.stoSteg += 1; uppdatera(); } }, "+"))),
-          el("td", { class: "num" }, stoBP > 0 ? stoBP : stoBP < 0 ? `${stoBP}` : "0"),
-          el("td", { class: "num" }, `${ras.sto.min}–${ras.sto.max}`), el("td", {}),
-          el("td", { class: "num stor" }, res.grundegenskaper.STO))))),
-    el("details", { class: "fakta" }, el("summary", {}, "Vad kostar grundvärdena? (s. 27)"),
-      el("p", { class: "hjalp" }, "Den övre raden är grundvärdet du köper, den undre hur många BP det kostar. 3 är gratis, och kostnaden stiger brant över 12. Ett grundvärde på 13 kostar till exempel 14 BP. Kolumnen BP i tabellen ovan visar vad varje värde kostar just nu."),
-      el("div", { class: "tabellram" }, el("table", { class: "tabell kostnadstabell" }, el("tbody", {},
-        el("tr", {}, el("th", { scope: "row" }, "Grundvärde"), Object.keys(kostnad).map((v) => el("td", { class: "num" }, v))),
-        el("tr", {}, el("th", { scope: "row" }, "BP", info("BP")), Object.values(kostnad).map((k) => el("td", { class: "num" }, k))))))),
-  ];
-}
-
-// Tärningsslag: knappen spärras och tärningen snurrar en stund innan resultatet landar
-let rullar = null; // id för slaget som rullas just nu
-let manuellaSlag = false; // spelaren skriver in slagen själv i stället för att slå (valet finns i menyn)
-const utkastSlag = {}; // inskrivna slag som ännu inte är bekräftade, per slag-id
-let nyssSlaget = null; // id för slaget vars resultat precis har landat
-const rulltid = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? 300 : 2500);
-// T20 ritas som en sexhörning med en triangel i mitten (som en tjugosidig tärning sedd rakt framifrån)
-const T20_FORM = '<polygon points="12,2 20.7,7 20.7,17 12,22 3.3,17 3.3,7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>'
-  + '<polygon points="12,5.5 18.2,16.2 5.8,16.2" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round" opacity=".55"/>';
-const T20_KANTER = '<path d="M12 2v3.5M20.7 7l-2.5 9.2M3.3 7l2.5 9.2M12 22l-6.2-5.8M12 22l6.2-5.8M3.3 17l2.5-.8M20.7 17l-2.5-.8M3.3 7L12 5.5M20.7 7L12 5.5" stroke="currentColor" stroke-width=".8" opacity=".45"/>';
-const tarningsIkon = (sidor = 6) => {
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", "tarning"); svg.setAttribute("aria-hidden", "true");
-  if (sidor === 20) { svg.innerHTML = T20_FORM + T20_KANTER; return svg; }
-  svg.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
-    + [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="currentColor"/>`).join("");
-  return svg;
-};
-// Två tärningar (1–6) som ger summan, för ett inskrivet slag där bara summan är känd. Den första väljs
-// slumpvis (eller så jämnt som möjligt) bland de värden som går, den andra får resten.
-function delaSumma(summa, slump = true, sidor = 6) {
-  const lagst = Math.max(1, summa - sidor), hogst = Math.min(sidor, summa - 1);
-  const forsta = slump ? lagst + Math.floor(Math.random() * (hogst - lagst + 1)) : Math.ceil(summa / 2);
-  return [forsta, summa - forsta];
-}
-// En tärning för ett visst värde: en sexsidig med prickar, en T20 (sexhörning) med siffran
-const PRICKAR = { 1: [[12, 12]], 2: [[8, 8], [16, 16]], 3: [[7, 7], [12, 12], [17, 17]], 4: [[8, 8], [16, 8], [8, 16], [16, 16]],
-  5: [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]], 6: [[8, 7], [16, 7], [8, 12], [16, 12], [8, 17], [16, 17]] };
-const tarningsSida = (v, sidor = 6) => {
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", sidor === 6 ? "tarning sida" : "tarning sida t20"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", String(v));
-  svg.innerHTML = sidor === 6
-    ? '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
-      + PRICKAR[v].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.8" fill="currentColor"/>`).join("")
-    : '<polygon points="12,1.5 21,6.75 21,17.25 12,22.5 3,17.25 3,6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
-      + `<text x="12" y="15.6" text-anchor="middle" font-size="${v > 9 ? 9 : 10}" font-weight="700" fill="currentColor" font-family="sans-serif">${v}</text>`;
-  return svg;
-};
-// Tärningsrutan ligger i slagfältet. Vid klick snurrar tärningen medan "Slår …" pulserar;
-// sedan tonar rutan ut och slaget visas i fältet i stället.
-const TONING = 400;
-// Rutans text. Rutan kan visa "Slå 2T6", "Slår …" och slaget; de två första ligger osynliga i samma ruta
-// (via CSS), så att rutan är lika bred som sin längsta text och inte ändrar storlek under slaget.
-const rutText = (synlig, text, klass = "") => el("span", { class: `rutetext ${klass}`.trim(), "data-a": text, "data-b": "Slår …" }, el("span", {}, synlig));
-function tarningsKnapp(id, text, sla, sidor = 6) {
-  const rullarNu = rullar === id;
-  return el("button", {
-    type: "button", class: "knapp tarningsknapp i-falt" + (rullarNu ? " rullar" : ""), id: `${id}-sla`,
-    disabled: rullar !== null, "aria-busy": rullarNu ? "true" : null,
-    onclick: () => {
-      if (rullar) return;
-      rullar = id; rita();
-      const tid = rulltid();
-      if (tid > TONING * 2) setTimeout(() => document.getElementById(`${id}-sla`)?.classList.add("tona-ut"), tid - TONING);
-      setTimeout(() => { rullar = null; nyssSlaget = id; sla(); }, tid);
-    },
-  }, tarningsIkon(sidor), rutText(rullarNu ? "Slår …" : text, text, rullarNu ? "pulsera" : ""));
-}
-// Med manuella slag skriver spelaren in slaget och bekräftar det med tärningsrutan
-function bekraftaSlag(id, min, max, satt, sidor = 6) {
-  const giltigt = (v) => Number.isInteger(v) && v >= min && v <= max;
-  const knapp = el("button", {
-    type: "button", class: "knapp tarningsknapp", id: `${id}-sla`, disabled: !giltigt(utkastSlag[id]),
-    onclick: () => {
-      const v = utkastSlag[id];
-      if (!giltigt(v)) return;
-      delete utkastSlag[id];
-      nyssSlaget = id; satt(v);
-    },
-  }, tarningsIkon(sidor), el("span", {}, "Bekräfta slag"));
-  const falt = el("input", {
-    type: "number", id: `${id}-slag`, class: "tal", min, max, step: 1, value: utkastSlag[id] ?? "",
-    title: `${min}–${max}`,
-    oninput: (e) => { utkastSlag[id] = e.target.value === "" ? null : Number(e.target.value); knapp.disabled = !giltigt(utkastSlag[id]); },
-    onkeydown: (e) => { if (e.key === "Enter" && !knapp.disabled) knapp.click(); },
-  });
-  return { falt, knapp };
-}
-// Slagfältet (och, med manuella slag, bekräfta-knappen som läggs sist i raden)
-function slagKontroll(id, etikett, text, min, max, satt, slumpa, sidor = 6) {
-  if (!manuellaSlag) return { slagfalt: falt(etikett, tarningsKnapp(id, text, () => satt(slumpa()), sidor)), knapp: null };
-  const b = bekraftaSlag(id, min, max, satt, sidor);
-  return { slagfalt: falt(etikett, b.falt), knapp: b.knapp };
-}
-const inteSlaget = () => (manuellaSlag ? "Skriv in slaget och bekräfta det." : "Slå tärningen.");
-// Låst fält som visar ett gjort val (lagda BP, bonus). Tal visas i ett sifferfält precis som innan det låstes,
-// så att siffran inte flyttar sig.
-const lastFalt = (id, varde) => el("input", { type: typeof varde === "number" ? "number" : "text", id, class: "tal last", value: varde, readonly: true, "aria-readonly": "true", tabindex: -1 });
-// Tärningsrutan när slaget har landat: tärningen ligger kvar på samma plats och slaget står bredvid den.
-// Slaget visas som tärningar: T6 med prickar, T20 med siffran. Bonusar (lagda BP, ras, yrke …) står var för sig
-// efter tärningarna, t.ex. ⚃ + ⚁ + 2 + 4. Saknas tärningarna (slag sparat före den här versionen) delas summan upp.
-// Andra tärningar (T3, T4 …) visas som summan.
-function landatSlag(id, varde, text, { tarningar = null, bonusar = [], sidor = 6, antal = 2 } = {}) {
-  bonusar = bonusar.filter(Boolean);
-  const summan = (t) => Array.isArray(t) && t.length === antal && t.every((x) => x >= 1 && x <= sidor) && t.reduce((a, b) => a + b, 0) === varde;
-  if (!summan(tarningar) && varde >= antal && varde <= antal * sidor) tarningar = antal === 1 ? [varde] : antal === 2 ? delaSumma(varde, false, sidor) : null;
-  const kanda = (sidor === 6 || sidor === 20) && summan(tarningar);
-  const bonusText = bonusar.map((b) => (b > 0 ? ` + ${b}` : ` − ${-b}`)).join("");
-  const innehall = kanda ? el("span", { class: "slagvarde tarningsrad" }, tarningar.flatMap((t, i) => [i ? " + " : null, tarningsSida(t, sidor)]), bonusText)
-    : rutText(`${varde}${bonusText}`, text, "slagvarde");
-  return el("div", { class: "knapp tarningsknapp i-falt landad" + (kanda ? " med-tarningar" : "") + (nyssSlaget === id ? " nytt" : ""), id: `${id}-slag`, "data-varde": varde },
-    kanda ? null : tarningsIkon(sidor), innehall);
-}
-// Utvecklarläget kan låsa upp ett gjort slag så att det går att slå om. Det görs utan regelkontroll:
-// utan slaget kan till exempel inköpen kosta mer än startkapitalet tills det är slaget igen.
-let omslag = false;
-const SLAGETS_VAL = { sf: "sarskildaFormagor", sh: "svardshand", ss: "socialtStand", sk: "startkapital", magiformaga: "magiformaga" };
-const omslagKnapp = (id) => (omslag ? el("button", { type: "button", class: "knapp omslag", id: `${id}-las-upp`,
-  title: "Utvecklarläge: ta bort slaget och slå om", onclick: () => {
-    rp[SLAGETS_VAL[id]] = { ...rp[SLAGETS_VAL[id]], slag: null };
-    giltig = structuredClone(rp);
-    spara();
-    rita();
-  } }, "Lås upp") : null);
-// Resultatet under slaget som punkter (text, lista med rader eller { rader, total }); det lyser upp när tärningen
-// nyss har landat. En total står på en egen rad under punkterna.
-const resultat = (id, tolkning) => {
-  const { rader, total } = typeof tolkning === "string" || Array.isArray(tolkning) ? { rader: tolkning } : tolkning;
-  return el("div", { class: "resultat" },
-    el("span", { class: "etikett" }, "Resultat"), el("ul", { class: "punkter summering resultatlista" + (nyssSlaget === id ? " nytt" : "") }, [].concat(rader).filter(Boolean).map((t) => el("li", {}, t))),
-    total ? el("p", { class: "resultat-total", id: `${id}-total` }, total) : null);
-};
-
-const bpFaltet = (etikett, kontroll) => { const f = falt(etikett, kontroll); f.classList.add("bp-falt"); return f; };
-
-// bonusar: [[text, värde]] från ras, yrke m.m. som läggs på slaget; de visas som punkter (med extraRader sist).
-// Lagda BP räknas också som en bonus när de är fler än 0, men står bara i BP-fältet, inte bland punkterna.
-// Bonusarna visas var för sig i tärningsrutan, t.ex. 2T6+2+4.
-// Tillval: fore = fält som står före slaget (t.ex. vilken tabell som slås på), kanSla = false spärrar tärningen,
-// under = det som står direkt under raden med slaget.
-function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = [], { fore = null, kanSla = true, under = null } = {}) {
-  const s = rp[nyckel];
-  const bonusar = [s.bp > 0 ? ["BP lagda", s.bp] : null, ...fastaBonusar].filter(Boolean);
-  const punkter = [...fastaBonusar.map(([t, v]) => `${t}: ${fmtMod(v)}`), ...extraRader];
-  const bonuslista = punkter.length ? el("ul", { class: "punkter bonuslista" }, punkter.map((t) => el("li", {}, t))) : null;
-  const { n, sidor } = tarningAv(tarning);
-  tarning += bonusar.map(([, v]) => (v > 0 ? `+${v}` : `−${-v}`)).join("");
-  const satt = (falt, v) => { rp[nyckel][falt] = v; efter(); uppdatera(); };
-  // När slaget är gjort ligger det fast: BP och slag går inte att ändra i efterhand
-  if (s.slag !== null && s.slag !== undefined) {
-    return [
-      el("p", {}, hjalp),
-      bonuslista,
-      el("div", { class: "rad" },
-        bpFaltet("BP lagda", lastFalt(`${id}-bp`, s.bp)),
-        fore,
-        falt(`Slag (${tarning})`, landatSlag(id, s.slag, `Slå ${tarning}`, { tarningar: s.tarningar, bonusar: bonusar.map(([, v]) => v), sidor, antal: n })),
-        omslagKnapp(id)),
-      resultat(id, tolkning),
-    ];
-  }
-  // Varje tärning sparas också, så att den kan visas med sina prickar (ett inskrivet slag delas upp på två tärningar)
-  const sla = () => { const t = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sidor)); rp[nyckel].tarningar = t; return t.reduce((a, b) => a + b, 0); };
-  const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => { if (manuellaSlag) rp[nyckel].tarningar = delaSumma(v, true, sidor); satt("slag", v); }, sla, sidor);
-  if (!kanSla) for (const e of [slagfalt, knapp].filter(Boolean)) for (const k of e.matches("button, input") ? [e] : e.querySelectorAll("button, input")) k.disabled = true;
-  const bpFalt = rullar === id ? lastFalt(`${id}-bp`, s.bp ?? 0) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
-  return [
-    el("p", {}, hjalp),
-    bonuslista,
-    el("div", { class: "rad" }, bpFaltet("BP att lägga", bpFalt), fore, slagfalt, knapp),
-    under,
-    el("p", { class: "summering" }, tolkning),
-  ];
-}
-
-// Väljare för en färdighet som en särskild förmåga gäller ("bland" enligt sarskilda-formagor.json).
-function valjFardighet(id, bland, varde, onchange) {
-  if (bland === "sprak") {
-    return delvalKontroll(id, "tala", varde?.split(":")[1], (v) => onchange(v ? `tala:${v}` : ""));
-  }
-  if (Array.isArray(bland)) {
-    return valLista(id, varde, bland.map((f) => [f, fardighetAv(R, f).namn]), onchange);
-  }
-  const fast = fardighetAv(R, bland);
-  if (fast) {
-    if (!fast.perVal) return el("span", {}, fast.namn);
-    return delvalKontroll(id, bland, varde?.split(":")[1], (v) => onchange(v ? `${bland}:${v}` : ""));
-  }
-  const magi = (f) => f.typ === "magiskola" || ["kanna-magi", "magisk-kanalisering", "magistudier"].includes(f.id);
-  // Visa bara färdigheter som kan gälla: t.ex. inte en färdighet som redan är primär eller yrkesfärdighet när
-  // förmågan kräver en sekundär. Färdigheter som lärs per stad, språk osv. prövas med ett påhittat delval.
-  const indata = motorIndata();
-  const kan = (f) => passarBland(R, indata, f.perVal ? `${f.id}:\u0000prov` : f.id, bland);
-  return fardighetsVal(id, varde, onchange, (f) => !magi(f) && f.typ !== "sprak" && kan(f));
-}
-
-// Vilken tabell som visas i förmågekorten (flikarna) och vilket kort som är uppfällt. Ligger utanför rollpersonen,
-// så att de står kvar när steget ritas om (t.ex. när BP ändras).
-let formageFlik = null;
-let oppetFormagekort = null; // { tabell, nr, vanster, uppat }
-let formageModal = false; // modalen med förmågan som slaget gav; öppnas när tärningen har landat
-
-// Korten för en tabell. Ett kort visar slaget och namnet; ett klick fäller upp det över korten bredvid
-// (rutnätet ändrar inte storlek), ett nytt klick fäller ihop det. Kortet öppnar sig åt det håll där det finns plats.
-function formagekort(tabell, traff) {
-  const oppet = oppetFormagekort?.tabell === tabell.id ? oppetFormagekort : null;
-  return el("div", { class: "formagekort", id: `sf-kort-${tabell.id}`, role: "list", lang: "sv" }, tabell.rader.map((x, nr) => {
-    const arOppet = oppet?.nr === nr;
-    return el("div", { class: "formageplats", role: "listitem" }, el("button", {
-      type: "button", class: "formagekort-knapp" + (x === traff ? " markerad" : "") + (arOppet ? " oppen" : "")
-        + (arOppet && oppet.vanster ? " vanster" : "") + (arOppet && oppet.uppat ? " uppat" : ""),
-      "aria-expanded": arOppet ? "true" : "false", "data-namn": x.namn,
-      onclick: (e) => {
-        if (arOppet) oppetFormagekort = null;
-        else {
-          const kort = e.currentTarget.getBoundingClientRect(), natet = e.currentTarget.closest(".formagekort").getBoundingClientRect();
-          oppetFormagekort = { tabell: tabell.id, nr,
-            vanster: kort.left + kort.width / 2 > natet.left + natet.width / 2, uppat: kort.top + kort.height / 2 > natet.top + natet.height / 2 };
-        }
-        rita();
-      },
-    },
-    el("span", { class: "formagekort-slag" }, slagIntervall(x)),
-    el("span", { class: "formagekort-namn" }, x.namn),
-    arOppet ? el("span", { class: "formagekort-effekt" }, x.effekt, el("span", { class: "formagekort-sida" }, ` (s. ${x.sida})`)) : null));
-  }));
-}
-
-function stegFormagor() {
-  const sf = sarskildFormaga();
-  const s = rp.sarskildaFormagor;
-  const oslaget = s.slag === null || s.slag === undefined;
-  const tabeller = tillgangligaFormagetabeller(R, motorIndata());
-  const tabell = formagetabell(R, motorIndata()) ?? tabeller[0];
-  const tolkning = s.avstar ? "Rollpersonen får ingen särskild förmåga." :
-    !s.bp ? "Lägg minst 1 BP för att få slå (högst 40), eller kryssa i rutan om du inte vill lägga BP här." :
-    oslaget ? inteSlaget() :
-    [`Resultat: ${s.slag + s.bp}.`, `${sf?.namn}: ${sf?.effekt} (s. ${sf?.sida})`];
-  // Byts förmågan ut gäller inte de gamla valen längre. BP här betyder att spelaren inte längre avstår.
-  const nollstall = () => {
-    if (rp.sarskildaFormagor.bp) rp.sarskildaFormagor.avstar = false;
-    if (oslaget && rp.sarskildaFormagor.slag != null) formageModal = true; // slaget har just landat
-    if (rp.sarskildaFormagor.slag == null) formageModal = false;
-    const ny = sfFor(R, { ...motorIndata(), sarskildaFormagor: rp.sarskildaFormagor }).formaga;
-    if (ny?.namn !== rp.sarskildaFormagor.formaga) rp.sarskildaFormagor.val = [];
-    rp.sarskildaFormagor.formaga = ny?.namn;
-  };
-  const val = (i) => rp.sarskildaFormagor.val?.[i];
-  const sattVal = (i, v) => { rp.sarskildaFormagor.val ??= []; rp.sarskildaFormagor.val[i] = v; uppdatera(); };
-  const delar = (sf?.regel ?? []).map((del, i) => {
-    if (del.typ === "fv" && del.valj) {
-      const valda = [].concat(val(i) ?? []);
-      return el("li", {}, el("span", { class: "fnamn" }, del.valj > 1 ? `Välj ${del.valj} färdigheter` : "Välj färdighet"),
-        el("div", { class: "rad" }, Array.from({ length: del.valj }, (_, j) => valjFardighet(`sf-${i}-${j}`, del.bland, valda[j], (v) => {
-          const ny = [...valda]; ny[j] = v; sattVal(i, ny);
-        }))));
-    }
-    if (del.typ === "egenskapVal") {
-      const v = val(i) ?? {};
-      const antal = v.lage === "en" ? 1 : v.lage === "tre" ? 3 : 0;
-      const egenskaper = v.egenskaper ?? [];
-      return el("li", {}, el("span", { class: "fnamn" }, "Höj grundegenskaper"),
-        el("div", { class: "rad" },
-          valLista(`sf-${i}-lage`, v.lage, [["tre", "+1 på tre olika"], ["en", "+2 på en"]], (lage) => sattVal(i, { lage, egenskaper: [] })),
-          Array.from({ length: antal }, (_, j) => valLista(`sf-${i}-${j}`, egenskaper[j], GRUNDEGENSKAPER.map((g) => [g, g]), (g) => {
-            const ny = [...egenskaper]; ny[j] = g; sattVal(i, { ...v, egenskaper: ny });
-          }))));
-    }
-    return null;
-  }).filter(Boolean);
-
-  // Har rollpersonen fler tabeller att välja på (expansioner) väljs tabellen i en rullgardin bredvid tärningsrutan.
-  // Med bara grundreglernas tabell visas varken rullgardin eller flikar.
-  const flera = tabeller.length > 1;
-  const tabellval = !flera ? null : oslaget && rullar !== "sf"
-    ? falt("Tabell", el("select", { id: "sf-tabell", onchange: (e) => {
-      rp.sarskildaFormagor.tabell = e.target.value; formageFlik = e.target.value; nollstall(); uppdatera();
-    } }, tabeller.map((t) => el("option", { value: t.id, selected: t.id === tabell?.id }, `${t.namn} (${t.tarning})`))))
-    : falt("Tabell", lastFalt("sf-tabell", tabell?.namn ?? ""));
-  // Spelaren måste uttryckligen avstå för att gå vidare utan BP här
-  // Med lagda BP går rutan inte att kryssa i, och texten är struken
-  const avsta = oslaget ? el("label", { class: "avsta" + (s.bp ? " inaktiv" : "") },
-    el("input", { type: "checkbox", id: "sf-avsta", checked: !!s.avstar, disabled: rullar === "sf" || !!s.bp, onchange: (e) => {
-      rp.sarskildaFormagor = { ...rp.sarskildaFormagor, avstar: e.target.checked, ...(e.target.checked ? { bp: 0 } : {}) };
-      uppdatera();
-    } }),
-    el("span", {}, el("strong", {}, "Jag vill inte lägga BP på särskilda förmågor."), " Utan BP får rollpersonen ingen särskild förmåga.")) : null;
-
-  // Modalen när slaget har landat: förmågan, vad den gör och valen den kräver. Den stängs med FORTSÄTT när valen är gjorda.
-  const ingaVarden = "Förmågan påverkar inga värden på rollformuläret. Skriv in den i anteckningarna om den behöver beskrivas mer.";
-  const visaModal = formageModal && !oslaget && !!sf && rullar === null;
-  let modal = null;
-  if (visaModal) {
-    const svar = sfFor(R, motorIndata());
-    const klar = !svar.saknas.length && !svar.fel.length;
-    const fortsatt = el("button", { type: "button", class: "knapp primar", id: "sf-modal-fortsatt", disabled: !klar,
-      onclick: () => { formageModal = false; rita(); } }, "FORTSÄTT");
-    modal = el("div", { class: "dialog-bakgrund", id: "sf-modal" },
-      el("div", { class: "dialog formagedialog", role: "dialog", "aria-modal": "true", "aria-labelledby": "sf-modal-namn" },
-        el("p", { class: "eyebrow" }, tabeller.length > 1 ? `Särskild förmåga · ${tabell.namn}` : "Särskild förmåga"),
-        el("h2", { id: "sf-modal-namn" }, sf.namn),
-        el("p", { class: "formagedialog-slag" }, `Slaget blev ${s.slag} + ${s.bp} BP = ${s.slag + s.bp}.`),
-        el("p", { class: "formagedialog-effekt" }, sf.effekt, el("span", { class: "formagekort-sida" }, ` (s. ${sf.sida})`)),
-        delar.length ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
-        !sf.regel ? el("p", { class: "hjalp" }, ingaVarden) : null,
-        !klar && delar.length ? el("p", { class: "hjalp" }, "Gör valen ovan för att gå vidare.") : null,
-        el("div", { class: "dialog-fot" }, fortsatt)));
-  }
-
-  const visad = tabeller.find((t) => t.id === formageFlik) ?? tabell ?? tabeller[0];
-  const flikar = flera ? el("div", { class: "flikar", role: "tablist", id: "sf-flikar" }, tabeller.map((t) => el("button", {
-    type: "button", class: "valknapp" + (t === visad ? " vald" : ""), role: "tab", "aria-selected": t === visad ? "true" : "false", "data-tabell": t.id,
-    onclick: () => { formageFlik = t.id; rita(); },
-  }, t.namn))) : null;
-
-  return [
-    ...slagSteg("sf", "sarskildaFormagor", "Särskilda förmågor", tabell?.tarning ?? "2T20", tolkning,
-      `Lägg 1–40 BP och slå ${tabell?.tarning ?? "2T20"}. Summan avgör förmågan. SL får justera resultatet.`, nollstall, [], [],
-      { fore: tabellval, kanSla: !!s.bp, under: avsta }),
-    // Valen står i modalen så länge den är öppen (samma id får inte finnas två gånger)
-    delar.length && !visaModal ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
-    sf && !sf.regel ? el("p", { class: "hjalp" }, ingaVarden) : null,
-    visaModal ? modal : null,
-    // Tabellen ritas under stegets knappar (ritaVy flyttar den dit), eftersom den är lång
-    el("div", { class: "steg-innehall efter-fot" },
-      el("h3", {}, flera ? "Tabellerna" : `Tabellen (s. ${visad?.sida})`),
-      flikar,
-      flera ? el("p", { class: "hjalp" }, `${visad.namn}, ${visad.tarning}+BP (s. ${visad.sida}). Tryck på en förmåga för att läsa om den.`)
-        : el("p", { class: "hjalp" }, "Tryck på en förmåga för att läsa om den. Siffrorna är summan av slaget och de lagda BP."),
-      visad ? formagekort(visad, visad === tabell ? sf : null) : null),
-  ];
-}
-
-// Magiförmågeslaget (s. 106) behövs för magiskolor utanför magikeryrkena.
-// Magiskolor visas inte om magiförmågeslaget redan har misslyckats
-function magiMojlig(f) {
-  if (f.typ !== "magiskola" || yrkeAv(R, yrkeId()).magiker || rp.magiformaga?.slag == null) return true;
-  return rakna().magiformaga.lyckat;
-}
-
-// Platser där rollpersonen har en magiskola som den inte får lära sig (yrkes-, extra- eller sekundär färdighet)
-function magiPlatser() {
-  const arSkola = (k) => fardighetAv(R, k || "x")?.typ === "magiskola";
-  return [
-    ...(arSkola(rp.valfri) ? [{ typ: "valfri" }] : []),
-    ...rp.extraYrkesfardigheter.flatMap((k, i) => (arSkola(k) ? [{ typ: "extra", i }] : [])),
-    ...rp.sekundara.filter(arSkola).map((k) => ({ typ: "sekundar", nyckel: k })),
-  ];
-}
-
-// Magiförmågeslaget görs bara i en egen modal. Den öppnas när slaget behövs och kan avgöras,
-// tärningen snurrar i ungefär fyra sekunder och resultatet gäller sedan för hela rollpersonen.
-const MAGISLAG = "Magiförmågeslaget";
-const MAGI_SNURR = 4000;
-let magiModal = null; // { fas: "in" | "redo" | "rullar" | "klar", vidare, tarning, el }
-const reduceraRorelse = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
-const magiBehovs = (res) => res.magiformaga.behovs && rp.magiformaga?.slag == null && !yrkeAv(R, yrkeId()).magiker;
-const magiMisslyckat = (res) => res.magiformaga.behovs && rp.magiformaga?.slag != null && !res.magiformaga.lyckat && !yrkeAv(R, yrkeId()).magiker;
-
-// I steg 4 slås magiförmågeslaget inte direkt (INT och PSY är inte bestämda än), så en vald magiskola får en upplysning
-function magiInfo(nyckel) {
-  if (fardighetAv(R, (nyckel || "x").split(":")[0])?.typ !== "magiskola" || yrkeAv(R, yrkeId()).magiker || rp.magiformaga?.slag != null) return null;
-  return el("div", { class: "varning magi-info", role: "note" },
-    el("strong", {}, "Magiförmågeslag. "),
-    "En magiskola kräver ett lyckat magiförmågeslag: 1T100 som måste bli högst (INT+PSY)/2 (s. 106). Slaget görs när du går vidare från steg 6, Grundegenskaper, när INT och PSY är bestämda. Misslyckas det får du välja en annan färdighet i stället.");
-}
-
-// Öppnar modalen. `vidare` är steget som visas när modalen stängs efter ett lyckat slag eller ett byte (null = stanna kvar).
-function oppnaMagiModal(vidare = null) {
-  if (magiModal) return;
-  const m = rakna().magiformaga;
-  const redanSlaget = rp.magiformaga?.slag != null;
-  const reducerad = reduceraRorelse();
-  const canvas = el("canvas", { class: "magi-klot", "aria-hidden": "true" });
-  const tarningsknapp = el("button", { type: "button", class: "magi-tarning", id: "magiformaga-sla", "aria-label": "Slå 1T100", disabled: true }, canvas);
-  const ledtext = el("p", { class: "magi-ledtext" }, manuellaSlag ? "Skriv in slaget och tryck på tärningen" : "tryck på tärningen");
-  const inmatning = manuellaSlag ? el("input", { type: "number", min: 1, max: 100, inputmode: "numeric", id: "magiformaga-varde", class: "magi-inmatning", "aria-label": "Slaget (1–100)", placeholder: "1–100" }) : null;
-  const chans = el("p", { class: "magi-chans" }, `1T100${m.mod ? ` ${m.mod > 0 ? "+" : "−"} ${Math.abs(m.mod)}` : ""} måste bli högst ${m.chans}, (INT+PSY)/2 (s. 106).`);
-  // Utvecklarläget: slå ett lyckat eller ett misslyckat slag
-  const devKnappar = omslag ? el("div", { class: "magi-dev" },
-    el("button", { type: "button", id: "magi-dev-lyckat", onclick: () => sla(1) }, "Utvecklare: lyckat"),
-    el("button", { type: "button", id: "magi-dev-misslyckat", onclick: () => sla(100) }, "Utvecklare: misslyckat")) : null;
-  const siffra = el("div", { class: "magi-siffra", "aria-hidden": "true" }, el("span", {}));
-  const utfall = el("div", { class: "magi-utfall", "aria-live": "polite" });
-  const eyebrow = el("p", { class: "magi-eyebrow", id: "magimodal-rubrik" }, "Magiförmågeslag");
-  const scen = el("div", { class: "magi-scen" }, tarningsknapp, siffra);
-  const under = el("div", { class: "magi-under" }, ledtext, inmatning, chans, devKnappar);
-  const panel = el("div", { class: "magi-panel", role: "dialog", "aria-modal": "true", "aria-labelledby": "magimodal-rubrik" }, eyebrow, scen, under, utfall);
-  const modal = el("div", { id: "magimodal", class: "magi-bakgrund" + (reducerad ? " reducerad" : "") }, panel);
-  document.body.append(modal);
-  document.body.classList.add("dialog-oppen");
-  magiModal = { fas: "in", vidare, el: modal, tarning: null };
-  const tarning = new Tarning100(canvas, { reducerad });
-  magiModal.tarning = tarning;
-  // Fångar fokus i modalen; den stängs bara med knappen efter slaget
-  modal.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { e.preventDefault(); return; }
-    if (e.key !== "Tab") return;
-    const fokus = [...modal.querySelectorAll("button:not([disabled]), input:not([disabled]), select:not([disabled])")];
-    if (!fokus.length) { e.preventDefault(); return; }
-    const forsta = fokus[0]; const sista = fokus[fokus.length - 1];
-    if (e.shiftKey && document.activeElement === forsta) { e.preventDefault(); sista.focus(); }
-    else if (!e.shiftKey && document.activeElement === sista) { e.preventDefault(); forsta.focus(); }
-  });
-
-  // Efter ett misslyckat slag byts varje magiskola mot en annan färdighet i modalen
-  const bytesPlatser = () => magiPlatser();
-  const visaByte = (knapp) => {
-    const platser = bytesPlatser();
-    const val = platser.map(() => "");
-    const fran = knapp.getBoundingClientRect();
-    magiModal.fas = "byte";
-    const rubrik = el("h2", { class: "magi-byte-rubrik", id: "magimodal-byte-rubrik" }, "FÖRLIKAS MED ÖDET");
-    const listor = el("div", { class: "magi-byte-val" });
-    const fel = el("p", { class: "magi-byte-fel", role: "alert" });
-    const gaVidare = el("button", { type: "button", class: "magi-knapp", id: "magimodal-ga-vidare", disabled: true, onclick: () => {
-      const kandidat = structuredClone(rp);
-      platser.forEach((p, i) => {
-        if (p.typ === "valfri") kandidat.valfri = val[i];
-        else if (p.typ === "extra") kandidat.extraYrkesfardigheter[p.i] = val[i];
-        else {
-          kandidat.sekundara[kandidat.sekundara.indexOf(p.nyckel)] = val[i];
-          delete kandidat.fardigheter[p.nyckel];
-        }
-      });
-      const problem = raknaFor(kandidat).fel;
-      if (problem.length) { fel.textContent = `Det går inte: ${problem[0]}.`; return; }
-      rp = kandidat;
-      stangMagiModal(false);
-    } }, "GÅ VIDARE");
-    const ritaVal = () => {
-      fel.textContent = "";
-      // Färdigheter som rollpersonen redan har (eller väljer i en annan lista här) visas inte; delval spärras som i stegen
-      const harRedan = new Set([...yrkesNycklar(), ...rp.extraYrkesfardigheter, ...rp.sekundara, ...val].filter(Boolean));
-      listor.replaceChildren(...platser.map((p, i) => el("div", { class: "magi-byte-plats" },
-        el("label", { for: `magibyte-${i}-f` }, { valfri: "Ny valfri yrkesfärdighet", extra: "Ny extra yrkesfärdighet", sekundar: "Ny sekundär färdighet" }[p.typ]),
-        fardighetsVal(`magibyte-${i}`, val[i], (v) => { val[i] = v; ritaVal(); },
-          (f) => f.typ !== "magiskola" && (p.typ === "extra" || f.typ !== "primar") && (f.perVal || !harRedan.has(f.id) || val[i].split(":")[0] === f.id),
-          p.typ === "sekundar" ? {} : { yrke: true }),
-        valdBeskrivning(val[i]),
-        val[i].startsWith("stridskonster") ? stridskonstInfo() : null)));
-      gaVidare.disabled = val.some((v) => !v || paborjad(v));
-    };
-    ritaVal();
-    modal.classList.add("byte");
-    panel.replaceChildren(rubrik,
-      el("p", { class: "magi-byte-text" }, "Magin förkastar dig. Glöm dina drömmar och satsa på något du kan."),
-      listor, fel, el("div", { class: "magi-byte-fot" }, gaVidare));
-    panel.setAttribute("aria-labelledby", "magimodal-byte-rubrik");
-    // Knappen glider upp och blir rubriken
-    if (!reducerad) {
-      const till = rubrik.getBoundingClientRect();
-      const dx = fran.left + fran.width / 2 - (till.left + till.width / 2);
-      const dy = fran.top + fran.height / 2 - (till.top + till.height / 2);
-      rubrik.animate([{ transform: `translate(${dx}px, ${dy}px) scale(.75)`, opacity: 0.85 }, { transform: "none", opacity: 1 }],
-        { duration: 650, easing: "cubic-bezier(.2, .7, .2, 1)" });
-      panel.querySelectorAll(".magi-byte-text, .magi-byte-val, .magi-byte-fot").forEach((x, i) =>
-        x.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 450, delay: 450 + i * 120, fill: "backwards", easing: "ease-out" }));
-    }
-    listor.querySelector("select")?.focus({ preventScroll: true });
-  };
-
-  const visaResultat = () => {
-    const res = rakna();
-    const mf = res.magiformaga;
-    magiModal.fas = "klar";
-    modal.classList.add("klar");
-    siffra.firstChild.textContent = mf.slag;
-    modal.classList.toggle("lyckat", mf.lyckat);
-    modal.classList.toggle("misslyckat", !mf.lyckat);
-    const detalj = `Slaget blev ${mf.slag}${mf.mod ? ` ${mf.mod > 0 ? "+" : "−"} ${Math.abs(mf.mod)} = ${mf.slag + mf.mod}` : ""}, och det måste bli högst ${mf.chans}.`;
-    const knapp = mf.lyckat
-      ? el("button", { type: "button", class: "magi-knapp", id: "magimodal-fortsatt", onclick: () => stangMagiModal(true) }, "FORTSÄTT")
-      : el("button", { type: "button", class: "magi-knapp", id: "magimodal-forlikas", onclick: () => (bytesPlatser().length ? visaByte(knapp) : stangMagiModal(false)) }, "FÖRLIKAS MED ÖDET");
-    utfall.replaceChildren(
-      el("h2", {}, mf.lyckat ? "SLAGET LYCKADES!" : "SLAGET MISSLYCKADES!"),
-      el("p", { class: "magi-brodtext" }, mf.lyckat ? "Du känner magins kraft i hela ditt väsen." : "Magins vindar blåser ej åt ditt håll ..."),
-      el("p", { class: "magi-detalj" }, detalj),
-      knapp);
-    setTimeout(() => knapp.focus({ preventScroll: true }), reducerad ? 0 : 700);
-  };
-  // `fast` är ett bestämt slag (utvecklarläget); annars slumpas det eller tas från fältet
-  async function sla(fast) {
-    if (magiModal?.fas !== "redo") return;
-    let v = Number.isInteger(fast) ? fast : null;
-    if (v === null && manuellaSlag) {
-      v = Number(inmatning.value);
-      if (!Number.isInteger(v) || v < 1 || v > 100) { inmatning.focus(); inmatning.classList.add("fel"); return; }
-    } else if (v === null) v = slaT(1, 100);
-    if (inmatning) inmatning.disabled = true;
-    magiModal.fas = "rullar";
-    modal.classList.add("rullar");
-    tarningsknapp.disabled = true;
-    // Slaget sparas direkt: det görs en gång och gäller hela rollpersonen. Steget minns för utvecklarlägets Gör om.
-    rp.magiformaga = { slag: v, steg: aktivtSteg };
-    uppdatera();
-    await tarning.sla(v, reducerad ? 300 : MAGI_SNURR);
-    if (magiModal) visaResultat();
-  }
-  tarningsknapp.addEventListener("click", () => sla());
-  inmatning?.addEventListener("keydown", (e) => { if (e.key === "Enter") sla(); });
-  inmatning?.addEventListener("input", () => inmatning.classList.remove("fel"));
-  // Övergången in tar en knapp halv sekund; sedan visas tärningen
-  requestAnimationFrame(() => modal.classList.add("synlig"));
-  setTimeout(() => {
-    if (!magiModal) return;
-    modal.classList.add("tarning-synlig");
-    if (redanSlaget) { tarning.visa(rp.magiformaga.slag); visaResultat(); return; }
-    magiModal.fas = "redo";
-    tarningsknapp.disabled = false;
-    (inmatning ?? tarningsknapp).focus({ preventScroll: true });
-  }, reducerad ? 0 : 550);
-}
-
-// Stänger modalen. Efter ett misslyckat slag tas magiskolor som är kvar bort (efter ett byte är det bara sekundära).
-function stangMagiModal(lyckat) {
-  if (!magiModal) return;
-  const { el: modal, tarning, vidare } = magiModal;
-  if (!lyckat) {
-    const arSkola = (k) => fardighetAv(R, (k || "x").split(":")[0])?.typ === "magiskola";
-    if (arSkola(rp.valfri)) rp.valfri = "";
-    rp.extraYrkesfardigheter = rp.extraYrkesfardigheter.map((k) => (arSkola(k) ? "" : k));
-    rp.sekundara = rp.sekundara.filter((k) => !arSkola(k));
-    for (const k of Object.keys(rp.fardigheter)) if (arSkola(k)) delete rp.fardigheter[k];
-    rp.besvarjelser = {};
-    if (arSkola(nySekundar)) nySekundar = "";
-    if (arSkola(nyExtra)) nyExtra = "";
-  }
-  if (vidare && (lyckat || modal.classList.contains("byte"))) aktivtSteg = vidare;
-  magiModal = null;
-  modal.classList.add("stanger");
-  setTimeout(() => { tarning.stoppa(); modal.remove(); if (!magiModal) document.body.classList.remove("dialog-oppen"); }, reduceraRorelse() ? 0 : 350);
-  uppdatera();
-}
-
-// Utvecklarläget: en röd knapp i steget där slaget gjordes tar bort slaget och slår om det
-function magiGorOm(stegId) {
-  if (!omslag || rp.magiformaga?.slag == null) return null;
-  const arSkola = (k) => fardighetAv(R, k || "x")?.typ === "magiskola";
-  const dar = rp.magiformaga.steg ?? (yrkesNycklar().some(arSkola) || rp.extraYrkesfardigheter.some(arSkola) ? "egenskaper" : "fardigheter");
-  if (dar !== stegId) return null;
-  return el("button", { type: "button", class: "knapp magi-gor-om", id: "magi-gor-om", title: "Utvecklarläge: ta bort magiförmågeslaget och slå om",
-    onclick: () => { rp.magiformaga = { slag: null }; giltig = structuredClone(rp); spara(); rita(); oppnaMagiModal(); } }, "Gör om magiförmågeslaget");
-}
-
-function stegSvardshand(res) {
-  const sf = sarskildFormaga();
-  if (sf && ["Dubbelhänt", "Ambidextriös"].includes(sf.namn)) {
-    return [el("p", { class: "summering" }, `Den särskilda förmågan ger ${sf.namn.toLowerCase()} rollperson, så du behöver inte slå (s. 32).`)];
-  }
-  return slagSteg("sh", "svardshand", "Svärdshand", "2T6",
-    rp.svardshand.slag === null ? inteSlaget() : [`Resultat: ${rp.svardshand.slag + rp.svardshand.bp}.`, `Svärdshand: ${res.slag.svardshand}.`],
-    "Slå 2T6 plus lagda BP: 2–11 höger, 12–14 vänster, 15–18 dubbelhänt, 19+ ambidextriös.");
-}
-
-function stegStand(res) {
-  const ras = rasAv(R, rasId());
-  const bonus = ras.slagbonus.socialtStand ?? 0;
-  const tabell = R.slag.socialtStand.tabell;
-  if (rp.socialtStand.valt) {
-    return [
-      el("p", { class: "summering" }, `Valt stånd: ${rp.socialtStand.valt}. Det räknas som slagresultatet ${res.slag.ssResultat} för startkapitalet.`),
-      el("button", { type: "button", class: "knapp", onclick: () => { rp.socialtStand.valt = ""; uppdatera(); } }, "Slå i stället"),
-    ];
-  }
-  const valja = rp.socialtStand.slag === null ? el("details", { class: "fakta" }, el("summary", {}, "Välj stånd i stället för att slå (om SL tillåter)"),
-    el("p", { class: "hjalp" }, "Huvudregeln är att slå. Om spelledaren går med på det kan du välja stånd direkt. Då räknas det lägsta slagresultatet för det ståndet, och du lägger inga BP här."),
-    valLista("valt-stand", "", tabell.map(([, n]) => [n, `${n} (${standsvarde(tabell, n)}+)`]), (v) => { if (v) { rp.socialtStand = { bp: 0, slag: null, valt: v }; uppdatera(); } }, "Välj stånd …")) : null;
-  return [...slagSteg("ss", "socialtStand", "Socialt stånd", "2T6",
-    rp.socialtStand.slag === null ? inteSlaget() : [`Resultat: ${res.slag.ssResultat}.`, `Socialt stånd: ${res.slag.socialtStand}.`],
-    "Slå 2T6 plus lagda BP. Socialt stånd påverkar läs- och skrivkunnighet i modersmålet och taket för startkapitalet. Hälften av de BP du lägger här (avrundat uppåt) läggs också som bonus på slaget för startkapital i steg 10.",
-    undefined, bonus ? [[`Ras (${ras.namn.toLowerCase()})`, bonus]] : []), valja];
-}
-
-function stegKapital(res) {
-  const halva = Math.ceil(rp.socialtStand.bp / 2);
-  const alderEff = R.alder.efterAr.find((r) => r.max === null || rp.alder <= r.max);
-  const ras = rasAv(R, rasId());
-  const yrke = yrkeAv(R, yrkeId());
-  const bonusar = [
-    halva ? ["Halva BP från socialt stånd", halva] : null,
-    ras.slagbonus.startkapital ? [`Ras (${ras.namn.toLowerCase()})`, ras.slagbonus.startkapital] : null,
-    yrke.slagbonus?.startkapital ? [`Yrke (${yrke.namn.toLowerCase()})`, yrke.slagbonus.startkapital] : null,
-  ].filter(Boolean);
-  const utanTak = rp.startkapital.slag + rp.startkapital.bp + bonusar.reduce((a, [, v]) => a + v, 0);
-  return slagSteg("sk", "startkapital", "Startkapital", "2T6",
-    rp.startkapital.slag === null ? inteSlaget() : { rader: [
-      `Resultat: ${res.slag.skResultat}${utanTak > res.slag.skResultat ? ` (${utanTak} före taket)` : ""}.`,
-      `Åldersbonus: ×${String(alderEff.kapital).replace(".", ",")}.`],
-    total: `Totalt startkapital: ${sm(res.slag.startkapital)}` },
-    `Slå 2T6 plus lagda BP. Bonusarna nedan läggs på slaget. Resultatet kan inte bli högre än socialt stånd + ${yrke.kapitaltak ?? 10}.`, undefined, bonusar,
-    [`Tak för startkapital: ${res.slag.ssResultat + (yrke.kapitaltak ?? 10)}`]);
-}
-
-// EP per FV för en ny sekundär färdighet (s. 35–36)
-function sekundarPris(nyckel) {
-  const k = R.fardigheter.kostnad;
-  if ((nyckel || "").startsWith("stridskonster")) return 3; // billigaste stilen: en teknik à 0,5 → 1, plus 2 (s. 68)
-  return fardighetAv(R, nyckel || "x")?.typ === "magiskola" ? k.magiskolaSekundar : k.sekundar;
-}
-
-function nySekundarInfo(res) {
-  const pris = sekundarPris(nySekundar);
-  const typ = fardighetAv(R, nySekundar || "x")?.typ === "magiskola" ? "En magiskola som sekundär färdighet" : "En sekundär färdighet";
-  const text = nySekundar.startsWith("stridskonster")
-    ? `Stridskonster som sekundär färdighet har ingen baschans. Varje FV kostar teknikernas grundkostnad plus 2 EP, minst ${pris} EP. Teknikerna väljer du när stilen är tillagd. Du har ${res.ep.kvar} EP kvar.`
-    : `${typ} har ingen baschans och kostar ${pris} EP per FV. Du har ${res.ep.kvar} EP kvar, vilket räcker till FV ${Math.floor(res.ep.kvar / pris)}.`;
-  return el("p", { class: res.ep.kvar < pris ? "hjalp felrad" : "hjalp" },
-    text, res.ep.kvar < pris ? " Du har inte råd med fler sekundära färdigheter." : " Välj färdighet, fyll i vad den gäller och tryck Lägg till.");
-}
-
-function stegFardigheter(res) {
-  const grupper = [["primar", "Primära färdigheter", "2 EP per FV"], ["yrke", "Yrkesfärdigheter", "3 EP per FV"], ["sekundar", "Sekundära färdigheter", "5 EP per FV"]];
-  const bniva = (fv) => slaUpp(R.fardigheter.bNivaer, fv);
-  const tabell = (lista) => el("div", { class: "tabellram" }, el("table", { class: "tabell fardighetstabell" },
-    el("thead", {}, el("tr", {}, el("th", {}, "Färdighet"), el("th", {}, "Grundeg."), el("th", { class: "num" }, "Start", info("BC")), el("th", { class: "num" }, "FV", info("FV")), el("th", { class: "num" }, "EP", info("EP")))),
-    el("tbody", {}, lista.map((f) => el("tr", {},
-      el("td", {}, f.namn, fardighetsInfo(f.nyckel), rp.sekundara.includes(f.nyckel) && f.status === "sekundar" ? el("button", {
-        type: "button", class: "lank", "aria-label": `Ta bort ${f.namn}`,
-        onclick: () => { rp.sekundara = rp.sekundara.filter((k) => k !== f.nyckel); delete rp.fardigheter[f.nyckel]; uppdatera(); },
-      }, "ta bort") : null),
-      el("td", {}, f.grundegenskap),
-      el("td", { class: "num" }, f.start),
-      el("td", { class: "num" }, markera(tal(`fv-${f.nyckel}`, f.fv, (v) => { rp.fardigheter[f.nyckel] = v ?? 0; uppdatera(); }, { min: 0, max: 30 }), f.fv, f.start),
-        el("span", { class: "bniva" }, f.kategoriB ? bniva(f.fv) : "")),
-      el("td", { class: "num" }, f.ep || ""))))));
-  const harRedan = new Set([...yrkesNycklar(), ...rp.extraYrkesfardigheter, ...rp.sekundara]);
-  return [
-    el("p", {}, `Du har ${res.ep.start} EP: ${R.alder.efterAr.find((r) => r.max === null || rp.alder <= r.max).ep} för åldern och 5 per överblivet BP. Primära och yrkesfärdigheter har gratis baschans (BC). FV får inte vara högre än grundegenskapen vid start.`),
-    el("div", { class: "rad" },
-      el("button", { type: "button", class: "knapp", onclick: fordelaEP }, `Fördela EP automatiskt för ${res.yrke.namn.toLowerCase()}`),
-      autoAnvand.fardigheter ? el("button", { type: "button", class: "knapp", onclick: () => { rp.fardigheter = {}; rp.besvarjelser = {}; autoAnvand.fardigheter = false; uppdatera(); } }, "Nollställ FV") : null,
-      el("span", { class: "hjalp" }, "Fördelningen ersätter dina nuvarande FV. Yrkesfärdigheterna får mest, sedan sekundära färdigheter du har lagt till och primära färdigheter med hög grundegenskap. Lägg till sekundära färdigheter först om du vill ha med dem. Du kan justera efteråt.")),
-    grupper.map(([st, titel, pris]) => {
-      const lista = res.fardigheter.filter((f) => f.status === st);
-      return lista.length ? [el("h3", {}, titel, el("span", { class: "pris" }, pris)), tabell(lista)] : null;
-    }),
-    res.fardigheter.filter((f) => f.tekniker).map((f) => stridskonstTekniker(f, res)),
-    el("h3", {}, "Lär dig en ny sekundär färdighet"),
-    el("div", { class: "rad" },
-      // Färdigheter som rollpersonen redan har visas inte; för dem med delval spärras de delval som redan finns
-      fardighetsVal("ny-sek", nySekundar, (v) => { nySekundar = v; rita(); }, (f) => f.typ !== "primar" && magiMojlig(f) && (f.perVal || !harRedan.has(f.id))),
-      el("button", { type: "button", class: "knapp", disabled: paborjad(nySekundar), onclick: () => {
-        const pris = sekundarPris(nySekundar);
-        if (res.ep.kvar < pris) {
-          visaNotis(`Det går inte: en ny sekundär färdighet kostar ${pris} EP per FV, och du har bara ${res.ep.kvar} EP kvar.`);
-          return;
-        }
-        if (!rp.sekundara.includes(nySekundar)) rp.sekundara.push(nySekundar);
-        nySekundar = "";
-        uppdatera();
-        // En magiskola utan lyckat magiförmågeslag: slaget görs direkt
-        if (magiBehovs(rakna())) oppnaMagiModal();
-      } }, "Lägg till")),
-    valdBeskrivning(nySekundar),
-    nySekundarInfo(res),
-  ];
-}
-
-// Stridskonster namnges där färdigheten väljs, men teknikerna väljs i steg 11
-const stridskonstInfo = () => el("p", { class: "yrkesformaga stridskonst-info", role: "note" }, el("strong", {}, "Tekniker: "),
-  "Teknikerna i stilen väljer du i steg 11, Färdigheter. Där kan du också byta namn på stilen.");
-
-// Stridskonster: spelaren sätter ihop sin stil av tekniker. Summan av deras grundkostnad,
-// avrundad uppåt, är EP per FV; 2 till om stilen inte är yrkesfärdighet (s. 68).
-function stridskonstTekniker(f, res) {
-  const valda = rp.stridskonstTekniker[f.nyckel] ?? [];
-  const lista = R.fardigheter.stridskonstTekniker;
-  const kostnadFor = (t) => lista.find(([n]) => n === t)?.[1] ?? 0;
-  const summa = valda.reduce((a, t) => a + kostnadFor(t), 0);
-  const tillagg = f.status === "yrke" ? 0 : 2;
-  const fardig = Boolean(rp.stridskonstFardig?.[f.nyckel]);
-  const vaxla = (namn, pa) => {
-    const ny = pa ? [...valda, namn] : valda.filter((t) => t !== namn);
-    rp.stridskonstTekniker = { ...rp.stridskonstTekniker, [f.nyckel]: ny };
-    uppdatera();
-  };
-  // En teknik till höjer priset för alla FV över baschansen; den går inte att välja om EP inte räcker.
-  // Är inget FV köpt än räknas det första, eftersom stilen annars inte går att höja alls.
-  const merEP = (kostnad) => Math.max(f.fv - f.start, 1) * (Math.ceil(summa + kostnad) + tillagg) - f.ep;
-  const tal = (x) => x.toLocaleString("sv-SE", { minimumFractionDigits: 1 });
-  const stil = f.nyckel.split(":")[1] ?? "";
-  const summering = el("p", { class: "summering" }, valda.length
-    ? `Grundkostnad ${tal(summa)}, avrundat uppåt ${Math.ceil(summa)}${tillagg ? `, plus 2 = ${f.epPerFV}` : ""} EP per FV.`
-    : "Inga tekniker valda än. Välj minst en innan du höjer FV.");
-  if (fardig) {
-    return el("div", { class: "stridskonst fardig" },
-      el("h3", {}, `${f.namn}: stilens tekniker`),
-      el("ul", { class: "teknikbeskrivningar" }, valda.map((t) => el("li", {},
-        el("strong", {}, t), el("p", { class: "hjalp" }, R.fardigheter.stridskonstBeskrivning?.[t] ?? "")))),
-      summering,
-      el("div", { class: "rad" }, el("button", { type: "button", class: "knapp", id: `sk-andra-${idDel(f.nyckel)}`, onclick: () => {
-        rp.stridskonstFardig = { ...rp.stridskonstFardig, [f.nyckel]: false }; uppdatera();
-      } }, "Ändra")));
-  }
-  return el("div", { class: "stridskonst" },
-    el("h3", {}, `${f.namn}: stilens tekniker`),
-    falt("Stilens namn", el("input", { type: "text", id: `sk-namn-${idDel(f.nyckel)}`, value: stil, maxlength: 125,
-      onchange: (e) => bytStilnamn(f.nyckel, e.target.value.trim()) })),
-    el("p", { class: "hjalp" }, "Välj vilka tekniker stilen består av. FV gäller alla tekniker i stilen. Varje tekniks grundkostnad läggs ihop och avrundas uppåt; det blir EP per FV",
-      tillagg ? ", plus 2 eftersom stilen inte är en yrkesfärdighet. " : ". ",
-      "Tekniker som skulle göra stilen dyrare än du har EP till går inte att välja (minst ett köpt FV räknas). † fungerar bara mot människoliknande motståndare (s. 68–70)."),
-    el("div", { class: "teknikrutnat" }, lista.map(([namn, kostnad], i) => {
-      const text = R.fardigheter.stridskonstBeskrivning?.[namn];
-      const vald = valda.includes(namn);
-      const for_dyr = !vald && merEP(kostnad) > res.ep.kvar;
-      // Info-knappen ligger utanför etiketten, så att ett tryck på den inte kryssar i tekniken
-      return el("div", { class: "teknik" + (for_dyr ? " for-dyr" : "") },
-        el("label", { title: for_dyr ? `Kräver ${merEP(kostnad)} EP till, du har ${res.ep.kvar}` : null },
-          el("input", { type: "checkbox", id: `teknik-${idDel(f.nyckel)}-${i}`, checked: vald, disabled: for_dyr, onchange: (e) => vaxla(namn, e.target.checked) }),
-          el("span", {}, namn)),
-        text ? el("button", { type: "button", class: "info", "data-tip": `${text} (s. 69–70)`, "aria-label": `Om ${namn.replace("†", "")}` }, "i") : null,
-        el("span", { class: "teknikpris" }, tal(kostnad)));
-    })),
-    summering,
-    el("div", { class: "rad" }, el("button", { type: "button", class: "knapp primar", id: `sk-fardig-${idDel(f.nyckel)}`, disabled: !valda.length, onclick: () => {
-      rp.stridskonstFardig = { ...rp.stridskonstFardig, [f.nyckel]: true }; uppdatera();
-    } }, "Färdigställ stridskonst")));
-}
-
-const idDel = (nyckel) => nyckel.replace(/[^a-z0-9]/gi, "-");
-
-// Byter namn på en stridskonst överallt där nyckeln finns: yrkesval, extra yrkesfärdigheter,
-// sekundära färdigheter, FV och valda tekniker
-function bytStilnamn(gammal, namn) {
-  const ny = `stridskonster:${namn}`;
-  if (!namn || ny === gammal) { rita(); return; }
-  if (rakna().fardigheter.some((x) => x.nyckel === ny)) { visaNotis(`Det finns redan en stil som heter ${namn}.`); rita(); return; }
-  const gammaltNamn = gammal.split(":")[1];
-  for (const [i, v] of Object.entries(rp.yrkesval)) {
-    const post = yrkeAv(R, yrkeId()).fardigheter[i];
-    if (post === "stridskonster" && v === gammaltNamn) rp.yrkesval[i] = namn;
-    else if (v?.id === "stridskonster" && v.sub === gammaltNamn) rp.yrkesval[i] = { ...v, sub: namn };
-  }
-  if (rp.valfri === gammal) rp.valfri = ny;
-  rp.extraYrkesfardigheter = rp.extraYrkesfardigheter.map((k) => (k === gammal ? ny : k));
-  rp.sekundara = rp.sekundara.map((k) => (k === gammal ? ny : k));
-  for (const falt of ["fardigheter", "stridskonstTekniker", "stridskonstFardig"]) {
-    if (rp[falt] && gammal in rp[falt]) {
-      rp[falt] = Object.fromEntries(Object.entries(rp[falt]).map(([k, v]) => [k === gammal ? ny : k, v]));
-    }
-  }
-  uppdatera();
-}
-
-// ------------------------------------------------------------ besvärjelser (s. 36, 106–129)
-function stegBesvarjelser(res) {
-  const B = R.besvarjelser;
-  const skola = skolFV(res.fardigheter);
-  const kanMagi = res.yrke.magiker || res.magiformaga.lyckat;
-  const psy = res.grundegenskaper.PSY;
-  if (!kanMagi || skola.allman === 0) {
-    return [el("p", { class: "summering" }, "Rollpersonen har ingen magiskola och kan inte lära sig besvärjelser. Gå vidare till utrustningen."),
-      el("p", { class: "hjalp" }, "Magiker får en magiskola som yrkesfärdighet. Andra kan lära sig en skola som extra yrkesfärdighet i steg 4 eller som sekundär färdighet i steg 11, om magiförmågeslaget lyckas (s. 106).")];
-  }
-  const satt = (nyckel, fv) => {
-    const ny = { ...rp.besvarjelser };
-    if (fv > 0) ny[nyckel] = fv; else delete ny[nyckel];
-    rp.besvarjelser = ny;
-    uppdatera();
-  };
-  const fvFor = (nyckel) => rp.besvarjelser[nyckel] ?? 0;
-  const rad = (b, nyckel, namn, extra = null) => {
-    const fv = fvFor(nyckel);
-    const per = besvarjelsePris(R, b.sv);
-    const tips = `${b.beskrivning} Räckvidd: ${b.rackvidd}. Varaktighet: ${b.varaktighet}.${b.typ ? ` Typ: ${b.typ}.` : ""} (s. ${b.sida})`;
-    return el("tr", { class: fv ? "vald" : "" },
-      el("td", {}, namn, el("button", { type: "button", class: "info", "data-tip": tips, "aria-label": `Om ${b.namn}` }, "i"), extra),
-      el("td", { class: "num" }, b.sv),
-      el("td", { class: "num" }, per),
-      el("td", { class: "num" }, tal(`bv-${nyckel.replace(/[^a-z0-9]/gi, "-")}`, fv || null, (v) => satt(nyckel, v ?? 0), { min: 0, max: psy })),
-      el("td", { class: "num" }, fv ? fv * per : ""));
-  };
-  const grupper = ["allman", "animism", "elementarmagi", "mentalism"].filter((k) => skola[k] > 0).map((k) => {
-    const lista = B.lista.filter((b) => b.skola === k && b.sv <= skola[k]);
-    const forHoga = B.lista.filter((b) => b.skola === k && b.sv > skola[k]).length;
-    const rader = lista.flatMap((b) => {
-      if (!b.perVal) return [rad(b, b.id, b.namn)];
-      const alternativ = b.perVal === "elementar" ? B.elementarer : B.varelsegrupper;
-      const valda = alternativ.filter((g) => fvFor(`${b.id}:${g}`) > 0);
-      const kvar = alternativ.filter((g) => !valda.includes(g));
-      return [
-        ...valda.map((g) => rad(b, `${b.id}:${g}`, `${b.namn}: ${g}`)),
-        kvar.length ? el("tr", {}, el("td", { colspan: 5 },
-          valLista(`bv-ny-${b.id}`, "", kvar.map((g) => [g, g]), (g) => { if (g) satt(`${b.id}:${g}`, 1); },
-            `${b.namn} (SV ${b.sv}): lär för ${b.perVal === "elementar" ? "elementar" : "grupp"} …`))) : null,
-      ];
-    });
-    return [
-      el("h3", {}, B.skolor[k], el("span", { class: "pris" }, k === "allman" ? `styrs av bästa skolan, FV ${skola[k]}` : `FV ${skola[k]} i skolan`)),
-      el("div", { class: "tabellram" }, el("table", { class: "tabell besvarjelsetabell" },
-        el("thead", {}, el("tr", {}, el("th", {}, "Besvärjelse"), el("th", { class: "num" }, "SV"), el("th", { class: "num" }, "EP/FV"), el("th", { class: "num" }, "FV"), el("th", { class: "num" }, "EP"))),
-        el("tbody", {}, rader))),
-      forHoga ? el("p", { class: "hjalp" }, `${forHoga} besvärjelser i ${B.skolor[k].toLowerCase()} har högre skolvärde än ${skola[k]} och kan inte läras än.`) : null,
-    ];
-  });
-  return [
-    el("p", {}, `Besvärjelser köps med EP, precis som färdigheter. De har ingen baschans och FV kan vara högst ${psy}, samma som PSY. Priset per FV beror på skolvärdet (SV): 2 EP för SV 1–3, 3 EP för SV 4–6 och så vidare (s. 36).`),
-    el("ul", { class: "punkter hjalp" }, B.regler.slice(1).map((t) => el("li", {}, t))),
-    grupper,
-  ];
-}
-
-// ------------------------------------------------------------ utrustning (s. 38, 89–102)
-let utrustningsFilter = ""; // fritextsökningen i utrustningssteget
-let utrustningsKategori = "Äventyrarutrustning";
-
-function stegUtrustning(res) {
-  const U = R.utrustning;
-  const varden = res.grundegenskaper;
-  const u = res.utrustning;
-  const katalog = varukatalog(R).filter((x) => !["Närstridsvapen", "Avståndsvapen", "Kastvapen", "Sköldar"].includes(x.kategori) || kanAnvandaVapen(R, x.namn, varden));
-  const kategorier = [...new Set(katalog.map((x) => x.kategori))];
-  const antal = (namn) => rp.utrustning[namn] ?? 0;
-  const andra = (namn, d) => {
-    const ny = { ...rp.utrustning, [namn]: Math.max(0, antal(namn) + d) };
-    if (!ny[namn]) delete ny[namn];
-    rp.utrustning = ny;
-    uppdatera();
-  };
-  // Vapen man har färdighet i visas först i startpaketets lista
-  const kanna = new Set(res.fardigheter.filter((f) => f.nyckel.startsWith("vapen:") && f.fv > 0).map((f) => f.nyckel.split(":")[1]));
-  const enkla = katalog.filter((x) => ["Närstridsvapen", "Avståndsvapen", "Kastvapen"].includes(x.kategori) && x.pris <= U.startpaket.vapenMaxPris);
-  const paketVapen = [
-    ...(enkla.some((x) => kanna.has(x.namn)) ? [["Vapen rollpersonen kan hantera", enkla.filter((x) => kanna.has(x.namn)).map((x) => [x.namn, `${x.namn} (${x.skada})`])]] : []),
-    ["Andra enkla vapen", enkla.filter((x) => !kanna.has(x.namn)).map((x) => [x.namn, `${x.namn} (${x.skada})`])],
-  ].filter(([, alt]) => alt.length);
-  // Fritextfiltret söker i alla kategorier och filtrerar raderna direkt medan man skriver, utan att rita om
-  // (då behåller sökfältet fokus). Utan text visas vald kategori.
-  const rader = katalog.map((x) => el("tr", { class: antal(x.namn) ? "vald" : "", "data-kategori": x.kategori, "data-namn": x.namn.toLowerCase() },
-    el("td", {}, x.namn, x.absorbering ? el("span", { class: "hjalp" }, ` abs. ${x.absorbering}`) : x.skada ? el("span", { class: "hjalp" }, ` ${x.skada}`) : null,
-      el("span", { class: "hjalp varukategori" }, ` · ${x.kategori}`)),
-    el("td", { class: "num" }, x.vikt == null ? "–" : `${x.vikt.toLocaleString("sv-SE")} kg`),
-    el("td", { class: "num" }, sm(x.pris)),
-    el("td", { class: "num antal" },
-      el("button", { type: "button", class: "knapp liten", disabled: !antal(x.namn), "aria-label": `En ${x.namn} mindre`, onclick: () => andra(x.namn, -1) }, "−"),
-      el("span", {}, antal(x.namn)),
-      el("button", { type: "button", class: "knapp liten", disabled: x.pris > u.kvar, "aria-label": `En ${x.namn} till`, onclick: () => andra(x.namn, 1) }, "+"))));
-  const ingenTraff = el("p", { class: "hjalp", id: "inga-varor", role: "status" });
-  const tabell = el("div", { class: "tabellram" }, el("table", { class: "tabell varutabell" },
-    el("thead", {}, el("tr", {}, el("th", {}, "Vara"), el("th", { class: "num" }, "Vikt"), el("th", { class: "num" }, "Pris"), el("th", { class: "num" }, "Antal"))),
-    el("tbody", {}, rader)));
-  const flikar = el("div", { class: "flikar", role: "tablist" }, kategorier.map((k) => el("button", {
-    type: "button", class: "valknapp" + (k === utrustningsKategori ? " vald" : ""), role: "tab", "aria-selected": k === utrustningsKategori ? "true" : "false",
-    onclick: () => { utrustningsKategori = k; utrustningsFilter = ""; rita(); },
-  }, k)));
-  const filtrera = () => {
-    const text = utrustningsFilter.trim().toLowerCase();
-    let synliga = 0;
-    for (const rad of rader) {
-      rad.hidden = text ? !rad.dataset.namn.includes(text) : rad.dataset.kategori !== utrustningsKategori;
-      if (!rad.hidden) synliga++;
-    }
-    tabell.classList.toggle("sokning", !!text);
-    flikar.classList.toggle("sokning", !!text);
-    tabell.hidden = !synliga;
-    ingenTraff.hidden = !!synliga;
-    ingenTraff.textContent = synliga ? "" : `Inga varor matchar ”${utrustningsFilter.trim()}”.`;
-  };
-  const sok = el("input", {
-    type: "search", id: "varusok", class: "sokfalt", value: utrustningsFilter, placeholder: "Sök bland alla varor …", "aria-label": "Sök utrustning",
-    oninput: (e) => { utrustningsFilter = e.target.value; filtrera(); },
-  });
-  filtrera();
-  return [
-    el("p", {}, "Rollpersonen köper sin utrustning för startkapitalet. Vapen som rollpersonen inte orkar använda visas inte (s. 89). Det som inte spenderas blir kvar som pengar."),
-    el("dl", { class: "steg-potter utrustning-summa" },
-      el("div", {}, el("dt", {}, "Startkapital"), el("dd", {}, sm(res.slag.startkapital))),
-      el("div", {}, el("dt", {}, "Spenderat"), el("dd", {}, sm(u.kostnad))),
-      el("div", { class: u.kvar < 0 ? "over" : "" }, el("dt", {}, "Kvar"), el("dd", {}, sm(u.kvar))),
-      el("div", { class: u.belastning ? "over" : "" }, el("dt", {}, "Börda"), el("dd", {}, `${kg(u.borda)} av ${u.barformaga} kg`))),
-    u.belastning ? el("div", { class: "varning", role: "note", id: "viktvarning" },
-      el("strong", {}, `Packningen väger mer än rollpersonen orkar bära utan besvär (${u.barformaga} kg, samma som STY). `),
-      u.belastning.mod === null ? u.belastning.text
-        : `Bördan på ${kg(u.borda)} kg ger ${fmtMod(u.belastning.mod)} på förflyttning, SMI och CL i SMI-baserade färdigheter. ${u.belastning.text} Kläder räknas inte, och en rustning man bär räknas som halva vikten (s. 100).`) : null,
-    el("div", { class: "rutor" }, el("div", {},
-      el("label", { class: "kryss" },
-        el("input", { type: "checkbox", id: "startpaket", checked: rp.startpaket.valt, onchange: (e) => { rp.startpaket = { valt: e.target.checked, vapen: "" }; uppdatera(); } }),
-        el("span", {}, el("strong", {}, "Gratis startpaket"), `: ${U.startpaket.varor.map((v) => v.replace(/ \(.*\)/, "").toLowerCase()).join(", ")} och ett enkelt vapen (högst ${U.startpaket.vapenMaxPris} sm). Husregel; fråga spelledaren.`)),
-      rp.startpaket.valt ? falt("Startpaketets vapen", gruppLista("startpaket-vapen", rp.startpaket.vapen, paketVapen,
-        (v) => { rp.startpaket = { ...rp.startpaket, vapen: v }; uppdatera(); }, "Välj vapen …")) : null)),
-    el("h3", {}, "Köp"),
-    flikar,
-    sok,
-    ingenTraff,
-    tabell,
-    u.saker.length ? [el("h3", {}, "Packning"), el("ul", { class: "packning" }, u.saker.map((x) =>
-      el("li", {}, el("span", {}, sakNamn(x)), el("span", { class: "num hjalp" }, x.gratis ? "gratis" : sm(x.pris * x.antal)))))] : null,
-  ];
-}
-
-// ------------------------------------------------------------ rollformuläret
-function rollformular(res) {
-  const g = res.grundegenskaper;
-  const h = res.harledda;
-  // Före steg 6 finns inga grundegenskaper, och inget som räknas fram ur dem: rutorna visar "–"
-  const visa = (v) => (res.grundegenskaperSatta && v != null ? v : "–");
-  const bpProcent = Math.max(0, Math.min(100, (res.bp.kvar / res.bp.start) * 100));
-  const epProcent = Math.max(0, Math.min(100, (res.ep.kvar / res.ep.start) * 100));
-  return el("div", { class: "formular" },
-    el("div", { class: "formular-huvud" },
-      el("h2", {}, el("input", { id: "formular-namn", class: "namnfalt", type: "text", value: rp.namn, placeholder: "Namnlös rollperson", "aria-label": "Rollpersonens namn",
-        onchange: (e) => { rp.namn = e.target.value; uppdatera(); } })),
-      el("p", {}, [rp.ras ? res.ras.namn : null, rp.yrke ? res.yrke.namn : null, rp.alder == null ? null : `${rp.alder} år`, rp.kon].filter(Boolean).join(" · "))),
-    vy === "spel" ? el("dl", { class: "nyckelvarden" },
-      el("div", {}, el("dt", {}, "Osparade EP", info("EP")), el("dd", {}, spelPotter(spelCtx(res)).ep)),
-      el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, rp.spel.hjaltepoang ?? 0))) : el("div", { class: "potter" },
-      el("div", { class: "pott" + (res.bp.kvar < 0 ? " over" : "") }, el("span", { class: "etikett" }, "BP kvar", info("BP")),
-        el("span", { class: "pott-tal" }, res.bp.kvar), el("span", { class: "matare" }, el("span", { style: `width:${bpProcent}%` })),
-        el("span", { class: "hjalp" }, `av ${res.bp.start}`)),
-      el("div", { class: "pott" + (res.ep.kvar < 0 ? " over" : "") }, el("span", { class: "etikett" }, "EP kvar", info("EP")),
-        el("span", { class: "pott-tal" }, res.ep.kvar), el("span", { class: "matare" }, el("span", { style: `width:${epProcent}%` })),
-        el("span", { class: "hjalp" }, `av ${res.ep.start}`))),
-    vy === "spel" ? null : saknas(res).length ? el("div", { class: "saknaslista", role: "status" }, el("strong", {}, "Kvar att välja"), el("ul", {}, saknas(res).map((f) => el("li", {}, f))))
-      : el("p", { class: "klar" }, "Rollpersonen är klar."),
-    // Förkortning och värde centrerade; infoikonen längst ned i rutan
-    el("dl", { class: "egenskaper" }, [...GRUNDEGENSKAPER, "STO"].map((k) => el("div", {}, el("dt", {}, k), el("dd", {}, visa(g[k])), el("dd", { class: "egenskap-info" }, info(k))))),
-    el("dl", { class: "nyckelvarden" },
-      el("div", {}, el("dt", {}, "Kroppspoäng", info("KP")), el("dd", {}, visa(h.totalKP))),
-      el("div", {}, el("dt", {}, "Skadebonus", info("SB")), el("dd", {}, visa(h.skadebonus))),
-      el("div", {}, el("dt", {}, "Förflyttning", info("Förflyttning")), el("dd", {}, visa(h.forflyttning))),
-      el("div", {}, el("dt", {}, "Svärdshand"), el("dd", {}, res.slag.svardshand)),
-      el("div", {}, el("dt", {}, "Socialt stånd"), el("dd", {}, res.slag.socialtStand)),
-      el("div", {}, el("dt", {}, "Startkapital"), el("dd", {}, sm(res.slag.startkapital))),
-      el("div", {}, el("dt", {}, "Längd"), el("dd", {}, visa(h.langd))),
-      el("div", {}, el("dt", {}, "Vikt"), el("dd", {}, visa(h.vikt)))),
-    el("h3", {}, "Kroppsdelar"),
-    el("ul", { class: "kroppsdelar" }, [0, 1].map(() => el("li", { class: "kolumnrubrik" }, el("span", {}, "Kroppsdel"), el("span", { class: "num" }, "KP"))),
-      h.kroppsdelar.map((d) => el("li", {}, el("span", {}, d.namn), el("span", { class: "num" }, visa(d.kp))))),
-    [res.sarskildFormaga, ...res.extraFormagor].filter(Boolean).map((f, i) => [i === 0 ? el("h3", {}, "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
-    rp.yrke ? el("p", {}, el("strong", {}, "Yrkesförmåga: "), res.yrke.yrkesformaga) : null,
-    el("h3", {}, "Färdigheter", info("B-nivå")),
-    el("ul", { class: "fardighetsrader" }, kolumnrubrik("Färdighet", "FV"), res.fardigheter.filter((f) => f.fv > 0).map((f) =>
-      el("li", { class: f.status }, el("span", {}, f.kategoriB ? medNiva(f.namn, slaUpp(R.fardigheter.bNivaer, f.fv)) : f.namn), el("span", { class: "num" }, f.fv)))),
-    res.besvarjelser.length ? [el("h3", {}, "Besvärjelser"), el("ul", { class: "fardighetsrader" }, kolumnrubrik("Besvärjelse", "FV"), res.besvarjelser.map((b) =>
-      el("li", {}, el("span", {}, b.namn), el("span", { class: "num" }, b.fv))))] : null,
-    res.utrustning.saker.length ? [el("h3", {}, "Utrustning"), el("ul", { class: "fardighetsrader" }, kolumnrubrik("Sak", "Vikt"), res.utrustning.saker.map((x) =>
-      el("li", {}, el("span", {}, sakNamn(x)), el("span", { class: "num" }, x.vikt ? `${kg(x.vikt)} kg` : "–")))),
-    el("p", {}, `Pengar kvar: ${sm(res.utrustning.kvar)}. Bördan är ${kg(res.utrustning.borda)} av ${res.utrustning.barformaga} kg (kläder räknas inte, buren rustning till hälften).`)] : null,
-  );
-}
-
-// Saker som säljs i förpackningar, som "Pilar (10 st)", visas med det totala antalet: två förpackningar blir "Pilar (x20)"
-function sakNamn(x) {
-  const m = x.namn.match(/^(.*) \((?:(.*), )?(\d[\d ]*) st\)$/);
-  if (m) return `${m[1]} (${m[2] ? `${m[2]}, ` : ""}x${Number(m[3].replace(/ /g, "")) * x.antal})`;
-  return x.antal > 1 ? medNiva(x.namn, `x${x.antal}`) : x.namn; // "Trätunna (100 liter, x2)"
-}
-
-// B-nivån skrivs i parentes efter namnet, eller i namnets egen parentes: "Kulturkännedom (Dvärgar, B3)"
-const medNiva = (namn, niva) => (namn.endsWith(")") ? `${namn.slice(0, -1)}, ${niva})` : `${namn} (${niva})`);
-const kolumnrubrik = (namn, varde) => el("li", { class: "kolumnrubrik" }, el("span", {}, namn), el("span", { class: "num" }, varde));
-
-// Val som ännu inte är gjorda, per steg. Ett steg med obligatoriska val kvar går inte att lämna framåt.
-function saknasPerSteg(res) {
-  const lista = Object.fromEntries(STEG.map((st) => [st.id, []]));
-  const yrke = yrkeAv(R, yrkeId());
-  const ras = rasAv(R, rasId());
-  const klar = (v) => !paborjad(v ?? "");
-  if (!rp.ras) lista.ras.push("Ras");
-  if (rp.alder == null) lista.alder.push("Ålder");
-  const valfriRas = ras.primara.find((p) => p.valfri);
-  if (valfriRas && !rp.rasval.some(klar)) lista.ras.push(`Rasens valfria ${valfriRas.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`);
-  if (!rp.yrke) lista.yrke.push("Yrke");
-  else yrke.fardigheter.forEach((post, i) => {
-    const val = rp.yrkesval[i];
-    if (typeof post === "string") {
-      if (fardighetAv(R, post)?.perVal && !klar(val)) lista.extra.push(`${fardighetAv(R, post).namn}: vad den gäller`);
-    } else if (post.valEn) {
-      if (!val?.id || (fardighetAv(R, val.id).perVal && !klar(val.sub))) lista.extra.push(post.valEn.map((x) => fardighetAv(R, x.fardighet ?? x).namn).join(" eller "));
-    } else if (post.antal !== null) {
-      const gjorda = (post.maste?.length ?? 0) + [].concat(val ?? []).slice(post.maste?.length ?? 0).filter(klar).length;
-      if (gjorda < post.antal) lista.extra.push(`${fardighetAv(R, post.fardighet).namn}: ${post.antal - gjorda} val kvar`);
-    }
-  });
-  if (rp.yrke && yrke.valfri && !klar(rp.valfri)) lista.extra.push("Den valfria yrkesfärdigheten");
-  if (rp.yrke && yrke.startbonus?.some((b) => b.valEttAv) && !yrkesNycklar().includes(rp.hantverkBonus)) lista.extra.push("Hantverket som får gratis FV");
-  if (rp.extraYrkesfardigheter.some((k) => !klar(k))) lista.extra.push("En extra yrkesfärdighet är inte färdigvald (välj klart eller ta bort den)");
-  if (!rp.namn.trim()) lista.kon.push("Namn");
-  if (!rp.kon) lista.kon.push("Kön");
-  if (rp.sarskildaFormagor.bp && rp.sarskildaFormagor.slag === null) lista.formagor.push("Slaget för särskilda förmågor");
-  if (!rp.sarskildaFormagor.bp && !rp.sarskildaFormagor.avstar) lista.formagor.push("Lägg BP på särskilda förmågor, eller kryssa i att du inte vill det");
-  if (!res.grundegenskaperSatta) lista.egenskaper.push("Grundegenskaperna");
-  lista.egenskaper.push(...res.forLagaEgenskaper);
-  lista.formagor.push(...res.saknas);
-  // Magiförmågeslaget görs i steg 6 (eller 11 för en sekundär magiskola); misslyckas det ska skolan bytas ut
-  if (res.vantar.length) {
-    const arSkola = (k) => fardighetAv(R, k)?.typ === "magiskola";
-    const iYrke = yrkesNycklar().some(arSkola);
-    const iExtra = rp.extraYrkesfardigheter.some(arSkola);
-    if (rp.magiformaga?.slag == null) (iYrke || iExtra ? lista.egenskaper : lista.fardigheter).push(MAGISLAG);
-    // Bytet görs i en dialog i samma steg som slaget, så rollpersonen skickas inte tillbaka till steg 3
-    else (iYrke || iExtra ? lista.egenskaper : lista.fardigheter).push("Magiförmågeslaget misslyckades: byt magiskolan mot en annan färdighet");
-  }
-  for (const f of res.fardigheter.filter((x) => x.tekniker && !x.tekniker.length)) lista.fardigheter.push(`${f.namn}: välj stilens tekniker`);
-  if (rp.startpaket.valt && !rp.startpaket.vapen) lista.utrustning.push("Startpaketets vapen");
-  if (rp.svardshand.slag === null && !(res.sarskildFormaga?.regel ?? []).some((d) => d.typ === "svardshand")) lista.svardshand.push("Slaget för svärdshand");
-  if (rp.socialtStand.slag === null && !rp.socialtStand.valt) lista.stand.push("Slaget för socialt stånd");
-  if (rp.startkapital.slag === null) lista.kapital.push("Slaget för startkapital");
-  return lista;
-}
-
-function saknas(res) {
-  const perSteg = saknasPerSteg(res);
-  return synligaSteg(res).flatMap((st, i) => perSteg[st.id].map((t) => `${t} (steg ${i + 1})`));
-}
-
-// En färdighet som är vald i listan men inte tillagd med Lägg till (steg 4 och 11) spärrar vägen framåt.
-// Ger felmeddelandet, eller null.
-function ejTillagd(stegId) {
-  const utkast = { extra: nyExtra, fardigheter: nySekundar }[stegId];
-  if (!utkast) return null;
-  return `Du har valt ${namnFor(R, fardighetAv(R, utkast), utkast)} men inte tryckt Lägg till. Tryck Lägg till eller töm valet innan du går vidare.`;
-}
-
-// Första steget som har obligatoriska val kvar; senare steg går inte att öppna.
-function forstaOfardiga(res) {
-  const perSteg = saknasPerSteg(res);
-  const lista = synligaSteg(res);
-  const i = lista.findIndex((st) => perSteg[st.id].length);
-  return i === -1 ? lista.length : i;
-}
-
-// Steget Besvärjelser visas bara för rollpersoner som kan lära sig magi
-function synligaSteg(res) {
-  const kanMagi = (res.yrke.magiker || res.magiformaga.lyckat) && skolFV(res.fardigheter).allman > 0;
-  return kanMagi ? STEG : STEG.filter((s) => s.id !== "besvarjelser");
-}
-
-// Föreslagna grundvärden: högst där yrkets färdigheter och rasens styrkor ligger (s. 18–29).
-// Ger grundvärdena, eller null om BP inte räcker till något förslag.
-function grundvardesForslag() {
-  const res = rakna();
-  const yrke = res.yrke;
-  const ras = res.ras;
-  const vikt = Object.fromEntries(GRUNDEGENSKAPER.map((g) => [g, ras.mod[g] * 0.2]));
-  const lagg = (id, v) => {
-    const f = fardighetAv(R, id);
-    if (!f) return;
-    if (GRUNDEGENSKAPER.includes(f.grundegenskap)) vikt[f.grundegenskap] += v;
-    else { vikt.STY += v / 2; vikt.SMI += v / 2; } // vapen och hantverk varierar
-  };
-  for (const post of yrke.fardigheter) {
-    if (typeof post === "string") lagg(post, 1);
-    else if (post.valEn) post.valEn.forEach((x) => lagg(x.fardighet ?? x, 1 / post.valEn.length));
-    else lagg(post.fardighet, post.antal ?? 2);
-  }
-  for (const f of R.fardigheter.lista) if (f.typ === "primar") lagg(f.id, 0.25);
-  if (yrke.magiker) { vikt.INT += 3; vikt.PSY += 3; }
-  vikt.FYS += 1; // kroppspoäng
-  const ordning = [...GRUNDEGENSKAPER].sort((a, b) => vikt[b] - vikt[a]);
-  const kostnad = R.grundegenskaper.kostnad;
-  const mallar = [[16, 15, 13, 12, 10, 9], [15, 14, 12, 11, 10, 8], [14, 13, 12, 10, 9, 8], [13, 12, 11, 10, 9, 8],
-    [12, 11, 10, 10, 9, 7], [11, 10, 10, 9, 8, 7], [10, 10, 9, 8, 7, 6], [9, 8, 8, 7, 6, 5], [7, 6, 6, 5, 5, 4]];
-  const budget = res.bp.kvar + res.bp.utgifter.grundegenskaper - 10;
-  const aldersmod = R.alder.effekter[res.alderskategori];
-  for (const mall of mallar) {
-    const varden = Object.fromEntries(ordning.map((g, i) => [g, mall[i]]));
-    // Slutvärdet måste bli minst 3 efter ras och ålder
-    for (const g of GRUNDEGENSKAPER) varden[g] = Math.min(18, Math.max(varden[g], 3 - ras.mod[g] - aldersmod[g]));
-    const pris = GRUNDEGENSKAPER.reduce((summa, g) => summa + kostnad[String(varden[g])], 0);
-    if (pris <= budget) return varden;
-  }
-  return null;
-}
-
-function foreslaGrundvarden() {
-  const varden = grundvardesForslag();
-  if (!varden) { visaNotis("Det finns inte tillräckligt med BP för ett förslag. Sänk något annat först."); return; }
-  rp.grundvarden = varden;
-  autoAnvand.egenskaper = true;
-  uppdatera();
-}
-
-// Automatisk fördelning av EP (s. 34–36). Varje FV läggs där det gör mest nytta just nu: yrkesfärdigheter
-// väger tyngst, sedan valda sekundära färdigheter och primära färdigheter med hög grundegenskap.
-// Varje höjning prövas mot reglerna, så tak och EP-gränsen hålls. reserv är EP som lämnas kvar
-// (utvecklarläget sparar EP till besvärjelser). Ger false och lämnar rollpersonen orörd om det inte gick.
-function epFordelning(reserv = 0) {
-  const fore = structuredClone(rp);
-  const provadeFore = provar;
-  rp.fardigheter = {};
-  rp.besvarjelser = {}; // besvärjelserna bygger på skolornas FV och väljs om i nästa steg
-  provar = true;
-  const borjan = rakna();
-  const vikt = {};
-  for (const f of borjan.fardigheter) {
-    const def = fardighetAv(R, f.nyckel);
-    const ge = borjan.grundegenskaper[f.grundegenskap] ?? 10;
-    if (def.typ === "sprak") vikt[f.nyckel] = 0.3;
-    else if (f.status === "yrke") vikt[f.nyckel] = 4 + (def.typ === "magiskola" ? 2 : 0) + (def.id === "vapen" ? 1 : 0);
-    else if (f.status === "sekundar") vikt[f.nyckel] = 3;
-    else vikt[f.nyckel] = Math.max(0.3, 1 + (ge - 10) / 5);
-  }
-  const epPerFV = (f) => f.epPerFV || 99;
-  const stopp = new Set();
-  for (let varv = 0; varv < 500; varv++) {
-    const res = rakna();
-    const kandidater = res.fardigheter.filter((f) => !stopp.has(f.nyckel) && vikt[f.nyckel] && f.fv < 30)
-      .map((f) => ({ f, poang: vikt[f.nyckel] / ((f.fv + 2) * epPerFV(f)) }))
-      .sort((a, b) => b.poang - a.poang);
-    let hojd = false;
-    for (const { f } of kandidater) {
-      if (epPerFV(f) > res.ep.kvar - reserv) { stopp.add(f.nyckel); continue; }
-      const gammalt = rp.fardigheter[f.nyckel];
-      rp.fardigheter[f.nyckel] = f.fv + 1;
-      if (!rakna().fel.length) { hojd = true; break; }
-      if (gammalt === undefined) delete rp.fardigheter[f.nyckel];
-      else rp.fardigheter[f.nyckel] = gammalt;
-      stopp.add(f.nyckel);
-    }
-    if (!hojd) break;
-  }
-  provar = provadeFore;
-  if (!rakna().fel.length) return true;
-  rp = fore;
-  return false;
-}
-
-function fordelaEP() {
-  const hadeBesvarjelser = Object.keys(rp.besvarjelser).length > 0;
-  if (epFordelning()) autoAnvand.fardigheter = true;
-  uppdatera();
-  visaNotis(`EP är fördelade. ${rakna().ep.kvar} EP blev över.${hadeBesvarjelser ? " Besvärjelserna togs bort och får väljas om." : ""}`);
-}
-
-// ------------------------------------------------------------ steg 12: spara och exportera
-function filnamn() {
-  return `${(rp.namn || "rollperson").trim().replace(/[^\p{L}\p{N}]+/gu, "-").toLowerCase()}.json`;
-}
-
-const filtext = () => JSON.stringify(tillFil(rp), null, 2);
-
-function stegExport(res) {
-  const text = filtext();
-  return [
-    el("p", { class: "summering" }, `${rp.namn} är klar: ${res.ras.namn.toLowerCase()}, ${res.yrke.namn.toLowerCase()}, ${rp.alder} år.`),
-    el("p", {}, "Spara rollpersonen som en JSON-fil. Filen kan läsas in igen med knappen Läs in fil högst upp, till exempel för att fortsätta på en annan dator."),
-    el("p", {}, "Rollformuläret ser ut som bokens (s. 11–12) och kan laddas ner som PDF, färdigt att skriva ut eller fylla i på datorn. Det du skriver i rollformuläret här på sidan under spel, som erf och pengar, sparas i JSON-filen."),
-    el("div", { class: "rad" },
-      el("button", { type: "button", class: "knapp primar", id: "pdf-direkt", onclick: laddaNerPdf }, "Ladda ner rollformuläret som PDF"),
-      el("button", { type: "button", class: "knapp", onclick: visaFormular }, "Visa rollformuläret"),
-      el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
-      el("button", { type: "button", class: "knapp", onclick: () => kopiera(text) }, "Kopiera JSON")),
-    spelSynlig && el("p", {}, "När rollpersonen har spelats för du in erfarenhet, hjältepoäng, pengar och utrustning efter varje spelmöte, och förbättrar henne när erfarenheten räcker. Efter det första spelmötet går skapandet inte längre att ändra."),
-    spelSynlig && el("div", { class: "rad" }, el("button", { type: "button", class: "knapp", id: "till-spel", onclick: oppnaSpel }, "Till spelmötena →")),
-    el("details", { class: "fakta" }, el("summary", {}, "Visa JSON"),
-      el("textarea", { id: "exportruta", rows: 12, readonly: true, "aria-label": "Rollpersonen som JSON" }, text)),
-  ];
-}
-
-function laddaNer() {
-  const url = URL.createObjectURL(new Blob([filtext()], { type: "application/json" }));
-  const a = el("a", { href: url, download: filnamn() });
-  document.body.append(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-  visaNotis(`${filnamn()} laddas ner. Om inget händer kan du använda Kopiera JSON i stället.`);
-}
-
-function kopiera(text) {
-  navigator.clipboard?.writeText(text).then(
-    () => visaNotis("JSON är kopierad."),
-    () => { const ruta = $("#exportruta"); ruta?.closest("details")?.setAttribute("open", ""); ruta?.select(); visaNotis("Markera texten i rutan och kopiera den."); });
-}
+import { stegAlder } from "./steg/alder.js";
+import { stegBesvarjelser } from "./steg/besvarjelser.js";
+import { grundvardesForslag, stegEgenskaper } from "./steg/egenskaper.js";
+import { filnamn, laddaNer, stegExport } from "./steg/export.js";
+import { epFordelning, stegFardigheter } from "./steg/fardigheter.js";
+import { stegFormagor } from "./steg/formagor.js";
+import { stegKon } from "./steg/kon.js";
+import { stegRas } from "./steg/ras.js";
+import { bpForSteg, ejTillagd, forstaOfardiga, saknas, saknasPerSteg, synligaSteg } from "./steg/saknas.js";
+import { stegKapital, stegStand, stegSvardshand } from "./steg/slag.js";
+import { stegUtrustning } from "./steg/utrustning.js";
+import { stegYrke } from "./steg/yrke.js";
+import { stegExtra } from "./steg/yrkesfardigheter.js";
+import { LARDOMSFORSLAG, STEG } from "./texter.js";
+import { S, FILER, fyllUt, harLogg, LAGRING, motorIndata, rakna, raknaFor, spara, TOM, uppdatera, yrkesNycklar } from "./tillstand.js";
+import { $, el, slaT } from "./ui/dom.js";
+import { falt, fardighetsVal, gruppLista, info, infoKnapp, valLista } from "./ui/kontroller.js";
+import { magiGorOm, magiMisslyckat, magiModal, magiPlatser, MAGISLAG, oppnaMagiModal } from "./ui/magimodal.js";
+import { rollformular, sakNamn } from "./ui/sammanfattning.js";
+import { landatSlag, rullar, slagKontroll, tarningsIkon, valjFardighet } from "./ui/tarningar.js";
 
 // ------------------------------------------------------------ export och import
 function importera(text) {
   try {
     const data = franFil(JSON.parse(text));
-    const fore = rp;
-    rp = fyllUt(data);
+    const fore = S.rp;
+    S.rp = fyllUt(data);
     const fel = rakna().fel;
     if (fel.length) {
-      rp = fore;
+      S.rp = fore;
       throw new Error(`den bryter mot reglerna (${fel[0]})`);
     }
-    langst = STEG.length - 1; // en inläst rollperson är redan genomgången
+    S.langst = STEG.length - 1; // en inläst rollperson är redan genomgången
     nollstallSpel();
     // En rollperson som har spelats öppnas i spelmötesdelen; skapandet är då låst
-    vy = harLogg() ? "spel" : vy === "spel" ? "steg" : vy;
-    visaNotis(`${rp.namn || "Rollpersonen"} är inläst.`);
+    S.vy = harLogg() ? "spel" : S.vy === "spel" ? "steg" : S.vy;
+    visaNotis(`${S.rp.namn || "Rollpersonen"} är inläst.`);
     uppdatera();
   } catch (e) {
     visaNotis(`Det gick inte att läsa in rollpersonen: ${e.message}. Kontrollera att det är en sparad rollperson i JSON-format.`);
@@ -1924,7 +49,7 @@ function importera(text) {
 }
 
 const efterNotis = []; // poängloggen i utvecklarläget samlar ändringar som regelkontrollen stoppade
-function visaNotis(text) {
+export function visaNotis(text) {
   const n = $("#notis");
   n.textContent = text;
   n.hidden = false;
@@ -1935,7 +60,7 @@ function visaNotis(text) {
 
 // ------------------------------------------------------------ ritning
 const efterRita = []; // utvecklarläget följer varje ändring (poängloggen och den automatiska ifyllningen)
-function rita() {
+export function rita() {
   ritaVy();
   foljHistorik();
   for (const fn of efterRita) fn();
@@ -1943,7 +68,7 @@ function rita() {
 
 // Varje steg (och rollformuläret och spelmötena) får en post i webbläsarens historik,
 // så att bakåtknappen går till föregående steg i stället för att lämna sidan. Adressen (t.ex. ?dev) ändras inte.
-const platsNu = () => (vy === "steg" ? aktivtSteg : vy);
+const platsNu = () => (S.vy === "steg" ? S.aktivtSteg : S.vy);
 function foljHistorik() {
   const plats = platsNu();
   if (history.state?.plats === plats) return;
@@ -1951,46 +76,46 @@ function foljHistorik() {
   else history.replaceState({ plats }, "");
 }
 function gaTillPlats(plats) {
-  if (plats === "formular") vy = "formular";
-  else if (plats === "spel") vy = spelSynlig && !saknas(rakna()).length ? "spel" : "steg";
-  else { vy = "steg"; aktivtSteg = plats; } // ritaVy flyttar tillbaka till första ofärdiga steget om det behövs
+  if (plats === "formular") S.vy = "formular";
+  else if (plats === "spel") S.vy = S.spelSynlig && !saknas(rakna()).length ? "spel" : "steg";
+  else { S.vy = "steg"; S.aktivtSteg = plats; } // ritaVy flyttar tillbaka till första ofärdiga steget om det behövs
   rita();
 }
 
 function ritaVy() {
   // Grundvärdena sätts först när steg 6 öppnas: alla börjar på 10 och kostar BP därifrån
-  if (aktivtSteg === "egenskaper" && !rp.grundvarden) {
-    rp.grundvarden = STANDARDVARDEN();
-    if (!rakna().fel.length) { giltig = structuredClone(rp); spara(); } else rp.grundvarden = null;
+  if (S.aktivtSteg === "egenskaper" && !S.rp.grundvarden) {
+    S.rp.grundvarden = STANDARDVARDEN();
+    if (!rakna().fel.length) { S.giltig = structuredClone(S.rp); spara(); } else S.rp.grundvarden = null;
   }
   const res = rakna();
-  if (vy === "steg" && harLogg()) vy = "spel"; // efter första posten går skapandet inte att ändra
-  $(".layout").style.display = vy === "formular" ? "none" : "";
-  $("#rf-vy").hidden = vy !== "formular";
-  $("#visa-formular").setAttribute("aria-pressed", String(vy === "formular"));
-  $("#visa-spel").setAttribute("aria-pressed", String(vy === "spel"));
-  if (vy === "formular") { ritaFormularVy(res); return; }
-  if (vy === "spel") { ritaSpelvy(res); return; }
+  if (S.vy === "steg" && harLogg()) S.vy = "spel"; // efter första posten går skapandet inte att ändra
+  $(".layout").style.display = S.vy === "formular" ? "none" : "";
+  $("#rf-vy").hidden = S.vy !== "formular";
+  $("#visa-formular").setAttribute("aria-pressed", String(S.vy === "formular"));
+  $("#visa-spel").setAttribute("aria-pressed", String(S.vy === "spel"));
+  if (S.vy === "formular") { ritaFormularVy(res); return; }
+  if (S.vy === "spel") { ritaSpelvy(res); return; }
   const STEG = synligaSteg(res); // stegen som visas just nu
   const grans = forstaOfardiga(res);
-  if (!STEG.some((s) => s.id === aktivtSteg)) aktivtSteg = "fardigheter"; // ett dolt steg lämnas
+  if (!STEG.some((s) => s.id === S.aktivtSteg)) S.aktivtSteg = "fardigheter"; // ett dolt steg lämnas
   // Står man på ett steg bortom gränsen (t.ex. efter att ha ändrat yrke) flyttas man tillbaka
-  if (STEG.findIndex((s) => s.id === aktivtSteg) > grans) aktivtSteg = STEG[grans].id;
-  langst = Math.max(langst, STEG.findIndex((s) => s.id === aktivtSteg));
-  const oppna = Math.min(grans, langst);
-  const tillagg = ejTillagd(aktivtSteg);
+  if (STEG.findIndex((s) => s.id === S.aktivtSteg) > grans) S.aktivtSteg = STEG[grans].id;
+  S.langst = Math.max(S.langst, STEG.findIndex((s) => s.id === S.aktivtSteg));
+  const oppna = Math.min(grans, S.langst);
+  const tillagg = ejTillagd(S.aktivtSteg);
   const rail = $("#steg");
   rail.replaceChildren(...STEG.map((s, i) => el("li", {},
-    el("button", { type: "button", class: "steg-knapp" + (s.id === aktivtSteg ? " aktiv" : ""), "aria-current": s.id === aktivtSteg ? "step" : null,
+    el("button", { type: "button", class: "steg-knapp" + (s.id === S.aktivtSteg ? " aktiv" : ""), "aria-current": s.id === S.aktivtSteg ? "step" : null,
       disabled: i > oppna, title: i > oppna ? "Gör klart de tidigare stegen först" : null,
       onclick: () => {
-        if (tillagg && i > STEG.findIndex((x) => x.id === aktivtSteg)) { visaNotis(tillagg); return; }
-        aktivtSteg = s.id; uppdatera(); $("#arbetsyta").focus({ preventScroll: true });
+        if (tillagg && i > STEG.findIndex((x) => x.id === S.aktivtSteg)) { visaNotis(tillagg); return; }
+        S.aktivtSteg = s.id; uppdatera(); $("#arbetsyta").focus({ preventScroll: true });
       } },
     el("span", { class: "steg-nr" }, i + 1), el("span", { class: "steg-namn" }, s.namn),
     s.bp ? el("span", { class: "steg-bp" }, bpForSteg(s.id, res)) : null))));
 
-  const steg = STEG.find((s) => s.id === aktivtSteg);
+  const steg = STEG.find((s) => s.id === S.aktivtSteg);
   const index = STEG.indexOf(steg);
   const innehall = {
     ras: stegRas, alder: stegAlder, yrke: stegYrke, extra: stegExtra, kon: stegKon, egenskaper: stegEgenskaper,
@@ -2018,17 +143,17 @@ function ritaVy() {
     synligKvar.length ? el("div", { class: "saknaslista" }, el("strong", {}, "Gör klart innan du går vidare"), el("ul", {}, synligKvar.map((t) => el("li", {}, t)))) : el("span"),
     baraMagi ? el("p", { class: "hjalp magi-ledning" }, "Rollpersonen har en magiskola men är inte magiker. När du går vidare avgör ett magiförmågeslag om rollpersonen kan lära sig magi.") : el("span"),
     el("nav", { class: "steg-fot", "aria-label": "Föregående och nästa steg" },
-      index > 0 ? el("button", { type: "button", class: "knapp", onclick: () => { aktivtSteg = STEG[index - 1].id; uppdatera(); } }, `← ${STEG[index - 1].namn}`) : el("span"),
+      index > 0 ? el("button", { type: "button", class: "knapp", onclick: () => { S.aktivtSteg = STEG[index - 1].id; uppdatera(); } }, `← ${STEG[index - 1].namn}`) : el("span"),
       index < STEG.length - 1 ? el("div", { class: "nasta-kolumn" }, magiGorOm(steg.id), el("button", { type: "button", class: "knapp primar" + (tillagg ? " sparrad" : ""), id: "nasta-steg",
         disabled: index + 1 > grans && !baraMagi, "aria-disabled": tillagg ? "true" : null, onclick: () => {
         if (tillagg) { visaNotis(tillagg); return; }
         if (baraMagi) { oppnaMagiModal(STEG[index + 1].id); return; }
-        aktivtSteg = STEG[index + 1].id; uppdatera();
+        S.aktivtSteg = STEG[index + 1].id; uppdatera();
       } }, baraMagi ? "MAGIFÖRMÅGESLAG" : `${STEG[index + 1].namn} →`)) : magiGorOm(steg.id) ?? el("span")),
     efterFot ?? el("span"));
   $("#formular").replaceChildren(rollformular(res));
-  if (ritatSteg !== null && ritatSteg !== aktivtSteg) skrollaUpp();
-  ritatSteg = aktivtSteg;
+  if (S.ritatSteg !== null && S.ritatSteg !== S.aktivtSteg) skrollaUpp();
+  S.ritatSteg = S.aktivtSteg;
   // Dialogen visas först när tärningen har landat
   // Ett misslyckat magiförmågeslag med magiskolor kvar (t.ex. efter autofyll eller en lägre INT) visas i modalen
   if (!magiModal && !rullar && magiMisslyckat(res) && magiPlatser().length) oppnaMagiModal();
@@ -2038,14 +163,14 @@ function ritaVy() {
     document.body.classList.add("dialog-oppen");
     if (!sfModal.contains(document.activeElement)) sfModal.querySelector("select:not([disabled]), button:not([disabled]), button")?.focus({ preventScroll: true });
   } else if (!magiModal) document.body.classList.remove("dialog-oppen");
-  nyssSlaget = null;
+  S.nyssSlaget = null;
 }
 
 // ------------------------------------------------------------ spelmöten och förbättring (spelmote.js)
-function oppnaSpel() {
+export function oppnaSpel() {
   const kvar = saknas(rakna());
   if (kvar.length) { visaNotis(`Gör klart rollpersonen först: ${kvar[0]}.`); return; }
-  vy = "spel";
+  S.vy = "spel";
   rita();
   window.scrollTo(0, 0);
 }
@@ -2053,31 +178,31 @@ function oppnaSpel() {
 // För in en post i loggen om den följer reglerna
 function forIn(post) {
   const fore = rakna();
-  const efter = laggTill(rp, post, fore.utrustning.kvar);
-  const fel = kontrolleraPost(R, motorIndata(), efter, fore, raknaFor(efter), post);
+  const efter = laggTill(S.rp, post, fore.utrustning.kvar);
+  const fel = kontrolleraPost(S.R, motorIndata(), efter, fore, raknaFor(efter), post);
   if (fel.length) { visaNotis(`Det går inte: ${fel[0]}.`); return false; }
-  rp = efter;
-  giltig = structuredClone(rp);
+  S.rp = efter;
+  S.giltig = structuredClone(S.rp);
   spara();
   return true;
 }
 
 function angra() {
-  const efter = angraSenaste(rp, rakna().utrustning.kvar);
+  const efter = angraSenaste(S.rp, rakna().utrustning.kvar);
   if (raknaFor(efter).fel.length) { visaNotis("Det går inte att ångra posten."); return; }
-  rp = efter;
-  giltig = structuredClone(rp);
+  S.rp = efter;
+  S.giltig = structuredClone(S.rp);
   spara();
   visaNotis(harLogg() ? "Den senaste posten är ångrad." : "Posten är ångrad. Loggen är tom, så skapandet går att ändra igen.");
   rita();
 }
 
-const spelCtx = (res) => ({
-  R, res, rp: () => rp, indata: motorIndata, rakna: raknaFor, forIn, angra, rita, visaNotis,
-  kontrollera: (post, efter, resEfter) => kontrolleraPost(R, motorIndata(), efter, res, resEfter, post),
+export const spelCtx = (res) => ({
+  R: S.R, res, rp: () => S.rp, indata: motorIndata, rakna: raknaFor, forIn, angra, rita, visaNotis,
+  kontrollera: (post, efter, resEfter) => kontrolleraPost(S.R, motorIndata(), efter, res, resEfter, post),
   el, falt, valLista, gruppLista, fardighetsVal, valjFardighet, info, infoText: (text) => infoKnapp(text, "Förklaring"),
   slagKontroll, landatSlag, tarningsIkon, slaT, sakNamn, paborjad, rullar: () => rullar !== null,
-  namnFor: (k) => { const f = fardighetAv(R, k); return f ? namnFor(R, f, k) : k; },
+  namnFor: (k) => { const f = fardighetAv(S.R, k); return f ? namnFor(S.R, f, k) : k; },
 });
 
 function ritaSpelvy(res) {
@@ -2092,7 +217,7 @@ function ritaSpelvy(res) {
   $("#arbetsyta").replaceChildren(
     el("header", { class: "steg-huvud" },
       el("div", { class: "steg-titel" },
-        el("span", { class: "eyebrow" }, `Spelmöten · ${rp.namn} · s. 73–76`),
+        el("span", { class: "eyebrow" }, `Spelmöten · ${S.rp.namn} · s. 73–76`),
         el("h2", {}, aktiv.namn)),
       el("dl", { class: "steg-potter", "aria-label": "Att använda" },
         el("div", {}, el("dt", {}, "Osparade EP", info("EP")), el("dd", {}, pott.ep)),
@@ -2100,20 +225,20 @@ function ritaSpelvy(res) {
     el("div", { class: "steg-innehall" }, spelInnehall(ctx)),
     el("nav", { class: "steg-fot spel-fot", "aria-label": "Rollpersonen" },
       harLogg() ? el("span", { class: "hjalp" }, "Skapandet är låst eftersom rollpersonen har spelats. Ångra alla poster i loggen för att ändra det.")
-        : el("button", { type: "button", class: "knapp", onclick: () => { vy = "steg"; rita(); } }, "← Tillbaka till skapandet"),
+        : el("button", { type: "button", class: "knapp", onclick: () => { S.vy = "steg"; rita(); } }, "← Tillbaka till skapandet"),
       el("div", { class: "rad" },
         el("button", { type: "button", class: "knapp", onclick: visaFormular }, "Rollformulär"),
         el("button", { type: "button", class: "knapp primar", onclick: laddaNer }, `Ladda ner ${filnamn()}`))));
   $("#formular").replaceChildren(rollformular(res));
   const nu = `spel-${aktiv.id}`;
-  if (ritatSteg !== null && ritatSteg !== nu) skrollaUpp();
-  ritatSteg = nu;
-  nyssSlaget = null;
+  if (S.ritatSteg !== null && S.ritatSteg !== nu) skrollaUpp();
+  S.ritatSteg = nu;
+  S.nyssSlaget = null;
 }
 
 // ------------------------------------------------------------ rollformuläret för utskrift (formular.js)
-function visaFormular() {
-  vy = "formular";
+export function visaFormular() {
+  S.vy = "formular";
   rita();
   window.scrollTo(0, 0);
 }
@@ -2121,49 +246,49 @@ function visaFormular() {
 // Det som skrivs i rollformuläret påverkar inga regler, så det sparas utan att sidan ritas om
 // (då skulle fältet man klickar på härnäst försvinna under muspekaren).
 function sparaFormular() {
-  giltig = structuredClone(rp);
+  S.giltig = structuredClone(S.rp);
   spara();
 }
 
 function ritaFormularVy(res) {
   const vyEl = $("#rf-vy");
-  vyEl.classList.toggle("rf-blacksnal", blacksnal);
+  vyEl.classList.toggle("rf-blacksnal", S.blacksnal);
   const kvar = saknas(res);
   vyEl.replaceChildren(
     el("div", { class: "rf-verktyg" },
-      el("button", { type: "button", class: "knapp", onclick: () => { vy = harLogg() ? "spel" : "steg"; rita(); } }, harLogg() ? "← Tillbaka till spelmötena" : "← Tillbaka till stegen"),
+      el("button", { type: "button", class: "knapp", onclick: () => { S.vy = harLogg() ? "spel" : "steg"; rita(); } }, harLogg() ? "← Tillbaka till spelmötena" : "← Tillbaka till stegen"),
       el("button", { type: "button", class: "knapp primar", id: "pdf-ladda-ner", onclick: laddaNerPdf }, "Ladda ner som PDF"),
       el("button", { type: "button", class: "knapp", onclick: laddaNer }, `Ladda ner ${filnamn()}`),
-      el("label", {}, el("input", { type: "checkbox", id: "blacksnal", checked: blacksnal,
-        onchange: (e) => { blacksnal = e.target.checked; vyEl.classList.toggle("rf-blacksnal", blacksnal); } }), "Spara bläck"),
-      el("label", {}, el("input", { type: "checkbox", id: "med-regler", checked: medRegler,
-        onchange: (e) => { medRegler = e.target.checked; rita(); } }), "Ta med färdigheterna i korthet"),
+      el("label", {}, el("input", { type: "checkbox", id: "blacksnal", checked: S.blacksnal,
+        onchange: (e) => { S.blacksnal = e.target.checked; vyEl.classList.toggle("rf-blacksnal", S.blacksnal); } }), "Spara bläck"),
+      el("label", {}, el("input", { type: "checkbox", id: "med-regler", checked: S.medRegler,
+        onchange: (e) => { S.medRegler = e.target.checked; rita(); } }), "Ta med färdigheterna i korthet"),
       el("p", { class: "hjalp" }, "Skriv direkt i de gula fälten. Det sparas i rollpersonen och följer med när du laddar ner filen. ",
         harLogg() ? "Grundegenskaper, FV och KP ändras under Spelmöten (Förbättra). " : "Grundegenskaper, FV och KP ändras i stegen. ")),
     ...(kvar.length ? [el("div", { class: "saknaslista rf-ofardig" }, el("strong", {}, "Rollpersonen är inte klar än"), el("ul", {}, kvar.map((t) => el("li", {}, t))))] : []),
-    el("div", { class: "rf-sidor" }, rollformularSidor({ R, rp, res, el, sakNamn, andrat: sparaFormular, medRegler })));
-  if (medRegler) {
+    el("div", { class: "rf-sidor" }, rollformularSidor({ R: S.R, rp: S.rp, res, el, sakNamn, andrat: sparaFormular, medRegler: S.medRegler })));
+  if (S.medRegler) {
     delaRegelsidor(vyEl, el);
     // Texternas höjd beror på typsnitten, så sidorna delas om när de har laddats
-    document.fonts?.ready.then(() => { if (vy === "formular" && medRegler) delaRegelsidor(vyEl, el); });
+    document.fonts?.ready.then(() => { if (S.vy === "formular" && S.medRegler) delaRegelsidor(vyEl, el); });
   }
 }
 
 // Utskriftsdialogen (Ctrl+P eller Cmd+P) föreslår sidans titel som filnamn, så titeln är rollpersonens namn medan den visas
 const SIDTITEL = document.title;
-function namnSomTitel() { document.title = rp.namn.trim() || SIDTITEL; }
+function namnSomTitel() { document.title = S.rp.namn.trim() || SIDTITEL; }
 
 // Rollformuläret som PDF-fil (formularpdf.js), med rollpersonens namn som filnamn. Samma fil i alla webbläsare.
-const pdfNamn = () => `${(rp.namn.trim() || "Rollformulär").replace(/[\\/:*?"<>|]+/g, "-")}.pdf`;
-async function laddaNerPdf(e) {
+const pdfNamn = () => `${(S.rp.namn.trim() || "Rollformulär").replace(/[\\/:*?"<>|]+/g, "-")}.pdf`;
+export async function laddaNerPdf(e) {
   const knapp = e?.currentTarget;
   const text = knapp?.textContent;
   if (knapp) { knapp.disabled = true; knapp.textContent = "Skapar PDF …"; }
   try {
     const { rollformularPdf } = await import("./formularpdf.js");
     const pdf = await rollformularPdf({
-      sidor: rollformularSidor({ R, rp, res: rakna(), el, sakNamn, andrat: sparaFormular, medRegler }),
-      blacksnal, titel: rp.namn.trim(), efterTypsnitt: (rot) => { if (medRegler) delaRegelsidor(rot, el); },
+      sidor: rollformularSidor({ R: S.R, rp: S.rp, res: rakna(), el, sakNamn, andrat: sparaFormular, medRegler: S.medRegler }),
+      blacksnal: S.blacksnal, titel: S.rp.namn.trim(), efterTypsnitt: (rot) => { if (S.medRegler) delaRegelsidor(rot, el); },
     });
     const url = URL.createObjectURL(new Blob([pdf], { type: "application/pdf" }));
     const a = el("a", { href: url, download: pdfNamn() });
@@ -2196,31 +321,24 @@ function skrollaUpp() {
   skrollaUpp.ram = requestAnimationFrame(steg);
 }
 
-function bpForSteg(id, res) {
-  const u = res.bp.utgifter;
-  const v = { ras: u.ras, extra: u.extraYrkesfardigheter, egenskaper: u.grundegenskaper, formagor: u.sarskildaFormagor,
-    svardshand: u.svardshand, stand: u.socialtStand, kapital: u.startkapital }[id];
-  return v ? `${v} BP` : "";
-}
-
 async function start() {
   const data = await Promise.all(FILER.map((n) => fetch(`regler/${n}.json`).then((r) => {
     if (!r.ok) throw new Error(`regler/${n}.json`);
     return r.json();
   })));
-  R = Object.fromEntries(FILER.map((n, i) => [n, data[i]]));
+  S.R = Object.fromEntries(FILER.map((n, i) => [n, data[i]]));
   // Sidan börjar alltid med en ny rollperson. En sparad rollperson från förra besöket erbjuds i steg 1.
   try {
     const sparad = JSON.parse(localStorage.getItem(LAGRING) ?? "null");
     if (sparad?.rp?.ras) {
-      rp = fyllUt(sparad.rp);
-      if (!rakna().fel.length) sparadVidStart = { rp, aktivtSteg: sparad.aktivtSteg ?? "ras", langst: sparad.langst ?? 0 };
+      S.rp = fyllUt(sparad.rp);
+      if (!rakna().fel.length) S.sparadVidStart = { rp: S.rp, aktivtSteg: sparad.aktivtSteg ?? "ras", langst: sparad.langst ?? 0 };
     }
   } catch { /* ingen sparad rollperson */ }
-  rp = TOM();
-  aktivtSteg = "ras";
-  langst = 0;
-  giltig = structuredClone(rp);
+  S.rp = TOM();
+  S.aktivtSteg = "ras";
+  S.langst = 0;
+  S.giltig = structuredClone(S.rp);
   const lardomar = el("datalist", { id: "lardomar" }, LARDOMSFORSLAG.map((t) => el("option", { value: t })));
   document.body.append(lardomar);
 
@@ -2242,7 +360,7 @@ async function start() {
       return;
     }
     avbryt();
-    rp = TOM(); aktivtSteg = "ras"; langst = 0; vy = "steg"; nollstallSpel(); nySekundar = ""; nyExtra = ""; autoAnvand = { egenskaper: false, fardigheter: false }; utrustningsFilter = ""; uppdatera();
+    S.rp = TOM(); S.aktivtSteg = "ras"; S.langst = 0; S.vy = "steg"; nollstallSpel(); S.nySekundar = ""; S.nyExtra = ""; S.autoAnvand = { egenskaper: false, fardigheter: false }; S.utrustningsFilter = ""; uppdatera();
   });
   $("#visa-spel").addEventListener("click", () => {
     $("#menypanel").hidden = true; $("#menyknapp").setAttribute("aria-expanded", "false");
@@ -2250,7 +368,7 @@ async function start() {
   });
   $("#visa-formular").addEventListener("click", () => {
     $("#menypanel").hidden = true; $("#menyknapp").setAttribute("aria-expanded", "false");
-    if (vy === "formular") { vy = harLogg() ? "spel" : "steg"; rita(); } else visaFormular();
+    if (S.vy === "formular") { S.vy = harLogg() ? "spel" : "steg"; rita(); } else visaFormular();
   });
   $("#importfil").addEventListener("change", async (e) => { const fil = e.target.files[0]; if (fil) importera(await fil.text()); e.target.value = ""; });
   document.addEventListener("paste", (e) => {
@@ -2279,11 +397,11 @@ async function start() {
   $("#importfil").addEventListener("change", () => visaMeny(false));
   // Manuella tärningsslag är avstängda från början; valet sparas i webbläsaren
   const manuell = $("#manuella-slag");
-  try { manuellaSlag = localStorage.getItem("chronopia-manuella-slag") === "ja"; } catch { /* frivilligt */ }
-  manuell.checked = manuellaSlag;
+  try { S.manuellaSlag = localStorage.getItem("chronopia-manuella-slag") === "ja"; } catch { /* frivilligt */ }
+  manuell.checked = S.manuellaSlag;
   manuell.addEventListener("change", () => {
-    manuellaSlag = manuell.checked;
-    try { localStorage.setItem("chronopia-manuella-slag", manuellaSlag ? "ja" : "nej"); } catch { /* frivilligt */ }
+    S.manuellaSlag = manuell.checked;
+    try { localStorage.setItem("chronopia-manuella-slag", S.manuellaSlag ? "ja" : "nej"); } catch { /* frivilligt */ }
     rita();
   });
   // Info-cirklarnas förklaringar visas i en gemensam ruta
@@ -2323,28 +441,28 @@ function startaUtvecklarlage() {
     pa = localStorage.getItem("chronopia-dev") === "ja";
   } catch { pa = param !== null && param !== "av"; }
   if (!pa) return;
-  spelSynlig = true;
+  S.spelSynlig = true;
   $("#visa-spel").hidden = false;
   import("./utvecklarlage.js").then((m) => m.starta({
-    R, STEG, el, TOM, tillFil, visaNotis, yrkesNycklar, saknas, rakna,
+    R: S.R, STEG, el, TOM, tillFil, visaNotis, yrkesNycklar, saknas, rakna,
     // Kör fn med en tillfällig rollperson och ger tillbaka den; spelarens rollperson rörs inte
     med(tillfallig, fn) {
-      const fore = rp;
-      const provadeFore = provar;
-      rp = tillfallig;
-      provar = true;
-      try { fn(() => rp); return rp; } finally { rp = fore; provar = provadeFore; }
+      const fore = S.rp;
+      const provadeFore = S.provar;
+      S.rp = tillfallig;
+      S.provar = true;
+      try { fn(() => S.rp); return S.rp; } finally { S.rp = fore; S.provar = provadeFore; }
     },
     grundvardesForslag, epFordelning,
     ladda(ny, steg) {
       importera(JSON.stringify(tillFil(ny)));
-      if (rp.namn === ny.namn) { aktivtSteg = steg; vy = "steg"; nySekundar = ""; nyExtra = ""; utrustningsFilter = ""; rita(); }
+      if (S.rp.namn === ny.namn) { S.aktivtSteg = steg; S.vy = "steg"; S.nySekundar = ""; S.nyExtra = ""; S.utrustningsFilter = ""; rita(); }
     },
     visaFormular,
     // För poängloggen och den automatiska ifyllningen: läget just nu och en krok som körs efter varje ritning
-    nu: () => rp, uppdatera, rita, saknasPerSteg, synligaSteg, motorIndata, efterRita: (fn) => { efterRita.push(fn); fn(); }, efterNotis: (fn) => efterNotis.push(fn),
-    lage: () => ({ vy, aktivtSteg, rullar, magiModal: Boolean(magiModal), provar }),
-    tillatOmslag() { omslag = true; rita(); },
+    nu: () => S.rp, uppdatera, rita, saknasPerSteg, synligaSteg, motorIndata, efterRita: (fn) => { efterRita.push(fn); fn(); }, efterNotis: (fn) => efterNotis.push(fn),
+    lage: () => ({ vy: S.vy, aktivtSteg: S.aktivtSteg, rullar, magiModal: Boolean(magiModal), provar: S.provar }),
+    tillatOmslag() { S.omslag = true; rita(); },
     stangAv() { try { localStorage.setItem("chronopia-dev", "nej"); } catch { /* frivilligt */ } },
   }));
 }

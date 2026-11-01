@@ -45,7 +45,11 @@ Slå på GitHub Pages för grenen `main` (rotkatalogen) under Settings → Pages
 
 ## Struktur
 
-- `index.html`, `app.js`: gränssnittet.
+- `index.html`, `app.js`: gränssnittet. `app.js` startar appen, ritar vyerna (stegen, spelmötena och rollformuläret) och kopplar ihop modulerna.
+- `tillstand.js`: rollpersonen och appens delade tillstånd (`S.rp`, `S.aktivtSteg` …), kontrollen mot reglerna efter varje ändring och kopplingen till regelmotorn.
+- `steg/`: ett steg per fil (`ras.js`, `yrke.js`, `formagor.js` …). `steg/saknas.js` avgör vad som saknas i varje steg och vilka steg som syns.
+- `ui/`: delar som flera steg använder: element och kontroller (`dom.js`, `kontroller.js`), tärningsslagen (`tarningar.js`), magiförmågeslagets modal (`magimodal.js`) och rollformuläret bredvid stegen (`sammanfattning.js`).
+- `texter.js`: stegens namn och förklarande texter.
 - `formular.js`, `formular.css`: rollformuläret för utskrift.
 - `formularpdf.js`: gör rollformuläret till en PDF-fil med pdf-lib (`vendor/`) och typsnitten i `typsnitt/`. Formuläret ritas i en dold kopia och mäts upp, så layouten finns bara i `formular.js` och `formular.css`.
 - `utvecklarlage.js`, `testrollpersoner.js`, `autofyll.js`, `poanglogg.js`: utvecklarläget med testrollpersoner, autofyll och poänglogg.
