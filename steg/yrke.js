@@ -1,5 +1,5 @@
 // Steg 3: yrke.
-import { yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, yrkesformagaText, kallText, namnFor } from "../regelmotor.js";
+import { yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar } from "../regelmotor.js";
 import { visaNotis } from "../app.js";
 import { S, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -35,6 +35,11 @@ export function stegYrke() {
   const punkter = yrke.fardigheter.map((post, i) => {
     const val = S.rp.yrkesval[i];
     if (typeof post === "string") return punkt(namn(post), post, typeof val === "string" && !paborjad(val) ? val : null);
+    if (post.valPaket) {
+      const nycklar = paketNycklar(S.R, post, val);
+      return punkt(post.valPaket.map((p) => paketNamn(S.R, p)).join(" eller "), null,
+        nycklar.length ? nycklar.map((k) => namnFor(S.R, fardighetAv(S.R, k), k)).join(", ") : null, extraFor(post));
+    }
     if (post.valEn) {
       const text = post.valEn.map((x) => (typeof x === "string" ? namn(x) : `${namn(x.fardighet)} (${x.antal})`)).join(" eller ");
       return punkt(text, null, val?.id ? [namn(val.id), val.sub].filter(Boolean).join(": ") : null, extraFor(post));
@@ -84,6 +89,25 @@ export function yrketsVal() {
       return el("li", {}, el("span", { class: "fnamn" }, f.namn), kortBeskrivning(post),
         f.perVal ? delvalKontroll(id, post, S.rp.yrkesval[i], satt, { yrke: true }) : null, f.perVal ? hjalpFor(post) : null,
         post === "stridskonster" ? stridskonstInfo() : null);
+    }
+    if (post.valPaket) {
+      // Först paketet, sedan vad det innehåller (Krigarmunk, V&R s. 6–7, RB-016)
+      const val = S.rp.yrkesval[i] ?? {};
+      const paket = post.valPaket[val.paket];
+      const valda = [].concat(val.val ?? []);
+      const sattVal = (j, v) => { const ny = [...valda]; ny[j] = v; satt({ ...val, val: ny }); };
+      const innehall = !paket ? null
+        : paket.fasta ? el("p", { class: "hjalp" }, `Yrkesfärdigheter: ${paket.fasta.map((x) => fardighetAv(S.R, x).namn).join(" och ")}.`)
+        : paket.valfria ? el("div", { class: "rad paketval" }, Array.from({ length: paket.valfria }, (_, j) =>
+          fardighetsVal(`${id}-v${j}`, valda[j], (v) => sattVal(j, v), (f) => f.typ !== "primar" && magiMojlig(f), { yrke: true })))
+        : el("div", { class: "rad paketval" }, Array.from({ length: paket.antal }, (_, j) =>
+          delvalKontroll(`${id}-${j}`, paket.fardighet, valda[j], (v) => sattVal(j, v), { yrke: true })));
+      return el("li", {}, el("span", { class: "fnamn" }, post.valPaket.map((p) => paketNamn(S.R, p)).join(" eller ")),
+        valLista(id, val.paket === undefined ? "" : String(val.paket), post.valPaket.map((p, k) => [String(k), paketNamn(S.R, p)]),
+          (v) => satt(v === "" ? {} : { paket: Number(v), val: [] })),
+        innehall,
+        paket?.fardighet ? hjalpFor(paket.fardighet) : null,
+        el("p", { class: "hjalp" }, `Välj ett av alternativen och sedan vilka färdigheter det blir (${kallText(S.R, yrke, `s. ${yrke.sida}`)}).`));
     }
     if (post.valEn) {
       const val = S.rp.yrkesval[i] ?? {};

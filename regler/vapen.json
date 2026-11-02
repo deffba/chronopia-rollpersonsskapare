@@ -822,6 +822,23 @@
       }
     },
     {
+      "namn": "Smidesmästarens stridshammare",
+      "skada": "1T10+3",
+      "styKrav": 15,
+      "langd": 0,
+      "vikt": 5,
+      "bv": 16,
+      "pris": null,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false,
+      "somVapen": "Stridshammare (dvärgisk)",
+      "not": "Dvärgisk stridshammare av mästarkvalitet: +3 på skada och BV. Smidesmästarens startutrustning; säljs inte.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 8
+      }
+    },
+    {
       "namn": "Stormyxa",
       "skada": "2T10",
       "styKrav": 37,

@@ -854,27 +854,33 @@
           ]
         },
         {
-          "valEn": [
+          "valPaket": [
             {
               "fardighet": "lardom",
-              "antal": 1
+              "antal": 2,
+              "namn": "Lärdomsfärdigheter (2)"
             },
-            "hantera-fallor"
-          ]
-        },
-        {
-          "valEn": [
             {
-              "fardighet": "lardom",
-              "antal": 1
-            },
-            "lasdyrkning"
+              "fasta": [
+                "hantera-fallor",
+                "lasdyrkning"
+              ]
+            }
           ]
         },
         "stridskonster",
         {
-          "fardighet": "vapen",
-          "antal": 2
+          "valPaket": [
+            {
+              "fardighet": "vapen",
+              "antal": 2,
+              "namn": "Vapenfärdigheter (2)"
+            },
+            {
+              "valfria": 2,
+              "namn": "Två valfria färdigheter"
+            }
+          ]
         }
       ],
       "valfri": true,
@@ -1077,7 +1083,10 @@
         "rakning",
         {
           "fardighet": "vapen",
-          "antal": 3
+          "antal": 3,
+          "maste": [
+            "Stridshammare (dvärgisk)"
+          ]
         }
       ],
       "valfri": true,
@@ -1086,6 +1095,12 @@
         "Hem och smedja i Stubbstan",
         "Tvåhandshammare (+3 skada och BV)",
         "Förkläde av härdat läder (enda rustningen)"
+      ],
+      "startvaror": [
+        {
+          "text": "Tvåhandshammare (+3 skada och BV)",
+          "namn": "Smidesmästarens stridshammare"
+        }
       ],
       "stamning": "Hammaren sjunger mot städet, och lika gärna mot en fiendes hjälm.",
       "beskrivning": "Mästersmeder som smider sina egna vapen och svingar dem i strid med ett kontrollerat raseri. En av vapenfärdigheterna bör vara tvåhandshammaren.",

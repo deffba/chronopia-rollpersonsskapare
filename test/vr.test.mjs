@@ -222,3 +222,27 @@ test("Syn och hörsel: BP + 1T6 ger nivå, BP dras och modifikationerna läggs i
   assert.deepEqual(dalig.map((x) => [x.niva, x.mod]), [["Dålig", -2], ["God", 1]]);
   assert.equal(raknaRollperson(regler, { ...rp, sinnen: { syn: { bp: 9, slag: 6 }, horsel: { bp: 0, slag: null } } }).sinnen.sinnen[0].niva, "Utmärkt");
 });
+
+test("Krigarmunk: två paketval, lärdom eller fällor och lås, vapen eller valfria (RB-016)", () => {
+  const nycklar = (val) => yrkesPoster(regler, { ...vr, yrke: "krigarmunk", yrkesval: val }).flatMap((p) => p.nycklar);
+  const a = nycklar({ 4: { paket: 0, val: ["Heraldik", "Historia"] }, 6: { paket: 0, val: ["Dolk", "Trästav"] } });
+  assert.ok(["lardom:Heraldik", "lardom:Historia", "vapen:Dolk", "vapen:Trästav"].every((k) => a.includes(k)), a.join());
+  const b = nycklar({ 4: { paket: 1 }, 6: { paket: 1, val: ["simma", "akrobatik"] } });
+  assert.ok(["hantera-fallor", "lasdyrkning", "simma", "akrobatik"].every((k) => b.includes(k)), b.join());
+  assert.ok(!b.some((k) => k.startsWith("vapen:")));
+  assert.ok(!nycklar({}).some((k) => k === "hantera-fallor" || k.startsWith("vapen:")), "inget paket valt: inga nycklar");
+  assert.match(fel(medYrke(vr, "krigarmunk", { 6: { paket: 1, val: ["rida", "simma"] } })).join(), /Rida är en primär färdighet/);
+});
+
+test("Smidesmästare: dvärgisk stridshammare som vapenfärdighet och hammaren +3 i packningen (RB-016)", () => {
+  const rp = medYrke({ ...vr, ras: "dvarg", rasval: [] }, "smidesmastare", { 0: ["Smide", "Vapensmide", "Rustningssmide"], 4: ["Stridshammare (dvärgisk)", "Dolk", "Yxa"] });
+  assert.ok(rp.yrkesfardigheter.includes("vapen:Stridshammare (dvärgisk)"));
+  const res = raknaRollperson(regler, rp);
+  const hammare = res.utrustning.saker.find((x) => x.namn === "Smidesmästarens stridshammare");
+  assert.ok(hammare?.yrke && hammare.vikt === 5);
+  const vapnet = allaVapen(regler).find((x) => x.namn === "Smidesmästarens stridshammare");
+  assert.deepEqual([vapnet.skada, vapnet.bv, vapnet.styKrav, vapnet.somVapen], ["1T10+3", 16, 15, "Stridshammare (dvärgisk)"]);
+  assert.ok(!res.startutrustning.some((t) => t.startsWith("Tvåhandshammare")));
+  assert.match(vapenVillkor(regler, rp, "Smidesmästarens stridshammare"), /färdigheten är Stridshammare \(dvärgisk\)/);
+  assert.match(fel(medYrke({ ...vr, ras: "latracier" }, "smidesmastare", {})).join(), /bara för Dvärg och Människa|bara för Människa och Dvärg/);
+});

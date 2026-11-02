@@ -37,6 +37,13 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
       const val = rp.yrkesval[i];
       if (typeof post === "string") {
         if (fardighetAv(R, post)?.perVal && !klar(val)) rp.yrkesval[i] = delval(post);
+      } else if (post.valPaket) {
+        // Första paketet; dess val fylls i med lediga delval
+        const paket = post.valPaket[val?.paket ?? 0];
+        const lista = [].concat(val?.val ?? []);
+        const n = paket.fasta ? 0 : paket.valfria ?? paket.antal;
+        for (let j = 0; j < n; j++) if (!klar(lista[j])) lista[j] = paket.valfria ? R.fardigheter.lista.find((f) => f.typ === "sekundar" && !f.perVal && iBocker(f, rp) && !lista.includes(f.id) && !MAGI.includes(f.id) && !api.yrkesNycklar().includes(f.id))?.id : delval(paket.fardighet);
+        rp.yrkesval[i] = { paket: val?.paket ?? 0, val: lista };
       } else if (post.valEn) {
         const id = val?.id ?? (typeof post.valEn[0] === "string" ? post.valEn[0] : post.valEn[0].fardighet);
         const perVal = fardighetAv(R, id)?.perVal;

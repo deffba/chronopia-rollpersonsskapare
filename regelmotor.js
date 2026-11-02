@@ -91,6 +91,21 @@ export function yrkeVillkor(regler, rp, yrke) {
 // Yrkesförmågan med V&R:s initiativbonus (s. 4: alla krigaryrken i boken har +3 på initiativ)
 export const yrkesformagaText = (yrke) => (yrke.initiativ ? `${yrke.yrkesformaga} +${yrke.initiativ} på initiativet.` : yrke.yrkesformaga);
 
+// Ett paketval (V&R s. 6–7, RB-016): spelaren väljer först ett av paketen och sedan vad det innehåller.
+// Paket: { fardighet, antal } (t.ex. två lärdomsfärdigheter), { fasta: [id, …] } eller { valfria: n } (valfria färdigheter).
+// val = { paket: index, val: [...] }. Ger färdighetsnycklarna.
+export function paketNycklar(regler, post, val) {
+  const paket = post.valPaket?.[val?.paket];
+  if (!paket) return [];
+  const valda = [].concat(val.val ?? []);
+  if (paket.fasta) return paket.fasta;
+  if (paket.valfria) return valda.slice(0, paket.valfria).filter(Boolean);
+  return valda.slice(0, paket.antal).filter(Boolean).map((x) => `${paket.fardighet}:${x}`);
+}
+export const paketNamn = (regler, paket) => paket.namn
+  ?? (paket.fasta ? paket.fasta.map((id) => fardighetAv(regler, id)?.namn ?? id).join(" och ")
+    : paket.valfria ? `${paket.valfria} valfria färdigheter` : `${fardighetAv(regler, paket.fardighet)?.namn ?? paket.fardighet} (${paket.antal})`);
+
 // Nycklarna som varje yrkesfärdighetspost i yrket blev, efter spelarens val i rp.yrkesval.
 // Används för egenskaper som hör till en viss post (startFV, primar, takStart, utanMagiformagaslag).
 export function yrkesPoster(regler, rp) {
@@ -101,6 +116,7 @@ export function yrkesPoster(regler, rp) {
     const v = val[i];
     let nycklar = [];
     if (typeof post === "string") nycklar = fardighetAv(regler, post)?.perVal ? (v ? [`${post}:${v}`] : []) : [post];
+    else if (post.valPaket) nycklar = paketNycklar(regler, post, v);
     else if (post.valEn) {
       if (v?.id) nycklar = fardighetAv(regler, v.id)?.perVal ? (v.sub ? [`${v.id}:${v.sub}`] : []) : [v.id];
     } else {
@@ -288,6 +304,11 @@ function kontrolleraVal(regler, rp, varden, fel) {
     }
   }
   if (rp.valfri && fardighetAv(regler, rp.valfri)?.typ === "primar") fel.push("Den valfria yrkesfärdigheten kan inte vara en primär färdighet (s. 18)");
+  // Valfria färdigheter i ett paketval (Krigarmunk, RB-016) får inte heller vara primära
+  for (const { post, nycklar } of yrkesPoster(regler, rp)) {
+    const paket = post.valPaket?.[rp.yrkesval?.[yrkesPoster(regler, rp).findIndex((p) => p.post === post)]?.paket];
+    if (paket?.valfria) for (const k of nycklar) if (fardighetAv(regler, k)?.typ === "primar") fel.push(`${fardighetAv(regler, k).namn} är en primär färdighet och kan inte väljas som valfri yrkesfärdighet (s. 18)`);
+  }
 }
 
 const BC = (regler, varde) => slaUpp(regler.fardigheter.baschans, varde);
@@ -582,6 +603,7 @@ export const allaVapen = (regler) => [...regler.vapen.narstrid, ...regler.vapen.
 export function vapenVillkor(regler, rp, namn) {
   const vapen = allaVapen(regler).find((x) => x.namn === namn);
   if (!vapen) return null;
+  if (vapen.somVapen) return `${namn} är inget eget vapen att lära sig; färdigheten är ${vapen.somVapen}`;
   if (!iBocker(vapen, rp)) return `${namn} finns i ${bokNamn(regler, bokFor(vapen))}, som inte är vald (steg 0)`;
   const raser = vapen.villkor?.ras;
   if (raser && !raser.includes(rp.ras)) {

@@ -128,7 +128,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const vapennamn = [...new Set([...Object.keys(vapenFV), ...agda])];
   const vapenrader = vapennamn.map((namn) => {
     const v = katalog[namn] ?? {};
-    const f = vapenFV[namn];
+    const f = vapenFV[namn] ?? vapenFV[v.somVapen]; // ett vapen av mästarkvalitet används med sitt vanliga vapens färdighet
     return el("div", { class: "rf-rad" },
       el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, namn), sidhanvisning(sidaFor("vapen:" + namn))),
       el("span", { class: "rf-cell rf-tal" }, f?.fv ?? ""),

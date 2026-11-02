@@ -109,6 +109,26 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('inga konsolfel (testrollpersonen)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
+  // ---- Krigarmunk: två paketval (RB-016)
+  p = await ny();
+  await p.check('[data-bok=vr]'); await p.click('#nasta-steg'); await p.waitForSelector('.raskort');
+  await tillYrke(p, 'Människa');
+  await p.click('[data-yrke=krigarmunk]'); await p.waitForTimeout(100);
+  const munk = await p.locator('.rutor .punkter').textContent();
+  ok('krigarmunk: valen visas i steg 3', munk.includes('Lärdomsfärdigheter (2) eller Hantera fällor och Låsdyrkning') && munk.includes('Vapenfärdigheter (2) eller Två valfria färdigheter'), munk);
+  await p.click('#nasta-steg'); await p.waitForTimeout(120);
+  await p.click('#yrke-4 [data-varde="1"]'); await p.waitForTimeout(100);
+  ok('krigarmunk: fällor och lås som paket', (await p.locator('.yrkeslista').textContent()).includes('Yrkesfärdigheter: Hantera fällor och Låsdyrkning.'));
+  await p.click('#yrke-6 [data-varde="1"]'); await p.waitForTimeout(100);
+  await p.selectOption('#yrke-6-v0-f', 'simma'); await p.waitForTimeout(80);
+  await p.selectOption('#yrke-6-v1-f', 'akrobatik'); await p.waitForTimeout(80);
+  const munkVal = (await p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp.yrkesval));
+  ok('krigarmunk: två valfria färdigheter i stället för vapen', JSON.stringify(munkVal[4]) === '{"paket":1,"val":[]}' && JSON.stringify(munkVal[6]) === '{"paket":1,"val":["simma","akrobatik"]}', JSON.stringify(munkVal));
+  await p.click('#yrke-6 [data-varde="0"]'); await p.waitForTimeout(100);
+  ok('krigarmunk: byte till vapen ger två vapenval', await p.locator('#yrke-6-0').count() + await p.locator('#yrke-6-1').count() >= 2);
+  ok('inga konsolfel (krigarmunk)', !p.errs.length, p.errs.join(' | '));
+  await p.close();
+
   // ---- Sabransk ökenriddare: magiskolan utan magiförmågeslag
   p = await ny();
   await p.check('[data-bok=vr]'); await p.click('#nasta-steg'); await p.waitForSelector('.raskort');

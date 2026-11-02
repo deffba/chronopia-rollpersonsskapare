@@ -1,5 +1,5 @@
 // Vad som saknas i varje steg, och vilka steg som syns.
-import { rasAv, yrkeAv, fardighetAv, paborjad, skolFV, namnFor, formageslag } from "../regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, paborjad, skolFV, namnFor, formageslag, paketNamn } from "../regelmotor.js";
 import { STEG } from "../texter.js";
 import { S, motorIndata, rasId, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { MAGISLAG } from "../ui/magimodal.js";
@@ -19,6 +19,12 @@ export function saknasPerSteg(res) {
     const val = S.rp.yrkesval[i];
     if (typeof post === "string") {
       if (fardighetAv(S.R, post)?.perVal && !klar(val)) lista.extra.push(`${fardighetAv(S.R, post).namn}: vad den gäller`);
+    } else if (post.valPaket) {
+      const paket = post.valPaket[val?.paket];
+      const behov = !paket ? 1 : paket.fasta ? 0 : paket.valfria ?? paket.antal;
+      const gjorda = [].concat(val?.val ?? []).slice(0, behov).filter(klar).length;
+      if (!paket) lista.extra.push(post.valPaket.map((p) => paketNamn(S.R, p)).join(" eller "));
+      else if (gjorda < behov) lista.extra.push(`${paketNamn(S.R, paket)}: ${behov - gjorda} val kvar`);
     } else if (post.valEn) {
       if (!val?.id || (fardighetAv(S.R, val.id).perVal && !klar(val.sub))) lista.extra.push(post.valEn.map((x) => fardighetAv(S.R, x.fardighet ?? x).namn).join(" eller "));
     } else if (post.antal !== null) {

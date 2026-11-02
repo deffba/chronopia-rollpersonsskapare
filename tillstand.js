@@ -1,6 +1,6 @@
 // Rollpersonen och appens delade tillstånd, och kopplingen till regelmotorn.
 // Delat tillstånd som flera moduler ändrar ligger i S (till exempel S.rp, rollpersonen).
-import { raknaRollperson, rasAv, yrkeAv, fardighetAv, sarskildFormaga as sfFor, paborjad } from "./regelmotor.js";
+import { raknaRollperson, rasAv, yrkeAv, fardighetAv, sarskildFormaga as sfFor, paborjad, paketNycklar } from "./regelmotor.js";
 import { TOMT_SPEL, TOM_UTVECKLING } from "./sparformat.js";
 import { utvecklad } from "./utveckling.js";
 import { rita, visaNotis } from "./app.js";
@@ -100,6 +100,8 @@ export function yrkesNycklar() {
       const f = fardighetAv(S.R, post);
       if (!delval(f)) nycklar.push(post);
       else if (val) nycklar.push(`${post}:${val}`);
+    } else if (post.valPaket) {
+      nycklar.push(...paketNycklar(S.R, post, val));
     } else if (post.valEn) {
       if (!val?.id) return;
       const f = fardighetAv(S.R, val.id);

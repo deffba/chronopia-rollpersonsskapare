@@ -48,6 +48,15 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
       if (typeof post === "string") {
         const f = fardighetAv(R, post);
         if (f?.perVal) r.yrkesval[i] = ta(post, typeof val[post] === "string" ? val[post] : autoDelval(api, r, post, anvanda));
+      } else if (post.valPaket) {
+        // Receptet anger paketet som valPaket: { [postens index]: { paket, val } }, annars första paketet
+        const onskatPaket = onskat(recept.valPaket)?.[i];
+        const paket = post.valPaket[onskatPaket?.paket ?? 0];
+        const lista = [...(onskatPaket?.val ?? [])];
+        const n = paket.fasta ? 0 : paket.valfria ?? paket.antal;
+        while (lista.length < n) lista.push(paket.valfria ? R.fardigheter.lista.find((f) => f.typ === "sekundar" && !f.perVal && iBocker(f, r) && !lista.includes(f.id) && !MAGI.includes(f.id))?.id : ta(paket.fardighet, autoDelval(api, r, paket.fardighet, anvanda)));
+        if (paket.fardighet) lista.forEach((v) => anvanda.add(`${paket.fardighet}:${v}`));
+        r.yrkesval[i] = { paket: onskatPaket?.paket ?? 0, val: lista };
       } else if (post.valEn) {
         const alt = post.valEn.map((x) => (typeof x === "string" ? x : x.fardighet));
         const id = alt.find((a) => a in val) ?? alt[0];

@@ -79,6 +79,7 @@ export function grundvardesForslag() {
   };
   for (const post of yrke.fardigheter) {
     if (typeof post === "string") lagg(post, 1);
+    else if (post.valPaket) lagg(post.valPaket[0].fardighet ?? post.valPaket[0].fasta?.[0], 2);
     else if (post.valEn) post.valEn.forEach((x) => lagg(x.fardighet ?? x, 1 / post.valEn.length));
     else lagg(post.fardighet, post.antal ?? 2);
   }
