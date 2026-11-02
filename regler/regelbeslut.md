@@ -129,8 +129,8 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 
 ## RB-015 Hjältepoäng vid skapandet
 - **Fråga:** Vad kan hjältepoäng från förmågan Hjälte (V&R s. 15) köpa när rollpersonen skapas?
-- **Källor:** *Vapen & rustningar* s. 14–15. Grundreglerna om hjältepoäng.
-- **Beslut:** Vid skapandet köper 5 HP +1 i en grundegenskap (inte STO). Poäng som blir över följer med som vanliga hjältepoäng i spel. Att köpa ytterligare en särskild förmåga för HP hanteras inte i skaparen.
-- **Motivering:** Håller skaparen enkel; extra förmågor kan läggas till senare via utvecklingsflödet.
-- **Påverkar:** Steg 7, rollformulärets hjältepoäng.
-- **Beslutat:** 2026-11-01, preliminärt: väntar på Deffbas bekräftelse.
+- **Källor:** *Vapen & rustningar* s. 15 (Hjälte: 3T20 hjältepoäng, inget om hur de används). Grundreglerna s. 74–76 (5 HP = +1 i en grundegenskap utom STO; en ny särskild förmåga för HP, 2T20 med +2 BP per HP, 1–40 BP). RB-003.
+- **Beslut:** Vid skapandet köper 5 HP +1 i en grundegenskap (inte STO). Att köpa en ny särskild förmåga för HP går inte i skaparen. Poäng som blir över följer med som vanliga hjältepoäng i spel och i förbättringsflödet.
+- **Motivering:** Håller steg 7 enkelt; en extra förmåga köpt för HP skulle bli ännu ett förmågeslag inne i steget.
+- **Påverkar:** Steg 7, rollformulärets hjältepoäng, förbättringsflödet.
+- **Beslutat:** 2026-11-02, Deffba.
