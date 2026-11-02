@@ -133,10 +133,12 @@ export const TESTROLLPERSONER = [
   {
     // Vapen & rustningar kap. 8–9: hederssvärdet som gratis startutrustning, V&R-vapen och rustningsdelar per kroppsdel
     id: "vr-ordenskrigare",
-    etikett: "Högländare, ordenskrigare (V&R, utrustning)",
+    etikett: "Högländare, ordenskrigare (V&R, utrustning, syn och hörsel)",
     namn: "Brann av Hornvakten",
     kon: "Man",
     bocker: ["vr"],
+    valfriaRegler: ["syn-och-horsel"],
+    sinnen: { syn: [3, 4], horsel: [0, 2] }, // syn 7: mycket god (+2), hörsel 2: nedsatt (−1)
     niva: 0,
     ras: "hoglandare",
     rasval: "vapen:Spikyxa",

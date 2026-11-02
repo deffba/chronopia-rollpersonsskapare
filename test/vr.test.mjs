@@ -2,7 +2,7 @@
 // Kör: node --test test/vr.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag, yrkesPoster, yrkeVillkor, yrkesformagaText, svardsskolaFor, varukatalog, vapenVillkor, allaVapen } from "../regelmotor.js";
+import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag, yrkesPoster, yrkeVillkor, yrkesformagaText, svardsskolaFor, varukatalog, vapenVillkor, allaVapen, valfriaRegler, raknaSinnen } from "../regelmotor.js";
 import { regler as bas, brutus, las } from "./brutus-data.mjs";
 
 const regler = { ...bas, "sarskilda-formagor": las("sarskilda-formagor"), bocker: las("bocker"), erfarenhet: las("erfarenhet") };
@@ -199,4 +199,26 @@ test("Börda i V&R: tung packning kostar handlingar (RB-017)", () => {
   assert.equal(raknaRollperson(regler, { ...brutus, utrustning: { "Normalt städ": 1 } }).utrustning.handlingar, null);
   assert.equal(raknaRollperson(regler, { ...vr, utrustning: { "Normalt städ": 2 } }).utrustning.handlingar, -2); // 70 kg är mellan 3 och 5 × STY
   assert.equal(raknaRollperson(regler, { ...vr, utrustning: { "Normalt städ": 3 } }).utrustning.handlingar, -3); // 105 kg, mer än 6 × STY
+});
+
+// Steg 6: Syn och hörsel som valfri regel (V&R s. 3, RB-002)
+test("Syn och hörsel: bara med V&R och när regeln är påslagen", () => {
+  assert.deepEqual(valfriaRegler(regler, brutus), []);
+  assert.deepEqual(valfriaRegler(regler, vr).map((v) => v.id), ["syn-och-horsel"]);
+  assert.equal(raknaSinnen(regler, vr), null);
+  assert.match(fel({ ...brutus, valfriaRegler: ["syn-och-horsel"] }).join(), /valfri regel/);
+});
+
+test("Syn och hörsel: BP + 1T6 ger nivå, BP dras och modifikationerna läggs ihop", () => {
+  const rp = { ...vr, valfriaRegler: ["syn-och-horsel"], sinnen: { syn: { bp: 3, slag: 4 }, horsel: { bp: 2, slag: 3 } } };
+  const res = raknaRollperson(regler, rp);
+  const [syn, horsel] = res.sinnen.sinnen;
+  assert.deepEqual([syn.varde, syn.niva, syn.mod, horsel.varde, horsel.niva, horsel.mod], [7, "Mycket god", 2, 5, "God", 1]);
+  assert.equal(res.bp.utgifter.sinnen, 5);
+  assert.equal(res.bp.kvar, raknaRollperson(regler, vr).bp.kvar - 5);
+  const f = (n) => res.fardigheter.find((x) => x.nyckel === n)?.sinne;
+  assert.deepEqual([f("upptacka-fara"), f("lyssna"), f("finna-dolda-ting"), f("vapen:Långbåge"), f("vapen:Bredsvärd")], [3, 1, 2, 2, undefined]);
+  const dalig = raknaRollperson(regler, { ...rp, sinnen: { syn: { bp: 0, slag: 1 }, horsel: { bp: 0, slag: 6 } } }).sinnen.sinnen;
+  assert.deepEqual(dalig.map((x) => [x.niva, x.mod]), [["Dålig", -2], ["God", 1]]);
+  assert.equal(raknaRollperson(regler, { ...rp, sinnen: { syn: { bp: 9, slag: 6 }, horsel: { bp: 0, slag: null } } }).sinnen.sinnen[0].niva, "Utmärkt");
 });

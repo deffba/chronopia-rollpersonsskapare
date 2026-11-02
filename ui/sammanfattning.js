@@ -48,10 +48,13 @@ export function rollformular(res) {
     [...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...res.extraFormagor].filter(Boolean).map((f, i, alla) => [i === 0 ? el("h3", {}, alla.length > 1 ? "Särskilda förmågor" : "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
     res.hjaltepoang?.totalt ? el("p", {}, el("strong", {}, "Hjältepoäng: "), `${res.hjaltepoang.kvar} av ${res.hjaltepoang.totalt} kvar`) : null,
     S.rp.yrke ? el("p", {}, el("strong", {}, "Yrkesförmåga: "), yrkesformagaText(res.yrke)) : null,
+    res.sinnen?.sinnen.some((x) => x.niva) ? el("p", {}, el("strong", {}, "Syn och hörsel: "),
+      res.sinnen.sinnen.filter((x) => x.niva).map((x) => `${x.namn} ${x.niva.toLowerCase()} (${x.mod > 0 ? "+" : x.mod < 0 ? "−" : "±"}${Math.abs(x.mod)})`).join(", ")) : null,
     res.startutrustning?.length ? el("p", {}, el("strong", {}, "Startutrustning: "), res.startutrustning.join(", ")) : null,
     el("h3", {}, "Färdigheter", info("B-nivå")),
     el("ul", { class: "fardighetsrader" }, kolumnrubrik("Färdighet", "FV"), res.fardigheter.filter((f) => f.fv > 0).map((f) =>
-      el("li", { class: f.status }, el("span", {}, f.kategoriB ? medNiva(f.namn, slaUpp(S.R.fardigheter.bNivaer, f.fv)) : f.namn), el("span", { class: "num" }, f.fv)))),
+      el("li", { class: f.status }, el("span", {}, f.kategoriB ? medNiva(f.namn, slaUpp(S.R.fardigheter.bNivaer, f.fv)) : f.namn,
+        f.sinne ? el("span", { class: "hjalp" }, ` (${f.sinne > 0 ? "+" : "−"}${Math.abs(f.sinne)} syn/hörsel)`) : null), el("span", { class: "num" }, f.fv)))),
     res.besvarjelser.length ? [el("h3", {}, "Besvärjelser"), el("ul", { class: "fardighetsrader" }, kolumnrubrik("Besvärjelse", "FV"), res.besvarjelser.map((b) =>
       el("li", {}, el("span", {}, b.namn), el("span", { class: "num" }, b.fv))))] : null,
     res.utrustning.saker.length ? [el("h3", {}, "Utrustning"), el("ul", { class: "fardighetsrader" }, kolumnrubrik("Sak", "Vikt"), res.utrustning.saker.map((x) =>

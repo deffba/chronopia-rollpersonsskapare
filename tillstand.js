@@ -10,6 +10,8 @@ export const LAGRING = "chronopia-rollperson-v2";
 
 export const TOM = () => ({
   bocker: ["grund"], // böckerna rollpersonen skapas med (steg 0); grundreglerna är alltid med
+  valfriaRegler: [], // valfria regler från de valda böckerna (steg 0), t.ex. "syn-och-horsel" (V&R s. 3, RB-002)
+  sinnen: { syn: { bp: 0, slag: null }, horsel: { bp: 0, slag: null } }, // Syn och hörsel: BP + 1T6 i steg 6
   niva: 0, // erfarenhetsnivån (steg 0) när en vald bok har nivåer, t.ex. V&R:s krigare, veteran och hjälte (RB-001)
   hjaltepoangKop: {}, // grundegenskaper som höjs med hjältepoäng från särskilda förmågor (RB-003), 5 HP per poäng
   namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",

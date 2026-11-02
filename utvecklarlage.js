@@ -26,7 +26,10 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
   const rp = api.med(api.TOM(), (nu) => {
     const r = nu();
     Object.assign(r, { namn: recept.namn, spelare: "Test", kon: recept.kon, ras: recept.ras, alder: recept.alder, yrke: recept.yrke,
-      anteckningar: recept.anteckningar ?? "", bocker: ["grund", ...(recept.bocker ?? [])], niva: recept.niva ?? 0 });
+      anteckningar: recept.anteckningar ?? "", bocker: ["grund", ...(recept.bocker ?? [])], niva: recept.niva ?? 0,
+      valfriaRegler: recept.valfriaRegler ?? [] });
+    // Syn och hörsel (V&R s. 3): { syn: [BP, slag], horsel: [BP, slag] }
+    if (recept.sinnen) r.sinnen = Object.fromEntries(Object.entries(recept.sinnen).map(([id, [bp, slag]]) => [id, { bp, slag, tarningar: [slag] }]));
     const ras = rasAv(R, r.ras);
     const yrke = yrkeAv(R, r.yrke);
     const anvanda = new Set();

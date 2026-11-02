@@ -87,6 +87,11 @@ export function poster(api) {
   // 7–10. BP lagda på slagen
   const slagText = (s, utfall) => (s.slag === null || s.slag === undefined ? "inte slaget än" : `slag ${s.slag}: ${utfall}`);
   const gjort = (s) => s.slag !== null && s.slag !== undefined;
+  // 6. Syn och hörsel (valfri regel, V&R s. 3)
+  for (const x of res.sinnen?.sinnen ?? []) {
+    if (x.bp) lagg("egenskaper", "BP", x.id, `BP på ${x.namn.toLowerCase()}, ${slagText(x, `${x.niva} (${x.mod > 0 ? "+" : ""}${x.mod})`)}`, -x.bp);
+    if (gjort(x)) lagg("egenskaper", "Slag", x.id, `${x.namn}: 1T6 ${x.slag}${x.bp ? ` + ${x.bp} BP = ${x.varde}` : ""}: ${x.niva}`, null, { visa: `${x.slag}` });
+  }
   formageslag(R, api.motorIndata()).forEach((sf, i) => {
     const id = i ? `sf${i + 1}` : "sf";
     const namn = res.sarskildaFormagorna?.[i]?.namn ?? "ingen förmåga";

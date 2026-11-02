@@ -39,6 +39,7 @@ export function saknasPerSteg(res) {
     if (!sf.bp && !sf.avstar) lista.formagor.push(slagen.length > 1 ? `Lägg BP på särskild förmåga${nr}, eller kryssa i att du inte vill det` : "Lägg BP på särskilda förmågor, eller kryssa i att du inte vill det");
   });
   if (!res.grundegenskaperSatta) lista.egenskaper.push("Grundegenskaperna");
+  for (const x of res.sinnen?.sinnen ?? []) if (x.slag == null) lista.egenskaper.push(`Slaget för ${x.namn.toLowerCase()}`);
   lista.egenskaper.push(...res.forLagaEgenskaper);
   lista.formagor.push(...res.saknas);
   // Magiförmågeslaget görs i steg 6 (eller 11 för en sekundär magiskola); misslyckas det ska skolan bytas ut
@@ -87,7 +88,7 @@ export function synligaSteg(res) {
 
 export function bpForSteg(id, res) {
   const u = res.bp.utgifter;
-  const v = { ras: u.ras, extra: u.extraYrkesfardigheter, egenskaper: u.grundegenskaper, formagor: u.sarskildaFormagor,
+  const v = { ras: u.ras, extra: u.extraYrkesfardigheter, egenskaper: u.grundegenskaper + (u.sinnen ?? 0), formagor: u.sarskildaFormagor,
     svardshand: u.svardshand, stand: u.socialtStand, kapital: u.startkapital }[id];
   return v ? `${v} BP` : "";
 }

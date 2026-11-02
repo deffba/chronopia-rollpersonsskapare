@@ -32,6 +32,38 @@ export const valbaraYrken = (regler, rp) => regler.yrken.lista.filter((y) => iBo
 export const valbaraFardigheter = (regler, rp) => regler.fardigheter.lista.filter((f) => iBocker(f, rp));
 export const magiskolor = (regler, rp) => regler.fardigheter.lista.filter((f) => f.typ === "magiskola" && iBocker(f, rp));
 // Kulturer för Kulturkännedom: rasernas kulturer och de övriga i färdighetens data (s. 62)
+// Valfria regler som de valda böckerna erbjuder (V&R s. 3: Syn och hörsel, RB-002), och om en är påslagen
+export const valfriaRegler = (regler, rp) => {
+  const regler_ = (regler.bocker?.lista ?? []).filter((b) => valdaBocker(rp).includes(b.id)).flatMap((b) => (b.valfriaRegler ?? []).map((v) => ({ ...v, kalla: { bok: b.id, sida: v.sida } })));
+  return regler_.filter((v, i) => regler_.findIndex((x) => x.id === v.id) === i);
+};
+export const regelPa = (regler, rp, id) => (rp.valfriaRegler ?? []).includes(id) && valfriaRegler(regler, rp).some((v) => v.id === id);
+
+// Syn och hörsel (V&R s. 3, RB-002): BP + 1T6 per sinne ger nivån i tabellen och en modifikation.
+// Ger null när regeln inte är påslagen. mod: färdighets-id (eller "avstandsvapen") → summerad modifikation.
+export function raknaSinnen(regler, rp) {
+  if (!regelPa(regler, rp, "syn-och-horsel")) return null;
+  const regel = valfriaRegler(regler, rp).find((v) => v.id === "syn-och-horsel");
+  const mod = {};
+  const sinnen = regel.sinnen.map((sinne) => {
+    const s = rp.sinnen?.[sinne.id] ?? { bp: 0, slag: null };
+    const varde = s.slag == null ? null : s.slag + (s.bp ?? 0);
+    const rad = varde == null ? null : regel.tabell.find(([max]) => max === null || varde <= max);
+    const m = rad ? rad[2] : 0;
+    if (rad) for (const f of [...sinne.fardigheter, ...(sinne.avstandsvapen ? ["avstandsvapen"] : [])]) mod[f] = (mod[f] ?? 0) + m;
+    return { ...sinne, bp: s.bp ?? 0, slag: s.slag, varde, niva: rad?.[1] ?? null, mod: m };
+  });
+  return { regel, sinnen, mod, bp: sinnen.reduce((a, x) => a + x.bp, 0) };
+}
+
+// Modifikationen från syn och hörsel för en färdighet; avståndsvapen räknas på vapnets tabell
+export function sinnesMod(regler, sinnen, nyckel) {
+  if (!sinnen) return 0;
+  const [id, val] = nyckel.split(":");
+  const avstand = id === "vapen" && [...regler.vapen.projektil, ...regler.vapen.kast].some((x) => x.namn === val);
+  return (sinnen.mod[id] ?? 0) + (avstand ? sinnen.mod.avstandsvapen ?? 0 : 0);
+}
+
 export const kulturer = (regler, rp) => [...valbaraRaser(regler, rp).map((r) => r.namn), ...(fardighetAv(regler, "kulturkannedom").ovrigaKulturer ?? [])];
 
 // Erfarenhetsnivån (V&R s. 3 och de andra expansionerna, RB-001): BP från start och antal särskilda förmågor.
@@ -410,6 +442,8 @@ export function raknaRollperson(regler, indata) {
   const bpStart = niva.bp + alderEff.bp + (yrke.extraBP?.antal ?? 0);
   const ge = raknaGrundegenskaper(regler, rp);
   fel.push(...ge.fel);
+  const sinnen = raknaSinnen(regler, rp);
+  if ((rp.valfriaRegler ?? []).some((id) => !valfriaRegler(regler, rp).some((v) => v.id === id))) fel.push("En valfri regel hör till en bok som inte är vald (steg 0)");
   const bpUtgifter = {
     ras: rp.rasVald === false ? 0 : ras.bp, // ingen ras vald än: motorn räknar som för en människa, men inget kostar
     extraYrkesfardigheter: kostnadExtraYrken(regler, rp.extraYrkesfardigheter),
@@ -418,6 +452,7 @@ export function raknaRollperson(regler, indata) {
     svardshand: rp.svardshand.bp,
     socialtStand: rp.socialtStand.bp,
     startkapital: rp.startkapital.bp,
+    sinnen: sinnen?.bp ?? 0,
   };
   const bpKvar = bpStart - Object.values(bpUtgifter).reduce((a, b) => a + b, 0);
   // Högst 40 BP per slag på grundreglernas tabell (s. 30), 20 på V&R:s (s. 14)
@@ -495,8 +530,9 @@ export function raknaRollperson(regler, indata) {
     sarskildFormaga: sf.formaga, sarskildaFormagorna: sf.formagor, hjaltepoang: sf.hjaltepoang, niva, saknas: sf.saknas, vantar, forLagaEgenskaper: ge.forLaga,
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
-    fardigheter: fardigheter.sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
-    besvarjelser, utrustning, startutrustning: startvaror(regler, rp).ovriga,
+    fardigheter: fardigheter.map((f) => (sinnesMod(regler, sinnen, f.nyckel) ? { ...f, sinne: sinnesMod(regler, sinnen, f.nyckel) } : f))
+      .sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
+    besvarjelser, utrustning, startutrustning: startvaror(regler, rp).ovriga, sinnen,
     fel,
   };
 }

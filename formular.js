@@ -48,6 +48,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
       el("span", { class: "rf-namntext" }, f.status === "primar" && f.grundegenskap ? `${f.namn} (${f.grundegenskap})` : f.namn),
       f.kategoriB ? el("small", {}, bNiva(f.fv)) : null,
       tak(f) ? el("small", {}, tak(f)) : null,
+      f.sinne ? el("small", { title: "Syn och hörsel (Vapen & rustningar s. 3)" }, `${f.sinne > 0 ? "+" : "−"}${Math.abs(f.sinne)} sinne`) : null,
       sidhanvisning(sidaFor(f.nyckel))),
     el("span", { class: "rf-cell rf-erf" + (f.kategoriB ? " b" : "") }, erfFalt(f.nyckel, f.namn)),
     el("span", { class: "rf-cell rf-tal" }, f.fv));
@@ -77,6 +78,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     ...(res.ras?.formagor ?? []).map((t) => ({ namn: t, text: `Rasförmåga (${res.ras.namn.toLowerCase()})` })),
     ...[...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
     rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: yrkesformagaText(res.yrke) } : null,
+    ...(res.sinnen?.sinnen ?? []).filter((x) => x.niva).map((x) => ({ namn: `${x.namn}: ${x.niva.toLowerCase()}`, text: `${x.mod > 0 ? "+" : x.mod < 0 ? "−" : "±"}${Math.abs(x.mod)} på ${x.text}` })),
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
   ].filter(Boolean);
 

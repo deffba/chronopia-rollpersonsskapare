@@ -1,22 +1,175 @@
 {
-  "grupper": ["Kärnböcker", "Rasböcker", "Mörkerböcker"],
+  "grupper": [
+    "Kärnböcker",
+    "Rasböcker",
+    "Mörkerböcker"
+  ],
   "lista": [
-    { "id": "grund", "namn": "Chronopia (grundreglerna)", "grupp": "Kärnböcker", "status": "inlagd", "alltid": true, "kraver": [] },
-    { "id": "vr", "namn": "Vapen & rustningar i Chronopia", "grupp": "Kärnböcker", "status": "inlagd", "kraver": [],
-      "nivaer": { "sida": 3, "lista": [
-        { "namn": "Krigare", "bp": 125, "formagor": 1, "beskrivning": "En vanlig invånare i Chronopia som aldrig har utfört några hjältedåd." },
-        { "namn": "Veteran", "bp": 150, "formagor": 2, "beskrivning": "En erfaren och skicklig krigare med storslagna äventyr bakom sig och ett rykte i staden." },
-        { "namn": "Hjälte", "bp": 175, "formagor": 3, "beskrivning": "En av Chronopias hjältar, som har överlevt äventyr långt bortom den vanliga krigarens fantasi." }
-      ] } },
-    { "id": "magi", "namn": "Magi i Chronopia", "grupp": "Kärnböcker", "status": "kommerSnart", "kraver": [] },
-    { "id": "dvargar", "namn": "Dvärgar i Chronopia", "grupp": "Rasböcker", "status": "kommerSnart", "kraver": ["vr"] },
-    { "id": "alver", "namn": "Alver i Chronopia", "grupp": "Rasböcker", "status": "kommerSnart", "kraver": ["vr", "magi"],
+    {
+      "id": "grund",
+      "namn": "Chronopia (grundreglerna)",
+      "grupp": "Kärnböcker",
+      "status": "inlagd",
+      "alltid": true,
+      "kraver": []
+    },
+    {
+      "id": "vr",
+      "namn": "Vapen & rustningar i Chronopia",
+      "grupp": "Kärnböcker",
+      "status": "inlagd",
+      "kraver": [],
+      "nivaer": {
+        "sida": 3,
+        "lista": [
+          {
+            "namn": "Krigare",
+            "bp": 125,
+            "formagor": 1,
+            "beskrivning": "En vanlig invånare i Chronopia som aldrig har utfört några hjältedåd."
+          },
+          {
+            "namn": "Veteran",
+            "bp": 150,
+            "formagor": 2,
+            "beskrivning": "En erfaren och skicklig krigare med storslagna äventyr bakom sig och ett rykte i staden."
+          },
+          {
+            "namn": "Hjälte",
+            "bp": 175,
+            "formagor": 3,
+            "beskrivning": "En av Chronopias hjältar, som har överlevt äventyr långt bortom den vanliga krigarens fantasi."
+          }
+        ]
+      },
+      "valfriaRegler": [
+        {
+          "id": "syn-och-horsel",
+          "namn": "Syn och hörsel",
+          "sida": 3,
+          "beskrivning": "Syn och hörsel blir egna värden. Lägg BP på vart och ett i steg 6 och slå 1T6; summan ger en modifikation på vissa färdigheter.",
+          "tarning": "1T6",
+          "tabell": [
+            [
+              1,
+              "Dålig",
+              -2
+            ],
+            [
+              2,
+              "Nedsatt",
+              -1
+            ],
+            [
+              4,
+              "Normal",
+              0
+            ],
+            [
+              6,
+              "God",
+              1
+            ],
+            [
+              9,
+              "Mycket god",
+              2
+            ],
+            [
+              null,
+              "Utmärkt",
+              3
+            ]
+          ],
+          "sinnen": [
+            {
+              "id": "syn",
+              "namn": "Syn",
+              "galler": "CL",
+              "fardigheter": [
+                "finna-dolda-ting",
+                "upptacka-fara"
+              ],
+              "avstandsvapen": true,
+              "text": "CL i avståndsvapen, Finna dolda ting och Upptäcka fara"
+            },
+            {
+              "id": "horsel",
+              "namn": "Hörsel",
+              "galler": "FV",
+              "fardigheter": [
+                "lyssna",
+                "upptacka-fara"
+              ],
+              "text": "FV i Lyssna och Upptäcka fara"
+            }
+          ],
+          "not": "Modifikationerna läggs ihop: god syn och god hörsel ger +2 i Upptäcka fara. Dålig syn kan rättas med ögonglas."
+        }
+      ]
+    },
+    {
+      "id": "magi",
+      "namn": "Magi i Chronopia",
+      "grupp": "Kärnböcker",
+      "status": "kommerSnart",
+      "kraver": []
+    },
+    {
+      "id": "dvargar",
+      "namn": "Dvärgar i Chronopia",
+      "grupp": "Rasböcker",
+      "status": "kommerSnart",
+      "kraver": [
+        "vr"
+      ]
+    },
+    {
+      "id": "alver",
+      "namn": "Alver i Chronopia",
+      "grupp": "Rasböcker",
+      "status": "kommerSnart",
+      "kraver": [
+        "vr",
+        "magi"
+      ],
       "rekommenderar": [
-        { "bok": "dvargar", "varfor": "krävs för Stormfågels mekanik" },
-        { "bok": "morkrets-vaktare", "varfor": "krävs för Spindelmästarens mörkermagi" }
-      ] },
-    { "id": "svartblod", "namn": "Svartblod", "grupp": "Rasböcker", "status": "kommerSnart", "kraver": ["vr"] },
-    { "id": "morkrets-vaktare", "namn": "Mörkrets väktare", "grupp": "Mörkerböcker", "status": "kommerSnart", "kraver": [] },
-    { "id": "morkrets-krigare", "namn": "Mörkrets krigare", "grupp": "Mörkerböcker", "status": "kommerSnart", "kraver": ["vr", "magi", "morkrets-vaktare"] }
+        {
+          "bok": "dvargar",
+          "varfor": "krävs för Stormfågels mekanik"
+        },
+        {
+          "bok": "morkrets-vaktare",
+          "varfor": "krävs för Spindelmästarens mörkermagi"
+        }
+      ]
+    },
+    {
+      "id": "svartblod",
+      "namn": "Svartblod",
+      "grupp": "Rasböcker",
+      "status": "kommerSnart",
+      "kraver": [
+        "vr"
+      ]
+    },
+    {
+      "id": "morkrets-vaktare",
+      "namn": "Mörkrets väktare",
+      "grupp": "Mörkerböcker",
+      "status": "kommerSnart",
+      "kraver": []
+    },
+    {
+      "id": "morkrets-krigare",
+      "namn": "Mörkrets krigare",
+      "grupp": "Mörkerböcker",
+      "status": "kommerSnart",
+      "kraver": [
+        "vr",
+        "magi",
+        "morkrets-vaktare"
+      ]
+    }
   ]
 }

@@ -20,6 +20,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Beslut:** Syn och Hörsel är två egna värden, närmast i klass med grundegenskaperna men framtagna på annat sätt. Spelaren lägger bakgrundspoäng på Syn och Hörsel var för sig, slår 1T6 för vardera och lägger ihop tärningen med de spenderade BP. Summan ger nivån i tabellen (Dålig … Utmärkt), som i sin tur ger modifikationer på vissa färdigheter (Syn: avståndsvapen, Upptäcka fara, Finna dolda ting; Hörsel: Lyssna, Upptäcka fara).
 - **Motivering:** ”BP” i tabellhuvudet syftar på de bakgrundspoäng man väljer att lägga på respektive sinne. Det är samma mönster som tabellen för särskilda förmågor (1T20+BP), där spenderade BP läggs till slaget.
 - **Valfri regel:** Syn och hörsel är en valfri regel. Spelaren slår på den på samma skärm som expansionerna (senare kanske styrt av SL för hela kampanjen).
+- **I appen (2026-11-02):** Regeln slås på i steg 0 när V&R är vald. BP och 1T6 för syn och hörsel läggs i steg 6. Modifikationen ändrar inte FV eller EP-kostnaden utan står bredvid färdigheten i sammanfattningen och på rollformuläret (syn: Finna dolda ting, Upptäcka fara och alla avstånds- och kastvapen; hörsel: Lyssna och Upptäcka fara).
 - **Påverkar:** Grundegenskapssteget, färdighetsvärden, rollformuläret.
 - **Beslutat:** 2026-10-30, Deffba.
 
