@@ -52,7 +52,8 @@ function formagekort(tabell, traff) {
 
 export function stegFormagor() {
   const antal = formageslag(S.R, motorIndata()).length;
-  if (aktivPlats >= antal) aktivPlats = 0;
+  // Steget börjar alltid på Förmåga 1, även för en ny rollperson efter en med flera förmågor
+  if (aktivPlats >= antal || S.ritatSteg !== "formagor") aktivPlats = 0;
   for (let i = 1; i < antal; i++) formagePlats(i);
   const plats = aktivPlats;
   const pid = plats === 0 ? "sf" : `sf${plats + 1}`; // id:n för första slaget är desamma som med en förmåga
@@ -68,6 +69,7 @@ export function stegFormagor() {
   const tolkning = s.avstar ? (antal > 1 ? `Rollpersonen får ingen särskild förmåga ${plats + 1}.` : "Rollpersonen får ingen särskild förmåga.") :
     !s.bp ? `Lägg minst 1 BP för att få slå (högst ${maxBP}), eller kryssa i rutan om du inte vill lägga BP här.` :
     oslaget ? inteSlaget() :
+    svar?.dubblett !== undefined ? [`Resultat: ${s.slag + s.bp}.`, `${sf?.namn}, som rollpersonen redan har (förmåga ${svar.dubblett + 1}). Slå om.`] :
     [`Resultat: ${s.slag + s.bp}.`, `${sf?.namn}: ${sf?.effekt} (${sf ? sidaFor(tabell, sf) : ""})`];
   // Byts förmågan ut gäller inte de gamla valen längre. BP här betyder att spelaren inte längre avstår.
   const nollstall = () => {
@@ -148,7 +150,18 @@ export function stegFormagor() {
   const ingaVarden = "Förmågan påverkar inga värden på rollformuläret. Skriv in den i anteckningarna om den behöver beskrivas mer.";
   const visaModal = formageModal === plats && !oslaget && !!sf && rullar === null;
   let modal = null;
-  if (visaModal) {
+  if (visaModal && svar.dubblett !== undefined) {
+    // Samma förmåga som ett tidigare slag: slå om med samma BP
+    const slaOm = el("button", { type: "button", class: "knapp primar", id: "sf-modal-sla-om",
+      onclick: () => { Object.assign(hamta(), { slag: null, val: [], formaga: undefined }); formageModal = null; uppdatera(); } }, "SLÅ OM");
+    modal = el("div", { class: "dialog-bakgrund", id: "sf-modal" },
+      el("div", { class: "dialog formagedialog", role: "dialog", "aria-modal": "true", "aria-labelledby": "sf-modal-namn" },
+        el("p", { class: "eyebrow" }, `Särskild förmåga ${plats + 1}${tabeller.length > 1 ? ` · ${tabell.namn}` : ""}`),
+        el("h2", { id: "sf-modal-namn" }, sf.namn),
+        el("p", { class: "formagedialog-slag" }, `Slaget blev ${s.slag} + ${s.bp} BP = ${s.slag + s.bp}.`),
+        el("p", { class: "formagedialog-effekt", id: "sf-modal-dubblett" }, `Rollpersonen har redan ${sf.namn} (förmåga ${svar.dubblett + 1}). Slå om; de lagda BP står kvar.`),
+        el("div", { class: "dialog-fot" }, slaOm)));
+  } else if (visaModal) {
     const klar = !svar.saknas.length && !svar.fel.length;
     const fortsatt = el("button", { type: "button", class: "knapp primar", id: "sf-modal-fortsatt", disabled: !klar,
       onclick: () => { formageModal = null; rita(); } }, "FORTSÄTT");

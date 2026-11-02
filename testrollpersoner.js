@@ -137,7 +137,7 @@ export const TESTROLLPERSONER = [
     namn: "Brann av Hornvakten",
     kon: "Man",
     bocker: ["vr"],
-    valfriaRegler: ["syn-och-horsel", "detaljerad-strid"],
+    valfriaRegler: ["syn-och-horsel", "detaljerad-strid", "kejserliga-varor"],
     sinnen: { syn: [3, 4], horsel: [0, 2] }, // syn 7: mycket god (+2), hörsel 2: nedsatt (−1)
     niva: 0,
     ras: "hoglandare",

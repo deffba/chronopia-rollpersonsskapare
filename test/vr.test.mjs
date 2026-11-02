@@ -221,13 +221,13 @@ test("Detaljerad strid: axelskydd, halva skydd och rustningsvapen bara med regel
   const tung = h(16, { utrustning: { "Normalt städ": 1 } });
   assert.deepEqual([tung.borda, tung.antal], [-1, 1]);
   assert.ok(tung.extra.includes("två vapen") && /kritiska träffar/.test(tung.spel));
-  assert.deepEqual(valfriaRegler(regler, vr).map((v) => v.id), ["syn-och-horsel", "detaljerad-strid"]);
+  assert.deepEqual(valfriaRegler(regler, vr).map((v) => v.id), ["syn-och-horsel", "detaljerad-strid", "kejserliga-varor"]);
 });
 
 // Steg 6: Syn och hörsel som valfri regel (V&R s. 3, RB-002)
 test("Syn och hörsel: bara med V&R och när regeln är påslagen", () => {
   assert.deepEqual(valfriaRegler(regler, brutus), []);
-  assert.deepEqual(valfriaRegler(regler, vr).map((v) => v.id), ["syn-och-horsel", "detaljerad-strid"]);
+  assert.deepEqual(valfriaRegler(regler, vr).map((v) => v.id), ["syn-och-horsel", "detaljerad-strid", "kejserliga-varor"]);
   assert.equal(raknaSinnen(regler, vr), null);
   assert.match(fel({ ...brutus, valfriaRegler: ["syn-och-horsel"] }).join(), /valfri regel/);
 });
@@ -299,4 +299,38 @@ test("Strid i mörker: SMI/INT (SL avgör), startvärdet på den högre (RB-016)
   const b = rad({ SMI: 7, INT: 16 });
   assert.equal(b.grundegenskap, "INT");
   assert.ok(b.start > rad({ SMI: 7, INT: 5 }).start, "INT ger startvärdet när den är högre");
+});
+
+test("Kejserliga vapen och förbjudna varor kräver spelledarens tillstånd eller kejsarens tjänst", () => {
+  const ds = (extra = {}) => ({ ...vr, ...extra });
+  assert.match(vapenVillkor(regler, vr, "Hedersyxa"), /kejserligt vapen/);
+  assert.equal(vapenVillkor(regler, ds({ valfriaRegler: ["kejserliga-varor"] }), "Hedersyxa"), null);
+  assert.equal(vapenVillkor(regler, ds({ ras: "dvarg", yrke: "hedersvakt" }), "Hedersyxa"), null, "hedersvakten är kejsarens tjänare");
+  assert.match(fel(ds({ utrustning: { Blodkräva: 1 } })).join(), /förbjuden enligt kejsarens lag/);
+  assert.ok(!fel(ds({ valfriaRegler: ["kejserliga-varor"], utrustning: { Blodkräva: 1 } })).some((t) => /Blodkräva/.test(t)));
+  assert.match(fel(ds({ fardigheter: { ...vr.fardigheter, "vapen:Kejsarsvärd": 1 } })).join(), /Kejsarsvärd är ett kejserligt vapen/);
+});
+
+test("flera förmågor: samma förmåga två gånger ska slås om", () => {
+  const rp = { ...vr, niva: 1, sarskildaFormagor: { ...brutus.sarskildaFormagor, fler: [slag(1, 23, "grund", [["simma"]])] } };
+  const r = raknaRollperson(regler, rp);
+  assert.match(r.fel.join(), /Förmåga 2: samma förmåga som förmåga 1 \(Hobbyist\); slå om/);
+  assert.equal(sarskildFormaga(regler, rp).perSlag[1].dubblett, 0);
+  assert.ok(!r.fardigheter.some((f) => f.nyckel === "simma" && f.fv >= 3), "den andra förmågan ger inget");
+});
+
+test("yrken med vapen i startutrustningen får inget vapen i startpaketet", () => {
+  const rp = medYrke({ ...vr, ras: "hoglandare" }, "ordenskrigare", {});
+  assert.match(fel({ ...rp, startpaket: { valt: true, vapen: "Dolk" } }).join(), /startpaketet har inget vapen/);
+  const res = raknaRollperson(regler, { ...rp, startpaket: { valt: true, vapen: "" } });
+  assert.ok(!res.fel.some((t) => /startpaket/i.test(t)) && res.utrustning.saker.some((x) => x.gratis && !x.yrke));
+});
+
+test("startutrustning som kräver detaljerad strid byts mot en vara för grundreglerna", () => {
+  const rp = medYrke({ ...vr, ras: "dvarg", rasval: [] }, "hedersvakt", {});
+  const namn = (r) => raknaRollperson(regler, r).utrustning.saker.filter((x) => x.yrke).map((x) => x.namn);
+  assert.ok(namn(rp).includes("Armskydd (par): Metall") && !namn(rp).includes("Axelskydd (par): Dvärgiskt"), namn(rp).join());
+  const ds = { ...rp, valfriaRegler: ["detaljerad-strid"] };
+  assert.ok(namn(ds).includes("Axelskydd (par): Dvärgiskt"), namn(ds).join());
+  assert.ok(!raknaRollperson(regler, rp).startutrustning.includes("Axelplåt"));
 });

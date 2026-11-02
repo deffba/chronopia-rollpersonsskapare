@@ -42,7 +42,9 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('med V&R: nya varukategorier', ['Stridsdroger', 'Djur', 'Skrifter', 'Rustningsvapen', 'Möbler'].every((x) => k.includes(x)) && !k.includes('Diverse (Chronopia)'), k.join(','));
   await sok(p, 'gasmask');
   const gasmask = p.locator('.varutabell tbody tr[data-namn="gasmask"]');
-  ok('gasmasken med åtkomlighet D, S', (await gasmask.locator('.varutagg').textContent()) === 'D, S' && (await gasmask.locator('.varutagg').getAttribute('title')).includes('sällsynt, Stubbstan'));
+  ok('gasmasken med åtkomlighet D, S', (await gasmask.locator('.varutagg').textContent()) === 'D, S' && (await gasmask.locator('.varutagg').getAttribute('data-tip')).includes('sällsynt, Stubbstan'));
+  await gasmask.locator('.varutagg').hover(); await p.waitForTimeout(80);
+  ok('åtkomligheten visar en förklaring vid hovring', (await p.locator('#tips:not([hidden])').textContent().catch(() => '')).includes('sällsynt, Stubbstan'));
   await sok(p, 'blodkräva');
   ok('förbjuden vara märks ut (X)', await p.locator('tr[data-namn="blodkräva"] .varutagg.forbjuden').count() === 1);
   await sok(p, 'hedersyxa');
@@ -56,6 +58,18 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   await sok(p, 'axelskydd (par): högländskt');
   ok('axelskyddet skyddar även huvudet och bröstkorgen', (await p.locator('.varutabell tbody tr:not([hidden])').first().textContent()).includes('även huvudet mot hugg och slag, och bröstkorgen'));
   await sok(p, '');
+
+  // Stora kategorier delas upp i underkategorier
+  await p.locator('.flikar .valknapp', { hasText: /^Rustning$/ }).click(); await p.waitForTimeout(150);
+  const under = await p.locator('.underflikar .valknapp').allTextContents();
+  ok('rustning: underkategorier', ['Hjälmar', 'Axelskydd', 'Armskydd', 'Benskydd', 'Harnesk och brynjor'].every((n) => under.some((u) => u.startsWith(n))), under.join(','));
+  await p.click('.underflikar [data-under="Hjälmar"]'); await p.waitForTimeout(150);
+  const hjalmar = await synligaRader(p);
+  ok('rustning: underkategorin Hjälmar visar bara hjälmar', hjalmar.length > 5 && hjalmar.includes('ordenskrigarhjälm') && !hjalmar.some((n) => n.startsWith('harnesk')), hjalmar.join(','));
+  await p.locator('.flikar .valknapp', { hasText: /^Skrifter$/ }).click(); await p.waitForTimeout(150);
+  ok('små kategorier har inga underkategorier', await p.locator('.underflikar').count() === 0);
+  // Ordenskrigaren har vapen i startutrustningen: startpaketet ger inget vapen
+  ok('startpaketet utan vapen när yrket ger vapen', (await p.locator('.rutor').first().textContent()).includes('Inget vapen, eftersom yrket ger vapen'));
 
   // Startutrustning: hederssvärdet och vimplarna ligger gratis i packningen, hästen står kvar som text
   const utr = await p.locator('#startutrustning').textContent();
@@ -93,6 +107,10 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('utan detaljerad strid: inga rustningsvapen', !(await flikar(p)).includes('Rustningsvapen'), (await flikar(p)).join(','));
   await sok(p, 'axelskydd');
   ok('utan detaljerad strid: inga axelskydd', (await synligaRader(p)).length === 0);
+  await sok(p, 'blodkräva');
+  ok('utan spelledarens tillstånd: förbjudna varor visas inte', (await synligaRader(p)).length === 0);
+  await sok(p, 'hedersyxa');
+  ok('svartgardisten är kejsarens tjänare: kejserliga vapen finns', (await synligaRader(p)).length === 1);
   await sok(p, 'armskydd');
   const arm = await synligaRader(p);
   ok('utan detaljerad strid: vanliga armskydd men inga halva', arm.length >= 5 && !arm.some((n) => n.includes('halva')), arm.join(','));

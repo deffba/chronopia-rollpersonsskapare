@@ -58,7 +58,7 @@ export function saknasPerSteg(res) {
     else (iYrke || iExtra ? lista.egenskaper : lista.fardigheter).push("Magiförmågeslaget misslyckades: byt magiskolan mot en annan färdighet");
   }
   for (const f of res.fardigheter.filter((x) => x.tekniker && !x.tekniker.length)) lista.fardigheter.push(`${f.namn}: välj stilens tekniker`);
-  if (S.rp.startpaket.valt && !S.rp.startpaket.vapen) lista.utrustning.push("Startpaketets vapen");
+  if (S.rp.startpaket.valt && !S.rp.startpaket.vapen && !yrkeAv(S.R, S.rp.yrke)?.startvapen) lista.utrustning.push("Startpaketets vapen");
   if (S.rp.svardshand.slag === null && !(res.sarskildFormaga?.regel ?? []).some((d) => d.typ === "svardshand")) lista.svardshand.push("Slaget för svärdshand");
   if (S.rp.socialtStand.slag === null && !S.rp.socialtStand.valt) lista.stand.push("Slaget för socialt stånd");
   if (S.rp.startkapital.slag === null) lista.kapital.push("Slaget för startkapital");

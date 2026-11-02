@@ -660,7 +660,8 @@
           "ljusalv",
           "stadsalv"
         ]
-      }
+      },
+      "startvapen": true
     },
     {
       "id": "dodsdansare",
@@ -694,7 +695,8 @@
         "Nyckel till Dödsdansarnas sal"
       ],
       "stamning": "Fyrtio dueller på arenans sand, och fortfarande vid liv.",
-      "beskrivning": "Gladiatorer som överlevt minst fyrtio dueller och blivit arenans stjärnor. De kommer från alla raser och samhällsskikt."
+      "beskrivning": "Gladiatorer som överlevt minst fyrtio dueller och blivit arenans stjärnor. De kommer från alla raser och samhällsskikt.",
+      "startvapen": true
     },
     {
       "id": "hedersvakt",
@@ -734,6 +736,12 @@
           "namn": "Hedersyxa"
         },
         {
+          "text": "Axelplåt",
+          "namn": "Axelskydd (par): Dvärgiskt",
+          "kraverRegel": "detaljerad-strid",
+          "annars": "Armskydd (par): Metall"
+        },
+        {
           "text": "Skäggkam",
           "namn": "Skäggkam"
         }
@@ -744,7 +752,9 @@
         "ras": [
           "dvarg"
         ]
-      }
+      },
+      "kejsarensTjanare": true,
+      "startvapen": true
     },
     {
       "id": "huvudjagare",
@@ -781,7 +791,8 @@
         "Kejserlig fullmakt"
       ],
       "stamning": "Varje efterlyst har ett pris, och huvudjägaren vet var de gömmer sig.",
-      "beskrivning": "Prisjägare med kejserlig fullmakt som spårar upp förrymda och efterlysta i Chronopias gränder och bortom."
+      "beskrivning": "Prisjägare med kejserlig fullmakt som spårar upp förrymda och efterlysta i Chronopias gränder och bortom.",
+      "startvapen": true
     },
     {
       "id": "hyrsvard",
@@ -819,7 +830,8 @@
         "Medlemsbevis i Klingornas allians"
       ],
       "stamning": "Svärdet går till högstbjudande, men lojaliteten mot bröderna i alliansen är inte till salu.",
-      "beskrivning": "Legosoldater som säljer sina tjänster genom Klingornas allians. De har kontakter i varje garnisonsstad."
+      "beskrivning": "Legosoldater som säljer sina tjänster genom Klingornas allians. De har kontakter i varje garnisonsstad.",
+      "startvapen": true
     },
     {
       "id": "krigarmunk",
@@ -953,7 +965,8 @@
         "ras": [
           "hoglandare"
         ]
-      }
+      },
+      "startvapen": true
     },
     {
       "id": "sabransk-okenriddare",
@@ -1025,7 +1038,8 @@
           "fardighet": "hypnotisera",
           "fv": 10
         }
-      ]
+      ],
+      "startvapen": true
     },
     {
       "id": "slaghok",
@@ -1058,7 +1072,7 @@
       "valfri": true,
       "automatiska": [],
       "startutrustning": [
-        "Hökutstyrsel: lädervast och höktatuering",
+        "Hökutstyrsel: läderväst och höktatuering",
         "Piska",
         "Ett lätt handvapen",
         "Ett avståndsvapen"
@@ -1070,7 +1084,8 @@
         }
       ],
       "stamning": "Hökarna äger gatorna, och varje gränd har ett namn.",
-      "beskrivning": "Medlemmar i gatugänget Hökarna. De kan varje genväg och varje tak i sitt kvarter."
+      "beskrivning": "Medlemmar i gatugänget Hökarna. De kan varje genväg och varje tak i sitt kvarter.",
+      "startvapen": true
     },
     {
       "id": "smidesmastare",
@@ -1130,7 +1145,8 @@
           "fardighet": "hantverk:Smide",
           "fv": 10
         }
-      ]
+      ],
+      "startvapen": true
     },
     {
       "id": "stadspirat",
@@ -1222,7 +1238,9 @@
         "ras": [
           "latracier"
         ]
-      }
+      },
+      "kejsarensTjanare": true,
+      "startvapen": true
     },
     {
       "id": "tunnelkrigare",
@@ -1289,7 +1307,8 @@
         }
       ],
       "stamning": "Under staden finns en annan stad, och någon måste hålla den ren.",
-      "beskrivning": "Krigare som rensar Chronopias kloaker och tunnlar från det som kryper där nere."
+      "beskrivning": "Krigare som rensar Chronopias kloaker och tunnlar från det som kryper där nere.",
+      "startvapen": true
     },
     {
       "id": "vapenmastare",
@@ -1335,7 +1354,8 @@
         "Övrig utrustning efter svärdsskolan"
       ],
       "stamning": "Varje vapen har sin dans, och mästaren kan dem alla.",
-      "beskrivning": "Krigare som ägnat livet åt vapnens konst och behärskar flera stridskonster."
+      "beskrivning": "Krigare som ägnat livet åt vapnens konst och behärskar flera stridskonster.",
+      "startvapen": true
     },
     {
       "id": "adling",

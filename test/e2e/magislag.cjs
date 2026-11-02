@@ -49,7 +49,11 @@ const BILDER = process.argv[2] || null;
   await p.click('#magimodal-forlikas');
   await p.waitForSelector('#magimodal.byte');
   koll('bytet även i steg 11', (await p.locator('.magi-byte-rubrik').textContent()) === 'FÖRLIKAS MED ÖDET');
-  koll('etikett sekundär', (await p.locator('.magi-byte-plats label').textContent()) === 'Ny sekundär färdighet');
+  koll('etikett sekundär', (await p.locator('.magi-byte-plats label[for]').textContent()) === 'Ny sekundär färdighet');
+  // En sekundär färdighet är frivillig: spelaren kan avstå från att välja en ny
+  await p.check('#magibyte-0-avsta'); await p.waitForTimeout(80);
+  koll('avstå: GÅ VIDARE går att trycka på', !(await p.locator('#magimodal-ga-vidare').isDisabled()) && await p.locator('#magibyte-0-f').count() === 0);
+  await p.uncheck('#magibyte-0-avsta'); await p.waitForTimeout(80);
   const har = await p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp);
   const bytAlt = await p.locator('#magibyte-0-f option').evaluateAll(o => o.map(x => x.value).filter(Boolean));
   koll('inga magiskolor i bytet', !bytAlt.some(v => ['animism', 'elementarmagi', 'mentalism'].includes(v)));

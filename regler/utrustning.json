@@ -4027,5 +4027,234 @@
         "mod": -3
       }
     ]
+  },
+  "underkategorier": {
+    "grans": 30,
+    "Närstridsvapen": {
+      "falt": "grupp",
+      "namn": {
+        "dolkar": "Dolkar",
+        "svard": "Svärd",
+        "yxor": "Yxor",
+        "kross": "Krossvapen",
+        "stickvapen": "Stickvapen",
+        "stangvapen": "Stångvapen",
+        "kattingvapen": "Kättingvapen",
+        "piska": "Piskor och slagsmål",
+        "slagsmal": "Piskor och slagsmål"
+      }
+    },
+    "Rustning": {
+      "falt": "typ",
+      "namn": {
+        "Hjälm": "Hjälmar",
+        "Axelskydd (par)": "Axelskydd",
+        "Armskydd (par)": "Armskydd",
+        "Halva armskydd (par)": "Armskydd",
+        "Benskydd (par)": "Benskydd",
+        "Halva benskydd (par)": "Benskydd",
+        "Brynjehosor": "Benskydd",
+        "Harnesk": "Harnesk och brynjor",
+        "Brynja": "Harnesk och brynjor",
+        "Hauberk": "Harnesk och brynjor",
+        "Helrustning": "Helrustningar"
+      }
+    },
+    "Kläder": {
+      "varor": {
+        "Plagg": [
+          "Byxor",
+          "Jacka",
+          "Kortbyxor",
+          "Kåpa (magiker-, präst-)",
+          "Mantel",
+          "Skjorta",
+          "Tunika",
+          "Balklänning",
+          "Förkläde",
+          "Läderväst",
+          "Nattsärk",
+          "Päls",
+          "Svepning i sabranskt siden",
+          "Hosor"
+        ],
+        "Skor": [
+          "Kängor",
+          "Läderskor",
+          "Läderstövlar, höga",
+          "Sandaler",
+          "Alviska dansskor",
+          "Kloakskor",
+          "Sabranska snabeltofflor",
+          "Träskor"
+        ],
+        "Huvudbonader och tillbehör": [
+          "Bälte",
+          "Handskar",
+          "Hatt",
+          "Lösskägg",
+          "Nattmössa",
+          "Peruk",
+          "Plym",
+          "Råttfångarhatt",
+          "Sidennäsduk",
+          "Slöja",
+          "Wongosisk hätta"
+        ]
+      }
+    },
+    "Äventyrarutrustning": {
+      "varor": {
+        "Ammunition och bågsträngar": [
+          "Arbalestlod (10 st)",
+          "Armborstlod (10 st)",
+          "Pilar (10 st)",
+          "Slungkulor (+2 CL, 10 st)",
+          "Bågsträng"
+        ],
+        "Ljus och eld": [
+          "Flinta & stål",
+          "Vaxljus (1 timme)",
+          "Fackla (1 timme)",
+          "Oljelampa (1 timme)",
+          "Oljelykta (6 timmar)",
+          "Lampolja (1 timme)",
+          "Brännglas",
+          "Gaslykta",
+          "Ljuskulor (5 st)",
+          "Pannlykta"
+        ],
+        "Läger och friluftsliv": [
+          "Halmmadrass",
+          "Järngryta (2 liter)",
+          "Fiskenät (5 × 5 m)",
+          "Sovfäll",
+          "Tält (2 man)",
+          "Bärbart avträde",
+          "Hängmatta",
+          "Metspö"
+        ],
+        "Övrigt": [
+          "Fickkniv",
+          "Gasbehållare",
+          "Gasmask",
+          "Karta (kloak, hamn o.s.v.)",
+          "Kikare",
+          "Kritor",
+          "Kulor (10 st)",
+          "Pannband",
+          "Rustningsolja",
+          "Sekudafett (impregnering)",
+          "Vapenputs"
+        ]
+      }
+    },
+    "Diverse": {
+      "varor": {
+        "Rep, kedjor och stegar": [
+          "1-tums rep (10 m, tål 400 kg)",
+          "½-tums rep (10 m, tål 100 kg)",
+          "Kedja (1 m, tål 100 kg)",
+          "Kraftig kedja (1 m, tål 1 000 kg)",
+          "Repstege (3 m)",
+          "Trästege (2 m)",
+          "Repbro (8 m)",
+          "Hänglås + nyckel"
+        ],
+        "Fängsel och fällor": [
+          "Handfängsel",
+          "Tumskruvar",
+          "Rävsax",
+          "Råttfälla",
+          "Fångsthåv",
+          "Koppel",
+          "Munkorg",
+          "Brännjärn"
+        ],
+        "Musik och spel": [
+          "Visselpipa",
+          "Signalhorn",
+          "Flöjt",
+          "Harpa",
+          "Luta",
+          "Lyra",
+          "Trumma",
+          "Oloreskort",
+          "Märkta oloreskort",
+          "Taboor-tärningar",
+          "Stenkulor",
+          "Docka"
+        ],
+        "Verktyg, skrivdon och sömnad": [
+          "Penna, bläck & pergament",
+          "Solur (± 30 minuter)",
+          "Timglas",
+          "Kulram",
+          "Våg med vikter",
+          "Pendel",
+          "Slagruta",
+          "Målarduk",
+          "Målarfärger",
+          "Synål",
+          "Sytråd (10 m)",
+          "Lädernål",
+          "Sytråd för läderarbete (10 m)",
+          "Klister (10 l)",
+          "Mortel"
+        ],
+        "Kropp och skönhet": [
+          "Badolja",
+          "Parfym",
+          "Smink",
+          "Nagelfil",
+          "Tandpetare",
+          "Skäggkam",
+          "Spegel",
+          "Guldtand",
+          "Träben",
+          "Krok (för hand)",
+          "Ögonglas",
+          "Gettarmar"
+        ],
+        "Hem, prydnad och tro": [
+          "Blomsterbukett",
+          "Kandelaber",
+          "Kista (15 l)",
+          "Kista (75 l)",
+          "Konstverk",
+          "Korg",
+          "Krukväxt",
+          "Medaljong",
+          "Signetring",
+          "Staty",
+          "Samovar",
+          "Rökelsekar",
+          "Parasoll",
+          "Solfjäder",
+          "Sidenband (1 m)",
+          "Snoddar",
+          "Klädnypor (50 st)",
+          "Heraldiska vimplar",
+          "Religiös symbol",
+          "Reliker"
+        ],
+        "Rus och tobak": [
+          "Locogräs",
+          "Locojuice",
+          "Röd lotussaft",
+          "Tobak",
+          "Pipa",
+          "Vattenpipa"
+        ],
+        "Övrigt": [
+          "Eldstickor",
+          "Hästskor (4 st)",
+          "Sporrar",
+          "Tiggarskål",
+          "Tiggarstav",
+          "Passerskort på Arenan"
+        ]
+      }
+    }
   }
 }

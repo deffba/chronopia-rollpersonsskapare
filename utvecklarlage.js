@@ -200,7 +200,9 @@ function kopUtrustning(api, rp, onskatVapen, kop) {
   const enkla = katalog.filter((x) => ["Närstridsvapen", "Avståndsvapen", "Kastvapen"].includes(x.kategori) && x.pris <= max && kanAnvandaVapen(R, x.namn, varden) && !vapenVillkor(R, rp, x.namn))
     .sort((a, b) => Number(kanna.has(b.namn)) - Number(kanna.has(a.namn)));
   const prova = (andra, tillbaka) => { andra(); if (api.rakna().fel.length) { tillbaka(); return false; } return true; };
-  for (const vapen of [onskatVapen, ...enkla.map((x) => x.namn)].filter((v) => v && enkla.some((x) => x.namn === v))) {
+  // Yrken med vapen i startutrustningen får startpaketet utan vapen
+  if (yrkeAv(R, rp.yrke)?.startvapen) prova(() => { rp.startpaket = { valt: true, vapen: "" }; }, () => { rp.startpaket = { valt: false, vapen: "" }; });
+  else for (const vapen of [onskatVapen, ...enkla.map((x) => x.namn)].filter((v) => v && enkla.some((x) => x.namn === v))) {
     if (prova(() => { rp.startpaket = { valt: true, vapen }; }, () => { rp.startpaket = { valt: false, vapen: "" }; })) break;
   }
   for (const namn of kop) {

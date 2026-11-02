@@ -1,5 +1,5 @@
 // Steg 3: yrke.
-import { yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar } from "../regelmotor.js";
+import { yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar, svardsskolaFor } from "../regelmotor.js";
 import { visaNotis } from "../app.js";
 import { S, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -11,20 +11,28 @@ import { stridskonstInfo } from "./fardigheter.js";
 const extraFor = (post) => [post.startFV ? `FV ${post.startFV} gratis, som primär${post.antal > 1 ? "a" : ""}` : null,
   post.takStart ? `högst FV ${post.takStart} vid start, inget magiförmågeslag` : null].filter(Boolean).join(", ") || null;
 const storBokstav = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+// Teknikerna i en svärdsskolas färdiga stridskonst (V&R s. 32–33), t.ex. Kejsarens hand
+const skolTekniker = (post) => (post.maste ?? []).map((m) => svardsskolaFor(S.R, `${post.fardighet}:${m}`))
+  .filter(Boolean).map((s) => `${s.namn}: ${s.tekniker.join(", ")}`).join("; ") || null;
 
 // Steg 3: yrket väljs med kort som rasen i steg 1. Yrkesfärdigheterna visas bara; valen inom dem görs i steg 4.
 export function stegYrke() {
   const yrke = yrkeAv(S.R, yrkeId());
-  // Yrken som rasen inte får välja (t.ex. Hedersvakt, bara dvärgar) visas gråa med förklaringen
-  const kort = valbaraYrken(S.R, S.rp).sort((a, b) => a.namn.localeCompare(b.namn, "sv")).map((y) => {
+  // Yrken som rasen inte får välja (t.ex. Hedersvakt, bara dvärgar) visas inte. Yrken som bara vissa raser
+  // får välja, och som den valda rasen får, har en röd ram.
+  const kort = valbaraYrken(S.R, S.rp).filter((y) => !S.rp.ras || !yrkeVillkor(S.R, S.rp, y)).sort((a, b) => a.namn.localeCompare(b.namn, "sv")).map((y) => {
     const villkor = yrkeVillkor(S.R, S.rp, y);
+    const rasyrke = Boolean(S.rp.ras && y.villkor?.ras?.includes(S.rp.ras));
     return el("button", {
-      type: "button", class: "valkort yrkeskort" + (y.id === S.rp.yrke ? " valt" : "") + (villkor ? " ej-valbar" : ""), "aria-pressed": y.id === S.rp.yrke ? "true" : "false", "data-yrke": y.id,
-      "aria-disabled": villkor ? "true" : null, title: villkor,
+      type: "button", class: "valkort yrkeskort" + (y.id === S.rp.yrke ? " valt" : "") + (villkor ? " ej-valbar" : "") + (rasyrke ? " rasyrke" : ""), "aria-pressed": y.id === S.rp.yrke ? "true" : "false", "data-yrke": y.id,
+      "aria-disabled": villkor ? "true" : null, title: villkor ?? (rasyrke ? yrkeVillkor(S.R, { ras: "-" }, y) : null),
       onclick: () => {
         if (villkor) { visaNotis(`${y.namn}: ${villkor.charAt(0).toLowerCase()}${villkor.slice(1)}.`); return; }
         // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1
-        S.rp.yrke = y.id === S.rp.yrke ? "" : y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; uppdatera();
+        S.rp.yrke = y.id === S.rp.yrke ? "" : y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = "";
+        // Yrken med vapen i startutrustningen får inget vapen i startpaketet
+        if (y.startvapen && S.rp.startpaket?.vapen) S.rp.startpaket = { ...S.rp.startpaket, vapen: "" };
+        uppdatera();
       },
     }, el("span", { class: "valkort-namn" }, y.namn.replace(/^(.{5,})(magiker)$/, "$1\u00ad$2")), // Elementar-magiker avstavas om namnet inte får plats
     villkor ? el("span", { class: "valkort-villkor" }, villkor) : null);
@@ -48,8 +56,9 @@ export function stegYrke() {
     const valda = [].concat(val ?? []);
     post.maste?.forEach((m, j) => { valda[j] = m; });
     const fasta = post.maste && post.antal === post.maste.length;
+    const tekniker = skolTekniker(post);
     return punkt(fasta ? `${namn(post.fardighet)}: ${post.maste.join(", ")}` : `${namn(post.fardighet)} (${post.antal})`, post.fardighet,
-      fasta ? null : valda.filter((v) => v && !paborjad(v)).join(", ") || null, extraFor(post));
+      fasta ? null : valda.filter((v) => v && !paborjad(v)).join(", ") || null, [extraFor(post), tekniker ? `tekniker ${tekniker}` : null].filter(Boolean).join("; ") || null);
   });
   // Gratis FV i en färdighet som inte är yrkesfärdighet (Hypnotisera för sabransk ökenriddare)
   for (const b of yrke.startFV ?? []) {
@@ -136,6 +145,7 @@ export function yrketsVal() {
           const ny = [...varden]; ny[j] = v; satt(ny);
         }, { yrke: true })))),
       post.maste ? el("p", { class: "hjalp" }, `${post.maste.join(" och ")} ingår alltid för det här yrket (${kallText(S.R, yrke, "s. 24–25")}).`) : null,
+      skolTekniker(post) ? el("p", { class: "hjalp skoltekniker" }, `Tekniker i ${skolTekniker(post)}.`) : null,
       extraFor(post) ? el("p", { class: "hjalp" }, `${storBokstav(extraFor(post))} (${kallText(S.R, yrke, `s. ${yrke.sida}`)}).`) : null,
       // Instruktionen behövs bara när något av valen går att skriva in själv
       post.antal > (post.maste?.length ?? 0) ? hjalpFor(post.fardighet) : null);

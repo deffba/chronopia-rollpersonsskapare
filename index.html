@@ -163,6 +163,9 @@ input.tal.bred { width: 6rem; }
 /* Yrken som rasen inte får välja (V&R: t.ex. Hedersvakt bara för dvärgar) */
 .valkort.ej-valbar { opacity: .5; cursor: not-allowed; border-style: dashed; }
 .valkort.ej-valbar:hover { border-color: var(--linje); }
+/* Yrken som bara vissa raser får välja (samma röda färg som poängloggens ram) */
+.valkort.rasyrke { border: 3px solid rgb(180, 70, 45); }
+.valkort.rasyrke.valt { box-shadow: inset 0 0 0 2px var(--accent); }
 .valkort-villkor { font-size: .72rem; color: var(--dampad, inherit); line-height: 1.2; }
 .startutrustning { margin: 12px 0; }
 .delval-stil { display: inline-flex; }
@@ -282,6 +285,10 @@ input.tal[readonly] { min-width: 0; background: var(--yta-2); color: var(--accen
 .kryss { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
 .kryss input { margin-top: .3em; }
 .flikar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+/* Underkategorier i stora utrustningskategorier: mindre knappar med en linje till vänster; dolda under sökning */
+.underflikar { padding-left: 10px; border-left: 3px solid var(--linje); }
+.underflikar .valknapp { font-size: .85em; padding: 3px 9px; }
+.underflikar.sokning { display: none; }
 .varutabell .antal { white-space: nowrap; }
 .varutabell .antal > span { display: inline-block; min-width: 2ch; text-align: center; margin-inline: 6px; font-variant-numeric: tabular-nums; }
 .utrustning-summa { justify-content: flex-start; margin: 8px 0 12px; }
@@ -430,6 +437,8 @@ body.dialog-oppen { overflow: hidden; }
 .magi-byte-plats { display: grid; gap: 6px; }
 .magi-byte-plats label { font-size: .8rem; letter-spacing: .06em; color: var(--magi-dov); }
 #magimodal .magi-byte-plats select, #magimodal .magi-byte-plats input { width: 100%; box-sizing: border-box; color: var(--magi-text); background: #1d151e; border: 1px solid #5a4450; border-radius: 3px; padding: 6px 8px; font: inherit; }
+#magimodal .magi-byte-plats .magi-byte-avsta { display: flex; align-items: center; gap: 6px; letter-spacing: 0; text-transform: none; cursor: pointer; }
+#magimodal .magi-byte-plats .magi-byte-avsta input { width: auto; }
 .magi-byte-plats .vald-beskrivning { background: #1a131b; color: var(--magi-text); border-left-color: #a8843f; max-width: none; }
 .magi-byte-plats .hjalp, .magi-byte-plats p { color: #cdb9a0; }
 #magimodal .stridskonst-info { margin: 0; padding: 8px 12px; background: #1a131b; color: var(--magi-text); border: 0; border-left: 3px solid #a8843f; border-radius: 4px; font-size: .95rem; box-shadow: none; }

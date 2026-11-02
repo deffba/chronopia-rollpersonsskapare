@@ -642,8 +642,13 @@ export function vapenVillkor(regler, rp, namn) {
     const namnen = raser.map((id) => rasAv(regler, id)?.namn ?? id);
     return `${namn} bärs bara av ${namnen.length > 1 ? `${namnen.slice(0, -1).join(", ")} och ${namnen.at(-1)}` : namnen[0]} (${kallText(regler, vapen)})`;
   }
+  // Kejserliga vapen (V&R s. 63): bara för kejsarens tjänare, eller när spelledaren tillåter dem (steg 0)
+  if (vapen.kejserligt && !kejserligtTillatet(regler, rp)) return `${namn} är ett kejserligt vapen, bara för kejsarens tjänare (${kallText(regler, regler.vapen.kejserligt)}); spelledaren kan tillåta det i steg 0`;
   return null;
 }
+export const kejserligtTillatet = (regler, rp) => Boolean(yrkeAv(regler, rp.yrke)?.kejsarensTjanare) || regelPa(regler, rp, "kejserliga-varor");
+// Varor som är förbjudna enligt kejsarens lag (åtkomlighet X, V&R s. 69) kräver spelledarens tillstånd
+export const forbjudenVara = (regler, rp, vara) => /\bX\b/.test(vara?.atkomlighet ?? "") && !regelPa(regler, rp, "kejserliga-varor");
 
 // Kan rollpersonen över huvud taget använda vapnet? (s. 89, 91, 94)
 export function kanAnvandaVapen(regler, namn, varden) {
@@ -676,10 +681,27 @@ export function varukatalog(regler, rp) {
   return rp ? alla.filter((x) => iBocker(x, rp) && (!x.kraverRegel || regelPa(regler, rp, x.kraverRegel))) : alla;
 }
 
+// Underkategorier i utrustningens stora kategorier (fler än `grans` varor): efter vapnets grupp, rustningens typ
+// eller en lista med varunamn. Ger underkategorins namn, eller null när kategorin inte delas upp.
+export function underkategoriOrdning(regler, kategori) {
+  const u = regler.utrustning?.underkategorier?.[kategori];
+  if (!u) return [];
+  return [...new Set([...Object.values(u.namn ?? {}), ...Object.keys(u.varor ?? {}), "Övrigt"])];
+}
+export function underkategori(regler, vara) {
+  const u = regler.utrustning?.underkategorier?.[vara.kategori];
+  if (!u) return null;
+  if (u.falt) return u.namn[vara[u.falt]] ?? "Övrigt";
+  return Object.entries(u.varor).find(([, namn]) => namn.includes(vara.namn))?.[0] ?? "Övrigt";
+}
+
 // Yrkets startutrustning: rader som motsvarar en vara i katalogen läggs gratis i packningen (Vapen & rustningar s. 4–12)
+// En vara som kräver en valfri regel (t.ex. Hedersvaktens axelplåt: axelskydd i detaljerad strid) byts annars
+// mot en liknande vara som fungerar med grundreglerna (`annars`).
 export function startvaror(regler, rp) {
   const yrke = yrkeAv(regler, rp.yrke);
-  const kopplade = yrke?.startvaror ?? [];
+  const kopplade = (yrke?.startvaror ?? []).map((v) => (v.kraverRegel && !regelPa(regler, rp, v.kraverRegel)
+    ? { ...v, namn: v.annars, ersatter: v.namn } : v));
   return { varor: kopplade, ovriga: (yrke?.startutrustning ?? []).filter((t) => !kopplade.some((v) => v.text === t)) };
 }
 
@@ -710,6 +732,7 @@ function raknaUtrustning(regler, rp, varden, startkapital, fel) {
     const vara = katalog.find((x) => x.namn === namn);
     if (!vara) { fel.push(`Okänd vara: ${namn}`); continue; }
     if (!iBocker(vara, rp)) fel.push(`${namn} finns i ${bokNamn(regler, bokFor(vara))}, som inte är vald (steg 0)`);
+    else if (forbjudenVara(regler, rp, vara)) fel.push(`${namn} är förbjuden enligt kejsarens lag; spelledaren kan tillåta förbjudna varor i steg 0`);
     else if (vara.kraverRegel && !regelPa(regler, rp, vara.kraverRegel)) fel.push(`${namn} kräver den valfria regeln ${valfriaRegler(regler, rp).find((v) => v.id === vara.kraverRegel)?.namn ?? vara.kraverRegel} (steg 0)`);
     else if (vapenVillkor(regler, rp, namn)) fel.push(vapenVillkor(regler, rp, namn));
     kostnad += vara.pris * antal;
@@ -725,7 +748,9 @@ function raknaUtrustning(regler, rp, varden, startkapital, fel) {
       const vara = katalog.find((x) => x.namn === namn);
       if (vara) lagg(vara, namn, 1, true);
     }
-    if (paket.vapen) {
+    // Ger yrket vapen i startutrustningen ingår inget vapen i startpaketet
+    if (paket.vapen && yrkeAv(regler, rp.yrke)?.startvapen) fel.push("Yrket har vapen i startutrustningen, så startpaketet har inget vapen");
+    else if (paket.vapen) {
       const vapen = katalog.find((x) => x.namn === paket.vapen);
       if (!vapen || !kanAnvandaVapen(regler, paket.vapen, varden)) fel.push(`${paket.vapen} kan inte användas av rollpersonen (s. 89)`);
       else if (vapenVillkor(regler, rp, paket.vapen)) fel.push(vapenVillkor(regler, rp, paket.vapen));
@@ -854,11 +879,15 @@ export function sarskildFormaga(regler, rp) {
   slag.forEach((sl, nr) => {
     const r = enFormaga(regler, rp, sl);
     const pre = flera ? `Förmåga ${nr + 1}: ` : "";
+    // Samma förmåga två gånger: slaget görs om (de lagda BP står kvar) och den andra förmågan gäller inte
+    const dubblett = r.formaga ? svar.perSlag.findIndex((x) => x.formaga?.namn === r.formaga.namn) : -1;
+    if (dubblett >= 0) r.dubblett = dubblett;
     svar.perSlag.push(r);
-    svar.fel.push(...r.fel.map((t) => pre + t));
-    svar.saknas.push(...r.saknas.map((t) => pre + t));
     svar.bp += sl.bp ?? 0;
     svar.formagor.push(r.formaga);
+    if (dubblett >= 0) { svar.fel.push(`${pre}samma förmåga som förmåga ${dubblett + 1} (${r.formaga.namn}); slå om`); return; }
+    svar.fel.push(...r.fel.map((t) => pre + t));
+    svar.saknas.push(...r.saknas.map((t) => pre + t));
     svar.magiformaga += r.magiformaga;
     const d = r.delar;
     fvBonus.push(...d.fvBonus);

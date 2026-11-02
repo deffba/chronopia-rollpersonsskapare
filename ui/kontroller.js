@@ -1,5 +1,5 @@
 // Små kontroller: tal, listor, knappar och info-cirklar.
-import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker, vapenVillkor } from "../regelmotor.js";
+import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker, vapenVillkor, svardsskolaFor } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { DELVAL_HJALP, FORKLARINGAR, SPRAK_HJALP } from "../texter.js";
 import { S, modersmal, rakna, uppdatera, yrkesNycklar } from "../tillstand.js";
@@ -158,10 +158,13 @@ export function delvalKontroll(id, fardighetId, varde, onchange, { yrke = false 
   // Vapentekniker: svärdsskolornas stridskonster föreslås (V&R s. 32–33); ett eget namn ger en egen stil
   if (fardighetId === "vapentekniker") {
     const skolor = (S.R.fardigheter.svardsskolor ?? []).filter((x) => iBocker(x, S.rp));
+    const vald = svardsskolaFor(S.R, `vapentekniker:${varde ?? ""}`);
     return el("span", { class: "delval-stil" },
       el("input", { id, type: "text", value: varde ?? "", list: `${id}-skolor`, maxlength: 125, placeholder: "t.ex. Kejsarens hand eller ett eget namn",
         onchange: (e) => onchange(e.target.value.trim()) }),
-      el("datalist", { id: `${id}-skolor` }, skolor.map((x) => el("option", { value: x.namn }, `${x.skola} (${x.kostnad} EP per FV)`))));
+      el("datalist", { id: `${id}-skolor` }, skolor.map((x) => el("option", { value: x.namn }, `${x.skola} (${x.kostnad} EP per FV): ${x.tekniker.join(", ")}`))),
+      // En svärdsskolas färdiga stridskonst: teknikerna som ingår (V&R s. 32–33)
+      vald ? el("small", { class: "hjalp skoltekniker" }, ` Tekniker: ${vald.tekniker.join(", ")}`) : null);
   }
   // Heraldik med V&R: allmän eller för en grupp (V&R s. 15)
   if (f?.perVal === "heraldik") {

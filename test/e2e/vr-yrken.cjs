@@ -42,13 +42,14 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   await p.check('[data-bok=vr]'); await p.click('#nasta-steg'); await p.waitForSelector('.raskort');
   await tillYrke(p, 'Människa');
   const yrken = await p.locator('.yrkeskort .valkort-namn').allTextContents();
-  ok('med V&R: 31 yrken i bokstavsordning', yrken.length === 31
+  ok('med V&R: 25 yrken för en människa i bokstavsordning', yrken.length === 25
     && JSON.stringify(yrken) === JSON.stringify([...yrken].sort((a, c) => a.localeCompare(c, 'sv'))), yrken.length + ': ' + yrken.join(','));
-  const sparrade = await p.locator('.yrkeskort.ej-valbar').evaluateAll((x) => x.map((k) => k.dataset.yrke).sort());
-  ok('människa: sex yrken är spärrade av rasvillkor', JSON.stringify(sparrade) === JSON.stringify(['adling', 'ceriansk-ulv', 'hedersvakt', 'ordenskrigare', 'sabransk-okenriddare', 'svartgardist']), sparrade.join(','));
-  ok('det spärrade kortet förklarar varför', (await p.locator('[data-yrke=hedersvakt]').textContent()).includes('Bara för Dvärg'));
-  await p.click('[data-yrke=hedersvakt]', { force: true }); await p.waitForTimeout(80);
-  ok('ett spärrat yrke går inte att välja', (await notis(p)).includes('Hedersvakt: bara för Dvärg') && await p.locator('.yrkeskort.valt').count() === 0, await notis(p));
+  const dolda = [];
+  for (const id of ['adling', 'ceriansk-ulv', 'hedersvakt', 'ordenskrigare', 'sabransk-okenriddare', 'svartgardist']) if (!await p.locator(`[data-yrke=${id}]`).count()) dolda.push(id);
+  ok('människa: de sex yrkena med andra rasvillkor visas inte', dolda.length === 6, dolda.join(','));
+  const rasyrken = await p.locator('.yrkeskort.rasyrke').evaluateAll((x) => x.map((k) => k.dataset.yrke).sort());
+  ok('människa: Smidesmästare har röd ram (bara människor och dvärgar)', JSON.stringify(rasyrken) === '["smidesmastare"]', rasyrken.join(','));
+  ok('den röda ramen är tjock', (await p.locator('[data-yrke=smidesmastare]').evaluate((x) => getComputedStyle(x).borderTopWidth)) === '3px');
 
   // Vapenmästare: +3 initiativ, startutrustning, gratis FV 10 i tre vapen
   await p.click('[data-yrke=vapenmastare]'); await p.waitForTimeout(100);
@@ -63,8 +64,8 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('Vapentekniker: svärdsskolornas stridskonster föreslås', forslag === 'Klohanden', String(forslag));
 
   // Byter rasen till en som inte får yrket: yrket väljs bort
-  await steg(p, 3); await p.click('[data-yrke=ordenskrigare]', { force: true }); await p.waitForTimeout(80);
-  ok('högländare krävs för ordenskrigare', await p.locator('[data-yrke=ordenskrigare].valt').count() === 0);
+  await steg(p, 3);
+  ok('högländare krävs för ordenskrigare', await p.locator('[data-yrke=ordenskrigare]').count() === 0);
   await steg(p, 1); await tillYrke(p, 'Högländare');
   await p.click('[data-yrke=ordenskrigare]'); await p.waitForTimeout(80);
   ok('högländare kan bli ordenskrigare', await p.locator('[data-yrke=ordenskrigare].valt').count() === 1);
@@ -72,7 +73,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   const efter = await p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp);
   ok('ny ras som inte får yrket: yrket väljs bort', efter.ras === 'dvarg' && efter.yrke === '', JSON.stringify([efter.ras, efter.yrke]));
   await tillYrke(p, null);
-  ok('dvärg: Hedersvakt går att välja', await p.locator('[data-yrke=hedersvakt]:not(.ej-valbar)').count() === 1);
+  ok('dvärg: Hedersvakt går att välja och har röd ram', await p.locator('[data-yrke=hedersvakt].rasyrke:not(.ej-valbar)').count() === 1);
   ok('inga konsolfel (steg 3–4)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
@@ -86,6 +87,12 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('Kejsarens hand som yrkesfärdighet: 3 EP per FV', skolText.includes('3 EP per FV, som en vanlig yrkesfärdighet'));
   const tabell = await p.locator('.fardighetstabell').allTextContents();
   ok('Taktik är den valfria yrkesfärdigheten', tabell.join(' ').includes('Taktik'));
+  await steg(p, 3);
+  const svartPunkter = await p.locator('.rutor .punkter').textContent();
+  ok('steg 3: Kejsarens hand visar sina tekniker', svartPunkter.includes('tekniker Kejsarens hand: Bryta vapen, Fint'), svartPunkter);
+  await steg(p, 4);
+  ok('steg 4: Kejsarens hand visar sina tekniker', (await p.locator('.skoltekniker').first().textContent()).includes('Kejsarens hand: Bryta vapen'));
+  await steg(p, 11);
 
   // En egen stil av Vapentekniker som sekundär färdighet (Taktik sänks för att frigöra EP)
   await p.fill('[id="fv-taktik"]', '4'); await p.press('[id="fv-taktik"]', 'Tab'); await p.waitForTimeout(100);

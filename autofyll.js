@@ -2,7 +2,7 @@
 // listor och textfält som är tomma, åldern (enkel metod), särskilda förmågans val, startpaketets vapen och alla tärningsslag.
 // Ras och yrke väljer spelaren själv, och knapparna Föreslå värden och Fördela EP används aldrig.
 // Bara tomma val fylls i, så det som spelaren själv har valt ändras inte. Byts yrket fylls det nya yrkets val i.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, vapenVillkor, varukatalog, formagetabell, formageslag, tarningAv, iBocker } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, vapenVillkor, varukatalog, formagetabell, formageslag, tarningAv, iBocker, sarskildFormaga as sfFor } from "./regelmotor.js";
 
 const LAGRING = "chronopia-dev-autofyll";
 const slaT = (antal, sidor) => Array.from({ length: antal }, () => 1 + Math.floor(Math.random() * sidor)).reduce((a, b) => a + b, 0);
@@ -106,7 +106,7 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
     }
   }
 
-  if (steg === "utrustning" && rp.startpaket.valt && !rp.startpaket.vapen) {
+  if (steg === "utrustning" && rp.startpaket.valt && !rp.startpaket.vapen && !yrkeAv(R, rp.yrke)?.startvapen) {
     // Startpaketets vapen: helst ett som rollpersonen har FV i
     const varden = res.grundegenskaper;
     const kanna = new Set(res.fardigheter.filter((f) => f.nyckel.startsWith("vapen:") && f.fv > 0).map((f) => f.nyckel.split(":")[1]));
@@ -134,8 +134,12 @@ function fyllFormaga(api, autoDelval, anvanda, slag) {
     if (!s.bp && !s.avstar && (s.slag === null || s.slag === undefined)) satt({ ...s, avstar: true });
     if (slag && s.bp && (s.slag === null || s.slag === undefined)) {
       const { n, sidor } = tarningAv(formagetabell(R, api.motorIndata(), s)?.tarning ?? "2T20");
-      satt({ ...s, slag: slaT(n, sidor), val: [] });
-      hamta().formaga = api.rakna().sarskildaFormagorna?.[nr]?.namn;
+      // Samma förmåga som ett tidigare slag slås om (högst 50 försök)
+      for (let forsok = 0; forsok < 50; forsok++) {
+        satt({ ...hamta(), slag: slaT(n, sidor), val: [] });
+        hamta().formaga = api.rakna().sarskildaFormagorna?.[nr]?.namn;
+        if (sfFor(R, api.motorIndata()).perSlag[nr]?.dubblett === undefined) break;
+      }
     }
     const sf = api.rakna().sarskildaFormagorna?.[nr];
     (sf?.regel ?? []).forEach((del, i) => {

@@ -132,6 +132,12 @@
             ],
             "spel": "Träffområden och kritiska träffar per kroppsdel: Vapen & rustningar s. 18–19 och 26–30."
           }
+        },
+        {
+          "id": "kejserliga-varor",
+          "namn": "Kejserliga vapen och förbjudna varor",
+          "sida": "63, 69",
+          "beskrivning": "Spelledaren tillåter att rollpersonen lär sig och köper kejserliga vapen och varor som är förbjudna enligt kejsarens lag (åtkomlighet X). Utan regeln är kejserliga vapen bara för kejsarens tjänare (Svartgardist och Hedersvakt), och förbjudna varor går inte att köpa."
         }
       ]
     },
