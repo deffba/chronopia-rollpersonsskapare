@@ -134,3 +134,21 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Motivering:** Håller steg 7 enkelt; en extra förmåga köpt för HP skulle bli ännu ett förmågeslag inne i steget.
 - **Påverkar:** Steg 7, rollformulärets hjältepoäng, förbättringsflödet.
 - **Beslutat:** 2026-11-02, Deffba.
+
+## RB-016 V&R:s yrken och färdigheter i appen
+- **Fråga:** Hur läggs V&R:s yrkesfärdigheter in när boken är otydlig eller använder namn som inte finns i grundreglerna?
+- **Källor:** *Vapen & rustningar* s. 4–12 (yrkena), s. 15–16 (färdigheterna och teknikerna), s. 32–33 (svärdsskolorna). RB-009, RB-011, RB-014.
+- **Beslut:**
+  - **Kunskap om …** (religion, nekrologi, stridskonster, Chronopias underjord, gas- och skjutvapen) = Lärdomsfärdighet med det ämnet, som munkens Kunskap om religion och RB-014.
+  - **Stridskonster:** Krigarmunkens *Stridskonst (1)* = grundreglernas Stridskonster. Dödsdansarens *Stridskonster (en valfri)* = Stridskonster eller Vapentekniker. Vapenmästarens *Stridskonster (2)* = Vapentekniker (2). Ceriansk svärdsdans, Sabrans väg och Kejsarens hand = Vapentekniker med skolans färdiga stridskonst.
+  - **Vapentekniker, egen stil:** EP per FV = summan av teknikernas kostnad avrundad uppåt, minst 1, också som yrkesfärdighet (inga +2 som för obeväpnade stridskonster). Grundreglernas obeväpnade tekniker får ingå (s. 15).
+  - **Gratis FV 10** (Vapenmästarens tre vapen, Smidesmästarens Smide, ökenriddarens Hypnotisera) = startvärdet blir minst 10, och färdigheten räknas som primär. Vapenmästarens *Vapenfärdigheter (2+3)* = tre vapen med gratis FV 10 och två vanliga.
+  - **Smidesmästare:** *Smide* = Hantverk (Smide); *Tvåhandshammare* räknas som en av vapenfärdigheterna (3 i stället för 2) tills V&R:s vapen finns i appen. ”Människor födda i Chronopia” = rasen Människa; födelseorten följs inte.
+  - **Krigarmunk:** ”Lärdomsfärdigheter (2) eller Hantera fällor och Låsdyrkning” blir två val, var och ett mellan en lärdomsfärdighet och Hantera fällor respektive Låsdyrkning. ”Vapenfärdigheter (2) eller två valfria färdigheter” blir Vapenfärdigheter (2).
+  - **Heraldik** är grundreglernas Heraldik; V&R:s indelning i allmän och gruppvis heraldik används inte.
+  - **Strid i mörker** räknas på SMI (boken: SMI/INT).
+  - **Alver** (Ceriansk ulv, Ädling) = dimalv, ljusalv och stadsalv, inte halvalv.
+  - **Startutrustningen** står som text på yrket, i steg 13 och på rollformuläret. Den kostar inget och räknas inte i bördan.
+- **Motivering:** Färre nya färdigheter och undantag; samma lösningar som för grundreglerna och RB-014.
+- **Påverkar:** Yrkessteget, yrkesfärdigheterna, färdighetssteget, utrustningen.
+- **Beslutat:** 2026-11-02, preliminärt: väntar på Deffbas bekräftelse.

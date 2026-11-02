@@ -1,5 +1,5 @@
 // Färdigheter, stridskonster och fördelning av EP.
-import { yrkeAv, fardighetAv, slaUpp, paborjad } from "../regelmotor.js";
+import { yrkeAv, fardighetAv, slaUpp, paborjad, teknikLista } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { S, rakna, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -11,6 +11,7 @@ import { valdBeskrivning } from "./yrkesfardigheter.js";
 function sekundarPris(nyckel) {
   const k = S.R.fardigheter.kostnad;
   if ((nyckel || "").startsWith("stridskonster")) return 3; // billigaste stilen: en teknik à 0,5 → 1, plus 2 (s. 68)
+  if ((nyckel || "").startsWith("vapentekniker")) return 1; // billigaste egna stilen: en teknik à 0,5 → 1 (V&R s. 15)
   return fardighetAv(S.R, nyckel || "x")?.typ === "magiskola" ? k.magiskolaSekundar : k.sekundar;
 }
 
@@ -76,14 +77,30 @@ export function stegFardigheter(res) {
 export const stridskonstInfo = () => el("p", { class: "yrkesformaga stridskonst-info", role: "note" }, el("strong", {}, "Tekniker: "),
   "Teknikerna i stilen väljer du i steg 11, Färdigheter. Där kan du också byta namn på stilen.");
 
-// Stridskonster: spelaren sätter ihop sin stil av tekniker. Summan av deras grundkostnad,
-// avrundad uppåt, är EP per FV; 2 till om stilen inte är yrkesfärdighet (s. 68).
+// Stridskonster och Vapentekniker: spelaren sätter ihop sin stil av tekniker. Summan av deras grundkostnad,
+// avrundad uppåt, är EP per FV; för Stridskonster 2 till om stilen inte är yrkesfärdighet (s. 68).
+// En svärdsskolas stridskonst (V&R s. 32–33) har färdiga tekniker och ett eget pris (RB-009).
 function stridskonstTekniker(f, res) {
+  const def = fardighetAv(S.R, f.nyckel);
+  const vr = def.id === "vapentekniker";
+  const sidor = (namn) => (S.R.fardigheter.stridskonstTekniker.some(([n]) => n === namn) ? "s. 69–70" : "Vapen & rustningar s. 16");
+  const tal = (x) => x.toLocaleString("sv-SE", { minimumFractionDigits: 1 });
+  const beskrivningar = (lista) => el("ul", { class: "teknikbeskrivningar" }, lista.map((t) => el("li", {},
+    el("strong", {}, t), el("p", { class: "hjalp" }, S.R.fardigheter.stridskonstBeskrivning?.[t] ?? ""))));
+  if (f.skola) {
+    return el("div", { class: "stridskonst fardig", "data-skola": f.skola.id },
+      el("h3", {}, `${f.namn}: ${f.skola.skola}`),
+      el("p", { class: "hjalp" }, `Svärdsskolans färdiga stridskonst (Vapen & rustningar s. ${f.skola.kalla.sida}). ${f.skola.vem}`),
+      beskrivningar(f.skola.tekniker),
+      el("p", { class: "summering" }, f.status === "yrke"
+        ? `Som yrkesfärdighet kostar den ${f.epPerFV} EP per FV, som en vanlig yrkesfärdighet.`
+        : `Skolans pris: ${f.epPerFV} EP per FV.`));
+  }
   const valda = S.rp.stridskonstTekniker[f.nyckel] ?? [];
-  const lista = S.R.fardigheter.stridskonstTekniker;
+  const lista = teknikLista(S.R, def);
   const kostnadFor = (t) => lista.find(([n]) => n === t)?.[1] ?? 0;
   const summa = valda.reduce((a, t) => a + kostnadFor(t), 0);
-  const tillagg = f.status === "yrke" ? 0 : 2;
+  const tillagg = !vr && f.status !== "yrke" ? 2 : 0;
   const fardig = Boolean(S.rp.stridskonstFardig?.[f.nyckel]);
   const vaxla = (namn, pa) => {
     const ny = pa ? [...valda, namn] : valda.filter((t) => t !== namn);
@@ -92,8 +109,8 @@ function stridskonstTekniker(f, res) {
   };
   // En teknik till höjer priset för alla FV över baschansen; den går inte att välja om EP inte räcker.
   // Är inget FV köpt än räknas det första, eftersom stilen annars inte går att höja alls.
-  const merEP = (kostnad) => Math.max(f.fv - f.start, 1) * (Math.ceil(summa + kostnad) + tillagg) - f.ep;
-  const tal = (x) => x.toLocaleString("sv-SE", { minimumFractionDigits: 1 });
+  const pris = (x) => Math.max(vr ? 1 : 0, Math.ceil(x)) + tillagg;
+  const merEP = (kostnad) => Math.max(f.fv - f.start, 1) * pris(summa + kostnad) - f.ep;
   const stil = f.nyckel.split(":")[1] ?? "";
   const summering = el("p", { class: "summering" }, valda.length
     ? `Grundkostnad ${tal(summa)}, avrundat uppåt ${Math.ceil(summa)}${tillagg ? `, plus 2 = ${f.epPerFV}` : ""} EP per FV.`
@@ -101,32 +118,36 @@ function stridskonstTekniker(f, res) {
   if (fardig) {
     return el("div", { class: "stridskonst fardig" },
       el("h3", {}, `${f.namn}: stilens tekniker`),
-      el("ul", { class: "teknikbeskrivningar" }, valda.map((t) => el("li", {},
-        el("strong", {}, t), el("p", { class: "hjalp" }, S.R.fardigheter.stridskonstBeskrivning?.[t] ?? "")))),
+      beskrivningar(valda),
       summering,
       el("div", { class: "rad" }, el("button", { type: "button", class: "knapp", id: `sk-andra-${idDel(f.nyckel)}`, onclick: () => {
         S.rp.stridskonstFardig = { ...S.rp.stridskonstFardig, [f.nyckel]: false }; uppdatera();
       } }, "Ändra")));
   }
+  const rutnat = (grupp, forskjut) => el("div", { class: "teknikrutnat" }, grupp.map(([namn, kostnad], k) => {
+    const i = forskjut + k;
+    const text = S.R.fardigheter.stridskonstBeskrivning?.[namn];
+    const vald = valda.includes(namn);
+    const for_dyr = !vald && merEP(kostnad) > res.ep.kvar;
+    // Info-knappen ligger utanför etiketten, så att ett tryck på den inte kryssar i tekniken
+    return el("div", { class: "teknik" + (for_dyr ? " for-dyr" : "") },
+      el("label", { title: for_dyr ? `Kräver ${merEP(kostnad)} EP till, du har ${res.ep.kvar}` : null },
+        el("input", { type: "checkbox", id: `teknik-${idDel(f.nyckel)}-${i}`, checked: vald, disabled: for_dyr, onchange: (e) => vaxla(namn, e.target.checked) }),
+        el("span", {}, namn)),
+      text ? el("button", { type: "button", class: "info", "data-tip": `${text} (${sidor(namn)})`, "aria-label": `Om ${namn.replace("†", "")}` }, "i") : null,
+      el("span", { class: "teknikpris" }, tal(kostnad)));
+  }));
+  const vapenLista = vr ? S.R.fardigheter.vapenTekniker : [];
   return el("div", { class: "stridskonst" },
     el("h3", {}, `${f.namn}: stilens tekniker`),
     falt("Stilens namn", el("input", { type: "text", id: `sk-namn-${idDel(f.nyckel)}`, value: stil, maxlength: 125,
       onchange: (e) => bytStilnamn(f.nyckel, e.target.value.trim()) })),
     el("p", { class: "hjalp" }, "Välj vilka tekniker stilen består av. FV gäller alla tekniker i stilen. Varje tekniks grundkostnad läggs ihop och avrundas uppåt; det blir EP per FV",
       tillagg ? ", plus 2 eftersom stilen inte är en yrkesfärdighet. " : ". ",
+      vr ? "Vapentekniker kan blandas med grundreglernas obeväpnade tekniker (Vapen & rustningar s. 15). " : "",
       "Tekniker som skulle göra stilen dyrare än du har EP till går inte att välja (minst ett köpt FV räknas). † fungerar bara mot människoliknande motståndare (s. 68–70)."),
-    el("div", { class: "teknikrutnat" }, lista.map(([namn, kostnad], i) => {
-      const text = S.R.fardigheter.stridskonstBeskrivning?.[namn];
-      const vald = valda.includes(namn);
-      const for_dyr = !vald && merEP(kostnad) > res.ep.kvar;
-      // Info-knappen ligger utanför etiketten, så att ett tryck på den inte kryssar i tekniken
-      return el("div", { class: "teknik" + (for_dyr ? " for-dyr" : "") },
-        el("label", { title: for_dyr ? `Kräver ${merEP(kostnad)} EP till, du har ${res.ep.kvar}` : null },
-          el("input", { type: "checkbox", id: `teknik-${idDel(f.nyckel)}-${i}`, checked: vald, disabled: for_dyr, onchange: (e) => vaxla(namn, e.target.checked) }),
-          el("span", {}, namn)),
-        text ? el("button", { type: "button", class: "info", "data-tip": `${text} (s. 69–70)`, "aria-label": `Om ${namn.replace("†", "")}` }, "i") : null,
-        el("span", { class: "teknikpris" }, tal(kostnad)));
-    })),
+    vr ? [el("h4", {}, "Vapentekniker (Vapen & rustningar s. 16)"), rutnat(vapenLista, 0), el("h4", {}, "Obeväpnade tekniker (s. 68–70)")] : null,
+    rutnat(S.R.fardigheter.stridskonstTekniker, vapenLista.length),
     summering,
     el("div", { class: "rad" }, el("button", { type: "button", class: "knapp primar", id: `sk-fardig-${idDel(f.nyckel)}`, disabled: !valda.length, onclick: () => {
       S.rp.stridskonstFardig = { ...S.rp.stridskonstFardig, [f.nyckel]: true }; uppdatera();
@@ -138,14 +159,16 @@ const idDel = (nyckel) => nyckel.replace(/[^a-z0-9]/gi, "-");
 // Byter namn på en stridskonst överallt där nyckeln finns: yrkesval, extra yrkesfärdigheter,
 // sekundära färdigheter, FV och valda tekniker
 function bytStilnamn(gammal, namn) {
-  const ny = `stridskonster:${namn}`;
+  const fid = gammal.split(":")[0];
+  const ny = `${fid}:${namn}`;
   if (!namn || ny === gammal) { rita(); return; }
   if (rakna().fardigheter.some((x) => x.nyckel === ny)) { visaNotis(`Det finns redan en stil som heter ${namn}.`); rita(); return; }
   const gammaltNamn = gammal.split(":")[1];
   for (const [i, v] of Object.entries(S.rp.yrkesval)) {
     const post = yrkeAv(S.R, yrkeId()).fardigheter[i];
-    if (post === "stridskonster" && v === gammaltNamn) S.rp.yrkesval[i] = namn;
-    else if (v?.id === "stridskonster" && v.sub === gammaltNamn) S.rp.yrkesval[i] = { ...v, sub: namn };
+    if (post === fid && v === gammaltNamn) S.rp.yrkesval[i] = namn;
+    else if (v?.id === fid && v.sub === gammaltNamn) S.rp.yrkesval[i] = { ...v, sub: namn };
+    else if (post?.fardighet === fid && Array.isArray(v) && v.includes(gammaltNamn)) S.rp.yrkesval[i] = v.map((x) => (x === gammaltNamn ? namn : x));
   }
   if (S.rp.valfri === gammal) S.rp.valfri = ny;
   S.rp.extraYrkesfardigheter = S.rp.extraYrkesfardigheter.map((k) => (k === gammal ? ny : k));

@@ -1,5 +1,5 @@
 // Små kontroller: tal, listor, knappar och info-cirklar.
-import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor } from "../regelmotor.js";
+import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { DELVAL_HJALP, FORKLARINGAR, SPRAK_HJALP } from "../texter.js";
 import { S, modersmal, rakna, uppdatera, yrkesNycklar } from "../tillstand.js";
@@ -154,6 +154,14 @@ export function delvalKontroll(id, fardighetId, varde, onchange, { yrke = false 
   }
   if (fardighetId === "kanna-magi") return valLista(id, varde, markeraValda(magiskolor(S.R, S.rp).map((f) => [f.id, f.namn]), redanValda(fardighetId, varde)), onchange, "Välj skola …");
   const f = fardighetAv(S.R, fardighetId);
+  // Vapentekniker: svärdsskolornas stridskonster föreslås (V&R s. 32–33); ett eget namn ger en egen stil
+  if (fardighetId === "vapentekniker") {
+    const skolor = (S.R.fardigheter.svardsskolor ?? []).filter((x) => iBocker(x, S.rp));
+    return el("span", { class: "delval-stil" },
+      el("input", { id, type: "text", value: varde ?? "", list: `${id}-skolor`, maxlength: 125, placeholder: "t.ex. Kejsarens hand eller ett eget namn",
+        onchange: (e) => onchange(e.target.value.trim()) }),
+      el("datalist", { id: `${id}-skolor` }, skolor.map((x) => el("option", { value: x.namn }, `${x.skola} (${x.kostnad} EP per FV)`))));
+  }
   const lista = fardighetId === "lardom" ? "lardomar" : null;
   return el("input", {
     id, type: "text", value: varde ?? "", list: lista, maxlength: 125,
@@ -180,7 +188,7 @@ function sprakLista(id, fardighetId, varde, onchange, yrke) {
 
 export function fardighetsVal(idPrefix, nyckel, onchange, filter = () => true, val = {}) {
   const [id, sub] = (nyckel ?? "").split(":");
-  const lista = S.R.fardigheter.lista.filter(filter).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
+  const lista = S.R.fardigheter.lista.filter((x) => iBocker(x, S.rp) && filter(x)).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
   const f = id ? fardighetAv(S.R, id) : null;
   return el("div", { class: "rad" },
     valLista(`${idPrefix}-f`, id, lista.map((x) => [x.id, x.namn]), (v) => onchange(v ? (fardighetAv(S.R, v).perVal ? `${v}:` : v) : "")),

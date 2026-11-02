@@ -2,7 +2,7 @@
 // listor och textfält som är tomma, åldern (enkel metod), särskilda förmågans val, startpaketets vapen och alla tärningsslag.
 // Ras och yrke väljer spelaren själv, och knapparna Föreslå värden och Fördela EP används aldrig.
 // Bara tomma val fylls i, så det som spelaren själv har valt ändras inte. Byts yrket fylls det nya yrkets val i.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, varukatalog, formagetabell, formageslag, tarningAv } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, varukatalog, formagetabell, formageslag, tarningAv, iBocker } from "./regelmotor.js";
 
 const LAGRING = "chronopia-dev-autofyll";
 const slaT = (antal, sidor) => Array.from({ length: antal }, () => 1 + Math.floor(Math.random() * sidor)).reduce((a, b) => a + b, 0);
@@ -52,7 +52,7 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
     if (yrke.valfri && !klar(rp.valfri)) {
       const har = new Set(api.yrkesNycklar().map((n) => n.split(":")[0]));
       const kan = (f) => f.typ === "sekundar" && !f.perVal && !har.has(f.id) && !MAGI.includes(f.id);
-      rp.valfri = R.fardigheter.lista.find(kan)?.id ?? "";
+      rp.valfri = R.fardigheter.lista.find((f) => iBocker(f, rp) && kan(f))?.id ?? "";
     }
     if (yrke.startbonus?.some((b) => b.valEttAv) && !api.yrkesNycklar().includes(rp.hantverkBonus)) {
       rp.hantverkBonus = api.yrkesNycklar().find((n) => n.startsWith("hantverk:")) ?? "";

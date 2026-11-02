@@ -1,7 +1,7 @@
 // Rollformuläret i bokens layout (s. 11–12), för utskrift och för att fylla i under spel.
 // Värden som reglerna räknar fram (grundegenskaper, FV, KP) visas som text och ändras i stegen.
 // Det spelaren skriver under spel (erf, hjältepoäng, pengar, egen utrustning) sparas i rp.spel.
-import { GRUNDEGENSKAPER, slaUpp, fardighetAv } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, slaUpp, fardighetAv, yrkesformagaText } from "./regelmotor.js";
 
 // Rader per lista. Får inte allt plats fortsätter listan på sida 3.
 const RADER = { formagor: 6, primar: 25, yrke: 12, sprak: 11, sekundar: 33, vapen: 6, besvarjelser: 12, utrustning: 8 };
@@ -76,7 +76,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const formagor = [
     ...(res.ras?.formagor ?? []).map((t) => ({ namn: t, text: `Rasförmåga (${res.ras.namn.toLowerCase()})` })),
     ...[...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
-    rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: res.yrke.yrkesformaga } : null,
+    rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: yrkesformagaText(res.yrke) } : null,
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
   ].filter(Boolean);
 
@@ -163,7 +163,8 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   }, { "aria-label": `${mynt} ${var_ === "bors" ? "i börs" : "på bank"}` });
 
   // Utrustning: köpta saker först, sedan rader spelaren själv skriver i
-  const kopta = res.utrustning.saker.map((x) => ({ namn: sakNamn(x), vikt: x.vikt ? x.vikt.toLocaleString("sv-SE") : "", last: true }));
+  const kopta = [...(tom ? [] : res.startutrustning ?? []).map((t) => ({ namn: t, vikt: "", last: true })),
+    ...res.utrustning.saker.map((x) => ({ namn: sakNamn(x), vikt: x.vikt ? x.vikt.toLocaleString("sv-SE") : "", last: true }))];
   const egnaPlatser = Math.max(4, RADER.utrustning * 2 - kopta.length);
   const egna = Array.from({ length: Math.max(egnaPlatser, spel.utrustning.length + 1) }, (_, i) => ({ ...(spel.utrustning[i] ?? { namn: "", vikt: "" }), i }));
   const sattEgen = (i, falt_, v) => {

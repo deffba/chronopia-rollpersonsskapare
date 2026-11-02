@@ -5,7 +5,7 @@
 // grundvärden, automatisk EP-fördelning) utifrån önskemålen i testrollpersoner.js, och kontrolleras sedan
 // av regelmotorn precis som en inläst fil. Går ett önskemål inte längre efter en regeländring väljs något
 // annat tillåtet i stället, och det sägs till i en notis.
-import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, varukatalog, tvahandsvapen, besvarjelsePris } from "./regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, varukatalog, tvahandsvapen, besvarjelsePris, iBocker, harTekniker, svardsskolaFor, teknikLista } from "./regelmotor.js";
 import { TESTROLLPERSONER } from "./testrollpersoner.js";
 import { startaPoanglogg } from "./poanglogg.js";
 import { startaAutofyll } from "./autofyll.js";
@@ -53,6 +53,7 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
       } else if (post.antal) {
         const fasta = post.maste ?? [];
         const lista = [...fasta];
+        fasta.forEach((m) => anvanda.add(`${post.fardighet}:${m}`));
         for (const v of [].concat(val[post.fardighet] ?? [])) if (lista.length < post.antal && !anvanda.has(`${post.fardighet}:${v}`)) lista.push(ta(post.fardighet, v));
         while (lista.length < post.antal) lista.push(ta(post.fardighet, autoDelval(api, r, post.fardighet, anvanda)));
         fasta.forEach((m) => anvanda.add(`${post.fardighet}:${m}`));
@@ -67,12 +68,12 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
       const har = new Set(api.yrkesNycklar().map((k) => k.split(":")[0]));
       const kan = (id) => { const f = fardighetAv(R, id); return f && f.typ === "sekundar" && !f.perVal && !har.has(id) && !MAGI.includes(id); };
       const onskad = onskat(recept.valfri);
-      r.valfri = onskad && kan(onskad) ? onskad : R.fardigheter.lista.find((f) => kan(f.id))?.id ?? "";
+      r.valfri = onskad && kan(onskad) ? onskad : R.fardigheter.lista.find((f) => iBocker(f, r) && kan(f.id))?.id ?? "";
     }
 
     // Stridskonsternas tekniker
-    for (const nyckel of [...api.yrkesNycklar(), r.valfri].filter((k) => k?.startsWith("stridskonster:"))) {
-      const finns = new Set(R.fardigheter.stridskonstTekniker.map(([t]) => t));
+    for (const nyckel of [...api.yrkesNycklar(), r.valfri].filter((k) => harTekniker(fardighetAv(R, k ?? "")) && !svardsskolaFor(R, k))) {
+      const finns = new Set(teknikLista(R, fardighetAv(R, nyckel)).map(([t]) => t));
       const valda = (onskat(recept.tekniker) ?? []).filter((t) => finns.has(t));
       r.stridskonstTekniker[nyckel] = valda.length ? valda : [R.fardigheter.stridskonstTekniker[0][0]];
       r.stridskonstFardig[nyckel] = true;

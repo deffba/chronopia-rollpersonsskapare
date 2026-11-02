@@ -712,6 +712,46 @@
       "kategoriB": false,
       "sida": 72,
       "beskrivning": "Att klara sig i vildmarken: hitta vatten, mat och skydd och bedöma vädret."
+    },
+    {
+      "id": "strid-i-morker",
+      "namn": "Strid i mörker",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 15,
+      "kalla": {
+        "bok": "vr",
+        "sida": 15
+      },
+      "beskrivning": "Att slåss i mörker och dåligt ljus. Avdraget för mörker minskar med differensvärdet i ett lyckat slag. Grundegenskapen är SMI eller INT efter situationen; appen räknar med SMI."
+    },
+    {
+      "id": "taktik",
+      "namn": "Taktik",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 15,
+      "kalla": {
+        "bok": "vr",
+        "sida": 15
+      },
+      "beskrivning": "Att leda en mindre styrka i strid, upp till ett femtiotal personer: välja terräng, ställa upp truppen och utnyttja fiendens svagheter."
+    },
+    {
+      "id": "vapentekniker",
+      "namn": "Vapentekniker",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 15,
+      "kalla": {
+        "bok": "vr",
+        "sida": 15
+      },
+      "perVal": "stil",
+      "beskrivning": "Beväpnade stridskonster. En stil sätts ihop av vapentekniker (och gärna grundreglernas obeväpnade tekniker); EP per FV är summan av teknikernas kostnad. En svärdsskolas färdiga stridskonst kostar skolans pris, eller som en vanlig yrkesfärdighet om den är yrkesfärdighet. Med vapen slår man både för vapnet och för tekniken."
     }
   ],
   "kostnad": {
@@ -1043,7 +1083,28 @@
     "Rundspark": "Spark med ett helt varv för extra kraft, 1T8 i skada. Missar den kan kämpen inte anfalla eller parera nästa runda. Ger −2 på initiativslaget.",
     "Stålsättning": "Med ett lyckat slag när kämpen skadas tar den bara halv skada. Fungerar inte mot slag mot huvudet.",
     "Uppresning": "Med ett lyckat slag reser sig kämpen direkt efter att ha kastats omkull, oavsett när i rundan det hände.",
-    "Vidvinkelsyn": "Kämpen uppfattar allt inom 270° omkring sig. Alltid påkopplad, kräver inget slag."
+    "Vidvinkelsyn": "Kämpen uppfattar allt inom 270° omkring sig. Alltid påkopplad, kräver inget slag.",
+    "Boridushugg": "Hugget räknar rustningens absorbering som bara hälften.",
+    "Bryta vapen": "Bara med vapenbrytare. STY+FV mot vapnets BV: vapnet bryts eller böjs. Träffar man vapnet blir skadan dubbel och BV sjunker 1 per poäng över BV.",
+    "Ceriansk snabbdragning": "Draget och anfallet sker i samma rörelse, och anfallet kommer alltid först. Med Två vapen gäller det båda vapnen.",
+    "Ceriskt utfall": "Ett utfall som ger −3 CL att parera och +2 i skada; försvararen kan bara parera nästa handlingstillfälle. En gång per SR.",
+    "Distrahera": "Motståndaren slår PSY (differensvärdet modifierar) eller får −5 CL och förlorar en handling. Kostar ingen handling.",
+    "Drakhugg": "Ett hopp och hugg mot huvud eller bröst, +3 i skada. Kräver låg belastning (högst STY/2 kg).",
+    "Goblinsvep": "Ett lågt hugg som ger −5 att parera.",
+    "Improviserad strid": "Att använda vad som helst som vapen eller sköld; skadan avgör SL.",
+    "Kast med vapen": "Att kasta ett närstridsvapen upp till STY/3 rutor med normal skada.",
+    "Krafthugg": "+3 i skada, men försvararen får +2 CL att parera.",
+    "Låsning": "STY+FV mot STY+FV för att låsa motståndarens vapen, +2 per lyckat slag. Med en dolk i sköldhanden blir motståndaren försvarslös.",
+    "Molerisk undanmanöver": "Undvika och hugga i samma rörelse: +2 i skada och motståndaren får −15 CL att försvara sig.",
+    "Rustningsanfall": "Att anfalla med rustningens egna vapen, som spikar och knivblad.",
+    "Sabranskt dubbelhugg": "Två anfall i samma handling med ett enhandsvapen (inte stickvapen). En gång per SR.",
+    "Stormanfall": "Försvararen slår STY eller SMI (differensvärdet modifierar) eller får −5 CL på allt i tre handlingstillfällen.",
+    "Stöt": "En stöt som ger −3 CL att parera.",
+    "Trollbonk": "Bara med tvåhandsvapen: −5 CL men +4 i skada och dubbel skadebonus.",
+    "Ulvskri": "FV mot motståndarens PSY; lyckas det förlorar motståndaren sin nästa handling. Kostar ingen handling.",
+    "Undvika": "Angriparen får −3 CL nästa handlingstillfälle.",
+    "Virvelvind": "Två anfall med stångvapnets båda ändar, gärna mot olika mål.",
+    "Vladisk parering": "Efter en lyckad parering: FV mot angriparens FV, och angriparen förlorar sin nästa handling. En gång per SR."
   },
   "sida": [
     34,
@@ -1056,5 +1117,438 @@
     68,
     69,
     70
+  ],
+  "vapenTekniker": [
+    [
+      "Boridushugg",
+      1.5
+    ],
+    [
+      "Bryta vapen",
+      1.0
+    ],
+    [
+      "Ceriansk snabbdragning",
+      2.0
+    ],
+    [
+      "Ceriskt utfall",
+      1.0
+    ],
+    [
+      "Distrahera",
+      0.5
+    ],
+    [
+      "Drakhugg",
+      1.5
+    ],
+    [
+      "Goblinsvep",
+      1.0
+    ],
+    [
+      "Improviserad strid",
+      1.0
+    ],
+    [
+      "Kast med vapen",
+      1.0
+    ],
+    [
+      "Krafthugg",
+      1.0
+    ],
+    [
+      "Låsning",
+      1.0
+    ],
+    [
+      "Molerisk undanmanöver",
+      3.0
+    ],
+    [
+      "Rustningsanfall",
+      1.0
+    ],
+    [
+      "Sabranskt dubbelhugg",
+      3.0
+    ],
+    [
+      "Stormanfall",
+      1.0
+    ],
+    [
+      "Stöt",
+      1.0
+    ],
+    [
+      "Trollbonk",
+      1.0
+    ],
+    [
+      "Ulvskri",
+      1.0
+    ],
+    [
+      "Undvika",
+      1.0
+    ],
+    [
+      "Virvelvind",
+      2.0
+    ],
+    [
+      "Vladisk parering",
+      1.0
+    ]
+  ],
+  "svardsskolor": [
+    {
+      "id": "bachron",
+      "skola": "Bachrons brödraskap",
+      "namn": "Klohanden",
+      "tekniker": [
+        "Fint",
+        "Krafthugg",
+        "Obeväpnad parering av vapen",
+        "Stormanfall",
+        "Stålsättning"
+      ],
+      "kostnad": 4,
+      "vem": "Ej troll, orcher eller gobliner. Bara ordensmedlemmar.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "boggrash",
+      "skola": "Boggrash dödarskola",
+      "namn": "Boggrash bett",
+      "tekniker": [
+        "Fint",
+        "Goblinsvep",
+        "Improviserad strid",
+        "Rustningsanfall"
+      ],
+      "kostnad": 4,
+      "vem": "Alla raser, i praktiken gobliner.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "bankarakkadammien",
+      "skola": "Bånkarakkadämmien",
+      "namn": "Bonkardonken",
+      "tekniker": [
+        "Bryta vapen",
+        "Krafthugg",
+        "Stormanfall",
+        "Trollbonk"
+      ],
+      "kostnad": 4,
+      "vem": "Alla raser.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "dormat",
+      "skola": "Dormats gladiatorskola",
+      "namn": "Tabra",
+      "tekniker": [
+        "Boridushugg",
+        "Bryta vapen",
+        "Fint",
+        "Kast med vapen",
+        "Låsning",
+        "Rustningsanfall"
+      ],
+      "kostnad": 6,
+      "vem": "Alla raser.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "drakskolan",
+      "skola": "Drakskolan",
+      "namn": "Drakflykt",
+      "tekniker": [
+        "Bryta vapen",
+        "Ceriskt utfall",
+        "Drakhugg",
+        "Fint",
+        "Stormanfall"
+      ],
+      "kostnad": 5,
+      "vem": "Utvalda som tjänat tre år i Drakgardet.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "durgan",
+      "skola": "Durgans gladiatorskola",
+      "namn": "Dödens väg",
+      "tekniker": [
+        "Distrahera",
+        "Fint",
+        "Goblinsvep",
+        "Improviserad strid",
+        "Fallteknik/rullningar",
+        "Stålsättning"
+      ],
+      "kostnad": 5,
+      "vem": "Ej troll eller gobliner. Bara gladiatorer.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "elydiska",
+      "skola": "Elydiska svärdsskolan",
+      "namn": "Den vita vägen",
+      "tekniker": [
+        "Fint",
+        "Ceriskt utfall",
+        "Stöt",
+        "Undvika",
+        "Vladisk parering"
+      ],
+      "kostnad": 6,
+      "vem": "Alver och människor.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "fyra-mastare",
+      "skola": "Fyra mästare",
+      "namn": "Klingans väg",
+      "tekniker": [
+        "Goblinsvep",
+        "Fint",
+        "Låsning",
+        "Molerisk undanmanöver",
+        "Undvika"
+      ],
+      "kostnad": 7,
+      "vem": "Ej troll eller gobliner.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "himmelska-elden",
+      "skola": "Himmelska eldens orden",
+      "namn": "Eldsvägen",
+      "tekniker": [
+        "Fint",
+        "Kast med vapen",
+        "Krafthugg",
+        "Stormanfall",
+        "Trollbonk",
+        "Ulvskri"
+      ],
+      "kostnad": 6,
+      "vem": "Utvalda högländare.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "lathos",
+      "skola": "Lathos svärdsskola",
+      "namn": "Dubar",
+      "tekniker": [
+        "Bryta vapen",
+        "Fint",
+        "Krafthugg",
+        "Ulvskri"
+      ],
+      "kostnad": 4,
+      "vem": "Ej troll, orcher eller gobliner.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "meriel",
+      "skola": "Meriels skola för de sköna konsterna",
+      "namn": "Klingdansen",
+      "tekniker": [
+        "Bryta vapen",
+        "Ceriansk snabbdragning",
+        "Fint",
+        "Kast med vapen",
+        "Stöt",
+        "Undvika",
+        "Vladisk parering"
+      ],
+      "kostnad": 8,
+      "vem": "Ej troll, orcher eller gobliner.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "moleriska",
+      "skola": "Moleriska svärdsskolan",
+      "namn": "Vägen",
+      "tekniker": [
+        "Ceriskt utfall",
+        "Fint",
+        "Drakhugg",
+        "Molerisk undanmanöver",
+        "Rustningsanfall"
+      ],
+      "kostnad": 7,
+      "vem": "Endast människor.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "unbar",
+      "skola": "Mäster Unbars skola för den sabranska vägen",
+      "namn": "Sabrans väg",
+      "tekniker": [
+        "Fint",
+        "Sabranskt dubbelhugg",
+        "Stålsättning"
+      ],
+      "kostnad": 5,
+      "vem": "Ej troll, orcher eller gobliner.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "orove",
+      "skola": "Orove",
+      "namn": "Orove",
+      "tekniker": [
+        "Fint",
+        "Krafthugg",
+        "Låsning",
+        "Fallteknik/rullningar",
+        "Undvika",
+        "Virvelvind"
+      ],
+      "kostnad": 5,
+      "vem": "Människor, alver och dvärgar.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "pardiska",
+      "skola": "Pardiska svärdsskolan",
+      "namn": "Pardor",
+      "tekniker": [
+        "Fint",
+        "Krafthugg",
+        "Låsning",
+        "Stöt",
+        "Undvika"
+      ],
+      "kostnad": 5,
+      "vem": "Människor, alver och dvärgar.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "rosskolan",
+      "skola": "Rosskolan",
+      "namn": "Rosvägen",
+      "tekniker": [
+        "Fint",
+        "Krafthugg",
+        "Rustningsanfall",
+        "Stormanfall",
+        "Undvika"
+      ],
+      "kostnad": 5,
+      "vem": "Alver som tjänat två år i Rosgardet.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "svarta-gardet",
+      "skola": "Svarta gardets stridsskola",
+      "namn": "Kejsarens hand",
+      "tekniker": [
+        "Bryta vapen",
+        "Fint",
+        "Krafthugg",
+        "Låsning",
+        "Stålsättning",
+        "Stöt"
+      ],
+      "kostnad": 6,
+      "vem": "Utvalda latracier.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "tre-manar",
+      "skola": "Svärdsskolan Tre månar",
+      "namn": "Månskäran",
+      "tekniker": [
+        "Distrahera",
+        "Goblinsvep",
+        "Krafthugg",
+        "Låsning",
+        "Fallteknik/rullningar",
+        "Stöt"
+      ],
+      "kostnad": 5,
+      "vem": "Alla raser.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    },
+    {
+      "id": "ulvskolan",
+      "skola": "Ulvskolan",
+      "namn": "Ceriansk svärdsdans",
+      "tekniker": [
+        "Ceriansk snabbdragning",
+        "Ceriskt utfall",
+        "Fint",
+        "Kast med vapen",
+        "Vladisk parering"
+      ],
+      "kostnad": 6,
+      "vem": "Utvalda alver.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 32
+      }
+    }
   ]
 }

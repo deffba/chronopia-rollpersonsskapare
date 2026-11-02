@@ -1,5 +1,5 @@
 // Steg 1: ras.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, valbaraRaser, kallText } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, valbaraRaser, kallText, yrkeVillkor } from "../regelmotor.js";
 import { nollstallSpel } from "../spelmote.js";
 import { RAS_SEKUNDAR_INFO, RASFORMAGOR } from "../texter.js";
 import { S, harLogg, uppdatera } from "../tillstand.js";
@@ -14,6 +14,8 @@ export function stegRas() {
     onclick: () => {
       // Ett tryck på den valda rasen avmarkerar den
       S.rp.ras = r.id === S.rp.ras ? "" : r.id; S.rp.rasval = []; S.rp.stoSteg = 0;
+      // Ett yrke som inte är öppet för den nya rasen väljs bort (t.ex. Hedersvakt, bara dvärgar)
+      if (S.rp.yrke && yrkeVillkor(S.R, S.rp, yrkeAv(S.R, S.rp.yrke))) { S.rp.yrke = ""; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; }
       uppdatera();
     },
   },

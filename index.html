@@ -160,6 +160,13 @@ input.tal.bred { width: 6rem; }
 .valkort-rutnat.liten.fyra .valkort-namn { font-size: min(1.24rem, 3.1cqi); }
 @media (max-width: 560px) { .valkort-rutnat.liten.fyra .valkort-namn { font-size: min(1.24rem, 6.2cqi); } }
 @media (max-width: 560px) { .valkort-rutnat.liten.fyra { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Yrken som rasen inte får välja (V&R: t.ex. Hedersvakt bara för dvärgar) */
+.valkort.ej-valbar { opacity: .5; cursor: not-allowed; border-style: dashed; }
+.valkort.ej-valbar:hover { border-color: var(--linje); }
+.valkort-villkor { font-size: .72rem; color: var(--dampad, inherit); line-height: 1.2; }
+.startutrustning { margin: 12px 0; }
+.delval-stil { display: inline-flex; }
+.delval-stil input { width: 18em; }
 .valdata.bred { max-width: 65ch; }
 .valdata.bred dd { font-weight: 500; font-variant-numeric: normal; }
 .valinfo { display: grid; gap: 2px; }

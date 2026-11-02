@@ -1,5 +1,5 @@
 // Rollformuläret bredvid stegen, som visar rollpersonen medan den skapas.
-import { GRUNDEGENSKAPER, slaUpp } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, slaUpp, yrkesformagaText } from "../regelmotor.js";
 import { spelPotter } from "../spelmote.js";
 import { spelCtx } from "../app.js";
 import { saknas } from "../steg/saknas.js";
@@ -47,7 +47,8 @@ export function rollformular(res) {
       h.kroppsdelar.map((d) => el("li", {}, el("span", {}, d.namn), el("span", { class: "num" }, visa(d.kp))))),
     [...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...res.extraFormagor].filter(Boolean).map((f, i, alla) => [i === 0 ? el("h3", {}, alla.length > 1 ? "Särskilda förmågor" : "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
     res.hjaltepoang?.totalt ? el("p", {}, el("strong", {}, "Hjältepoäng: "), `${res.hjaltepoang.kvar} av ${res.hjaltepoang.totalt} kvar`) : null,
-    S.rp.yrke ? el("p", {}, el("strong", {}, "Yrkesförmåga: "), res.yrke.yrkesformaga) : null,
+    S.rp.yrke ? el("p", {}, el("strong", {}, "Yrkesförmåga: "), yrkesformagaText(res.yrke)) : null,
+    res.startutrustning?.length ? el("p", {}, el("strong", {}, "Startutrustning: "), res.startutrustning.join(", ")) : null,
     el("h3", {}, "Färdigheter", info("B-nivå")),
     el("ul", { class: "fardighetsrader" }, kolumnrubrik("Färdighet", "FV"), res.fardigheter.filter((f) => f.fv > 0).map((f) =>
       el("li", { class: f.status }, el("span", {}, f.kategoriB ? medNiva(f.namn, slaUpp(S.R.fardigheter.bNivaer, f.fv)) : f.namn), el("span", { class: "num" }, f.fv)))),

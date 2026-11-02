@@ -1,5 +1,5 @@
 // Utrustning (s. 38, 89–).
-import { kanAnvandaVapen, varukatalog } from "../regelmotor.js";
+import { kanAnvandaVapen, varukatalog, kallText } from "../regelmotor.js";
 import { rita } from "../app.js";
 import { S, uppdatera } from "../tillstand.js";
 import { el, kg, sm } from "../ui/dom.js";
@@ -83,6 +83,10 @@ export function stegUtrustning(res) {
         el("span", {}, el("strong", {}, "Gratis startpaket"), `: ${U.startpaket.varor.map((v) => v.replace(/ \(.*\)/, "").toLowerCase()).join(", ")} och ett enkelt vapen (högst ${U.startpaket.vapenMaxPris} sm). Husregel; fråga spelledaren.`)),
       S.rp.startpaket.valt ? falt("Startpaketets vapen", gruppLista("startpaket-vapen", S.rp.startpaket.vapen, paketVapen,
         (v) => { S.rp.startpaket = { ...S.rp.startpaket, vapen: v }; uppdatera(); }, "Välj vapen …")) : null)),
+    res.startutrustning.length ? el("div", { class: "startutrustning", id: "startutrustning" },
+      el("h3", {}, `Yrkets startutrustning (${res.yrke.namn.toLowerCase()})`),
+      el("ul", { class: "punkter" }, res.startutrustning.map((t) => el("li", {}, t))),
+      el("p", { class: "hjalp" }, `Gratis, som yrket anger (${kallText(S.R, res.yrke, `s. ${res.yrke.sida}`)}). Den står på rollformuläret; vikten skriver du in själv.`)) : null,
     el("h3", {}, "Köp"),
     flikar,
     sok,

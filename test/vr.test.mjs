@@ -2,7 +2,7 @@
 // Kör: node --test test/vr.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag } from "../regelmotor.js";
+import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag, yrkesPoster, yrkeVillkor, yrkesformagaText, svardsskolaFor } from "../regelmotor.js";
 import { regler as bas, brutus, las } from "./brutus-data.mjs";
 
 const regler = { ...bas, "sarskilda-formagor": las("sarskilda-formagor"), bocker: las("bocker"), erfarenhet: las("erfarenhet") };
@@ -92,4 +92,67 @@ test("V&R:s tabell enligt RB-008: Blodshämnd, Mycket mäktiga vänner, ingen J�
   assert.equal(namn[t.rader.findIndex((r) => r.slag[0] === 36)], "Mycket mäktiga vänner");
   assert.ok(!namn.includes("Järnnäve"));
   assert.deepEqual(t.rader.at(-1).slag, [40, null]);
+});
+
+// ------------------------------------------------------------ yrken, färdigheter och vapentekniker (V&R s. 4–16, 32–33)
+const medYrke = (rp, yrke, yrkesval, fv = {}) => {
+  const x = { ...rp, yrke, yrkesval, extraYrkesfardigheter: [] };
+  x.yrkesfardigheter = yrkesPoster(regler, x).flatMap((p) => p.nycklar);
+  x.fardigheter = { ...Object.fromEntries(x.yrkesfardigheter.map((k) => [k, 0])), ...fv };
+  return x;
+};
+const fardighet = (res, nyckel) => res.fardigheter.find((f) => f.nyckel === nyckel);
+
+test("V&R:s 15 yrken finns bara med V&R, med +3 initiativ och startutrustning", () => {
+  const nya = regler.yrken.lista.filter((y) => y.kalla?.bok === "vr");
+  assert.equal(nya.length, 15);
+  assert.ok(nya.every((y) => y.initiativ === 3 && y.startutrustning.length && y.stamning && y.beskrivning));
+  assert.ok(!valbaraYrken(regler, brutus).some((y) => y.kalla));
+  assert.match(fel({ ...brutus, yrke: "hyrsvard" }).join(), /Hyrsvärd finns i Vapen & rustningar/);
+  assert.match(yrkesformagaText(regler.yrken.lista.find((y) => y.id === "hyrsvard")), /\+3 på initiativet\.$/);
+});
+
+test("yrken med rasvillkor (Hedersvakt bara dvärgar)", () => {
+  const hedersvakt = regler.yrken.lista.find((y) => y.id === "hedersvakt");
+  assert.equal(yrkeVillkor(regler, { ras: "dvarg" }, hedersvakt), null);
+  assert.equal(yrkeVillkor(regler, { ras: "hoglandare" }, hedersvakt), "Bara för Dvärg");
+  assert.match(fel(medYrke(vr, "hedersvakt", {})).join(), /Hedersvakt: bara för Dvärg/);
+});
+
+test("Vapenmästare: tre vapen med FV 10 gratis som primära", () => {
+  const rp = medYrke(vr, "vapenmastare", { 6: ["Bredsvärd", "Dolk", "Långbåge"], 7: ["Tvåhandssvärd", "Kortsvärd"] });
+  const res = raknaRollperson(regler, rp);
+  assert.deepEqual(["Bredsvärd", "Dolk", "Långbåge"].map((v) => [fardighet(res, `vapen:${v}`).status, fardighet(res, `vapen:${v}`).start >= 10]),
+    [["primar", true], ["primar", true], ["primar", true]]);
+  assert.equal(fardighet(res, "vapen:Kortsvärd").status, "yrke");
+});
+
+test("Sabransk ökenriddare: magiskola utan magiförmågeslag, högst FV 10, och Hypnotisera FV 10", () => {
+  const bas = { ...vr, ras: "sabran", rasval: [], modersmal: { tala: ["chronos"], lasaSkriva: ["chronos"] }, grundvarden: { ...vr.grundvarden, INT: 15, PSY: 13 } };
+  const rp = medYrke(bas, "sabransk-okenriddare", { 7: { id: "mentalism" } }, { hypnotisera: 0 });
+  rp.fardigheter.mentalism = 10;
+  const res = raknaRollperson(regler, rp);
+  assert.equal(res.magiformaga.behovs, false);
+  assert.deepEqual([fardighet(res, "hypnotisera").status, fardighet(res, "hypnotisera").start], ["primar", 10]);
+  assert.match(raknaRollperson(regler, { ...rp, fardigheter: { ...rp.fardigheter, mentalism: 11 } }).fel.join(), /Mentalism: högst FV 10/);
+  // En annan skola som sekundär färdighet kräver slaget (RB-011)
+  assert.equal(raknaRollperson(regler, { ...rp, fardigheter: { ...rp.fardigheter, animism: 1 } }).magiformaga.behovs, true);
+});
+
+test("Vapentekniker: svärdsskolans pris, yrkesfärdighetens pris och egna stilar", () => {
+  const bas = { ...vr, ras: "latracier", rasval: [], modersmal: { tala: ["hoglandska"], lasaSkriva: ["hoglandska"] } };
+  const rp = medYrke(bas, "svartgardist", {}, { "vapentekniker:Kejsarens hand": 2, "vapentekniker:Dubar": 1, "vapentekniker:Egen": 1 });
+  rp.stridskonstTekniker = { "vapentekniker:Egen": ["Krafthugg", "Fint"] };
+  const res = raknaRollperson(regler, rp);
+  const kh = fardighet(res, "vapentekniker:Kejsarens hand");
+  assert.deepEqual([kh.status, kh.epPerFV, kh.skola.id, kh.tekniker.length], ["yrke", 3, "svarta-gardet", 6]);
+  assert.deepEqual([fardighet(res, "vapentekniker:Dubar").status, fardighet(res, "vapentekniker:Dubar").epPerFV], ["sekundar", 4]);
+  assert.equal(fardighet(res, "vapentekniker:Egen").epPerFV, 2); // 1 + 0,5 avrundat uppåt
+  assert.equal(svardsskolaFor(regler, "vapentekniker:sabrans väg").namn, "Sabrans väg");
+  assert.match(fel({ ...brutus, fardigheter: { ...brutus.fardigheter, taktik: 1 } }).join(), /Taktik finns i Vapen & rustningar/);
+});
+
+test("Ädling: minst 100 000 sm (RB-004)", () => {
+  const rp = medYrke({ ...vr, ras: "stadsalv", rasval: [] }, "adling", {});
+  assert.ok(raknaRollperson(regler, rp).slag.startkapital >= 100000);
 });

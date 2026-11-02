@@ -106,4 +106,28 @@ export const TESTROLLPERSONER = [
     kop: ["Harnesk: Läder", "Läderhuva"],
     anteckningar: "Testrollperson från utvecklarläget. Ökenkrigare som har gjort sig ett namn i Chronopia.",
   },
+  {
+    id: "vr-svartgardist",
+    etikett: "Latracier, svartgardist (V&R, veteran)",
+    namn: "Kael Nattvakt",
+    kon: "Man",
+    bocker: ["vr"],
+    niva: 1,
+    ras: "latracier",
+    alder: 28,
+    yrke: "svartgardist",
+    val: {
+      "tva-vapen": "Bredsvärd+Kortsvärd",
+      vapen: ["Bredsvärd", "Kortsvärd", "Långbåge"],
+    },
+    valfri: "taktik",
+    sarskildFormaga: [
+      { bp: 5, slag: 15, tabell: "vr" }, // 20: Snabbslående
+      { bp: 5, slag: 37, tabell: "grund" }, // 42: Vapenvan
+    ],
+    slag: { svardshand: 8, socialtStand: 8, startkapital: 9 },
+    startpaketVapen: "Dolk",
+    kop: ["Läderhuva"],
+    anteckningar: "Testrollperson från utvecklarläget. Kejsarens svarta gardist med stridskonsten Kejsarens hand.",
+  },
 ];

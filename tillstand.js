@@ -129,6 +129,7 @@ function allaNycklar(yrkesfardigheter) {
   for (const f of S.R.fardigheter.lista) if (f.typ === "primar" && !ras.sekundara.includes(f.id)) mangd.add(f.id);
   for (const p of ras.primara) if (typeof p === "string") mangd.add(p);
   for (const k of S.rp.rasval) mangd.add(k);
+  for (const k of yrke.primara ?? []) mangd.add(k); // V&R: gratis FV 10 som primär (t.ex. Hypnotisera)
   for (const s of m.tala) mangd.add(`tala:${s}`);
   for (const s of m.lasaSkriva) mangd.add(`lasa-skriva:${s}`);
   for (const k of yrkesfardigheter) mangd.add(k);
