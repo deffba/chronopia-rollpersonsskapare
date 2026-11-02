@@ -293,6 +293,10 @@ input.tal[readonly] { min-width: 0; background: var(--yta-2); color: var(--accen
 .sokfalt { width: 100%; margin-top: 4px; }
 .varukategori { display: none; }
 .tabellram.sokning .varukategori { display: inline; }
+/* Expansionsvaror: åtkomlighetskod (Vapen & rustningar s. 69), kejserliga och förbjudna varor, korta anmärkningar */
+.varutagg { display: inline-block; margin-left: 6px; padding: 0 5px; font-size: 0.75em; border: 1px solid var(--linje); border-radius: 4px; color: var(--dampad); cursor: help; }
+.varutagg.forbjuden { border-color: var(--fel); color: var(--fel); }
+.varunot { display: block; font-size: 0.85em; }
 .flikar.sokning .valknapp.vald { background: var(--accent-svag); border-color: var(--accent); color: var(--accent-text); }
 .flikar.sokning .valknapp.vald::before { content: none; }
 .teknik label { display: flex; align-items: center; gap: 8px; cursor: pointer; }

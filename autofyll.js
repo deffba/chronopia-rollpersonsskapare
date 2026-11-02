@@ -2,7 +2,7 @@
 // listor och textfält som är tomma, åldern (enkel metod), särskilda förmågans val, startpaketets vapen och alla tärningsslag.
 // Ras och yrke väljer spelaren själv, och knapparna Föreslå värden och Fördela EP används aldrig.
 // Bara tomma val fylls i, så det som spelaren själv har valt ändras inte. Byts yrket fylls det nya yrkets val i.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, varukatalog, formagetabell, formageslag, tarningAv, iBocker } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, vapenVillkor, varukatalog, formagetabell, formageslag, tarningAv, iBocker } from "./regelmotor.js";
 
 const LAGRING = "chronopia-dev-autofyll";
 const slaT = (antal, sidor) => Array.from({ length: antal }, () => 1 + Math.floor(Math.random() * sidor)).reduce((a, b) => a + b, 0);
@@ -99,8 +99,8 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
     // Startpaketets vapen: helst ett som rollpersonen har FV i
     const varden = res.grundegenskaper;
     const kanna = new Set(res.fardigheter.filter((f) => f.nyckel.startsWith("vapen:") && f.fv > 0).map((f) => f.nyckel.split(":")[1]));
-    const vapen = varukatalog(R).filter((x) => ["Närstridsvapen", "Avståndsvapen", "Kastvapen"].includes(x.kategori)
-      && x.pris <= R.utrustning.startpaket.vapenMaxPris && kanAnvandaVapen(R, x.namn, varden))
+    const vapen = varukatalog(R, rp).filter((x) => ["Närstridsvapen", "Avståndsvapen", "Kastvapen"].includes(x.kategori)
+      && x.pris <= R.utrustning.startpaket.vapenMaxPris && kanAnvandaVapen(R, x.namn, varden) && !vapenVillkor(R, rp, x.namn))
       .sort((a, b) => Number(kanna.has(b.namn)) - Number(kanna.has(a.namn)));
     if (vapen.length) rp.startpaket = { ...rp.startpaket, vapen: vapen[0].namn };
   }

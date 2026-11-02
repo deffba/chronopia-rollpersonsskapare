@@ -5,7 +5,7 @@
 // grundvärden, automatisk EP-fördelning) utifrån önskemålen i testrollpersoner.js, och kontrolleras sedan
 // av regelmotorn precis som en inläst fil. Går ett önskemål inte längre efter en regeländring väljs något
 // annat tillåtet i stället, och det sägs till i en notis.
-import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, varukatalog, tvahandsvapen, besvarjelsePris, iBocker, harTekniker, svardsskolaFor, teknikLista } from "./regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, vapenVillkor, varukatalog, tvahandsvapen, besvarjelsePris, iBocker, harTekniker, svardsskolaFor, teknikLista } from "./regelmotor.js";
 import { TESTROLLPERSONER } from "./testrollpersoner.js";
 import { startaPoanglogg } from "./poanglogg.js";
 import { startaAutofyll } from "./autofyll.js";
@@ -133,9 +133,9 @@ const MAGI = ["kanna-magi", "magisk-kanalisering", "magistudier", "animism", "el
 function autoDelval(api, rp, fid, anvanda) {
   const { R } = api;
   const ledig = (v) => !anvanda.has(`${fid}:${v}`);
-  if (fid === "vapen") return R.vapen.narstrid.filter((x) => x.grupp !== "slagsmal").map((x) => x.namn).find(ledig);
+  if (fid === "vapen") return R.vapen.narstrid.filter((x) => x.grupp !== "slagsmal" && !vapenVillkor(R, rp, x.namn)).map((x) => x.namn).find(ledig);
   if (fid === "tva-vapen") {
-    const enhand = R.vapen.narstrid.filter((x) => x.grupp !== "slagsmal" && !tvahandsvapen(R, x.namn, api.rakna().grundegenskaper)).map((x) => x.namn);
+    const enhand = R.vapen.narstrid.filter((x) => x.grupp !== "slagsmal" && !vapenVillkor(R, rp, x.namn) && !tvahandsvapen(R, x.namn, api.rakna().grundegenskaper)).map((x) => x.namn);
     return `${enhand[0]}+${enhand[1] ?? enhand[0]}`;
   }
   if (fid === "tala" || fid === "lasa-skriva") {
@@ -182,10 +182,10 @@ function kopBesvarjelser(api, rp, onskade) {
 function kopUtrustning(api, rp, onskatVapen, kop) {
   const { R } = api;
   const varden = api.rakna().grundegenskaper;
-  const katalog = varukatalog(R);
+  const katalog = varukatalog(R, rp);
   const max = R.utrustning.startpaket.vapenMaxPris;
   const kanna = new Set(api.rakna().fardigheter.filter((f) => f.nyckel.startsWith("vapen:") && f.fv > 0).map((f) => f.nyckel.split(":")[1]));
-  const enkla = katalog.filter((x) => ["Närstridsvapen", "Avståndsvapen", "Kastvapen"].includes(x.kategori) && x.pris <= max && kanAnvandaVapen(R, x.namn, varden))
+  const enkla = katalog.filter((x) => ["Närstridsvapen", "Avståndsvapen", "Kastvapen"].includes(x.kategori) && x.pris <= max && kanAnvandaVapen(R, x.namn, varden) && !vapenVillkor(R, rp, x.namn))
     .sort((a, b) => Number(kanna.has(b.namn)) - Number(kanna.has(a.namn)));
   const prova = (andra, tillbaka) => { andra(); if (api.rakna().fel.length) { tillbaka(); return false; } return true; };
   for (const vapen of [onskatVapen, ...enkla.map((x) => x.namn)].filter((v) => v && enkla.some((x) => x.namn === v))) {

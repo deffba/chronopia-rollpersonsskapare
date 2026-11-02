@@ -143,12 +143,29 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
   - **Stridskonster:** Krigarmunkens *Stridskonst (1)* = grundreglernas Stridskonster. Dödsdansarens *Stridskonster (en valfri)* = Stridskonster eller Vapentekniker. Vapenmästarens *Stridskonster (2)* = Vapentekniker (2). Ceriansk svärdsdans, Sabrans väg och Kejsarens hand = Vapentekniker med skolans färdiga stridskonst.
   - **Vapentekniker, egen stil:** EP per FV = summan av teknikernas kostnad avrundad uppåt, minst 1, också som yrkesfärdighet (inga +2 som för obeväpnade stridskonster). Grundreglernas obeväpnade tekniker får ingå (s. 15).
   - **Gratis FV 10** (Vapenmästarens tre vapen, Smidesmästarens Smide, ökenriddarens Hypnotisera) = startvärdet blir minst 10, och färdigheten räknas som primär. Vapenmästarens *Vapenfärdigheter (2+3)* = tre vapen med gratis FV 10 och två vanliga.
-  - **Smidesmästare:** *Smide* = Hantverk (Smide); *Tvåhandshammare* räknas som en av vapenfärdigheterna (3 i stället för 2) tills V&R:s vapen finns i appen. ”Människor födda i Chronopia” = rasen Människa; födelseorten följs inte.
+  - **Smidesmästare:** *Smide* = Hantverk (Smide); *Tvåhandshammare* räknas som en av vapenfärdigheterna (3 i stället för 2). Varken grundreglerna eller V&R har ett vapen med det namnet, så hammaren står kvar som text i startutrustningen. ”Människor födda i Chronopia” = rasen Människa; födelseorten följs inte.
   - **Krigarmunk:** ”Lärdomsfärdigheter (2) eller Hantera fällor och Låsdyrkning” blir två val, var och ett mellan en lärdomsfärdighet och Hantera fällor respektive Låsdyrkning. ”Vapenfärdigheter (2) eller två valfria färdigheter” blir Vapenfärdigheter (2).
   - **Heraldik** är grundreglernas Heraldik; V&R:s indelning i allmän och gruppvis heraldik används inte.
   - **Strid i mörker** räknas på SMI (boken: SMI/INT).
   - **Alver** (Ceriansk ulv, Ädling) = dimalv, ljusalv och stadsalv, inte halvalv.
-  - **Startutrustningen** står som text på yrket, i steg 13 och på rollformuläret. Den kostar inget och räknas inte i bördan.
+  - **Startutrustningen** står som text på yrket, i steg 13 och på rollformuläret, och kostar inget. Rader som motsvarar en vara i V&R:s eller grundreglernas varulistor läggs i packningen och räknas i bördan (se RB-017); resten står bara som text.
 - **Motivering:** Färre nya färdigheter och undantag; samma lösningar som för grundreglerna och RB-014.
 - **Påverkar:** Yrkessteget, yrkesfärdigheterna, färdighetssteget, utrustningen.
+- **Beslutat:** 2026-11-02, preliminärt: väntar på Deffbas bekräftelse.
+
+## RB-017 V&R:s vapen, rustningar och utrustning i appen
+- **Fråga:** Hur läggs V&R:s vapentabeller, rustningsdelar och övriga utrustning in, när boken saknar vapenfärdighet för vapnen, har namn som krockar med grundreglerna och har en ofullständig bördetabell?
+- **Källor:** *Vapen & rustningar* s. 57–67 (vapen och sköldar), s. 69 (rustningsvapen, börda, åtkomlighet), s. 70 (rustningar), s. 71–76 (övrig utrustning). Grundreglerna s. 72, 89–102.
+- **Beslut:**
+  - **Vapenfärdighet:** varje V&R-vapen får en av grundreglernas vapengrupper efter typ, till exempel Belestarius som yxa, Huggare som svärd, Klonät och 3-delad stav som kättingvapen och Kattsvans som piska. Stormyxan är stångvapen (boken säger det för vapentekniker). Musköt och Muskedunder får en ny grupp, Eldvapen (SMI).
+  - **Samma namn som i grundreglerna:** V&R-vapnet får ursprunget i namnet, till exempel *Kortsvärd (högländskt)* och *Långbåge (alvisk)*. Spikklubba och Knogjärn har samma värden i båda böckerna och finns bara en gång.
+  - **Rasvapen:** orchiska och goblinska vapen bärs bara av orcher och gobliner, wongoiska bara av wongoser (s. 64, 67). De visas inte för andra raser.
+  - **Kejserliga vapen** (s. 63) och varor med åtkomlighet X går att köpa men märks som kejserliga eller förbjudna. Spelledaren avgör vem som får bära dem.
+  - **Säljs inte:** vapen utan pris (Hederssvärd, Domarstav, Eldbälg), tjänster, hyror och varor med pris *varierar* går inte att köpa vid skapandet. Varor med ett prisintervall köps för det lägsta priset.
+  - **Rustningar:** hjälmar skyddar huvudet; axelskydd räknas på armarna (axeln hör till armen i grundreglernas kroppsdelar), och de som enligt boken även skyddar bröstkorgen räknas där också. Vilka delar en rustning täcker (skalle, ansikte, hals) står som text. Halva arm- och benskydd (s. 69) läggs inte in.
+  - **Börda:** tabellen på s. 69 hoppar över STY×3–4. Raden *STY×4–STY×5* tolkas som 3–5 gånger STY (−2 handlingar). Avdraget gäller detaljerad strid och visas bara när V&R är vald, utöver grundreglernas belastning.
+  - **Startutrustning:** yrkenas startutrustning kopplas till varor när namnet stämmer: Ceriansk ulvs två klingor, Hedersvaktens hedersyxa och skäggkam, Ordenskrigarens hederssvärd och vimplar, Slaghökens piska, Stadspiratens kasell och karta, Tunnelkrigarens tjutare, lyktor, karta och lösskägg.
+  - **Pilar** (s. 61) saknar pris och läggs inte in som varor.
+- **Motivering:** Vapnen behöver en färdighet för att gå att välja; grupperna följer vapnens typ och BV. Resten håller sig så nära boken som möjligt utan nya regler.
+- **Påverkar:** Vapenval i yrkes- och färdighetsstegen, utrustningssteget, rollformuläret.
 - **Beslutat:** 2026-11-02, preliminärt: väntar på Deffbas bekräftelse.

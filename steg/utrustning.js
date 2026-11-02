@@ -1,5 +1,5 @@
 // Utrustning (s. 38, 89–).
-import { kanAnvandaVapen, varukatalog, kallText } from "../regelmotor.js";
+import { kanAnvandaVapen, varukatalog, kallText, vapenVillkor, startvaror } from "../regelmotor.js";
 import { rita } from "../app.js";
 import { S, uppdatera } from "../tillstand.js";
 import { el, kg, sm } from "../ui/dom.js";
@@ -13,7 +13,11 @@ export function stegUtrustning(res) {
   const U = S.R.utrustning;
   const varden = res.grundegenskaper;
   const u = res.utrustning;
-  const katalog = varukatalog(S.R).filter((x) => !["Närstridsvapen", "Avståndsvapen", "Kastvapen", "Sköldar"].includes(x.kategori) || kanAnvandaVapen(S.R, x.namn, varden));
+  // Bara saker ur de valda böckerna, och vapen som rollpersonen orkar och får bära
+  const arVapen = (x) => ["Närstridsvapen", "Avståndsvapen", "Kastvapen", "Sköldar"].includes(x.kategori);
+  const katalog = varukatalog(S.R, S.rp).filter((x) => !arVapen(x) || (kanAnvandaVapen(S.R, x.namn, varden) && !vapenVillkor(S.R, S.rp, x.namn)));
+  const atk = S.R.utrustning.atkomlighet;
+  const atkText = (kod) => kod.split(/,\s*/).map((k) => atk?.platser[k] ?? atk?.sallsynthet[k] ?? k).join(", ");
   const kategorier = [...new Set(katalog.map((x) => x.kategori))];
   const antal = (namn) => S.rp.utrustning[namn] ?? 0;
   const andra = (namn, d) => {
@@ -32,10 +36,13 @@ export function stegUtrustning(res) {
   // Fritextfiltret söker i alla kategorier och filtrerar raderna direkt medan man skriver, utan att rita om
   // (då behåller sökfältet fokus). Utan text visas vald kategori.
   const rader = katalog.map((x) => el("tr", { class: antal(x.namn) ? "vald" : "", "data-kategori": x.kategori, "data-namn": x.namn.toLowerCase() },
-    el("td", {}, x.namn, x.absorbering ? el("span", { class: "hjalp" }, ` abs. ${x.absorbering}`) : x.skada ? el("span", { class: "hjalp" }, ` ${x.skada}`) : null,
-      el("span", { class: "hjalp varukategori" }, ` · ${x.kategori}`)),
+    el("td", {}, x.namn, x.absorbering != null ? el("span", { class: "hjalp" }, ` abs. ${x.absorbering}${x.skyddar ? ` (${x.skyddar})` : ""}`) : x.skada ? el("span", { class: "hjalp" }, ` ${x.skada}`) : null,
+      el("span", { class: "hjalp varukategori" }, ` · ${x.kategori}`),
+      x.kejserligt ? el("span", { class: "varutagg forbjuden", title: S.R.vapen.kejserligt.text }, "kejserligt") : null,
+      x.atkomlighet ? el("span", { class: "varutagg" + (/\bX\b/.test(x.atkomlighet) ? " forbjuden" : ""), title: `Åtkomlighet: ${atkText(x.atkomlighet)}` }, x.atkomlighet) : null,
+      x.not ? el("span", { class: "hjalp varunot" }, x.not) : null),
     el("td", { class: "num" }, x.vikt == null ? "–" : `${x.vikt.toLocaleString("sv-SE")} kg`),
-    el("td", { class: "num" }, sm(x.pris)),
+    el("td", { class: "num" }, x.prisText ? el("span", { title: `Priset varierar (${x.prisText}); lägsta priset räknas` }, `${sm(x.pris)}+`) : sm(x.pris)),
     el("td", { class: "num antal" },
       el("button", { type: "button", class: "knapp liten", disabled: !antal(x.namn), "aria-label": `En ${x.namn} mindre`, onclick: () => andra(x.namn, -1) }, "−"),
       el("span", {}, antal(x.namn)),
@@ -76,23 +83,25 @@ export function stegUtrustning(res) {
     u.belastning ? el("div", { class: "varning", role: "note", id: "viktvarning" },
       el("strong", {}, `Packningen väger mer än rollpersonen orkar bära utan besvär (${u.barformaga} kg, samma som STY). `),
       u.belastning.mod === null ? u.belastning.text
-        : `Bördan på ${kg(u.borda)} kg ger ${fmtMod(u.belastning.mod)} på förflyttning, SMI och CL i SMI-baserade färdigheter. ${u.belastning.text} Kläder räknas inte, och en rustning man bär räknas som halva vikten (s. 100).`) : null,
+        : `Bördan på ${kg(u.borda)} kg ger ${fmtMod(u.belastning.mod)} på förflyttning, SMI och CL i SMI-baserade färdigheter. ${u.belastning.text} Kläder räknas inte, och en rustning man bär räknas som halva vikten (s. 100).`,
+      u.handlingar ? ` I detaljerad strid ger bördan dessutom ${u.handlingar} ${u.handlingar === -1 ? "handling" : "handlingar"} per stridsrunda (${kallText(S.R, U.bordaHandlingar)}).` : null) : null,
     el("div", { class: "rutor" }, el("div", {},
       el("label", { class: "kryss" },
         el("input", { type: "checkbox", id: "startpaket", checked: S.rp.startpaket.valt, onchange: (e) => { S.rp.startpaket = { valt: e.target.checked, vapen: "" }; uppdatera(); } }),
         el("span", {}, el("strong", {}, "Gratis startpaket"), `: ${U.startpaket.varor.map((v) => v.replace(/ \(.*\)/, "").toLowerCase()).join(", ")} och ett enkelt vapen (högst ${U.startpaket.vapenMaxPris} sm). Husregel; fråga spelledaren.`)),
       S.rp.startpaket.valt ? falt("Startpaketets vapen", gruppLista("startpaket-vapen", S.rp.startpaket.vapen, paketVapen,
         (v) => { S.rp.startpaket = { ...S.rp.startpaket, vapen: v }; uppdatera(); }, "Välj vapen …")) : null)),
-    res.startutrustning.length ? el("div", { class: "startutrustning", id: "startutrustning" },
+    res.yrke.startutrustning?.length ? el("div", { class: "startutrustning", id: "startutrustning" },
       el("h3", {}, `Yrkets startutrustning (${res.yrke.namn.toLowerCase()})`),
-      el("ul", { class: "punkter" }, res.startutrustning.map((t) => el("li", {}, t))),
-      el("p", { class: "hjalp" }, `Gratis, som yrket anger (${kallText(S.R, res.yrke, `s. ${res.yrke.sida}`)}). Den står på rollformuläret; vikten skriver du in själv.`)) : null,
+      el("ul", { class: "punkter" }, res.yrke.startutrustning.map((t) => el("li", {}, t,
+        startvaror(S.R, S.rp).varor.some((v) => v.text === t) ? el("span", { class: "hjalp" }, " (ligger i packningen)") : null))),
+      el("p", { class: "hjalp" }, `Gratis, som yrket anger (${kallText(S.R, res.yrke, `s. ${res.yrke.sida}`)}). Det som finns i varulistan ligger i packningen och räknas i bördan; resten står på rollformuläret och vikten skriver du in själv.`)) : null,
     el("h3", {}, "Köp"),
     flikar,
     sok,
     ingenTraff,
     tabell,
     u.saker.length ? [el("h3", {}, "Packning"), el("ul", { class: "packning" }, u.saker.map((x) =>
-      el("li", {}, el("span", {}, sakNamn(x)), el("span", { class: "num hjalp" }, x.gratis ? "gratis" : sm(x.pris * x.antal)))))] : null,
+      el("li", {}, el("span", {}, sakNamn(x)), el("span", { class: "num hjalp" }, x.yrke ? "gratis (yrket)" : x.gratis ? "gratis" : sm(x.pris * x.antal)))))] : null,
   ];
 }

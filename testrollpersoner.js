@@ -130,4 +130,26 @@ export const TESTROLLPERSONER = [
     kop: ["Läderhuva"],
     anteckningar: "Testrollperson från utvecklarläget. Kejsarens svarta gardist med stridskonsten Kejsarens hand.",
   },
+  {
+    // Vapen & rustningar kap. 8–9: hederssvärdet som gratis startutrustning, V&R-vapen och rustningsdelar per kroppsdel
+    id: "vr-ordenskrigare",
+    etikett: "Högländare, ordenskrigare (V&R, utrustning)",
+    namn: "Brann av Hornvakten",
+    kon: "Man",
+    bocker: ["vr"],
+    niva: 0,
+    ras: "hoglandare",
+    rasval: "vapen:Spikyxa",
+    alder: 30,
+    yrke: "ordenskrigare",
+    val: {
+      hantverk: ["Smide"],
+      vapen: ["Hederssvärd", "Ryttarlans", "Ryttarbåge"],
+    },
+    valfri: "rida",
+    slag: { svardshand: 8, socialtStand: 12, startkapital: 20 },
+    startpaketVapen: "Dolk",
+    kop: ["Ordenskrigarhjälm", "Axelskydd (par): Högländskt", "Rustningsolja", "Vapenputs"],
+    anteckningar: "Testrollperson från utvecklarläget. Högländsk ordensriddare med hederssvärd och ordenskrigarhjälm.",
+  },
 ];

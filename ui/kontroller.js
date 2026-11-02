@@ -1,5 +1,5 @@
 // Små kontroller: tal, listor, knappar och info-cirklar.
-import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker } from "../regelmotor.js";
+import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker, vapenVillkor } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { DELVAL_HJALP, FORKLARINGAR, SPRAK_HJALP } from "../texter.js";
 import { S, modersmal, rakna, uppdatera, yrkesNycklar } from "../tillstand.js";
@@ -69,8 +69,9 @@ function vapenGrupper(enhandsNarstrid = false) {
   const v = S.R.vapen;
   const varden = rakna().grundegenskaper;
   // Två vapen: bara närstridsvapen som rollpersonen kan hålla med en hand (s. 71–72)
-  const lista = enhandsNarstrid ? v.narstrid.filter((x) => x.grupp !== "slagsmal" && !tvahandsvapen(S.R, x.namn, varden))
-    : [...v.narstrid.filter((x) => x.grupp !== "slagsmal"), ...v.projektil, ...v.kast, ...v.skoldar];
+  const lista = (enhandsNarstrid ? v.narstrid.filter((x) => x.grupp !== "slagsmal" && !tvahandsvapen(S.R, x.namn, varden))
+    : [...v.narstrid.filter((x) => x.grupp !== "slagsmal"), ...v.projektil, ...v.kast, ...v.skoldar])
+    .filter((x) => !vapenVillkor(S.R, S.rp, x.namn)); // bara vapen ur de valda böckerna som rasen får bära
   const sty = varden.STY;
   const grupper = new Map(S.R.vapen.grupper.map((g) => [g.id, []]));
   for (const x of lista) grupper.get(vapengrupp(S.R, x.namn, sty))?.push([x.namn, x.namn]);

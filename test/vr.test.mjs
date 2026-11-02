@@ -2,7 +2,7 @@
 // Kör: node --test test/vr.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag, yrkesPoster, yrkeVillkor, yrkesformagaText, svardsskolaFor } from "../regelmotor.js";
+import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag, yrkesPoster, yrkeVillkor, yrkesformagaText, svardsskolaFor, varukatalog, vapenVillkor, allaVapen } from "../regelmotor.js";
 import { regler as bas, brutus, las } from "./brutus-data.mjs";
 
 const regler = { ...bas, "sarskilda-formagor": las("sarskilda-formagor"), bocker: las("bocker"), erfarenhet: las("erfarenhet") };
@@ -155,4 +155,48 @@ test("Vapentekniker: svärdsskolans pris, yrkesfärdighetens pris och egna stila
 test("Ädling: minst 100 000 sm (RB-004)", () => {
   const rp = medYrke({ ...vr, ras: "stadsalv", rasval: [] }, "adling", {});
   assert.ok(raknaRollperson(regler, rp).slag.startkapital >= 100000);
+});
+
+// Steg 5: vapen, sköldar, rustningar och utrustning (Vapen & rustningar s. 57–76)
+test("V&R:s vapen, rustningar och varor finns bara med V&R, med unika namn", () => {
+  const vrPost = (x) => x.kalla?.bok === "vr";
+  const namn = allaVapen(regler).map((x) => x.namn);
+  assert.equal(new Set(namn).size, namn.length);
+  assert.ok(allaVapen(regler).filter(vrPost).length >= 90);
+  assert.ok(!varukatalog(regler, brutus).some(vrPost));
+  const katalog = varukatalog(regler, vr);
+  for (const n of ["Ceriansk klinga", "Musköt", "Wongosköld", "Svarta gardets harnesk", "Axelskydd (par): Dvärgiskt", "Gasmask", "Trollört", "Rustningsvapen: Taggar"])
+    assert.ok(katalog.some((x) => x.namn === n), n);
+  assert.ok(!katalog.some((x) => x.namn === "Hederssvärd"), "hederssvärdet säljs inte");
+  assert.ok(allaVapen(regler).filter(vrPost).every((x) => regler.vapen.grupper.some((g) => g.id === x.grupp) || ["svard", "kross", "yxor", "slagsmal"].includes(x.grupp)));
+});
+
+test("vapenfärdighet och köp av V&R-vapen kräver boken, och rasvapen kräver rätt ras", () => {
+  const medVapen = (rp, v) => ({ ...rp, fardigheter: { ...rp.fardigheter, [`vapen:${v}`]: 3 } });
+  assert.match(fel(medVapen(brutus, "Ceriansk klinga")).join(), /Ceriansk klinga finns i Vapen & rustningar/);
+  assert.ok(!fel(medVapen(vr, "Ceriansk klinga")).some((t) => t.includes("Ceriansk")));
+  assert.match(fel(medVapen(vr, "Wongodolk")).join(), /Wongodolk bärs bara av Wongos/);
+  assert.equal(vapenVillkor(regler, { ...vr, ras: "wongos" }, "Wongodolk"), null);
+  assert.match(vapenVillkor(regler, vr, "Snittare"), /Orch och Goblin/);
+  assert.match(fel({ ...brutus, utrustning: { Gasmask: 1 } }).join(), /Gasmask finns i Vapen & rustningar/);
+  const res = raknaRollperson(regler, { ...vr, utrustning: { Gasmask: 1 } });
+  assert.ok(res.utrustning.saker.some((x) => x.namn === "Gasmask" && x.pris === 700));
+});
+
+test("yrkets startutrustning: varor i katalogen läggs gratis i packningen", () => {
+  const rp = medYrke({ ...vr, ras: "hoglandare" }, "ordenskrigare", {});
+  const res = raknaRollperson(regler, rp);
+  const svard = res.utrustning.saker.find((x) => x.namn === "Hederssvärd");
+  assert.ok(svard && svard.gratis && svard.yrke && svard.vikt === 8.5);
+  assert.equal(res.utrustning.kostnad, 0);
+  assert.ok(!res.startutrustning.includes("Hederssvärd"), "kopplade rader står inte två gånger");
+  assert.ok(res.startutrustning.includes("Högländsk stridshäst"));
+});
+
+test("Börda i V&R: tung packning kostar handlingar (RB-017)", () => {
+  const tung = { ...vr, utrustning: { "Normalt städ": 1 } }; // 35 kg är mellan 2 och 3 × STY
+  assert.equal(raknaRollperson(regler, tung).utrustning.handlingar, -1);
+  assert.equal(raknaRollperson(regler, { ...brutus, utrustning: { "Normalt städ": 1 } }).utrustning.handlingar, null);
+  assert.equal(raknaRollperson(regler, { ...vr, utrustning: { "Normalt städ": 2 } }).utrustning.handlingar, -2); // 70 kg är mellan 3 och 5 × STY
+  assert.equal(raknaRollperson(regler, { ...vr, utrustning: { "Normalt städ": 3 } }).utrustning.handlingar, -3); // 105 kg, mer än 6 × STY
 });

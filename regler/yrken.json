@@ -645,6 +645,13 @@
         "Ceriansk armslunga eller handarmborst",
         "Ulvmedaljong"
       ],
+      "startvaror": [
+        {
+          "text": "Två cerianska klingor av ypperlig kvalitet (+1 skada, +3 BV)",
+          "namn": "Ceriansk klinga",
+          "antal": 2
+        }
+      ],
       "stamning": "Ulvarna rör sig som en flock: tyst, snabbt och alltid tillsammans.",
       "beskrivning": "Alviska elitkrigare från Ulvskolan som lärt sig Ceriansk svärdsdans. De slåss med två lätta klingor och är fruktade skyttar.",
       "villkor": {
@@ -720,6 +727,16 @@
         "Hedersyxa",
         "Axelplåt",
         "Skäggkam"
+      ],
+      "startvaror": [
+        {
+          "text": "Hedersyxa",
+          "namn": "Hedersyxa"
+        },
+        {
+          "text": "Skäggkam",
+          "namn": "Skäggkam"
+        }
       ],
       "stamning": "Den som bär hedersyxan viker inte, hur hårt slagen än faller.",
       "beskrivning": "Dvärgiska livvakter och väktare med en hederskodex lika hård som stålet i deras yxor.",
@@ -908,6 +925,16 @@
         "Högländsk stridshäst",
         "Heraldiska vimplar"
       ],
+      "startvaror": [
+        {
+          "text": "Hederssvärd",
+          "namn": "Hederssvärd"
+        },
+        {
+          "text": "Heraldiska vimplar",
+          "namn": "Heraldiska vimplar"
+        }
+      ],
       "stamning": "Vimplarna fladdrar, hästen frustar, och ordens ära står på spel.",
       "beskrivning": "Högländska riddare i en helig orden, födda i sadeln och uppfostrade i ordens heraldik och tro.",
       "villkor": {
@@ -1018,6 +1045,12 @@
         "Ett lätt handvapen",
         "Ett avståndsvapen"
       ],
+      "startvaror": [
+        {
+          "text": "Piska",
+          "namn": "Piska"
+        }
+      ],
       "stamning": "Hökarna äger gatorna, och varje gränd har ett namn.",
       "beskrivning": "Medlemmar i gatugänget Hökarna. De kan varje genväg och varje tak i sitt kvarter."
     },
@@ -1101,6 +1134,16 @@
         "Hamnkarta",
         "Gömställe",
         "Tre valfria tatueringar"
+      ],
+      "startvaror": [
+        {
+          "text": "Liten snabb båt (till exempel en fryvisk kasell)",
+          "namn": "Fryvisk kasell"
+        },
+        {
+          "text": "Hamnkarta",
+          "namn": "Karta (kloak, hamn o.s.v.)"
+        }
       ],
       "stamning": "Kanalerna är vägar för den som vet vart de leder.",
       "beskrivning": "Pirater som plundrar längs Chronopias kanaler och hamnar och försvinner i dimman innan vakten hinner fram."
@@ -1195,6 +1238,28 @@
         "Ofullständig kloakkarta",
         "Saneringskontrakt",
         "Lösskägg"
+      ],
+      "startvaror": [
+        {
+          "text": "Tjutare",
+          "namn": "Tjutare"
+        },
+        {
+          "text": "Oljelykta",
+          "namn": "Oljelykta (6 timmar)"
+        },
+        {
+          "text": "Pannlykta",
+          "namn": "Pannlykta"
+        },
+        {
+          "text": "Ofullständig kloakkarta",
+          "namn": "Karta (kloak, hamn o.s.v.)"
+        },
+        {
+          "text": "Lösskägg",
+          "namn": "Lösskägg"
+        }
       ],
       "stamning": "Under staden finns en annan stad, och någon måste hålla den ren.",
       "beskrivning": "Krigare som rensar Chronopias kloaker och tunnlar från det som kryper där nere."

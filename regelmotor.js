@@ -243,8 +243,10 @@ function kontrolleraVal(regler, rp, varden, fel) {
       const modersmal = id === "tala" ? rp.modersmal?.tala : rp.modersmal?.lasaSkriva;
       if (yrkesnycklar.has(nyckel) && modersmal?.includes(val)) fel.push(`${namn} är redan modersmål och kan inte väljas som främmande språk (s. 66, 70)`);
     }
+    if (id === "vapen" && vapenVillkor(regler, rp, val)) fel.push(vapenVillkor(regler, rp, val));
     if (id === "tva-vapen") {
       const vapen = val.split("+");
+      for (const v of vapen) if (vapenVillkor(regler, rp, v)) fel.push(vapenVillkor(regler, rp, v));
       if (vapen.length !== 2 || vapen.some((v) => !regler.vapen.narstrid.some((x) => x.namn === v))) fel.push(`Två vapen gäller två närstridsvapen (s. 71)`);
       else {
         const tvahands = vapen.find((v) => tvahandsvapen(regler, v, varden));
@@ -494,7 +496,7 @@ export function raknaRollperson(regler, indata) {
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
-    besvarjelser, utrustning, startutrustning: yrke.startutrustning ?? [],
+    besvarjelser, utrustning, startutrustning: startvaror(regler, rp).ovriga,
     fel,
   };
 }
@@ -536,6 +538,23 @@ function raknaBesvarjelser(regler, rp, fardigheter, varden, kanMagi, fel) {
   }).filter(Boolean).sort((a, b) => a.skola.localeCompare(b.skola) || a.sv - b.sv || a.namn.localeCompare(b.namn, "sv"));
 }
 
+// Alla vapen och sköldar i en lista
+export const allaVapen = (regler) => [...regler.vapen.narstrid, ...regler.vapen.projektil, ...regler.vapen.kast, ...regler.vapen.skoldar];
+
+// Får rollpersonen bära vapnet? Några expansionsvapen bärs bara av vissa raser (Vapen & rustningar s. 64, 67).
+// Ger en förklaring om inte, annars null. Vapen från en bok som inte är vald räknas också.
+export function vapenVillkor(regler, rp, namn) {
+  const vapen = allaVapen(regler).find((x) => x.namn === namn);
+  if (!vapen) return null;
+  if (!iBocker(vapen, rp)) return `${namn} finns i ${bokNamn(regler, bokFor(vapen))}, som inte är vald (steg 0)`;
+  const raser = vapen.villkor?.ras;
+  if (raser && !raser.includes(rp.ras)) {
+    const namnen = raser.map((id) => rasAv(regler, id)?.namn ?? id);
+    return `${namn} bärs bara av ${namnen.length > 1 ? `${namnen.slice(0, -1).join(", ")} och ${namnen.at(-1)}` : namnen[0]} (${kallText(regler, vapen)})`;
+  }
+  return null;
+}
+
 // Kan rollpersonen över huvud taget använda vapnet? (s. 89, 91, 94)
 export function kanAnvandaVapen(regler, namn, varden) {
   const v = regler.vapen;
@@ -550,12 +569,12 @@ export function kanAnvandaVapen(regler, namn, varden) {
   return false;
 }
 
-// Alla saker som går att köpa, med pris och vikt (s. 90–102)
-export function varukatalog(regler) {
+// Alla saker som går att köpa, med pris och vikt (s. 90–102). Med rp bara saker ur de valda böckerna.
+export function varukatalog(regler, rp) {
   const U = regler.utrustning;
   if (!U) return [];
   const v = regler.vapen;
-  return [
+  const alla = [
     ...U.varor,
     ...U.rustningar.map((r) => ({ ...r, kategori: "Rustning" })),
     ...v.narstrid.filter((x) => x.pris).map((x) => ({ ...x, kategori: "Närstridsvapen" })),
@@ -563,6 +582,14 @@ export function varukatalog(regler) {
     ...v.kast.map((x) => ({ ...x, kategori: "Kastvapen" })),
     ...v.skoldar.map((x) => ({ ...x, kategori: "Sköldar" })),
   ];
+  return rp ? alla.filter((x) => iBocker(x, rp)) : alla;
+}
+
+// Yrkets startutrustning: rader som motsvarar en vara i katalogen läggs gratis i packningen (Vapen & rustningar s. 4–12)
+export function startvaror(regler, rp) {
+  const yrke = yrkeAv(regler, rp.yrke);
+  const kopplade = yrke?.startvaror ?? [];
+  return { varor: kopplade, ovriga: (yrke?.startutrustning ?? []).filter((t) => !kopplade.some((v) => v.text === t)) };
 }
 
 // Inköp betalas med startkapitalet; startpaketet är gratis (s. 38)
@@ -579,8 +606,14 @@ function raknaUtrustning(regler, rp, varden, startkapital, fel) {
     if (!(antal > 0)) continue;
     const vara = katalog.find((x) => x.namn === namn);
     if (!vara) { fel.push(`Okänd vara: ${namn}`); continue; }
+    if (!iBocker(vara, rp)) fel.push(`${namn} finns i ${bokNamn(regler, bokFor(vara))}, som inte är vald (steg 0)`);
+    else if (vapenVillkor(regler, rp, namn)) fel.push(vapenVillkor(regler, rp, namn));
     kostnad += vara.pris * antal;
     lagg(vara, namn, antal, false);
+  }
+  for (const { namn, antal = 1 } of startvaror(regler, rp).varor) {
+    const vara = katalog.find((x) => x.namn === namn) ?? allaVapen(regler).find((x) => x.namn === namn); // t.ex. hederssvärdet, som inte säljs
+    if (vara) saker.push({ namn, antal, pris: 0, kategori: vara.kategori ?? "Närstridsvapen", gratis: true, yrke: true, vikt: Math.round((vara.vikt ?? 0) * antal * 10) / 10 });
   }
   const paket = rp.startpaket;
   if (paket?.valt) {
@@ -591,12 +624,18 @@ function raknaUtrustning(regler, rp, varden, startkapital, fel) {
     if (paket.vapen) {
       const vapen = katalog.find((x) => x.namn === paket.vapen);
       if (!vapen || !kanAnvandaVapen(regler, paket.vapen, varden)) fel.push(`${paket.vapen} kan inte användas av rollpersonen (s. 89)`);
+      else if (vapenVillkor(regler, rp, paket.vapen)) fel.push(vapenVillkor(regler, rp, paket.vapen));
       else if (vapen.pris > U.startpaket.vapenMaxPris) fel.push(`Startpaketets vapen får kosta högst ${U.startpaket.vapenMaxPris} sm`);
       else lagg(vapen, paket.vapen, 1, true);
     }
   }
   if (kostnad > startkapital) fel.push(`Inköpen kostar ${kostnad} sm men startkapitalet är ${startkapital} sm (s. 38)`);
-  return { kostnad, kvar: startkapital - kostnad, ...bordaFor(regler, saker, varden), saker };
+  const borda = bordaFor(regler, saker, varden);
+  // Vapen & rustningar s. 69: tung last kostar handlingar i detaljerad strid
+  const bh = U.bordaHandlingar;
+  const handlingar = bh && iBocker(bh, rp) && borda.borda > borda.barformaga
+    ? (bh.rader.find((r) => borda.borda <= borda.barformaga * r.gange) ?? bh.rader.at(-1)).mod : null;
+  return { kostnad, kvar: startkapital - kostnad, ...borda, handlingar: handlingar || null, saker };
 }
 
 // Bärförmåga (s. 100): STY kg utan nackdelar. Kläder räknas inte, en buren rustning väger hälften.
