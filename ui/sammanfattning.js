@@ -48,6 +48,8 @@ export function rollformular(res) {
     [...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...res.extraFormagor].filter(Boolean).map((f, i, alla) => [i === 0 ? el("h3", {}, alla.length > 1 ? "Särskilda förmågor" : "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
     res.hjaltepoang?.totalt ? el("p", {}, el("strong", {}, "Hjältepoäng: "), `${res.hjaltepoang.kvar} av ${res.hjaltepoang.totalt} kvar`) : null,
     S.rp.yrke ? el("p", {}, el("strong", {}, "Yrkesförmåga: "), yrkesformagaText(res.yrke)) : null,
+    res.stridshandlingar ? el("p", {}, el("strong", {}, "Handlingar per stridsrunda: "),
+      `${res.stridshandlingar.antal} (detaljerad strid${res.stridshandlingar.borda ? `, ${res.stridshandlingar.borda} av bördan` : ""})`) : null,
     res.sinnen?.sinnen.some((x) => x.niva) ? el("p", {}, el("strong", {}, "Syn och hörsel: "),
       res.sinnen.sinnen.filter((x) => x.niva).map((x) => `${x.namn} ${x.niva.toLowerCase()} (${x.mod > 0 ? "+" : x.mod < 0 ? "−" : "±"}${Math.abs(x.mod)})`).join(", ")) : null,
     res.startutrustning?.length ? el("p", {}, el("strong", {}, "Startutrustning: "), res.startutrustning.join(", ")) : null,

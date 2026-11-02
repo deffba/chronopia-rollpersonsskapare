@@ -164,7 +164,7 @@ test("V&R:s vapen, rustningar och varor finns bara med V&R, med unika namn", () 
   assert.equal(new Set(namn).size, namn.length);
   assert.ok(allaVapen(regler).filter(vrPost).length >= 90);
   assert.ok(!varukatalog(regler, brutus).some(vrPost));
-  const katalog = varukatalog(regler, vr);
+  const katalog = varukatalog(regler, { ...vr, valfriaRegler: ["detaljerad-strid"] });
   for (const n of ["Ceriansk klinga", "Musköt", "Wongosköld", "Svarta gardets harnesk", "Axelskydd (par): Dvärgiskt", "Gasmask", "Trollört", "Rustningsvapen: Taggar"])
     assert.ok(katalog.some((x) => x.namn === n), n);
   assert.ok(!katalog.some((x) => x.namn === "Hederssvärd"), "hederssvärdet säljs inte");
@@ -193,18 +193,41 @@ test("yrkets startutrustning: varor i katalogen läggs gratis i packningen", () 
   assert.ok(res.startutrustning.includes("Högländsk stridshäst"));
 });
 
-test("Börda i V&R: tung packning kostar handlingar (RB-017)", () => {
-  const tung = { ...vr, utrustning: { "Normalt städ": 1 } }; // 35 kg är mellan 2 och 3 × STY
+test("Börda i V&R: tung packning kostar handlingar i detaljerad strid (RB-017)", () => {
+  const ds = { ...vr, valfriaRegler: ["detaljerad-strid"] };
+  const tung = { ...ds, utrustning: { "Normalt städ": 1 } }; // 35 kg är mellan 2 och 3 × STY
   assert.equal(raknaRollperson(regler, tung).utrustning.handlingar, -1);
+  assert.equal(raknaRollperson(regler, { ...vr, utrustning: { "Normalt städ": 1 } }).utrustning.handlingar, null, "utan detaljerad strid");
   assert.equal(raknaRollperson(regler, { ...brutus, utrustning: { "Normalt städ": 1 } }).utrustning.handlingar, null);
-  assert.equal(raknaRollperson(regler, { ...vr, utrustning: { "Normalt städ": 2 } }).utrustning.handlingar, -2); // 70 kg är mellan 3 och 5 × STY
-  assert.equal(raknaRollperson(regler, { ...vr, utrustning: { "Normalt städ": 3 } }).utrustning.handlingar, -3); // 105 kg, mer än 6 × STY
+  assert.equal(raknaRollperson(regler, { ...ds, utrustning: { "Normalt städ": 2 } }).utrustning.handlingar, -2); // 70 kg är mellan 3 och 5 × STY
+  assert.equal(raknaRollperson(regler, { ...ds, utrustning: { "Normalt städ": 3 } }).utrustning.handlingar, -3); // 105 kg, mer än 6 × STY
+});
+
+test("Detaljerad strid: axelskydd, halva skydd och rustningsvapen bara med regeln, handlingar per runda (RB-017)", () => {
+  const ds = { ...vr, valfriaRegler: ["detaljerad-strid"] };
+  const bara = ["Axelskydd (par): Dvärgiskt", "Halva armskydd (par): Högländska armskydd", "Halva benskydd (par): Orchiska benskenor", "Rustningsvapen: Taggar"];
+  const utan = varukatalog(regler, vr).map((x) => x.namn);
+  assert.ok(bara.every((n) => !utan.includes(n)), "utan regeln");
+  assert.ok(utan.includes("Armskydd (par): Högländska armskydd") && utan.includes("Ordenskrigarhjälm"), "vanliga delar finns kvar");
+  const med = varukatalog(regler, ds);
+  assert.ok(bara.every((n) => med.some((x) => x.namn === n)), "med regeln");
+  const halv = med.find((x) => x.namn === "Halva armskydd (par): Högländska armskydd");
+  assert.deepEqual([halv.absorbering, halv.vikt, halv.pris], [8, 5, 825]);
+  assert.match(fel({ ...vr, utrustning: { "Axelskydd (par): Dvärgiskt": 1 } }).join(), /kräver den valfria regeln Detaljerad strid/);
+  assert.equal(raknaRollperson(regler, vr).stridshandlingar, null);
+  const h = (smi, extra = {}) => raknaRollperson(regler, { ...ds, grundvarden: { ...ds.grundvarden, SMI: smi }, ...extra }).stridshandlingar;
+  assert.deepEqual([h(16).bas, h(16).antal], [2, 2]);
+  assert.equal(h(22).bas, 3, "SMI över 18 ger tre handlingar");
+  const tung = h(16, { utrustning: { "Normalt städ": 1 } });
+  assert.deepEqual([tung.borda, tung.antal], [-1, 1]);
+  assert.ok(tung.extra.includes("två vapen") && /kritiska träffar/.test(tung.spel));
+  assert.deepEqual(valfriaRegler(regler, vr).map((v) => v.id), ["syn-och-horsel", "detaljerad-strid"]);
 });
 
 // Steg 6: Syn och hörsel som valfri regel (V&R s. 3, RB-002)
 test("Syn och hörsel: bara med V&R och när regeln är påslagen", () => {
   assert.deepEqual(valfriaRegler(regler, brutus), []);
-  assert.deepEqual(valfriaRegler(regler, vr).map((v) => v.id), ["syn-och-horsel"]);
+  assert.deepEqual(valfriaRegler(regler, vr).map((v) => v.id), ["syn-och-horsel", "detaljerad-strid"]);
   assert.equal(raknaSinnen(regler, vr), null);
   assert.match(fel({ ...brutus, valfriaRegler: ["syn-och-horsel"] }).join(), /valfri regel/);
 });

@@ -105,6 +105,33 @@
             }
           ],
           "not": "Modifikationerna läggs ihop: god syn och god hörsel ger +2 i Upptäcka fara. Dålig syn kan rättas med ögonglas."
+        },
+        {
+          "id": "detaljerad-strid",
+          "namn": "Detaljerad strid",
+          "sida": "18–19, 69",
+          "beskrivning": "V&R:s detaljerade stridsregler: antal handlingar per stridsrunda, axelskydd, halva arm- och benskydd, rustningsvapen och bördans avdrag på handlingar. Träffområden och kritiska träffar (s. 26–30) används i spel.",
+          "handlingar": {
+            "sida": "18–19",
+            "smi": [
+              [
+                18,
+                2
+              ],
+              [
+                null,
+                3
+              ]
+            ],
+            "extra": [
+              "sköld och vapen",
+              "två vapen",
+              "lätt vapen",
+              "FV 21 eller mer i vapnet",
+              "FV 41 eller mer i vapnet"
+            ],
+            "spel": "Träffområden och kritiska träffar per kroppsdel: Vapen & rustningar s. 18–19 och 26–30."
+          }
         }
       ]
     },

@@ -25,6 +25,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('utan V&R: inga valfria regler', await p.locator('#valfria-regler').count() === 0);
   await p.check('[data-bok=vr]'); await p.waitForTimeout(80);
   ok('med V&R: Syn och hörsel som valfri regel', (await p.locator('#valfria-regler').textContent()).includes('Syn och hörsel'));
+  ok('med V&R: Detaljerad strid som valfri regel', await p.locator('[data-regel=detaljerad-strid]').count() === 1);
   await p.check('[data-regel=syn-och-horsel]'); await p.waitForTimeout(80);
   ok('regeln sparas i rollpersonen', JSON.stringify((await rp(p)).valfriaRegler) === '["syn-och-horsel"]');
   await p.uncheck('[data-bok=vr]'); await p.waitForTimeout(80);

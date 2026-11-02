@@ -576,6 +576,7 @@ export function raknaRollperson(regler, indata) {
   epSpenderat += besvarjelser.reduce((a, b) => a + b.ep, 0);
   if (epSpenderat > epStart) fel.push(`${epSpenderat - epStart} EP för mycket har spenderats (s. 34)`);
   const utrustning = raknaUtrustning(regler, rp, ge.varden, slag.startkapital, fel);
+  const stridshandlingar = raknaStridshandlingar(regler, rp, ge.varden, utrustning);
 
   return {
     ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, grundegenskaperSatta: ge.satta, harledda, slag, magiformaga,
@@ -584,7 +585,7 @@ export function raknaRollperson(regler, indata) {
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.map((f) => (sinnesMod(regler, sinnen, f.nyckel) ? { ...f, sinne: sinnesMod(regler, sinnen, f.nyckel) } : f))
       .sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
-    besvarjelser, utrustning, startutrustning: startvaror(regler, rp).ovriga, sinnen,
+    besvarjelser, utrustning, startutrustning: startvaror(regler, rp).ovriga, sinnen, stridshandlingar,
     fel,
   };
 }
@@ -671,7 +672,8 @@ export function varukatalog(regler, rp) {
     ...v.kast.map((x) => ({ ...x, kategori: "Kastvapen" })),
     ...v.skoldar.map((x) => ({ ...x, kategori: "Sköldar" })),
   ];
-  return rp ? alla.filter((x) => iBocker(x, rp)) : alla;
+  // Varor som kräver en valfri regel (axelskydd, halva arm- och benskydd, rustningsvapen: Detaljerad strid, RB-017)
+  return rp ? alla.filter((x) => iBocker(x, rp) && (!x.kraverRegel || regelPa(regler, rp, x.kraverRegel))) : alla;
 }
 
 // Yrkets startutrustning: rader som motsvarar en vara i katalogen läggs gratis i packningen (Vapen & rustningar s. 4–12)
@@ -679,6 +681,18 @@ export function startvaror(regler, rp) {
   const yrke = yrkeAv(regler, rp.yrke);
   const kopplade = yrke?.startvaror ?? [];
   return { varor: kopplade, ovriga: (yrke?.startutrustning ?? []).filter((t) => !kopplade.some((v) => v.text === t)) };
+}
+
+// Detaljerad strid (V&R s. 18–19, RB-017): handlingar per stridsrunda efter SMI och bördan.
+// Extra handlingar för vapen och sköld, två vapen, lätta vapen och högt FV beror på vad som används och står som text.
+const DETALJERAD = "detaljerad-strid";
+export function raknaStridshandlingar(regler, rp, varden, utrustning) {
+  if (!regelPa(regler, rp, DETALJERAD)) return null;
+  const regel = valfriaRegler(regler, rp).find((v) => v.id === DETALJERAD);
+  const h = regel.handlingar;
+  const bas = slaUpp(h.smi, varden.SMI ?? 0);
+  const borda = utrustning?.handlingar ?? 0;
+  return { regel, bas, borda, antal: Math.max(0, bas + borda), extra: h.extra, spel: h.spel, sida: h.sida };
 }
 
 // Inköp betalas med startkapitalet; startpaketet är gratis (s. 38)
@@ -696,6 +710,7 @@ function raknaUtrustning(regler, rp, varden, startkapital, fel) {
     const vara = katalog.find((x) => x.namn === namn);
     if (!vara) { fel.push(`Okänd vara: ${namn}`); continue; }
     if (!iBocker(vara, rp)) fel.push(`${namn} finns i ${bokNamn(regler, bokFor(vara))}, som inte är vald (steg 0)`);
+    else if (vara.kraverRegel && !regelPa(regler, rp, vara.kraverRegel)) fel.push(`${namn} kräver den valfria regeln ${valfriaRegler(regler, rp).find((v) => v.id === vara.kraverRegel)?.namn ?? vara.kraverRegel} (steg 0)`);
     else if (vapenVillkor(regler, rp, namn)) fel.push(vapenVillkor(regler, rp, namn));
     kostnad += vara.pris * antal;
     lagg(vara, namn, antal, false);
@@ -722,7 +737,7 @@ function raknaUtrustning(regler, rp, varden, startkapital, fel) {
   const borda = bordaFor(regler, saker, varden);
   // Vapen & rustningar s. 69: tung last kostar handlingar i detaljerad strid
   const bh = U.bordaHandlingar;
-  const handlingar = bh && iBocker(bh, rp) && borda.borda > borda.barformaga
+  const handlingar = bh && iBocker(bh, rp) && regelPa(regler, rp, DETALJERAD) && borda.borda > borda.barformaga
     ? (bh.rader.find((r) => borda.borda <= borda.barformaga * r.gange) ?? bh.rader.at(-1)).mod : null;
   return { kostnad, kvar: startkapital - kostnad, ...borda, handlingar: handlingar || null, saker };
 }

@@ -80,6 +80,12 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     ...[...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
     rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: yrkesformagaText(res.yrke) } : null,
     ...(res.sinnen?.sinnen ?? []).filter((x) => x.niva).map((x) => ({ namn: `${x.namn}: ${x.niva.toLowerCase()}`, text: `${x.mod > 0 ? "+" : x.mod < 0 ? "−" : "±"}${Math.abs(x.mod)} på ${x.text}` })),
+    // Detaljerad strid (V&R s. 18–19, RB-017): handlingar per stridsrunda, träffområden och kritiska träffar
+    ...(res.stridshandlingar ? [
+      { namn: `Handlingar per stridsrunda: ${res.stridshandlingar.antal}`,
+        text: `${res.stridshandlingar.bas} av SMI${res.stridshandlingar.borda ? `, ${res.stridshandlingar.borda} av bördan` : ""}; +1 vardera för ${res.stridshandlingar.extra.join(", ")} (V&R s. ${res.stridshandlingar.sida})` },
+      { namn: "Detaljerad strid", text: res.stridshandlingar.spel },
+    ] : []),
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
   ].filter(Boolean);
 

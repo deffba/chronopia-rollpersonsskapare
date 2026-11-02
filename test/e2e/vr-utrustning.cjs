@@ -51,6 +51,8 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('wongoiska vapen visas inte för en högländare', (await synligaRader(p)).length === 0);
   await sok(p, 'peruk');
   ok('varierande pris visas som lägsta pris med +', (await p.locator('tr[data-namn="peruk"] td.num >> nth=1').textContent()).includes('+'));
+  await sok(p, 'halva armskydd');
+  ok('detaljerad strid: halva armskydd för halva priset', (await synligaRader(p)).length === 5 && (await p.locator('.varutabell tbody tr:not([hidden])').first().textContent()).includes('bara överarmarna eller underarmarna'));
   await sok(p, 'axelskydd (par): högländskt');
   ok('axelskyddet skyddar även huvudet och bröstkorgen', (await p.locator('.varutabell tbody tr:not([hidden])').first().textContent()).includes('även huvudet mot hugg och slag, och bröstkorgen'));
   await sok(p, '');
@@ -81,7 +83,22 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   await ladda(p, 'vr-ordenskrigare', 'formular');
   const rf = await p.locator('#rf-vy').textContent();
   ok('rollformuläret: hederssvärdet och startutrustningen', rf.includes('Hederssvärd') && rf.includes('Högländsk stridshäst') && rf.includes('Ordenskrigarhjälm'));
+  ok('rollformuläret: handlingar per stridsrunda och kritiska träffar (detaljerad strid)', /Handlingar per stridsrunda: \d/.test(rf) && rf.includes('kritiska träffar'), rf.match(/Handlingar per stridsrunda[^(]*/)?.[0]);
   ok('inga konsolfel (V&R)', !p.errs.length, p.errs.join(' | '));
+  await p.close();
+
+  // ---- V&R utan detaljerad strid: inga axelskydd, halva skydd eller rustningsvapen
+  p = await ny();
+  await ladda(p, 'vr-svartgardist', 'utrustning');
+  ok('utan detaljerad strid: inga rustningsvapen', !(await flikar(p)).includes('Rustningsvapen'), (await flikar(p)).join(','));
+  await sok(p, 'axelskydd');
+  ok('utan detaljerad strid: inga axelskydd', (await synligaRader(p)).length === 0);
+  await sok(p, 'armskydd');
+  const arm = await synligaRader(p);
+  ok('utan detaljerad strid: vanliga armskydd men inga halva', arm.length >= 5 && !arm.some((n) => n.includes('halva')), arm.join(','));
+  await ladda(p, 'vr-svartgardist', 'formular');
+  ok('utan detaljerad strid: inga handlingar på formuläret', !(await p.locator('#rf-vy').textContent()).includes('Handlingar per stridsrunda'));
+  ok('inga konsolfel (utan detaljerad strid)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
   // ---- Vapenvalen: V&R-vapen och eldvapen med boken, rasvapen bara för rasen

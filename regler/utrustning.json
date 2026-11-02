@@ -2694,6 +2694,7 @@
       "skada": "1T4",
       "bv": 9,
       "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 69
@@ -2707,6 +2708,7 @@
       "skada": "1T6",
       "bv": 9,
       "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 69
@@ -2720,6 +2722,7 @@
       "skada": "1T3",
       "bv": 7,
       "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 69
@@ -2733,6 +2736,7 @@
       "skada": "1T6",
       "bv": 11,
       "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 69
@@ -2746,6 +2750,7 @@
       "skada": "1T2",
       "bv": null,
       "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 69
@@ -3356,6 +3361,7 @@
       "vikt": 7,
       "pris": 1300,
       "skyddar": "axlarna; även huvudet mot hugg och slag",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3372,6 +3378,7 @@
       "vikt": 8,
       "pris": 1050,
       "skyddar": "axlarna",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3388,6 +3395,7 @@
       "vikt": 6,
       "pris": 1800,
       "skyddar": "axlarna; även halsen",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3405,6 +3413,7 @@
       "vikt": 12,
       "pris": 2100,
       "skyddar": "axlarna; även huvudet mot hugg och slag, och bröstkorgen",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3421,6 +3430,7 @@
       "vikt": 8,
       "pris": 700,
       "skyddar": "axlarna; även halsen",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3438,6 +3448,7 @@
       "vikt": 10,
       "pris": 1600,
       "skyddar": "axlarna; även bröstkorgen",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3454,6 +3465,7 @@
       "vikt": 10,
       "pris": 2300,
       "skyddar": "axlarna",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3470,6 +3482,7 @@
       "vikt": 12,
       "pris": 150,
       "skyddar": "axlarna",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3492,6 +3505,23 @@
       }
     },
     {
+      "namn": "Halva armskydd (par): Cerianska armskenor",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 7,
+      "vikt": 2.75,
+      "pris": 750,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
       "namn": "Armskydd (par): Högländska armskydd",
       "typ": "Armskydd (par)",
       "delar": [
@@ -3502,6 +3532,23 @@
       "vikt": 10,
       "pris": 1650,
       "skyddar": "över- och underarmar, inte axlarna",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva armskydd (par): Högländska armskydd",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 8,
+      "vikt": 5.0,
+      "pris": 825,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3524,6 +3571,23 @@
       }
     },
     {
+      "namn": "Halva armskydd (par): Orchisk armskena",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 4,
+      "vikt": 2.0,
+      "pris": 225,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
       "namn": "Armskydd (par): Sabranska armskydd",
       "typ": "Armskydd (par)",
       "delar": [
@@ -3534,6 +3598,23 @@
       "vikt": 6,
       "pris": 1300,
       "skyddar": "över- och underarmar, inte axlarna",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva armskydd (par): Sabranska armskydd",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 7,
+      "vikt": 3.0,
+      "pris": 650,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3556,6 +3637,23 @@
       }
     },
     {
+      "namn": "Halva armskydd (par): Svarta gardets armskenor",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 9,
+      "vikt": 3.5,
+      "pris": 900,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
       "namn": "Benskydd (par): Cerianska benskenor",
       "typ": "Benskydd (par)",
       "delar": [
@@ -3565,6 +3663,23 @@
       "absorbering": 7,
       "vikt": 6,
       "pris": 1900,
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva benskydd (par): Cerianska benskenor",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 7,
+      "vikt": 3.0,
+      "pris": 950,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3586,6 +3701,23 @@
       }
     },
     {
+      "namn": "Halva benskydd (par): Högländska benskenor",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 8,
+      "vikt": 5.5,
+      "pris": 1050,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
       "namn": "Benskydd (par): Orchiska benskenor",
       "typ": "Benskydd (par)",
       "delar": [
@@ -3595,6 +3727,23 @@
       "absorbering": 4,
       "vikt": 4.5,
       "pris": 550,
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva benskydd (par): Orchiska benskenor",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 4,
+      "vikt": 2.25,
+      "pris": 275,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3616,6 +3765,23 @@
       }
     },
     {
+      "namn": "Halva benskydd (par): Sabranska benskydd",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 7,
+      "vikt": 3.25,
+      "pris": 900,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
       "namn": "Benskydd (par): Svarta gardets benskenor",
       "typ": "Benskydd (par)",
       "delar": [
@@ -3625,6 +3791,23 @@
       "absorbering": 9,
       "vikt": 8,
       "pris": 2300,
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva benskydd (par): Svarta gardets benskenor",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 9,
+      "vikt": 4.0,
+      "pris": 1150,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
       "kalla": {
         "bok": "vr",
         "sida": 70
@@ -3747,7 +3930,7 @@
     "Ringbrynja": "Sår kan inte bli infekterade.",
     "Tunnhjälm": "−5 på CL för Finna dolda ting och Upptäcka fara.",
     "metall": "Fjällpansar och metallrustning halverar CL i Smyga; metallrustning halverar CL i Klättra och gör Akrobatik och Hoppa omöjliga (s. 93).",
-    "vr": "Vapen & rustningar (s. 69–70): armskydd skyddar inte axlarna; axelskydd köps för sig. Pris och vikt för axel-, arm- och benskydd gäller per par."
+    "vr": "Vapen & rustningar (s. 69–70): armskydd skyddar inte axlarna. Pris och vikt för axel-, arm- och benskydd gäller per par. Axelskydd, halva arm- och benskydd och rustningsvapen finns bara med den valfria regeln Detaljerad strid."
   },
   "startpaket": {
     "varor": [
