@@ -910,7 +910,13 @@
           "fardighet": "hantverk",
           "antal": 1
         },
-        "heraldik",
+        {
+          "fardighet": "heraldik",
+          "antal": 1,
+          "maste": [
+            "Högländare"
+          ]
+        },
         {
           "fardighet": "lardom",
           "antal": 1,
@@ -1035,7 +1041,13 @@
         "akrobatik",
         "dra-vapen",
         "hasardspel",
-        "heraldik",
+        {
+          "fardighet": "heraldik",
+          "antal": 1,
+          "maste": [
+            "Gatugäng"
+          ]
+        },
         "lasdyrkning",
         "undre-varlden",
         {

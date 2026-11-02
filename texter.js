@@ -51,6 +51,7 @@ export const DELVAL_HJALP = {
   djurtraning: "Skriv vilken sorts djur det gäller, till exempel hästar eller hundar. Färdigheten används för att dressera och lära djur av den sorten att lyda (s. 58).",
   "spela-instrument": "Skriv vilket instrument det gäller, till exempel luta eller flöjt. Färdigheten lärs separat för varje instrument. Är den en yrkesfärdighet räknas alla instrument som yrkesfärdigheter (s. 68).",
   vapentekniker: "Välj en svärdsskolas stridskonst i listan, eller skriv ett eget namn och sätt ihop stilen av tekniker i steg 11. En skolas stridskonst har färdiga tekniker och kostar skolans pris per FV, eller 3 EP som yrkesfärdighet (Vapen & rustningar s. 15, 32–33).",
+  heraldik: "Välj Allmän eller skriv en grupp, till exempel Högländare, Gatugäng, ett handelshus, Alver eller Dvärgar. Allmän heraldik gäller alla grupper, men B-nivån räknas fyra steg lägre. Specifik heraldik gäller bara den gruppen och räknas som vanligt (Vapen & rustningar s. 15).",
   stridskonster: "Skriv namnet på stridsstilen. Färdigheten används för obeväpnad strid med särskilda tekniker, som sparkar och dubbelslag. FV gäller alla tekniker i stilen. Teknikerna väljs i steg 11 och bestämmer vad varje FV kostar (s. 68–69).",
 };
 

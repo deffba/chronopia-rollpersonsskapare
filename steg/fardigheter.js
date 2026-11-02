@@ -1,5 +1,5 @@
 // Färdigheter, stridskonster och fördelning av EP.
-import { yrkeAv, fardighetAv, slaUpp, paborjad, teknikLista } from "../regelmotor.js";
+import { yrkeAv, fardighetAv, paborjad, teknikLista, bNivaText } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { S, rakna, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -27,7 +27,6 @@ function nySekundarInfo(res) {
 
 export function stegFardigheter(res) {
   const grupper = [["primar", "Primära färdigheter", "2 EP per FV"], ["yrke", "Yrkesfärdigheter", "3 EP per FV"], ["sekundar", "Sekundära färdigheter", "5 EP per FV"]];
-  const bniva = (fv) => slaUpp(S.R.fardigheter.bNivaer, fv);
   const tabell = (lista) => el("div", { class: "tabellram" }, el("table", { class: "tabell fardighetstabell" },
     el("thead", {}, el("tr", {}, el("th", {}, "Färdighet"), el("th", {}, "Grundeg."), el("th", { class: "num" }, "Start", info("BC")), el("th", { class: "num" }, "FV", info("FV")), el("th", { class: "num" }, "EP", info("EP")))),
     el("tbody", {}, lista.map((f) => el("tr", {},
@@ -35,10 +34,10 @@ export function stegFardigheter(res) {
         type: "button", class: "lank", "aria-label": `Ta bort ${f.namn}`,
         onclick: () => { S.rp.sekundara = S.rp.sekundara.filter((k) => k !== f.nyckel); delete S.rp.fardigheter[f.nyckel]; uppdatera(); },
       }, "ta bort") : null),
-      el("td", {}, f.grundegenskap),
+      el("td", {}, f.grundegenskapText ?? f.grundegenskap),
       el("td", { class: "num" }, f.start),
       el("td", { class: "num" }, markera(tal(`fv-${f.nyckel}`, f.fv, (v) => { S.rp.fardigheter[f.nyckel] = v ?? 0; uppdatera(); }, { min: 0, max: 30 }), f.fv, f.start),
-        el("span", { class: "bniva" }, f.kategoriB ? bniva(f.fv) : "")),
+        el("span", { class: "bniva" }, f.kategoriB ? bNivaText(S.R, f.fv, f.bNivaLagre) : "")),
       el("td", { class: "num" }, f.ep || ""))))));
   const harRedan = new Set([...yrkesNycklar(), ...S.rp.extraYrkesfardigheter, ...S.rp.sekundara]);
   return [

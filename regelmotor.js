@@ -22,6 +22,33 @@ export function slaUpp(tabell, varde) {
 export const bokFor = (post) => post?.kalla?.bok ?? "grund";
 export const valdaBocker = (rp) => ["grund", ...(rp?.bocker ?? []), ...(rp?.expansioner ?? [])];
 export const iBocker = (post, rp) => valdaBocker(rp).includes(bokFor(post));
+
+// Färdigheter som en expansion ändrar (medBok, t.ex. Heraldik i V&R s. 15). Grundreglernas fält sparas
+// och bokens fält läggs på när boken är vald. Reglerna ändras på plats, så anropet görs före varje uträkning.
+export function tillampaBocker(regler, rp) {
+  const bocker = valdaBocker(rp);
+  for (const f of regler.fardigheter?.lista ?? []) {
+    if (!f.medBok) continue;
+    f._grund ??= Object.fromEntries(Object.values(f.medBok).flatMap((a) => Object.keys(a)).map((k) => [k, f[k]]));
+    Object.assign(f, f._grund);
+    for (const [bok, andring] of Object.entries(f.medBok)) if (bocker.includes(bok)) Object.assign(f, andring);
+  }
+  return regler;
+}
+// Allmän heraldik (V&R s. 15): B-nivån räknas så många steg lägre
+export function bNivaLagre(regler, nyckel) {
+  const f = fardighetAv(regler, nyckel);
+  const sub = nyckel.split(":")[1];
+  return f?.allman && sub?.toLowerCase() === f.allman.namn.toLowerCase() ? f.allman.bNivaLagre : 0;
+}
+// B-nivåns namn för ett FV, med den nivå som gäller när den räknas lägre: "B2 (gäller som B0)"
+export function bNivaText(regler, fv, lagre = 0) {
+  const nivaer = regler.fardigheter.bNivaer;
+  const namn = slaUpp(nivaer, fv);
+  if (!lagre) return namn;
+  const i = nivaer.findIndex(([, n]) => n === namn);
+  return `${namn} (gäller som ${nivaer[Math.max(0, i - lagre)][1]})`;
+}
 export const bokNamn = (regler, id) => regler.bocker?.lista.find((b) => b.id === id)?.namn ?? id;
 // Sidhänvisning för en post: "s. 30" i grundreglerna, "Vapen & rustningar s. 3" i en expansion
 export const kallText = (regler, post, grundSida) => (bokFor(post) === "grund" ? grundSida : `${bokNamn(regler, bokFor(post))} s. ${post.kalla.sida}`);
@@ -109,6 +136,7 @@ export const paketNamn = (regler, paket) => paket.namn
 // Nycklarna som varje yrkesfärdighetspost i yrket blev, efter spelarens val i rp.yrkesval.
 // Används för egenskaper som hör till en viss post (startFV, primar, takStart, utanMagiformagaslag).
 export function yrkesPoster(regler, rp) {
+  tillampaBocker(regler, rp);
   const yrke = yrkeAv(regler, rp.yrke);
   if (!yrke) return [];
   const val = rp.yrkesval ?? {};
@@ -328,6 +356,8 @@ export function vapengrupp(regler, vapennamn, sty) {
 export function grundegenskapFor(regler, nyckel, varden) {
   const f = fardighetAv(regler, nyckel);
   const val = nyckel.split(":")[1];
+  // Strid i mörker: SMI eller INT efter situationen (SL avgör); startvärdet räknas på den högre (V&R s. 15, RB-016)
+  if (f.hogstaAv) return f.hogstaAv.reduce((a, b) => ((varden[b] ?? 0) > (varden[a] ?? 0) ? b : a));
   if (f.grundegenskap !== "varierar") return f.grundegenskap;
   if (f.id === "vapen") {
     const g = vapengrupp(regler, val, varden.STY);
@@ -446,6 +476,7 @@ export function epKostnad(regler, st, fardighet, start, mal, tekniker, nyckel) {
 
 // Räknar fram hela rollpersonen och alla regelbrott.
 export function raknaRollperson(regler, indata) {
+  tillampaBocker(regler, indata);
   const sf = sarskildFormaga(regler, indata);
   const rp = { ...indata, ...sf.tillagg };
   const ras = rasAv(regler, rp.ras);
@@ -512,8 +543,8 @@ export function raknaRollperson(regler, indata) {
     const ep = epKostnad(regler, st, f, start, mal, tekniker, nyckel);
     epSpenderat += ep;
     fvHittills[nyckel] = Math.max(mal, start);
-    fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, start, fv: Math.max(mal, start), ep,
-      epPerFV: epPerFV(regler, st, f, tekniker, nyckel), kategoriB: f.kategoriB, ...(tekniker ? { tekniker } : {}),
+    fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, ...(f.hogstaAv ? { grundegenskapText: f.grundegenskap } : {}), start, fv: Math.max(mal, start), ep,
+      epPerFV: epPerFV(regler, st, f, tekniker, nyckel), kategoriB: f.kategoriB, ...(bNivaLagre(regler, nyckel) ? { bNivaLagre: bNivaLagre(regler, nyckel) } : {}), ...(tekniker ? { tekniker } : {}),
       ...(svardsskolaFor(regler, nyckel) ? { skola: svardsskolaFor(regler, nyckel) } : {}) });
   }
   kontrolleraVal(regler, rp, ge.varden, fel);

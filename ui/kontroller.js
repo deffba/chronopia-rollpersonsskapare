@@ -163,6 +163,13 @@ export function delvalKontroll(id, fardighetId, varde, onchange, { yrke = false 
         onchange: (e) => onchange(e.target.value.trim()) }),
       el("datalist", { id: `${id}-skolor` }, skolor.map((x) => el("option", { value: x.namn }, `${x.skola} (${x.kostnad} EP per FV)`))));
   }
+  // Heraldik med V&R: allmän eller för en grupp (V&R s. 15)
+  if (f?.perVal === "heraldik") {
+    return el("span", { class: "delval-stil" },
+      el("input", { id, type: "text", value: varde ?? "", list: `${id}-grupper`, maxlength: 125, placeholder: `${f.allman.namn} eller en grupp, t.ex. Högländare`,
+        onchange: (e) => onchange(e.target.value.trim()) }),
+      el("datalist", { id: `${id}-grupper` }, [f.allman.namn, ...f.grupper].map((g) => el("option", { value: g }))));
+  }
   const lista = fardighetId === "lardom" ? "lardomar" : null;
   return el("input", {
     id, type: "text", value: varde ?? "", list: lista, maxlength: 125,

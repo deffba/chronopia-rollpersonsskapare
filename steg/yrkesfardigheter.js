@@ -54,7 +54,7 @@ export function stegExtra(res) {
     el("div", { class: "tabellram" }, el("table", { class: "tabell fardighetstabell yrkestabell" },
       el("thead", {}, el("tr", {}, el("th", {}, "Färdighet"), el("th", {}, "Grundeg."), el("th", {}, "Från"), el("th", { class: "num" }, "BP", info("BP")))),
       el("tbody", {},
-        yrkesrader.map((f) => rad(f.nyckel, f.namn, f.grundegenskap)),
+        yrkesrader.map((f) => rad(f.nyckel, f.namn, f.grundegenskapText ?? f.grundegenskap)),
         ovriga.map((n) => {
           const f = fardighetAv(S.R, (n || "x").split(":")[0]);
           return rad(n, !f ? n || "Tom rad" : paborjad(n) ? `${f.namn} (inte färdigvald)` : namnFor(S.R, f, n), f?.grundegenskap);

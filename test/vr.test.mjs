@@ -2,7 +2,7 @@
 // Kör: node --test test/vr.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag, yrkesPoster, yrkeVillkor, yrkesformagaText, svardsskolaFor, varukatalog, vapenVillkor, allaVapen, valfriaRegler, raknaSinnen } from "../regelmotor.js";
+import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag, yrkesPoster, yrkeVillkor, yrkesformagaText, svardsskolaFor, varukatalog, vapenVillkor, allaVapen, valfriaRegler, raknaSinnen, bNivaText, fardighetAv } from "../regelmotor.js";
 import { regler as bas, brutus, las } from "./brutus-data.mjs";
 
 const regler = { ...bas, "sarskilda-formagor": las("sarskilda-formagor"), bocker: las("bocker"), erfarenhet: las("erfarenhet") };
@@ -245,4 +245,35 @@ test("Smidesmästare: dvärgisk stridshammare som vapenfärdighet och hammaren +
   assert.ok(!res.startutrustning.some((t) => t.startsWith("Tvåhandshammare")));
   assert.match(vapenVillkor(regler, rp, "Smidesmästarens stridshammare"), /färdigheten är Stridshammare \(dvärgisk\)/);
   assert.match(fel(medYrke({ ...vr, ras: "latracier" }, "smidesmastare", {})).join(), /bara för Dvärg och Människa|bara för Människa och Dvärg/);
+});
+
+test("Heraldik: grundreglernas utan V&R, allmän eller specifik med V&R (RB-016)", () => {
+  const medHeraldik = (rp, nyckel) => ({ ...rp, fardigheter: { ...rp.fardigheter, [nyckel]: 5 } });
+  const grund = raknaRollperson(regler, medHeraldik(brutus, "heraldik"));
+  assert.ok(!grund.fel.some((t) => /Heraldik/.test(t)), grund.fel.join());
+  assert.equal(fardighetAv(regler, "heraldik").perVal, undefined, "grundreglerna: inget delval");
+  const allman = raknaRollperson(regler, medHeraldik(vr, "heraldik:Allmän"));
+  assert.equal(fardighetAv(regler, "heraldik").perVal, "heraldik", "V&R: delval");
+  const rad = allman.fardigheter.find((f) => f.nyckel === "heraldik:Allmän");
+  assert.equal(rad.bNivaLagre, 4);
+  assert.equal(bNivaText(regler, rad.fv, rad.bNivaLagre), "B2 (gäller som B0)");
+  const specifik = raknaRollperson(regler, medHeraldik(vr, "heraldik:Handelshus")).fardigheter.find((f) => f.nyckel === "heraldik:Handelshus");
+  assert.equal(specifik.bNivaLagre, undefined);
+  const nycklar = (yrke) => yrkesPoster(regler, { ...vr, yrke, yrkesval: {} }).flatMap((p) => p.nycklar);
+  assert.ok(nycklar("ordenskrigare").includes("heraldik:Högländare"));
+  assert.ok(nycklar("slaghok").includes("heraldik:Gatugäng"));
+  assert.ok(!nycklar("adling").some((k) => k.startsWith("heraldik")), "Ädling väljer själv");
+  raknaRollperson(regler, brutus);
+  assert.equal(fardighetAv(regler, "heraldik").perVal, undefined, "tillbaka till grundreglerna");
+});
+
+test("Strid i mörker: SMI/INT (SL avgör), startvärdet på den högre (RB-016)", () => {
+  const rp = { ...vr, extraYrkesfardigheter: [...vr.extraYrkesfardigheter, "strid-i-morker"], fardigheter: { ...vr.fardigheter, "strid-i-morker": 0 } };
+  const rad = (gv) => raknaRollperson(regler, { ...rp, grundvarden: { ...rp.grundvarden, ...gv } }).fardigheter.find((f) => f.nyckel === "strid-i-morker");
+  const a = rad({ SMI: 16, INT: 7 });
+  assert.equal(a.grundegenskap, "SMI");
+  assert.equal(a.grundegenskapText, "SMI/INT (SL avgör)");
+  const b = rad({ SMI: 7, INT: 16 });
+  assert.equal(b.grundegenskap, "INT");
+  assert.ok(b.start > rad({ SMI: 7, INT: 5 }).start, "INT ger startvärdet när den är högre");
 });

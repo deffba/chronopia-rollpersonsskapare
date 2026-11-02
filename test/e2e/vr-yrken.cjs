@@ -129,6 +129,21 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('inga konsolfel (krigarmunk)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
+  // ---- Ädling: Heraldik med V&R är allmän eller för en grupp (RB-016)
+  p = await ny();
+  await p.check('[data-bok=vr]'); await p.click('#nasta-steg'); await p.waitForSelector('.raskort');
+  await tillYrke(p, 'Ljusalv');
+  await p.click('[data-yrke=adling]'); await p.waitForTimeout(100);
+  await p.click('#nasta-steg'); await p.waitForTimeout(120);
+  const grupper = await p.locator('#yrke-3-grupper option').evaluateAll((o) => o.map((x) => x.value));
+  ok('ädling: heraldik föreslår allmän och grupper', grupper[0] === 'Allmän' && grupper.includes('Högländare') && grupper.includes('Gatugäng'), grupper.join());
+  ok('ädling: hjälptext om fyra steg lägre', (await p.locator('.yrkeslista').textContent()).includes('B-nivån räknas fyra steg lägre'));
+  await p.fill('#yrke-3', 'Allmän'); await p.dispatchEvent('#yrke-3', 'change'); await p.waitForTimeout(100);
+  const adelVal = (await p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp.yrkesval));
+  ok('ädling: allmän heraldik sparas', adelVal[3] === 'Allmän', JSON.stringify(adelVal));
+  ok('inga konsolfel (ädling)', !p.errs.length, p.errs.join(' | '));
+  await p.close();
+
   // ---- Sabransk ökenriddare: magiskolan utan magiförmågeslag
   p = await ny();
   await p.check('[data-bok=vr]'); await p.click('#nasta-steg'); await p.waitForSelector('.raskort');

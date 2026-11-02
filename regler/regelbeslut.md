@@ -146,13 +146,13 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
   - **Gratis FV 10** (Vapenmästarens tre vapen, Smidesmästarens Smide, ökenriddarens Hypnotisera) = startvärdet blir minst 10, och färdigheten räknas som primär. Golv, inte bonus: köpta FV läggs inte ovanpå (bekräftat 2026-11-02). Vapenmästarens *Vapenfärdigheter (2+3)* = tre vapen med gratis FV 10 och två vanliga.
   - **Smidesmästare:** *Smide* = Hantverk (Smide). *Tvåhandshammare* = vapenfärdigheten för den dvärgiska **Stridshammaren** (*V&R* s. 60) och räknas som en av vapenfärdigheterna (3 i stället för 2). Startutrustningens tvåhandshammare är en sådan med +3 i skada och BV: **1T10+3, STY 15, vikt 5, BV 16** (ändrat 2026-11-02, Deffba; ingen bok har en egen tvåhandshammare). Yrket är bara öppet för Människa och Dvärg (s. 8); födelseorten följs inte.
   - **Krigarmunk:** ”Lärdomsfärdigheter (2) eller Hantera fällor och Låsdyrkning” är ett enda val: antingen två valfria lärdomsfärdigheter, eller både Hantera fällor och Låsdyrkning. ”Vapenfärdigheter (2) eller två valfria färdigheter” är också ett val: först vapenfärdigheter eller valfria färdigheter, sedan vilka två. (Ändrat 2026-11-02, Deffba.)
-  - **Heraldik** är grundreglernas Heraldik; V&R:s indelning i allmän och gruppvis heraldik används inte.
-  - **Strid i mörker** räknas på SMI (boken: SMI/INT).
+  - **Heraldik:** med bara grundreglerna gäller grundreglernas Heraldik. Med V&R påslagen väljer man efter färdigheten om den är **allmän** (som grundreglerna, men B-FV räknas fyra steg lägre) eller **specifik** för en grupp (t.ex. gatugäng, handelshus, alver, dvärgar, högländare; normal FV), *V&R* s. 15. Ordenskrigarens Heraldik (högländsk) och Slaghökens Heraldik (gatugäng) är specifika. (Ändrat 2026-11-02, Deffba.)
+  - **Strid i mörker:** grundegenskap **SMI/INT (SL avgör)** som i boken (s. 15); SL väljer i varje situation. Bara startvärdet (BC) räknas på den högre av SMI och INT. (Ändrat 2026-11-02, Deffba.)
   - **Alver** (Ceriansk ulv, Ädling) = dimalv, ljusalv och stadsalv, inte halvalv.
   - **Startutrustningen** står som text på yrket, i steg 13 och på rollformuläret, och kostar inget. Rader som motsvarar en vara i V&R:s eller grundreglernas varulistor läggs i packningen och räknas i bördan (se RB-017); resten står bara som text.
 - **Motivering:** Färre nya färdigheter och undantag; samma lösningar som för grundreglerna och RB-014.
 - **Påverkar:** Yrkessteget, yrkesfärdigheterna, färdighetssteget, utrustningen.
-- **Beslutat:** 2026-11-02, preliminärt: väntar på Deffbas bekräftelse.
+- **Beslutat:** 2026-11-02, Deffba (med ändringarna ovan).
 
 ## RB-017 V&R:s vapen, rustningar och utrustning i appen
 - **Fråga:** Hur läggs V&R:s vapentabeller, rustningsdelar och övriga utrustning in, när boken saknar vapenfärdighet för vapnen, har namn som krockar med grundreglerna och har en ofullständig bördetabell?

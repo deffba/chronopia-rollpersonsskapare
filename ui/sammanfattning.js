@@ -1,5 +1,5 @@
 // Rollformuläret bredvid stegen, som visar rollpersonen medan den skapas.
-import { GRUNDEGENSKAPER, slaUpp, yrkesformagaText } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, yrkesformagaText, bNivaText } from "../regelmotor.js";
 import { spelPotter } from "../spelmote.js";
 import { spelCtx } from "../app.js";
 import { saknas } from "../steg/saknas.js";
@@ -53,7 +53,7 @@ export function rollformular(res) {
     res.startutrustning?.length ? el("p", {}, el("strong", {}, "Startutrustning: "), res.startutrustning.join(", ")) : null,
     el("h3", {}, "Färdigheter", info("B-nivå")),
     el("ul", { class: "fardighetsrader" }, kolumnrubrik("Färdighet", "FV"), res.fardigheter.filter((f) => f.fv > 0).map((f) =>
-      el("li", { class: f.status }, el("span", {}, f.kategoriB ? medNiva(f.namn, slaUpp(S.R.fardigheter.bNivaer, f.fv)) : f.namn,
+      el("li", { class: f.status }, el("span", {}, f.kategoriB ? medNiva(f.namn, bNivaText(S.R, f.fv, f.bNivaLagre)) : f.namn,
         f.sinne ? el("span", { class: "hjalp" }, ` (${f.sinne > 0 ? "+" : "−"}${Math.abs(f.sinne)} syn/hörsel)`) : null), el("span", { class: "num" }, f.fv)))),
     res.besvarjelser.length ? [el("h3", {}, "Besvärjelser"), el("ul", { class: "fardighetsrader" }, kolumnrubrik("Besvärjelse", "FV"), res.besvarjelser.map((b) =>
       el("li", {}, el("span", {}, b.namn), el("span", { class: "num" }, b.fv))))] : null,

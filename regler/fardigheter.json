@@ -413,7 +413,28 @@
       "typ": "sekundar",
       "kategoriB": true,
       "sida": 61,
-      "beskrivning": "Att känna igen släkters vapensköldar och deras symbolik, och att känna till adelsätternas släktband."
+      "beskrivning": "Att känna igen släkters vapensköldar och deras symbolik, och att känna till adelsätternas släktband.",
+      "medBok": {
+        "vr": {
+          "perVal": "heraldik",
+          "kalla": {
+            "bok": "vr",
+            "sida": 15
+          },
+          "allman": {
+            "namn": "Allmän",
+            "bNivaLagre": 4
+          },
+          "grupper": [
+            "Alver",
+            "Dvärgar",
+            "Gatugäng",
+            "Handelshus",
+            "Högländare"
+          ],
+          "beskrivning": "Att känna igen vapensköldar, märken och symboler och veta vem de hör till. Allmän heraldik gäller alla grupper, men B-nivån räknas fyra steg lägre. Specifik heraldik gäller en grupp, till exempel ett gatugäng, ett handelshus, alver, dvärgar eller högländare, och räknas som vanligt."
+        }
+      }
     },
     {
       "id": "historia",
@@ -716,7 +737,11 @@
     {
       "id": "strid-i-morker",
       "namn": "Strid i mörker",
-      "grundegenskap": "SMI",
+      "grundegenskap": "SMI/INT (SL avgör)",
+      "hogstaAv": [
+        "SMI",
+        "INT"
+      ],
       "typ": "sekundar",
       "kategoriB": false,
       "sida": 15,
@@ -724,7 +749,7 @@
         "bok": "vr",
         "sida": 15
       },
-      "beskrivning": "Att slåss i mörker och dåligt ljus. Avdraget för mörker minskar med differensvärdet i ett lyckat slag. Grundegenskapen är SMI eller INT efter situationen; appen räknar med SMI."
+      "beskrivning": "Att slåss i mörker och dåligt ljus. Avdraget för mörker minskar med differensvärdet i ett lyckat slag. Grundegenskapen är SMI eller INT efter situationen, och SL avgör vilken. Startvärdet räknas på den högre av dem."
     },
     {
       "id": "taktik",
