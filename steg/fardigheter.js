@@ -3,7 +3,7 @@ import { yrkeAv, fardighetAv, paborjad, teknikLista, bNivaText } from "../regelm
 import { rita, visaNotis } from "../app.js";
 import { S, rakna, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
-import { falt, fardighetsInfo, fardighetsVal, info, markera, tal } from "../ui/kontroller.js";
+import { falt, fardighetsInfo, fardighetsVal, info, markera, tal, utanMagiInfo } from "../ui/kontroller.js";
 import { magiBehovs, magiMojlig, oppnaMagiModal } from "../ui/magimodal.js";
 import { valdBeskrivning } from "./yrkesfardigheter.js";
 
@@ -52,6 +52,7 @@ export function stegFardigheter(res) {
     }),
     res.fardigheter.filter((f) => f.tekniker).map((f) => stridskonstTekniker(f, res)),
     el("h3", {}, "Lär dig en ny sekundär färdighet"),
+    utanMagiInfo(),
     el("div", { class: "rad" },
       // Färdigheter som rollpersonen redan har visas inte; för dem med delval spärras de delval som redan finns
       fardighetsVal("ny-sek", S.nySekundar, (v) => { S.nySekundar = v; rita(); }, (f) => f.typ !== "primar" && magiMojlig(f) && (f.perVal || !harRedan.has(f.id))),

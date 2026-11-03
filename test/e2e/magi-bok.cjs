@@ -38,6 +38,10 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   const sv = await p.locator('.valinfo').textContent();
   ok('utan Magi: inget steg Familjarer', true);
   ok('Svartsyster: bara för kvinnliga människor födda i den mörka månens tecken', /Bara för Människa, kvinnor, födda i den mörka månens tecken/.test(sv), sv);
+  await p.click('#nasta-steg'); await p.waitForTimeout(150);
+  const extra = await p.locator('#ny-extra-f option').evaluateAll((o) => o.map((x) => x.value));
+  ok('svartsyster: inga magiskolor att välja i steg 4', extra.length > 5 && !extra.some((v) => ['animism', 'elementarmagi', 'mentalism', 'tidsmagi'].includes(v)), extra.slice(0, 8).join(','));
+  ok('svartsyster: inforuta om magiskolorna', /kan inte lära sig magiskolor/.test(await p.locator('#utan-magi').textContent().catch(() => '')));
   ok('inga konsolfel (steg 0–3)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 

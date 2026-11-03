@@ -3,7 +3,7 @@ import { fardighetAv, paborjad, namnFor } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { S, uppdatera, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
-import { fardighetsInfo, fardighetsVal, info, kortBeskrivning } from "../ui/kontroller.js";
+import { fardighetsInfo, fardighetsVal, info, kortBeskrivning, utanMagiInfo } from "../ui/kontroller.js";
 import { magiInfo, magiMojlig } from "../ui/magimodal.js";
 import { stridskonstInfo } from "./fardigheter.js";
 import { yrketsVal } from "./yrke.js";
@@ -47,6 +47,7 @@ export function stegExtra(res) {
   const nasta = extraPriser([...lista, S.nyExtra || "x"]).at(-1);
   const harRedan = new Set([...yrkesNycklar(), ...lista]);
   return [
+    utanMagiInfo(),
     ...yrketsVal(),
     el("h3", {}, "Fler yrkesfärdigheter"),
     el("p", {}, `Den första extra yrkesfärdigheten kostar ${k.forsta} BP, den andra ${k.andra} BP och varje därefter ${k.darefter} BP. En magiskola kostar ${k.magiskola} BP och kräver ett lyckat magiförmågeslag (1T100 högst (INT+PSY)/2, s. 106). Slaget görs när du går vidare från steg 6, när INT och PSY är bestämda.`),

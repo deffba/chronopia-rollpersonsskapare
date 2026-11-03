@@ -2005,6 +2005,7 @@
       ],
       "valfri": true,
       "automatiska": [],
+      "utanMagi": true,
       "startutrustning": [
         "Frälsningsklinga",
         "Tunn liriumrustning (abs 6)",

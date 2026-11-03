@@ -57,7 +57,9 @@ export const kallText = (regler, post, grundSida) => (bokFor(post) === "grund" ?
 export const valbaraRaser = (regler, rp) => regler.raser.filter((r) => iBocker(r, rp));
 export const valbaraYrken = (regler, rp) => regler.yrken.lista.filter((y) => iBocker(y, rp));
 export const valbaraFardigheter = (regler, rp) => regler.fardigheter.lista.filter((f) => fardighetValbar(regler, rp, f));
-export const magiskolor = (regler, rp) => regler.fardigheter.lista.filter((f) => f.typ === "magiskola" && fardighetValbar(regler, rp, f));
+// Med kanna: skolorna för Känna magi, som också yrken utan magi (Svartsyster) har
+export const magiskolor = (regler, rp, kanna = false) => regler.fardigheter.lista.filter((f) => f.typ === "magiskola"
+  && fardighetValbar(regler, kanna ? { ...rp, yrke: yrkeAv(regler, rp.yrke)?.utanMagi ? "" : rp.yrke } : rp, f));
 // Kulturer för Kulturkännedom: rasernas kulturer och de övriga i färdighetens data (s. 62)
 // Valfria regler som de valda böckerna erbjuder (V&R s. 3: Syn och hörsel, RB-002), och om en är påslagen
 export const valfriaRegler = (regler, rp) => {
@@ -177,6 +179,9 @@ export function raknaFamiljarer(regler, rp) {
 
 // Färdigheter som bara vissa yrken får lära sig (Tidsmagi, Magi i Chronopia s. 35)
 export function fardighetVillkor(regler, rp, f) {
+  // Svartsystrar kan inte använda magi (Magi i Chronopia s. 8, 15): inga magiskolor alls
+  const yrke = yrkeAv(regler, rp.yrke);
+  if (f?.typ === "magiskola" && yrke?.utanMagi) return `${yrke.namn} kan inte lära sig magiskolor (${kallText(regler, { kalla: { ...yrke.kalla, sida: 8 } }, "")})`;
   const yrken = f?.villkor?.yrken;
   if (!yrken || yrken.includes(rp.yrke)) return null;
   return `${f.namn} kan bara läras av ${ochLista(yrken.map((id) => yrkeAv(regler, id)?.namn ?? id).map((n) => n.toLowerCase()))}`;

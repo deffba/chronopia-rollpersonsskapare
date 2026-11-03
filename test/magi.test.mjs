@@ -42,6 +42,14 @@ test("Svartsyster: bara kvinnliga människor, och ingen magiker", () => {
   assert.equal(yrkeVillkor(regler, { ras: "manniska", kon: "Kvinna" }, y), null);
 });
 
+test("svartsyster: inga magiskolor, men Känna magi går att välja", () => {
+  const syster = { ...chronomag, kon: "Kvinna", yrke: "svartsyster" };
+  assert.deepEqual(magiskolor(regler, syster), []);
+  assert.ok(magiskolor(regler, syster, true).some((f) => f.id === "animism"));
+  assert.ok(!magiskolor(regler, syster, true).some((f) => f.id === "tidsmagi"));
+  assert.match(fel({ ...syster, yrkesval: {}, yrkesfardigheter: [], sekundara: ["animism"], fardigheter: { animism: 5 } }).join(), /Svartsyster kan inte lära sig magiskolor/);
+});
+
 test("chronomag: inget magiförmågeslag, Minimagi från bästa skolan och gratis yrkesfärdigheter", () => {
   const r = raknaRollperson(regler, chronomag);
   assert.deepEqual(r.fel, []);

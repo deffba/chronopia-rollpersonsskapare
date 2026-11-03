@@ -1,5 +1,5 @@
 // Små kontroller: tal, listor, knappar och info-cirklar.
-import { fardighetAv, fardighetValbar, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker, vapenVillkor, svardsskolaFor } from "../regelmotor.js";
+import { fardighetAv, fardighetValbar, yrkeAv, kallText, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker, vapenVillkor, svardsskolaFor } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { DELVAL_HJALP, FORKLARINGAR, SPRAK_HJALP } from "../texter.js";
 import { S, modersmal, rakna, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
@@ -153,7 +153,7 @@ export function delvalKontroll(id, fardighetId, varde, onchange, { yrke = false 
     const text = S.R.fardigheter.hantverkBeskrivning?.[varde];
     return text ? el("div", { class: "delval-med-text" }, lista, el("p", { class: "fbeskr" }, text)) : lista;
   }
-  if (fardighetId === "kanna-magi") return valLista(id, varde, markeraValda(magiskolor(S.R, S.rp).map((f) => [f.id, f.namn]), redanValda(fardighetId, varde)), onchange, "Välj skola …");
+  if (fardighetId === "kanna-magi") return valLista(id, varde, markeraValda(magiskolor(S.R, S.rp, true).map((f) => [f.id, f.namn]), redanValda(fardighetId, varde)), onchange, "Välj skola …");
   const f = fardighetAv(S.R, fardighetId);
   // Vapentekniker: svärdsskolornas stridskonster föreslås (V&R s. 32–33); ett eget namn ger en egen stil
   if (fardighetId === "vapentekniker") {
@@ -195,6 +195,15 @@ function sprakLista(id, fardighetId, varde, onchange, yrke) {
     .map((s) => (egna.includes(s.id) ? [s.id, `${s.namn} (modersmål)`, { disabled: true }]
       : valda.has(s.id) ? [s.id, `${s.namn} (redan vald)`, { disabled: true }] : [s.id, s.namn]));
   return valLista(id, varde, alt, onchange, "Välj språk …");
+}
+
+// Inforuta där färdigheter väljs, för yrken som inte kan använda magi (Svartsyster, Magi i Chronopia s. 8, 15)
+export function utanMagiInfo() {
+  const yrke = yrkeAv(S.R, yrkeId());
+  if (!S.rp.yrke || !yrke?.utanMagi) return null;
+  return el("div", { class: "varning", role: "note", id: "utan-magi" },
+    el("strong", {}, `En ${yrke.namn.toLowerCase()} kan inte lära sig magiskolor. `),
+    `Hon kan inte använda magi (${kallText(S.R, { kalla: { ...yrke.kalla, sida: 8 } }, "")}), så magiskolorna finns inte med i listan. Känna magi har hon ändå, för att upptäcka magi.`);
 }
 
 export function fardighetsVal(idPrefix, nyckel, onchange, filter = () => true, val = {}) {
