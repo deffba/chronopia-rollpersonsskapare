@@ -20,7 +20,7 @@ import { stegUtrustning } from "./steg/utrustning.js";
 import { stegYrke } from "./steg/yrke.js";
 import { stegExtra } from "./steg/yrkesfardigheter.js";
 import { LARDOMSFORSLAG, STEG } from "./texter.js";
-import { S, FILER, fyllUt, harLogg, LAGRING, motorIndata, rakna, raknaFor, spara, TOM, uppdatera, yrkesNycklar } from "./tillstand.js";
+import { S, FILER, fyllUt, harLogg, LAGRING, motorIndata, rakna, raknaFor, spara, TOM, uppdatera, vaxladeBp, yrkesNycklar } from "./tillstand.js";
 import { $, el, slaT } from "./ui/dom.js";
 import { falt, fardighetsVal, gruppLista, info, infoKnapp, valLista } from "./ui/kontroller.js";
 import { magiGorOm, magiMisslyckat, magiModal, magiPlatser, MAGISLAG, oppnaMagiModal } from "./ui/magimodal.js";
@@ -140,7 +140,8 @@ function ritaVy() {
         el("span", { class: "eyebrow" }, `Steg ${index} av ${STEG.length - 1}${steg.sida === "–" ? "" : ` · s. ${steg.sida}`}`),
         el("h2", {}, steg.namn)),
       el("dl", { class: "steg-potter", "aria-label": "Kvar att spendera" },
-        el("div", { class: res.bp.kvar < 0 ? "over" : "" }, el("dt", {}, "BP kvar", info("BP")), el("dd", {}, res.bp.kvar)),
+        el("div", { class: res.bp.kvar < 0 ? "over" : "", id: "bp-kvar", title: vaxladeBp(res) ? `${vaxladeBp(res)} BP växlade till ${vaxladeBp(res) * 5} EP` : null },
+          el("dt", {}, "BP kvar", info("BP")), el("dd", {}, res.bp.kvar - vaxladeBp(res))),
         el("div", { class: res.ep.kvar < 0 ? "over" : "" }, el("dt", {}, "EP kvar", info("EP")), el("dd", {}, res.ep.kvar)),
         // I steg där pengar spenderas visas också kvarvarande pengar av startkapitalet
         steg.id === "utrustning" ? el("div", { class: res.utrustning.kvar < 0 ? "over" : "", id: "pengar-kvar" },

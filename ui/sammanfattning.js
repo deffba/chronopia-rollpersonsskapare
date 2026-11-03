@@ -3,7 +3,7 @@ import { GRUNDEGENSKAPER, slaUpp } from "../regelmotor.js";
 import { spelPotter } from "../spelmote.js";
 import { spelCtx } from "../app.js";
 import { saknas } from "../steg/saknas.js";
-import { S, uppdatera } from "../tillstand.js";
+import { S, uppdatera, vaxladeBp } from "../tillstand.js";
 import { el, kg, sm } from "./dom.js";
 import { info } from "./kontroller.js";
 
@@ -13,7 +13,8 @@ export function rollformular(res) {
   const h = res.harledda;
   // Före steg 6 finns inga grundegenskaper, och inget som räknas fram ur dem: rutorna visar "–"
   const visa = (v) => (res.grundegenskaperSatta && v != null ? v : "–");
-  const bpProcent = Math.max(0, Math.min(100, (res.bp.kvar / res.bp.start) * 100));
+  const vaxlat = vaxladeBp(res); // överblivna BP är växlade till EP från steg 11 (s. 34)
+  const bpProcent = Math.max(0, Math.min(100, ((res.bp.kvar - vaxlat) / res.bp.start) * 100));
   const epProcent = Math.max(0, Math.min(100, (res.ep.kvar / res.ep.start) * 100));
   return el("div", { class: "formular" },
     el("div", { class: "formular-huvud" },
@@ -24,8 +25,8 @@ export function rollformular(res) {
       el("div", {}, el("dt", {}, "Osparade EP", info("EP")), el("dd", {}, spelPotter(spelCtx(res)).ep)),
       el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, S.rp.spel.hjaltepoang ?? 0))) : el("div", { class: "potter" },
       el("div", { class: "pott" + (res.bp.kvar < 0 ? " over" : "") }, el("span", { class: "etikett" }, "BP kvar", info("BP")),
-        el("span", { class: "pott-tal" }, res.bp.kvar), el("span", { class: "matare" }, el("span", { style: `width:${bpProcent}%` })),
-        el("span", { class: "hjalp" }, `av ${res.bp.start}`)),
+        el("span", { class: "pott-tal" }, res.bp.kvar - vaxlat), el("span", { class: "matare" }, el("span", { style: `width:${bpProcent}%` })),
+        el("span", { class: "hjalp" }, vaxlat ? `av ${res.bp.start} · ${vaxlat} växlade till ${vaxlat * 5} EP` : `av ${res.bp.start}`)),
       el("div", { class: "pott" + (res.ep.kvar < 0 ? " over" : "") }, el("span", { class: "etikett" }, "EP kvar", info("EP")),
         el("span", { class: "pott-tal" }, res.ep.kvar), el("span", { class: "matare" }, el("span", { style: `width:${epProcent}%` })),
         el("span", { class: "hjalp" }, `av ${res.ep.start}`))),
