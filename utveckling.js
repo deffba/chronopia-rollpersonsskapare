@@ -4,7 +4,7 @@
 // Det som också skrivs direkt på rollformuläret (erf, hjältepoäng, pengar, egen utrustning) ligger i rp.spel;
 // varje post sparar exakt vad den ändrade där, så att den kan tas tillbaka.
 import {
-  GRUNDEGENSKAPER, fardighetAv, status, grundegenskapFor, epPerFV, raknaHarledda, besvarjelsePris, skolFV,
+  GRUNDEGENSKAPER, fardighetAv, status, grundegenskapFor, egenskapsvarde, epPerFV, raknaHarledda, besvarjelsePris, skolFV,
   namnFor, sarskildFormaga, harTekniker, stilensTekniker, yrkeAv, slaUpp, vapengrupp, bordaFor,
 } from "./regelmotor.js";
 
@@ -47,7 +47,7 @@ function besvarjelseNamn(b, nyckel) {
 // Högsta FV en färdighet får nå genom EP efter skapandet (s. 36, 64, 74)
 function takFor(regler, rpm, nyckel, f, st, varden, fvNu) {
   let tak = Infinity;
-  if (st === "sekundar") tak = varden[grundegenskapFor(regler, nyckel, varden)] ?? tak;
+  if (st === "sekundar") tak = egenskapsvarde(varden, grundegenskapFor(regler, nyckel, varden)) ?? tak;
   if (f.typ === "magiskola" && yrkeAv(regler, rpm.yrke)?.skolTak) tak = Math.min(tak, varden.INT);
   if (f.tak === "PSY") tak = Math.min(tak, varden.PSY);
   if (f.tak === "lasa-skriva") {
@@ -116,8 +116,8 @@ export function utvecklad(regler, indata, res) {
     const ge = grundegenskapFor(regler, nyckel, varden);
     const gammal = fore.get(nyckel);
     // En färdighet som lärs efter skapandet börjar på BC om den är primär eller yrkesfärdighet, annars på 0
-    const bas = gammal ? gammal.fv + (E.permanentEgenskap.galler.includes(st) ? delta[ge] ?? 0 : 0)
-      : st === "sekundar" ? 0 : slaUpp(regler.fardigheter.baschans, varden[ge]);
+    const bas = gammal ? gammal.fv + (E.permanentEgenskap.galler.includes(st) ? (egenskapsvarde(varden, ge) - egenskapsvarde(res.grundegenskaper, ge) || 0) : 0)
+      : st === "sekundar" ? 0 : slaUpp(regler.fardigheter.baschans, egenskapsvarde(varden, ge));
     const kopt = s.fv[nyckel] ?? 0;
     let fv = Math.max(0, bas + kopt + (bonus[nyckel] ?? 0));
     if (minst[nyckel]) fv = Math.max(fv, minst[nyckel]);
@@ -230,7 +230,7 @@ export function traning(regler, res, { nyckel, metod, lararFV = 0 }) {
   }
   // Besvärjelser bygger på PSY (s. 107); övriga färdigheter på sin grundegenskap
   const g = besv ? "PSY" : grundegenskapFor(regler, nyckel, res.grundegenskaper);
-  const cl = res.grundegenskaper[g] + E.ensamtraning.svarighet;
+  const cl = egenskapsvarde(res.grundegenskaper, g) + E.ensamtraning.svarighet;
   if (metod === "ensam") return { grundegenskap: g, cl, mod: 0, slagPerVecka: 1, ep: E.ensamtraning.ep, kostnad: 0 };
   const L = E.larare;
   const privat = metod === "privat";

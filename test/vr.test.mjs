@@ -2,7 +2,7 @@
 // Kör: node --test test/vr.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag, yrkesPoster, yrkeVillkor, yrkesformagaText, svardsskolaFor, varukatalog, vapenVillkor, allaVapen, valfriaRegler, raknaSinnen, bNivaText, fardighetAv } from "../regelmotor.js";
+import { raknaRollperson, sarskildFormaga, nivaFor, nivaer, valbaraRaser, valbaraYrken, kulturer, tillgangligaFormagetabeller, formageslag, yrkesPoster, yrkeVillkor, yrkesformagaText, svardsskolaFor, varukatalog, vapenVillkor, allaVapen, valfriaRegler, raknaSinnen, bNivaText, fardighetAv, egenskapsvarde, slaUpp, grundegenskapFor } from "../regelmotor.js";
 import { regler as bas, brutus, las } from "./brutus-data.mjs";
 
 const regler = { ...bas, "sarskilda-formagor": las("sarskilda-formagor"), bocker: las("bocker"), erfarenhet: las("erfarenhet") };
@@ -290,15 +290,29 @@ test("Heraldik: grundreglernas utan V&R, allmän eller specifik med V&R (RB-016)
   assert.equal(fardighetAv(regler, "heraldik").perVal, undefined, "tillbaka till grundreglerna");
 });
 
-test("Strid i mörker: SMI/INT (SL avgör), startvärdet på den högre (RB-016)", () => {
+test("Strid i mörker: snittet av SMI och INT, avrundat nedåt (RB-020)", () => {
   const rp = { ...vr, extraYrkesfardigheter: [...vr.extraYrkesfardigheter, "strid-i-morker"], fardigheter: { ...vr.fardigheter, "strid-i-morker": 0 } };
-  const rad = (gv) => raknaRollperson(regler, { ...rp, grundvarden: { ...rp.grundvarden, ...gv } }).fardigheter.find((f) => f.nyckel === "strid-i-morker");
-  const a = rad({ SMI: 16, INT: 7 });
-  assert.equal(a.grundegenskap, "SMI");
-  assert.equal(a.grundegenskapText, "SMI/INT (SL avgör)");
-  const b = rad({ SMI: 7, INT: 16 });
-  assert.equal(b.grundegenskap, "INT");
-  assert.ok(b.start > rad({ SMI: 7, INT: 5 }).start, "INT ger startvärdet när den är högre");
+  const rad = (gv) => raknaRollperson(regler, { ...rp, grundvarden: { ...rp.grundvarden, ...gv } });
+  const strid = (gv) => rad(gv).fardigheter.find((f) => f.nyckel === "strid-i-morker");
+  const a = strid({ SMI: 16, INT: 7 });
+  assert.equal(a.grundegenskap, "SMI/INT");
+  assert.equal(a.grundegenskapText, undefined);
+  const r = rad({ SMI: 16, INT: 7 });
+  const snitt = Math.floor((r.grundegenskaper.SMI + r.grundegenskaper.INT) / 2);
+  assert.equal(a.start, slaUpp(regler.fardigheter.baschans, snitt), "BC på snittet");
+  // Samma summa ger samma startvärde, oavsett vilken som är högst
+  assert.equal(strid({ SMI: 7, INT: 16 }).start, a.start);
+  assert.equal(egenskapsvarde({ SMI: 15, INT: 8 }, "SMI/INT"), 11, "11,5 avrundas nedåt");
+  assert.equal(egenskapsvarde({ SMI: 15, INT: 9 }, "SMI/INT"), 12);
+  assert.equal(egenskapsvarde({ SMI: 15 }, "SMI"), 15);
+  assert.equal(egenskapsvarde({ INT: 13, PSY: 16 }, "INT/PSY"), 14, "Meditation (Magi) följer samma regel");
+  assert.equal(grundegenskapFor(regler, "meditation", {}), "INT/PSY");
+  // Som sekundär färdighet är taket vid start också snittet
+  const sek = (fv) => raknaRollperson(regler, { ...vr, grundvarden: { ...vr.grundvarden, SMI: 16, INT: 7 }, fardigheter: { ...vr.fardigheter, "strid-i-morker": fv } });
+  const tak = Math.floor((sek(1).grundegenskaper.SMI + sek(1).grundegenskaper.INT) / 2);
+  assert.equal(sek(1).fardigheter.find((f) => f.nyckel === "strid-i-morker").status, "sekundar");
+  assert.ok(!sek(tak).fel.some((t) => t.startsWith("Strid i mörker")), sek(tak).fel.join("; "));
+  assert.ok(sek(tak + 1).fel.some((t) => t.startsWith("Strid i mörker: högst FV")));
 });
 
 test("Kejserliga vapen och förbjudna varor kräver spelledarens tillstånd eller kejsarens tjänst", () => {
