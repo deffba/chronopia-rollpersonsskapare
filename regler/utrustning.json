@@ -840,6 +840,1921 @@
       "vikt": null,
       "pris": 9,
       "sida": 102
+    },
+    {
+      "namn": "Alviska dansskor",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 345,
+      "atkomlighet": "C, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Balklänning",
+      "kategori": "Kläder",
+      "vikt": 3,
+      "pris": 600,
+      "atkomlighet": "C, F, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Förkläde",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 15,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Kloakskor",
+      "kategori": "Kläder",
+      "vikt": 1,
+      "pris": 300,
+      "atkomlighet": "D, H",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Läderväst",
+      "kategori": "Kläder",
+      "vikt": 1,
+      "pris": 45,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Lösskägg",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 2,
+      "prisText": "2–45 sm",
+      "atkomlighet": "B",
+      "not": "Säljs bara av gobliner. Lurfaktorn (oftast 0–5) är CL-modifikation för Bluffa, Skådespeleri och Övertala.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Nattmössa",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 5,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Nattsärk",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 15,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Peruk",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 20,
+      "prisText": "20–500 sm",
+      "atkomlighet": "C, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Plym",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 35,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Päls",
+      "kategori": "Kläder",
+      "vikt": 4,
+      "pris": 400,
+      "prisText": "400–2 000 sm",
+      "atkomlighet": "C, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Råttfångarhatt",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 20,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Sabranska snabeltofflor",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 220,
+      "atkomlighet": "D, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Sidennäsduk",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 15,
+      "atkomlighet": "C, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Slöja",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 25,
+      "atkomlighet": "C, F, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Svepning i sabranskt siden",
+      "kategori": "Kläder",
+      "vikt": 1,
+      "pris": 450,
+      "atkomlighet": "D, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Träskor",
+      "kategori": "Kläder",
+      "vikt": 1.5,
+      "pris": 10,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Wongosisk hätta",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 35,
+      "atkomlighet": "B, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Bärstol",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 1000,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Fryvisk kasell",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 3500,
+      "atkomlighet": "C, H",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Kloakkajak",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 2500,
+      "atkomlighet": "D, H",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Pråm",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 4000,
+      "atkomlighet": "D, H",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Tiggarlåda",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 300,
+      "atkomlighet": "hembygge",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Brevduva",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 400,
+      "atkomlighet": "C, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Byracka",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 50,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Get",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 200,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Jugga",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 450,
+      "atkomlighet": "D, H",
+      "not": "Klättrar på fasader; suger sig fast vid väggen.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Katt",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 25,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Mulvak",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 10000,
+      "atkomlighet": "D, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Papegoja",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 350,
+      "atkomlighet": "D, H",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Rashund",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 200,
+      "prisText": "200–1 500 sm",
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Sekuda",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 5000,
+      "atkomlighet": "C, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Stridssekuda",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 15000,
+      "atkomlighet": "D, F, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Tjutare",
+      "kategori": "Djur",
+      "vikt": null,
+      "pris": 750,
+      "atkomlighet": "D, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Fil",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 50,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Graveringsverktyg",
+      "kategori": "Diverse verktyg",
+      "vikt": 3,
+      "pris": 250,
+      "atkomlighet": "D, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Hammare",
+      "kategori": "Diverse verktyg",
+      "vikt": 2,
+      "pris": 40,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Kratta",
+      "kategori": "Diverse verktyg",
+      "vikt": 2,
+      "pris": 35,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Lie",
+      "kategori": "Diverse verktyg",
+      "vikt": 4,
+      "pris": 125,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Lod",
+      "kategori": "Diverse verktyg",
+      "vikt": 0.25,
+      "pris": 25,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Spett",
+      "kategori": "Diverse verktyg",
+      "vikt": 10,
+      "pris": 50,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Tratt",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 45,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Tång",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 35,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Brännglas",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.25,
+      "pris": 100,
+      "atkomlighet": "C, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Bärbart avträde",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 35,
+      "pris": 1000,
+      "atkomlighet": "C, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Fickkniv",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.5,
+      "pris": 65,
+      "atkomlighet": "C, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Gasbehållare",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 5,
+      "pris": 200,
+      "atkomlighet": "C, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Gasmask",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 3,
+      "pris": 700,
+      "atkomlighet": "D, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Gaslykta",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 4,
+      "pris": 500,
+      "atkomlighet": "C, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Hängmatta",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 1,
+      "pris": 35,
+      "atkomlighet": "B, H",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Karta (kloak, hamn o.s.v.)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": null,
+      "pris": 10,
+      "prisText": "10–450 sm",
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Kikare",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 2,
+      "pris": 150,
+      "atkomlighet": "C, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Kritor",
+      "kategori": "Äventyrarutrustning",
+      "vikt": null,
+      "pris": 5,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Kulor (10 st)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.25,
+      "pris": 100,
+      "atkomlighet": "C, S (eller sabraner)",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Ljuskulor (5 st)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.5,
+      "pris": 50,
+      "atkomlighet": "C, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Metspö",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 2,
+      "pris": 15,
+      "atkomlighet": "B, H",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Pannband",
+      "kategori": "Äventyrarutrustning",
+      "vikt": null,
+      "pris": 10,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Pannlykta",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 1,
+      "pris": 125,
+      "atkomlighet": "D, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Rustningsolja",
+      "kategori": "Äventyrarutrustning",
+      "vikt": null,
+      "pris": 25,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Sekudafett (impregnering)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 1,
+      "pris": 50,
+      "atkomlighet": "C, L",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Vapenputs",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.25,
+      "pris": 10,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Barrbarree",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 10,
+      "atkomlighet": "C, M",
+      "not": "Mask; användaren bortser från CL-avdrag för skador i lika många minuter som antalet ätna maskar. FYS-slag för att inte bli illamående.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Blodkräva",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 140,
+      "atkomlighet": "D, W, X",
+      "not": "Vansinne; +5 CL på SMI-, STY- och FYS-baserade färdigheter i 1T20 minuter, sedan måste användaren äta något blodigt.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Frobelia",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 65,
+      "atkomlighet": "C, W",
+      "not": "+3 CL på SMI-baserade färdigheter i fem stridsrundor.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Galenpanna",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 150,
+      "atkomlighet": "D, U, X",
+      "not": "Bortser från skador under 2 i 2T20 stridsrundor; sedan Svårt FYS-slag eller djup sömn i 1T4 timmar.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Krokrot",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 80,
+      "atkomlighet": "C, H",
+      "not": "+5 CL med avståndsvapen i tio minuter.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Fneees",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 35,
+      "atkomlighet": "B (wongoser), D (andra), W",
+      "not": "Nyspulver; offret nyser i 1T6 stridsrundor och får sedan −5 CL i 1T20 stridsrundor.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Sabranskt mörker",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 65,
+      "atkomlighet": "C (bara sabranska köpmän)",
+      "not": "Mörkersyn i 1T20 minuter.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Toksvamp",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 30,
+      "atkomlighet": "B, W",
+      "not": "Hallucinogent rus; +10 CL på Bärsärkagång.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Torrove",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 85,
+      "atkomlighet": "C, CH",
+      "not": "+2 STY, FYS och SMI i 1T10 stridsrundor.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Trollört",
+      "kategori": "Stridsdroger",
+      "vikt": null,
+      "pris": 105,
+      "atkomlighet": "C, S",
+      "not": "+1T6+2 STY i fem minuter, men INT sjunker lika mycket.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Hus (slum), per rum",
+      "kategori": "Bostäder",
+      "vikt": null,
+      "pris": 3000,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Hus, per rum",
+      "kategori": "Bostäder",
+      "vikt": null,
+      "pris": 8000,
+      "atkomlighet": "D, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Hus (finare), per rum",
+      "kategori": "Bostäder",
+      "vikt": null,
+      "pris": 15000,
+      "atkomlighet": "D, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Paradvåning",
+      "kategori": "Bostäder",
+      "vikt": null,
+      "pris": 400000,
+      "atkomlighet": "E, F, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Palats",
+      "kategori": "Bostäder",
+      "vikt": null,
+      "pris": 2000000,
+      "prisText": "2 000 000+ sm",
+      "atkomlighet": "E, F, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Badbalja",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 100,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Bord",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 200,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Byrå",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 350,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Fotpall",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 90,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Gasbelysning",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 15000,
+      "atkomlighet": "E, F, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Kristallkrona",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 1500,
+      "atkomlighet": "D, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Pall",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 30,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Soffa",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 300,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Skåp",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 400,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Spegel (möbel)",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 700,
+      "atkomlighet": "D, S, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Stol",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 100,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Säng",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 200,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Badolja",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 45,
+      "atkomlighet": "C, F, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Blomsterbukett",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 10,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Brännjärn",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 50,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Docka",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 10,
+      "prisText": "10+ sm",
+      "atkomlighet": "A, CH – C, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Eldstickor",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 5,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Fångsthåv",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 65,
+      "atkomlighet": "C, H",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Gettarmar",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 5,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Guldtand",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 2000,
+      "atkomlighet": "D, F, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Handfängsel",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 150,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Kandelaber",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 80,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Kista (15 l)",
+      "kategori": "Diverse",
+      "vikt": 4,
+      "pris": 150,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Kista (75 l)",
+      "kategori": "Diverse",
+      "vikt": 12,
+      "pris": 450,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Klister (10 l)",
+      "kategori": "Diverse",
+      "vikt": 20,
+      "pris": 50,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Klädnypor (50 st)",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 10,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Konstverk",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 10,
+      "prisText": "10–20 000 sm",
+      "atkomlighet": "D, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Koppel",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 35,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Korg",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 10,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Krok (för hand)",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 60,
+      "atkomlighet": "D, H",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Krukväxt",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 10,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Kulram",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 50,
+      "atkomlighet": "C, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Medaljong",
+      "kategori": "Diverse",
+      "vikt": 0.1,
+      "pris": 10,
+      "prisText": "10–200 sm",
+      "atkomlighet": "varierar",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Mortel",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 35,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Munkorg",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 50,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Målarduk",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 20,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Målarfärger",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 45,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Märkta oloreskort",
+      "kategori": "Diverse",
+      "vikt": 0.2,
+      "pris": 200,
+      "atkomlighet": "C, U, X",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Nagelfil",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 13,
+      "atkomlighet": "C, F, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Locogräs",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 100,
+      "atkomlighet": "C, U, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Locojuice",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 150,
+      "atkomlighet": "C, U, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Oloreskort",
+      "kategori": "Diverse",
+      "vikt": 0.2,
+      "pris": 35,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Parasoll",
+      "kategori": "Diverse",
+      "vikt": 2.5,
+      "pris": 125,
+      "atkomlighet": "C, F, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Parfym",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 10,
+      "prisText": "10–500 sm",
+      "atkomlighet": "C, F, M, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Pendel",
+      "kategori": "Diverse",
+      "vikt": 0.2,
+      "pris": 40,
+      "atkomlighet": "C, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Pipa",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 35,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Religiös symbol",
+      "kategori": "Diverse",
+      "vikt": 0.2,
+      "pris": 10,
+      "prisText": "10–150 sm",
+      "atkomlighet": "A, T",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Reliker",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 5,
+      "prisText": "5–15 000 sm",
+      "atkomlighet": "A, T",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Repbro (8 m)",
+      "kategori": "Diverse",
+      "vikt": 6,
+      "pris": 150,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Råttfälla",
+      "kategori": "Diverse",
+      "vikt": 0.3,
+      "pris": 10,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Rävsax",
+      "kategori": "Diverse",
+      "vikt": 3,
+      "pris": 300,
+      "atkomlighet": "C, U, X",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Röd lotussaft",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 100,
+      "atkomlighet": "C, U, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Rökelsekar",
+      "kategori": "Diverse",
+      "vikt": 1.5,
+      "pris": 100,
+      "atkomlighet": "C, T",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Samovar",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 150,
+      "atkomlighet": "C, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Sidenband (1 m)",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 10,
+      "atkomlighet": "C, F, M, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Signetring",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 45,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Skäggkam",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 80,
+      "atkomlighet": "D, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Slagruta",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 1000,
+      "atkomlighet": "C, T",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Smink",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 135,
+      "atkomlighet": "C, M",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Snoddar",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 8,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Solfjäder",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 35,
+      "atkomlighet": "C, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Sporrar",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 50,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Staty",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 200,
+      "prisText": "200–5 000 sm",
+      "atkomlighet": "D, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Stenkulor",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 5,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Taboor-tärningar",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 30,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Tandpetare",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 5,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Tiggarskål",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 5,
+      "atkomlighet": "A, CH",
+      "not": "Krävs för kejserlig fullmakt för tiggeri.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Tiggarstav",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 10,
+      "atkomlighet": "B, CH",
+      "not": "Krävs för kejserlig fullmakt för tiggeri.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Tobak",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 25,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Träben",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 35,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Tumskruvar",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 55,
+      "atkomlighet": "C, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Vattenpipa",
+      "kategori": "Diverse",
+      "vikt": 5,
+      "pris": 300,
+      "atkomlighet": "D, W",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Heraldiska vimplar",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 15,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Våg med vikter",
+      "kategori": "Diverse",
+      "vikt": 6,
+      "pris": 175,
+      "atkomlighet": "C, S",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Passerskort på Arenan",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 300,
+      "atkomlighet": "köps på Arenan",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "Ögonglas",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 500,
+      "atkomlighet": "D, S",
+      "not": "500 sm per grad av justering; beställs personligen.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 74
+      }
+    },
+    {
+      "namn": "”101 sätt att döda en hustru” av Hacht",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 500,
+      "atkomlighet": "D, U, X",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "”Agasurs AB och CD-lära”",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 200,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "”Chronopias historia” av Hermaz",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 450,
+      "atkomlighet": "D, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "”Encyclopedia Chronopia”",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 10000,
+      "atkomlighet": "D, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "Fackskrifter (alkemi–råttfångeri)",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 100,
+      "prisText": "100–1 500 sm",
+      "atkomlighet": "C–E, varierar",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "”Ishäxans älskare” av Magzandem",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 50,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "Kejsarens lag (förkortad)",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 3000,
+      "atkomlighet": "D, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "Kejserligt fribrev",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 100,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "Kejserlig fullmakt",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 150,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "”Kung Kloak” av Lykastor",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 550,
+      "atkomlighet": "D, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "Religiösa urkunder",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 100,
+      "prisText": "100–1 500 sm",
+      "atkomlighet": "B, T",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "”Sabranska nätter”",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 600,
+      "atkomlighet": "D, F",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "”Örtmedicin och växtmagi” av Pateo",
+      "kategori": "Skrifter",
+      "vikt": null,
+      "pris": 600,
+      "atkomlighet": "D, CH",
+      "kalla": {
+        "bok": "vr",
+        "sida": 76
+      }
+    },
+    {
+      "namn": "Rustningsvapen: Knivblad (mindre)",
+      "kategori": "Rustningsvapen",
+      "vikt": 0.5,
+      "pris": 250,
+      "skada": "1T4",
+      "bv": 9,
+      "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 69
+      }
+    },
+    {
+      "namn": "Rustningsvapen: Knivblad (större)",
+      "kategori": "Rustningsvapen",
+      "vikt": 1,
+      "pris": 450,
+      "skada": "1T6",
+      "bv": 9,
+      "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 69
+      }
+    },
+    {
+      "namn": "Rustningsvapen: Spikar (mindre)",
+      "kategori": "Rustningsvapen",
+      "vikt": 0.5,
+      "pris": 300,
+      "skada": "1T3",
+      "bv": 7,
+      "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 69
+      }
+    },
+    {
+      "namn": "Rustningsvapen: Spik (större)",
+      "kategori": "Rustningsvapen",
+      "vikt": 2,
+      "pris": 600,
+      "skada": "1T6",
+      "bv": 11,
+      "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 69
+      }
+    },
+    {
+      "namn": "Rustningsvapen: Taggar",
+      "kategori": "Rustningsvapen",
+      "vikt": 0.5,
+      "pris": 200,
+      "skada": "1T2",
+      "bv": null,
+      "not": "Per rustningsdel. Används med vapentekniken Rustningsanfall.",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 69
+      }
     }
   ],
   "rustningar": [
@@ -1269,12 +3184,753 @@
       "absorbering": 8,
       "vikt": 25,
       "pris": 5100
+    },
+    {
+      "namn": "Ceriansk hjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 7,
+      "vikt": 6,
+      "pris": 1200,
+      "skyddar": "hela huvudet",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Dvärgisk rundhjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 7,
+      "vikt": 4,
+      "pris": 1100,
+      "skyddar": "skallen",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Dvärgisk hornhjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 8,
+      "vikt": 5,
+      "pris": 1500,
+      "skyddar": "skallen och ansiktet",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Risbar (halsring)",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 5,
+      "vikt": 2,
+      "pris": 350,
+      "skyddar": "halsen",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Sabransk ökenhjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 7,
+      "vikt": 7,
+      "pris": 1500,
+      "skyddar": "hela huvudet",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Stadsvaktshjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 6,
+      "vikt": 4,
+      "pris": 450,
+      "skyddar": "skallen",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Svarta gardets hjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 9,
+      "vikt": 6,
+      "pris": 2300,
+      "skyddar": "hela huvudet",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Orchisk lådhjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 5,
+      "vikt": 6,
+      "pris": 400,
+      "skyddar": "hela huvudet",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Ordenskrigarhjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 8,
+      "vikt": 8,
+      "pris": 1600,
+      "skyddar": "skallen och halsen",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Tabo (ansiktsplåt)",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 8,
+      "vikt": 2,
+      "pris": 650,
+      "skyddar": "ansiktet",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Wongosisk potthjälm",
+      "typ": "Hjälm",
+      "delar": [
+        "huvud"
+      ],
+      "absorbering": 5,
+      "vikt": 2,
+      "pris": 750,
+      "skyddar": "skallen",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Axelskydd (par): Cerianskt",
+      "typ": "Axelskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 7,
+      "vikt": 7,
+      "pris": 1300,
+      "skyddar": "axlarna; även huvudet mot hugg och slag",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Axelskydd (par): Chronopiskt",
+      "typ": "Axelskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 6,
+      "vikt": 8,
+      "pris": 1050,
+      "skyddar": "axlarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Axelskydd (par): Dvärgiskt",
+      "typ": "Axelskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 8,
+      "vikt": 6,
+      "pris": 1800,
+      "skyddar": "axlarna; även halsen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Axelskydd (par): Högländskt",
+      "typ": "Axelskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm",
+        "brostkorg"
+      ],
+      "absorbering": 8,
+      "vikt": 12,
+      "pris": 2100,
+      "skyddar": "axlarna; även huvudet mot hugg och slag, och bröstkorgen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Axelskydd (par): Orchiskt",
+      "typ": "Axelskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 5,
+      "vikt": 8,
+      "pris": 700,
+      "skyddar": "axlarna; även halsen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Axelskydd (par): Sabranskt",
+      "typ": "Axelskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm",
+        "brostkorg"
+      ],
+      "absorbering": 7,
+      "vikt": 10,
+      "pris": 1600,
+      "skyddar": "axlarna; även bröstkorgen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Axelskydd (par): Svarta gardets",
+      "typ": "Axelskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 9,
+      "vikt": 10,
+      "pris": 2300,
+      "skyddar": "axlarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Axelskydd (par): Trä (trollkonstruktion)",
+      "typ": "Axelskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 4,
+      "vikt": 12,
+      "pris": 150,
+      "skyddar": "axlarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Armskydd (par): Cerianska armskenor",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 7,
+      "vikt": 5.5,
+      "pris": 1500,
+      "skyddar": "över- och underarmar, inte axlarna",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva armskydd (par): Cerianska armskenor",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 7,
+      "vikt": 2.75,
+      "pris": 750,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Armskydd (par): Högländska armskydd",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 8,
+      "vikt": 10,
+      "pris": 1650,
+      "skyddar": "över- och underarmar, inte axlarna",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva armskydd (par): Högländska armskydd",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 8,
+      "vikt": 5.0,
+      "pris": 825,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Armskydd (par): Orchisk armskena",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 4,
+      "vikt": 4,
+      "pris": 450,
+      "skyddar": "över- och underarmar, inte axlarna",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva armskydd (par): Orchisk armskena",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 4,
+      "vikt": 2.0,
+      "pris": 225,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Armskydd (par): Sabranska armskydd",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 7,
+      "vikt": 6,
+      "pris": 1300,
+      "skyddar": "över- och underarmar, inte axlarna",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva armskydd (par): Sabranska armskydd",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 7,
+      "vikt": 3.0,
+      "pris": 650,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Armskydd (par): Svarta gardets armskenor",
+      "typ": "Armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 9,
+      "vikt": 7,
+      "pris": 1800,
+      "skyddar": "över- och underarmar, inte axlarna",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva armskydd (par): Svarta gardets armskenor",
+      "typ": "Halva armskydd (par)",
+      "delar": [
+        "vanster-arm",
+        "hoger-arm"
+      ],
+      "absorbering": 9,
+      "vikt": 3.5,
+      "pris": 900,
+      "skyddar": "bara överarmarna eller underarmarna",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Benskydd (par): Cerianska benskenor",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 7,
+      "vikt": 6,
+      "pris": 1900,
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva benskydd (par): Cerianska benskenor",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 7,
+      "vikt": 3.0,
+      "pris": 950,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Benskydd (par): Högländska benskenor",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 8,
+      "vikt": 11,
+      "pris": 2100,
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva benskydd (par): Högländska benskenor",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 8,
+      "vikt": 5.5,
+      "pris": 1050,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Benskydd (par): Orchiska benskenor",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 4,
+      "vikt": 4.5,
+      "pris": 550,
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva benskydd (par): Orchiska benskenor",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 4,
+      "vikt": 2.25,
+      "pris": 275,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Benskydd (par): Sabranska benskydd",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 7,
+      "vikt": 6.5,
+      "pris": 1800,
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva benskydd (par): Sabranska benskydd",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 7,
+      "vikt": 3.25,
+      "pris": 900,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Benskydd (par): Svarta gardets benskenor",
+      "typ": "Benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 9,
+      "vikt": 8,
+      "pris": 2300,
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Halva benskydd (par): Svarta gardets benskenor",
+      "typ": "Halva benskydd (par)",
+      "delar": [
+        "vanster-ben",
+        "hoger-ben"
+      ],
+      "absorbering": 9,
+      "vikt": 4.0,
+      "pris": 1150,
+      "skyddar": "bara låren eller underbenen",
+      "kraverRegel": "detaljerad-strid",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Goblinskt skräpharnesk",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 3,
+      "vikt": 5,
+      "pris": 130,
+      "skyddar": "bröstkorg och mage",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Högländskt ordenskrigarharnesk",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 8,
+      "vikt": 16,
+      "pris": 2500,
+      "skyddar": "bröstkorg och mage",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Orchiskt benharnesk",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 4,
+      "vikt": 8,
+      "pris": 800,
+      "skyddar": "bröstkorg och mage",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Sabranskt harnesk",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 7,
+      "vikt": 10,
+      "pris": 1700,
+      "skyddar": "bröstkorg och mage",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Svarta gardets harnesk",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 9,
+      "vikt": 14,
+      "pris": 2800,
+      "skyddar": "bröstkorg och mage",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Tufft tygharnesk (trollkonstruktion)",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 0,
+      "vikt": 3,
+      "pris": 50,
+      "skyddar": "bröstkorg och mage",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Wongosiskt läderharnesk",
+      "typ": "Harnesk",
+      "delar": [
+        "brostkorg",
+        "mage"
+      ],
+      "absorbering": 2,
+      "vikt": 2,
+      "pris": 850,
+      "skyddar": "bröstkorg och mage",
+      "kalla": {
+        "bok": "vr",
+        "sida": 70
+      }
     }
   ],
   "rustningsnoter": {
     "Ringbrynja": "Sår kan inte bli infekterade.",
     "Tunnhjälm": "−5 på CL för Finna dolda ting och Upptäcka fara.",
-    "metall": "Fjällpansar och metallrustning halverar CL i Smyga; metallrustning halverar CL i Klättra och gör Akrobatik och Hoppa omöjliga (s. 93)."
+    "metall": "Fjällpansar och metallrustning halverar CL i Smyga; metallrustning halverar CL i Klättra och gör Akrobatik och Hoppa omöjliga (s. 93).",
+    "vr": "Vapen & rustningar (s. 69–70): armskydd skyddar inte axlarna. Pris och vikt för axel-, arm- och benskydd gäller per par. Axelskydd, halva arm- och benskydd och rustningsvapen finns bara med den valfria regeln Detaljerad strid."
   },
   "startpaket": {
     "varor": [
@@ -1322,5 +3978,283 @@
     100,
     101,
     102
-  ]
+  ],
+  "atkomlighet": {
+    "kalla": {
+      "bok": "vr",
+      "sida": 69
+    },
+    "platser": {
+      "M": "Meledith",
+      "S": "Stubbstan",
+      "W": "Wongostan",
+      "F": "finare kvarter",
+      "T": "Tempelbackarna",
+      "H": "hamnarna",
+      "U": "undre världen",
+      "CH": "hela Chronopia",
+      "L": "lufthamnarna"
+    },
+    "sallsynthet": {
+      "A": "extremt vanlig",
+      "B": "vanlig",
+      "C": "ovanlig (specialister)",
+      "D": "sällsynt",
+      "E": "mycket sällsynt",
+      "X": "förbjuden enligt kejsarens lag"
+    }
+  },
+  "bordaHandlingar": {
+    "kalla": {
+      "bok": "vr",
+      "sida": 69
+    },
+    "rader": [
+      {
+        "gange": 2,
+        "mod": 0
+      },
+      {
+        "gange": 3,
+        "mod": -1
+      },
+      {
+        "gange": 5,
+        "mod": -2
+      },
+      {
+        "gange": 6,
+        "mod": -3
+      }
+    ]
+  },
+  "underkategorier": {
+    "grans": 30,
+    "Närstridsvapen": {
+      "falt": "grupp",
+      "namn": {
+        "dolkar": "Dolkar",
+        "svard": "Svärd",
+        "yxor": "Yxor",
+        "kross": "Krossvapen",
+        "stickvapen": "Stickvapen",
+        "stangvapen": "Stångvapen",
+        "kattingvapen": "Kättingvapen",
+        "piska": "Piskor och slagsmål",
+        "slagsmal": "Piskor och slagsmål"
+      }
+    },
+    "Rustning": {
+      "falt": "typ",
+      "namn": {
+        "Hjälm": "Hjälmar",
+        "Axelskydd (par)": "Axelskydd",
+        "Armskydd (par)": "Armskydd",
+        "Halva armskydd (par)": "Armskydd",
+        "Benskydd (par)": "Benskydd",
+        "Halva benskydd (par)": "Benskydd",
+        "Brynjehosor": "Benskydd",
+        "Harnesk": "Harnesk och brynjor",
+        "Brynja": "Harnesk och brynjor",
+        "Hauberk": "Harnesk och brynjor",
+        "Helrustning": "Helrustningar"
+      }
+    },
+    "Kläder": {
+      "varor": {
+        "Plagg": [
+          "Byxor",
+          "Jacka",
+          "Kortbyxor",
+          "Kåpa (magiker-, präst-)",
+          "Mantel",
+          "Skjorta",
+          "Tunika",
+          "Balklänning",
+          "Förkläde",
+          "Läderväst",
+          "Nattsärk",
+          "Päls",
+          "Svepning i sabranskt siden",
+          "Hosor"
+        ],
+        "Skor": [
+          "Kängor",
+          "Läderskor",
+          "Läderstövlar, höga",
+          "Sandaler",
+          "Alviska dansskor",
+          "Kloakskor",
+          "Sabranska snabeltofflor",
+          "Träskor"
+        ],
+        "Huvudbonader och tillbehör": [
+          "Bälte",
+          "Handskar",
+          "Hatt",
+          "Lösskägg",
+          "Nattmössa",
+          "Peruk",
+          "Plym",
+          "Råttfångarhatt",
+          "Sidennäsduk",
+          "Slöja",
+          "Wongosisk hätta"
+        ]
+      }
+    },
+    "Äventyrarutrustning": {
+      "varor": {
+        "Ammunition och bågsträngar": [
+          "Arbalestlod (10 st)",
+          "Armborstlod (10 st)",
+          "Pilar (10 st)",
+          "Slungkulor (+2 CL, 10 st)",
+          "Bågsträng"
+        ],
+        "Ljus och eld": [
+          "Flinta & stål",
+          "Vaxljus (1 timme)",
+          "Fackla (1 timme)",
+          "Oljelampa (1 timme)",
+          "Oljelykta (6 timmar)",
+          "Lampolja (1 timme)",
+          "Brännglas",
+          "Gaslykta",
+          "Ljuskulor (5 st)",
+          "Pannlykta"
+        ],
+        "Läger och friluftsliv": [
+          "Halmmadrass",
+          "Järngryta (2 liter)",
+          "Fiskenät (5 × 5 m)",
+          "Sovfäll",
+          "Tält (2 man)",
+          "Bärbart avträde",
+          "Hängmatta",
+          "Metspö"
+        ],
+        "Övrigt": [
+          "Fickkniv",
+          "Gasbehållare",
+          "Gasmask",
+          "Karta (kloak, hamn o.s.v.)",
+          "Kikare",
+          "Kritor",
+          "Kulor (10 st)",
+          "Pannband",
+          "Rustningsolja",
+          "Sekudafett (impregnering)",
+          "Vapenputs"
+        ]
+      }
+    },
+    "Diverse": {
+      "varor": {
+        "Rep, kedjor och stegar": [
+          "1-tums rep (10 m, tål 400 kg)",
+          "½-tums rep (10 m, tål 100 kg)",
+          "Kedja (1 m, tål 100 kg)",
+          "Kraftig kedja (1 m, tål 1 000 kg)",
+          "Repstege (3 m)",
+          "Trästege (2 m)",
+          "Repbro (8 m)",
+          "Hänglås + nyckel"
+        ],
+        "Fängsel och fällor": [
+          "Handfängsel",
+          "Tumskruvar",
+          "Rävsax",
+          "Råttfälla",
+          "Fångsthåv",
+          "Koppel",
+          "Munkorg",
+          "Brännjärn"
+        ],
+        "Musik och spel": [
+          "Visselpipa",
+          "Signalhorn",
+          "Flöjt",
+          "Harpa",
+          "Luta",
+          "Lyra",
+          "Trumma",
+          "Oloreskort",
+          "Märkta oloreskort",
+          "Taboor-tärningar",
+          "Stenkulor",
+          "Docka"
+        ],
+        "Verktyg, skrivdon och sömnad": [
+          "Penna, bläck & pergament",
+          "Solur (± 30 minuter)",
+          "Timglas",
+          "Kulram",
+          "Våg med vikter",
+          "Pendel",
+          "Slagruta",
+          "Målarduk",
+          "Målarfärger",
+          "Synål",
+          "Sytråd (10 m)",
+          "Lädernål",
+          "Sytråd för läderarbete (10 m)",
+          "Klister (10 l)",
+          "Mortel"
+        ],
+        "Kropp och skönhet": [
+          "Badolja",
+          "Parfym",
+          "Smink",
+          "Nagelfil",
+          "Tandpetare",
+          "Skäggkam",
+          "Spegel",
+          "Guldtand",
+          "Träben",
+          "Krok (för hand)",
+          "Ögonglas",
+          "Gettarmar"
+        ],
+        "Hem, prydnad och tro": [
+          "Blomsterbukett",
+          "Kandelaber",
+          "Kista (15 l)",
+          "Kista (75 l)",
+          "Konstverk",
+          "Korg",
+          "Krukväxt",
+          "Medaljong",
+          "Signetring",
+          "Staty",
+          "Samovar",
+          "Rökelsekar",
+          "Parasoll",
+          "Solfjäder",
+          "Sidenband (1 m)",
+          "Snoddar",
+          "Klädnypor (50 st)",
+          "Heraldiska vimplar",
+          "Religiös symbol",
+          "Reliker"
+        ],
+        "Rus och tobak": [
+          "Locogräs",
+          "Locojuice",
+          "Röd lotussaft",
+          "Tobak",
+          "Pipa",
+          "Vattenpipa"
+        ],
+        "Övrigt": [
+          "Eldstickor",
+          "Hästskor (4 st)",
+          "Sporrar",
+          "Tiggarskål",
+          "Tiggarstav",
+          "Passerskort på Arenan"
+        ]
+      }
+    }
+  }
 }

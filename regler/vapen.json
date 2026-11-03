@@ -74,6 +74,15 @@
       "id": "blasror",
       "namn": "Blåsrör",
       "grundegenskap": "SMI"
+    },
+    {
+      "id": "eldvapen",
+      "namn": "Eldvapen",
+      "grundegenskap": "SMI",
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
     }
   ],
   "styBeroendeGrupper": {
@@ -465,6 +474,1194 @@
       "pris": 3500,
       "grupp": "svard",
       "enHandOmStoOverKrav": true
+    },
+    {
+      "namn": "Ceriansk klinga",
+      "skada": "1T6+2",
+      "styKrav": 8,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 15,
+      "pris": 500,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Långsvärd (alviskt)",
+      "skada": "1T10+2",
+      "styKrav": 15,
+      "langd": 0,
+      "vikt": 5,
+      "bv": 15,
+      "pris": 3000,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Drakspjut",
+      "skada": "2T6+1",
+      "styKrav": 13,
+      "langd": 1,
+      "vikt": 4.5,
+      "bv": 11,
+      "pris": 1350,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Belisk yxa",
+      "skada": "1T6+2",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 11,
+      "pris": 150,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Belestarius",
+      "skada": "1T10+1",
+      "styKrav": 13,
+      "langd": 0,
+      "vikt": 4.5,
+      "bv": 11,
+      "pris": 650,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Bataljyxa",
+      "skada": "1T10+2",
+      "styKrav": 15,
+      "langd": 0,
+      "vikt": 5,
+      "bv": 11,
+      "pris": 650,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Handyxa (chronopisk)",
+      "skada": "1T6+1",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 11,
+      "pris": 200,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Stickklinga",
+      "skada": "1T8+1",
+      "styKrav": 13,
+      "langd": 0,
+      "vikt": 4.5,
+      "bv": 15,
+      "pris": 1150,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Chronosklinga",
+      "skada": "1T8+2",
+      "styKrav": 13,
+      "langd": 0,
+      "vikt": 4.5,
+      "bv": 13,
+      "pris": 1300,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Klyvare",
+      "skada": "1T4+2",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 11,
+      "pris": 150,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Tabrisk klinga",
+      "skada": "1T6+3",
+      "styKrav": 15,
+      "langd": 0,
+      "vikt": 5,
+      "bv": 13,
+      "pris": 950,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "not": "Korgen fungerar som knogjärn med spikar.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Huggare",
+      "skada": "1T8",
+      "styKrav": 11,
+      "langd": 0,
+      "vikt": 4,
+      "bv": 13,
+      "pris": 850,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Hillebard (chronopisk)",
+      "skada": "2T8−2",
+      "styKrav": 21,
+      "langd": 1,
+      "vikt": 6,
+      "bv": 11,
+      "pris": 1250,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Berdiche",
+      "skada": "4T4+2",
+      "styKrav": 27,
+      "langd": 1,
+      "vikt": 7,
+      "bv": 11,
+      "pris": 1450,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Ovalspjut",
+      "skada": "1T8",
+      "styKrav": 11,
+      "langd": 1,
+      "vikt": 4,
+      "bv": 11,
+      "pris": 250,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Bladspjut",
+      "skada": "1T8+1",
+      "styKrav": 11,
+      "langd": 1,
+      "vikt": 4,
+      "bv": 11,
+      "pris": 350,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 59
+      }
+    },
+    {
+      "namn": "Vredesyxa",
+      "skada": "1T8+3",
+      "styKrav": 11,
+      "langd": 0,
+      "vikt": 4,
+      "bv": 13,
+      "pris": 1000,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 60
+      }
+    },
+    {
+      "namn": "Dubbelyxa",
+      "skada": "1T10+2",
+      "styKrav": 17,
+      "langd": 0,
+      "vikt": 5.5,
+      "bv": 13,
+      "pris": 1300,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 60
+      }
+    },
+    {
+      "namn": "Svärdsyxa",
+      "skada": "1T8",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 15,
+      "pris": 850,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 60
+      }
+    },
+    {
+      "namn": "Virvelyxa",
+      "skada": "2T10+3",
+      "styKrav": 29,
+      "langd": 0,
+      "vikt": 7.5,
+      "bv": 13,
+      "pris": 2400,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 60
+      }
+    },
+    {
+      "namn": "Kamayxa",
+      "skada": "1T6",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 13,
+      "pris": 300,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 60
+      }
+    },
+    {
+      "namn": "Yxhillebard",
+      "skada": "2T8+4",
+      "styKrav": 27,
+      "langd": 1,
+      "vikt": 7,
+      "bv": 13,
+      "pris": 1650,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 60
+      }
+    },
+    {
+      "namn": "Stridshammare (dvärgisk)",
+      "skada": "1T10",
+      "styKrav": 15,
+      "langd": 0,
+      "vikt": 5,
+      "bv": 13,
+      "pris": 1100,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 60
+      }
+    },
+    {
+      "namn": "Smidesmästarens stridshammare",
+      "skada": "1T10+3",
+      "styKrav": 15,
+      "langd": 0,
+      "vikt": 5,
+      "bv": 16,
+      "pris": null,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false,
+      "somVapen": "Stridshammare (dvärgisk)",
+      "not": "Dvärgisk stridshammare av mästarkvalitet: +3 på skada och BV. Smidesmästarens startutrustning; säljs inte.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 8
+      }
+    },
+    {
+      "namn": "Stormyxa",
+      "skada": "2T10",
+      "styKrav": 37,
+      "langd": 1,
+      "vikt": 10,
+      "bv": 13,
+      "pris": 3800,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "not": "Räknas som stångvapen för vapentekniker.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 60
+      }
+    },
+    {
+      "namn": "Klonät",
+      "skada": "1T3",
+      "styKrav": 5,
+      "langd": 0,
+      "vikt": 1,
+      "bv": 7,
+      "pris": 100,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 61
+      }
+    },
+    {
+      "namn": "Gladiatorklinga",
+      "skada": "1T6",
+      "styKrav": 5,
+      "langd": 0,
+      "vikt": 1,
+      "bv": 15,
+      "pris": 250,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 61
+      }
+    },
+    {
+      "namn": "Halvmåne",
+      "skada": "1T6+1",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 15,
+      "pris": 350,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 61
+      }
+    },
+    {
+      "namn": "Femhövdat gissel",
+      "skada": "1T8",
+      "styKrav": 11,
+      "langd": 0,
+      "vikt": 4,
+      "bv": 11,
+      "pris": 800,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 61
+      }
+    },
+    {
+      "namn": "Dansblad",
+      "skada": "1T6",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 13,
+      "pris": 400,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 61
+      }
+    },
+    {
+      "namn": "Hederssvärd",
+      "skada": "2T10+4",
+      "styKrav": 33,
+      "langd": 1,
+      "vikt": 8.5,
+      "bv": 15,
+      "pris": null,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "not": "Säljs inte; ordenskrigarens vapen.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Kortsvärd (högländskt)",
+      "skada": "1T8+1",
+      "styKrav": 13,
+      "langd": 0,
+      "vikt": 4.5,
+      "bv": 15,
+      "pris": 1300,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Partisan (högländsk)",
+      "skada": "2T8+3",
+      "styKrav": 29,
+      "langd": 1,
+      "vikt": 7.5,
+      "bv": 11,
+      "pris": 1500,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Ryttarlans",
+      "skada": "2T6+1",
+      "styKrav": 25,
+      "langd": 1,
+      "vikt": 6.5,
+      "bv": 13,
+      "pris": 1150,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true,
+      "not": "Med en hand till häst, med lansen fastkilad under armen.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Revbenskrossare",
+      "skada": "2T8",
+      "styKrav": 25,
+      "langd": 1,
+      "vikt": 6.5,
+      "bv": 11,
+      "pris": 1300,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Sylspjut",
+      "skada": "1T10+2",
+      "styKrav": 15,
+      "langd": 2,
+      "vikt": 5,
+      "bv": 11,
+      "pris": 500,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Stridsslaga (högländsk)",
+      "skada": "2T6+3",
+      "styKrav": 29,
+      "langd": 0,
+      "vikt": 7.5,
+      "bv": 13,
+      "pris": 1750,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Spikyxa",
+      "skada": "1T10+1",
+      "styKrav": 15,
+      "langd": 0,
+      "vikt": 5,
+      "bv": 11,
+      "pris": 850,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Stadsvaktspjut",
+      "skada": "1T8+2",
+      "styKrav": 11,
+      "langd": 1,
+      "vikt": 4,
+      "bv": 11,
+      "pris": 550,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": true,
+      "kejserligt": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 63
+      }
+    },
+    {
+      "namn": "Kejsarhillebard",
+      "skada": "3T6+2",
+      "styKrav": 29,
+      "langd": 1,
+      "vikt": 7.5,
+      "bv": 11,
+      "pris": 1850,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kejserligt": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 63
+      }
+    },
+    {
+      "namn": "Domarstav",
+      "skada": "1T10+2",
+      "styKrav": 15,
+      "langd": 1,
+      "vikt": 5,
+      "bv": 15,
+      "pris": null,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kejserligt": true,
+      "not": "Fångstpåle med utfällbar spjutspets.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 63
+      }
+    },
+    {
+      "namn": "Hedersyxa",
+      "skada": "1T10+3",
+      "styKrav": 15,
+      "langd": 0,
+      "vikt": 5,
+      "bv": 13,
+      "pris": 900,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kejserligt": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 63
+      }
+    },
+    {
+      "namn": "Kejsarsvärd",
+      "skada": "3T6+1",
+      "styKrav": 29,
+      "langd": 1,
+      "vikt": 7.5,
+      "bv": 15,
+      "pris": 3000,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kejserligt": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 63
+      }
+    },
+    {
+      "namn": "Drottningsvärd",
+      "skada": "1T8",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 1,
+      "bv": 15,
+      "pris": 500,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kejserligt": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 63
+      }
+    },
+    {
+      "namn": "Orchisk harvare",
+      "skada": "1T8+1",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 13,
+      "pris": 450,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Orchisk klyvare",
+      "skada": "1T8+2",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 11,
+      "pris": 400,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Alvdräpare",
+      "skada": "1T6+2",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 13,
+      "pris": 350,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Kloräfsa",
+      "skada": "1T6",
+      "styKrav": 5,
+      "langd": 0,
+      "vikt": 1,
+      "bv": 11,
+      "pris": 90,
+      "grupp": "dolkar",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Goblinsk tunga",
+      "skada": "1T4+2",
+      "styKrav": 5,
+      "langd": 0,
+      "vikt": 1,
+      "bv": 13,
+      "pris": 250,
+      "grupp": "dolkar",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Snittare",
+      "skada": "1T3+1",
+      "styKrav": 1,
+      "langd": 0,
+      "vikt": 0.5,
+      "bv": 9,
+      "pris": 50,
+      "grupp": "dolkar",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Skallerorm",
+      "skada": "1T4",
+      "styKrav": 9,
+      "langd": 1,
+      "vikt": 3,
+      "bv": 5,
+      "pris": 45,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Klotpiska",
+      "skada": "1T6+1",
+      "styKrav": 9,
+      "langd": 1,
+      "vikt": 3,
+      "bv": 3,
+      "pris": 60,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Kattsvans",
+      "skada": "1T4",
+      "styKrav": 7,
+      "langd": 1,
+      "vikt": 2,
+      "bv": 5,
+      "pris": 75,
+      "grupp": "piska",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Klubba (orchisk)",
+      "skada": "1T4",
+      "styKrav": 1,
+      "langd": 0,
+      "vikt": 0.5,
+      "bv": 5,
+      "pris": 10,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "orch",
+          "goblin"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 64
+      }
+    },
+    {
+      "namn": "Månsabel",
+      "skada": "2T6+1",
+      "styKrav": 17,
+      "langd": 0,
+      "vikt": 5.5,
+      "bv": 15,
+      "pris": 2100,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
+    },
+    {
+      "namn": "Kroksabel (sabransk)",
+      "skada": "1T8+2",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 15,
+      "pris": 900,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
+    },
+    {
+      "namn": "Eldsklinga",
+      "skada": "1T6+2",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 15,
+      "pris": 750,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
+    },
+    {
+      "namn": "Månkap",
+      "skada": "3T4+2",
+      "styKrav": 23,
+      "langd": 1,
+      "vikt": 6,
+      "bv": 11,
+      "pris": 1200,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
+    },
+    {
+      "namn": "Trollstjärna",
+      "skada": "2T6−1",
+      "styKrav": 17,
+      "langd": 0,
+      "vikt": 5.5,
+      "bv": 11,
+      "pris": 75,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Skallspräckare",
+      "skada": "1T10",
+      "styKrav": 15,
+      "langd": 0,
+      "vikt": 5,
+      "bv": 11,
+      "pris": 55,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Stenslaga",
+      "skada": "2T6",
+      "styKrav": 25,
+      "langd": 0,
+      "vikt": 6.5,
+      "bv": 11,
+      "pris": 75,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Stavnitare",
+      "skada": "2T6+2",
+      "styKrav": 29,
+      "langd": 1,
+      "vikt": 7.5,
+      "bv": 11,
+      "pris": 95,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Storhugg",
+      "skada": "2T10",
+      "styKrav": 37,
+      "langd": 1,
+      "vikt": 10,
+      "bv": 11,
+      "pris": 375,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Lungmosare",
+      "skada": "2T8",
+      "styKrav": 35,
+      "langd": 0,
+      "vikt": 9.5,
+      "bv": 11,
+      "pris": 95,
+      "grupp": "kross",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Huvudklyvare",
+      "skada": "2T10",
+      "styKrav": 35,
+      "langd": 1,
+      "vikt": 9.5,
+      "bv": 13,
+      "pris": 375,
+      "grupp": "stangvapen",
+      "enHandOmStoOverKrav": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Spikjärn",
+      "skada": "+2",
+      "styKrav": 1,
+      "langd": 0,
+      "vikt": 0.5,
+      "bv": null,
+      "pris": 30,
+      "grupp": "slagsmal",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
+    },
+    {
+      "namn": "Wongodolk",
+      "skada": "1T3+1",
+      "styKrav": 1,
+      "langd": 0,
+      "vikt": 0.5,
+      "bv": 9,
+      "pris": 85,
+      "grupp": "dolkar",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
+    },
+    {
+      "namn": "Wongostilett",
+      "skada": "1T3+1",
+      "styKrav": 1,
+      "langd": 0,
+      "vikt": 0.5,
+      "bv": 8,
+      "pris": 95,
+      "grupp": "dolkar",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
+    },
+    {
+      "namn": "3-delad stav",
+      "skada": "1T6",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 11,
+      "pris": 115,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
+    },
+    {
+      "namn": "3-delad spikstav",
+      "skada": "1T8",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 11,
+      "pris": 350,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
+    },
+    {
+      "namn": "Knivslaga",
+      "skada": "1T8+1",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 11,
+      "pris": 530,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
+    },
+    {
+      "namn": "Cirkelslaga",
+      "skada": "2T6",
+      "styKrav": 11,
+      "langd": 0,
+      "vikt": 4,
+      "bv": 11,
+      "pris": 750,
+      "grupp": "kattingvapen",
+      "enHandOmStoOverKrav": false,
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
     }
   ],
   "projektil": [
@@ -567,6 +1764,260 @@
       "pris": 4000,
       "grupp": "armborst",
       "tvaHander": true
+    },
+    {
+      "namn": "Kortbåge (alvisk)",
+      "skada": "1T6+1",
+      "styKrav": 16,
+      "rackvidd": "150 m",
+      "vikt": 1.75,
+      "pris": 500,
+      "grupp": "bagar",
+      "tvaHander": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Långbåge (alvisk)",
+      "skada": "1T8+1",
+      "styKrav": 26,
+      "rackvidd": "210 m",
+      "vikt": 2.5,
+      "pris": 850,
+      "grupp": "bagar",
+      "tvaHander": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Ceriansk armslunga",
+      "skada": "1T4+1",
+      "styKrav": 6,
+      "rackvidd": "30 m",
+      "vikt": 1.25,
+      "pris": 500,
+      "grupp": "armborst",
+      "tvaHander": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Handarmborst",
+      "skada": "1T6+2",
+      "styKrav": 15,
+      "rackvidd": "80 m",
+      "vikt": 2.5,
+      "pris": 800,
+      "grupp": "armborst",
+      "tvaHander": false,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Lätt armborst (alviskt)",
+      "skada": "2T4+3",
+      "styKrav": 24,
+      "rackvidd": "200 m",
+      "vikt": 4,
+      "pris": 1700,
+      "grupp": "armborst",
+      "tvaHander": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Tungt armborst (alviskt)",
+      "skada": "2T6+3",
+      "styKrav": 26,
+      "rackvidd": "300 m",
+      "vikt": 5,
+      "pris": 2800,
+      "grupp": "armborst",
+      "tvaHander": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Armborst (dvärgiskt)",
+      "skada": "3T6",
+      "styKrav": 28,
+      "rackvidd": "275 m",
+      "vikt": 6,
+      "pris": 3500,
+      "grupp": "armborst",
+      "tvaHander": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 60
+      }
+    },
+    {
+      "namn": "Ryttarbåge",
+      "skada": "1T10+1",
+      "styKrav": 32,
+      "rackvidd": "220 m",
+      "vikt": 4,
+      "pris": 1200,
+      "grupp": "bagar",
+      "tvaHander": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Automatarmborst",
+      "skada": "1T8",
+      "styKrav": 18,
+      "rackvidd": "90 m",
+      "vikt": 5,
+      "pris": 2500,
+      "grupp": "armborst",
+      "tvaHander": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Kejsarbåge",
+      "skada": "1T8+2",
+      "styKrav": 28,
+      "rackvidd": "200 m",
+      "vikt": 3,
+      "pris": 1050,
+      "grupp": "bagar",
+      "tvaHander": true,
+      "kejserligt": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 63
+      }
+    },
+    {
+      "namn": "Larna-te (blåsrör)",
+      "skada": "0",
+      "styKrav": 5,
+      "rackvidd": "30 m",
+      "vikt": 2,
+      "pris": 500,
+      "grupp": "blasror",
+      "tvaHander": true,
+      "not": "Specialregler för blåsrör (grundreglerna s. 88).",
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
+    },
+    {
+      "namn": "Larna-wu (blåsrör)",
+      "skada": "0",
+      "styKrav": 3,
+      "rackvidd": "20 m",
+      "vikt": 1,
+      "pris": 250,
+      "grupp": "blasror",
+      "tvaHander": true,
+      "not": "Specialregler för blåsrör (grundreglerna s. 88).",
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
+    },
+    {
+      "namn": "Larna-ma (blåsrör)",
+      "skada": "0",
+      "styKrav": 1,
+      "rackvidd": "10 m",
+      "vikt": 0.5,
+      "pris": 80,
+      "grupp": "blasror",
+      "tvaHander": true,
+      "not": "Specialregler för blåsrör (grundreglerna s. 88).",
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
+    },
+    {
+      "namn": "Musköt",
+      "skada": "4T6",
+      "styKrav": 30,
+      "rackvidd": "100 m",
+      "vikt": 6,
+      "pris": 6500,
+      "grupp": "eldvapen",
+      "tvaHander": true,
+      "not": "Specialregler i kapitlet Strid.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
+    },
+    {
+      "namn": "Muskedunder",
+      "skada": "2T6+1",
+      "styKrav": 18,
+      "rackvidd": "35 m",
+      "vikt": 4,
+      "pris": 3200,
+      "grupp": "eldvapen",
+      "tvaHander": true,
+      "not": "Specialregler i kapitlet Strid.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 65
+      }
+    },
+    {
+      "namn": "Wongoslunga",
+      "skada": "1T4+1",
+      "styKrav": 7,
+      "rackvidd": "70 m",
+      "vikt": 0.5,
+      "pris": 35,
+      "grupp": "slunga",
+      "tvaHander": false,
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
+    },
+    {
+      "namn": "Stavslunga (wongoisk)",
+      "skada": "1T6+1",
+      "styKrav": 18,
+      "rackvidd": "100 m",
+      "vikt": 1.5,
+      "pris": 65,
+      "grupp": "slunga",
+      "tvaHander": true,
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
     }
   ],
   "kast": [
@@ -596,6 +2047,51 @@
       "pris": 90,
       "rackvidd": "STY rutor",
       "grupp": "kastvapen"
+    },
+    {
+      "namn": "Tila (kastspik)",
+      "skada": "1T3",
+      "styKrav": 3,
+      "vikt": 0.25,
+      "pris": 50,
+      "rackvidd": "SMI rutor",
+      "grupp": "kastvapen",
+      "kalla": {
+        "bok": "vr",
+        "sida": 58
+      }
+    },
+    {
+      "namn": "Loth (spikbollar)",
+      "skada": "1T6",
+      "styKrav": 11,
+      "vikt": 2,
+      "pris": 150,
+      "rackvidd": "STY rutor",
+      "grupp": "kastvapen",
+      "not": "Snärjer kroppsdelen som ett nät om differensvärdet är högre än 3.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 62
+      }
+    },
+    {
+      "namn": "Kastkniv (wongoisk)",
+      "skada": "1T4",
+      "styKrav": 5,
+      "vikt": 0.5,
+      "pris": 75,
+      "rackvidd": "STY meter",
+      "grupp": "kastvapen",
+      "villkor": {
+        "ras": [
+          "wongos"
+        ]
+      },
+      "kalla": {
+        "bok": "vr",
+        "sida": 67
+      }
     }
   ],
   "skoldar": [
@@ -654,6 +2150,55 @@
       "vikt": 16,
       "pris": 900,
       "grupp": "skoldar"
+    },
+    {
+      "namn": "Sabransk sköld",
+      "styKrav": 11,
+      "bv": 13,
+      "vikt": 6.5,
+      "pris": 1200,
+      "grupp": "skoldar",
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Stadsvaktssköld",
+      "styKrav": 11,
+      "bv": 11,
+      "vikt": 6,
+      "pris": 1100,
+      "grupp": "skoldar",
+      "kejserligt": true,
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Wongosköld",
+      "styKrav": 3,
+      "bv": 9,
+      "vikt": 1.5,
+      "pris": 400,
+      "grupp": "skoldar",
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
+    },
+    {
+      "namn": "Skyddare (trollsköld)",
+      "styKrav": 15,
+      "bv": 10,
+      "vikt": 8,
+      "pris": 100,
+      "grupp": "skoldar",
+      "kalla": {
+        "bok": "vr",
+        "sida": 66
+      }
     }
   ],
   "sida": [
@@ -662,5 +2207,12 @@
     90,
     91,
     94
-  ]
+  ],
+  "kejserligt": {
+    "text": "Bara för kejsarens tjänare. Andra som bär kejserliga vapen straffas med döden (edikt 432).",
+    "kalla": {
+      "bok": "vr",
+      "sida": 63
+    }
+  }
 }

@@ -76,4 +76,82 @@ export const TESTROLLPERSONER = [
     kop: ["Kåpa (magiker-, präst-)", "Oljelykta (6 timmar)", "Lampolja (1 timme)"],
     anteckningar: "Testrollperson från utvecklarläget. Har lämnat dimskogarna för stadens bibliotek.",
   },
+  {
+    // Vapen & rustningar: hjältenivån (175 BP, tre särskilda förmågor) och V&R:s förmågetabell med hjältepoäng
+    id: "vr-hjalte",
+    etikett: "Sabran, krigare (V&R, hjälte)",
+    namn: "Zahra Ökenvind",
+    kon: "Kvinna",
+    bocker: ["vr"],
+    niva: 2,
+    ras: "sabran",
+    alder: 26,
+    yrke: "krigare",
+    val: {
+      hantverk: ["Läderarbete"],
+      tala: ["hoglandska"],
+      "tva-vapen": "Kortsvärd+Dolk",
+      "undre-varlden": "Chronopia",
+      vapen: ["Kortsvärd", "Dolk", "Kortbåge"],
+    },
+    valfri: "overlevnad",
+    sarskildFormaga: [
+      { bp: 20, slag: 15, tabell: "vr", val: [{ slag: 33, tarningar: [12, 9, 12] }] }, // 35: Hjälte, 33 hjältepoäng
+      { bp: 5, slag: 18, tabell: "vr" }, // 23: Blodshämnd
+      { bp: 5, slag: 37, tabell: "grund" }, // 42: Vapenvan
+    ],
+    hjaltepoangKop: { SMI: 2, PSY: 2 }, // 20 av de 33 hjältepoängen
+    slag: { svardshand: 8, socialtStand: 8, startkapital: 9 },
+    startpaketVapen: "Dolk",
+    kop: ["Harnesk: Läder", "Läderhuva"],
+    anteckningar: "Testrollperson från utvecklarläget. Ökenkrigare som har gjort sig ett namn i Chronopia.",
+  },
+  {
+    id: "vr-svartgardist",
+    etikett: "Latracier, svartgardist (V&R, veteran)",
+    namn: "Kael Nattvakt",
+    kon: "Man",
+    bocker: ["vr"],
+    niva: 1,
+    ras: "latracier",
+    alder: 28,
+    yrke: "svartgardist",
+    val: {
+      "tva-vapen": "Bredsvärd+Kortsvärd",
+      vapen: ["Bredsvärd", "Kortsvärd", "Långbåge"],
+    },
+    valfri: "taktik",
+    sarskildFormaga: [
+      { bp: 5, slag: 15, tabell: "vr" }, // 20: Snabbslående
+      { bp: 5, slag: 37, tabell: "grund" }, // 42: Vapenvan
+    ],
+    slag: { svardshand: 8, socialtStand: 8, startkapital: 9 },
+    startpaketVapen: "Dolk",
+    kop: ["Läderhuva"],
+    anteckningar: "Testrollperson från utvecklarläget. Kejsarens svarta gardist med stridskonsten Kejsarens hand.",
+  },
+  {
+    // Vapen & rustningar kap. 8–9: hederssvärdet som gratis startutrustning, V&R-vapen och rustningsdelar per kroppsdel
+    id: "vr-ordenskrigare",
+    etikett: "Högländare, ordenskrigare (V&R, utrustning, syn och hörsel)",
+    namn: "Brann av Hornvakten",
+    kon: "Man",
+    bocker: ["vr"],
+    valfriaRegler: ["syn-och-horsel", "detaljerad-strid", "kejserliga-varor"],
+    sinnen: { syn: [3, 4], horsel: [0, 2] }, // syn 7: mycket god (+2), hörsel 2: nedsatt (−1)
+    niva: 0,
+    ras: "hoglandare",
+    rasval: "vapen:Spikyxa",
+    alder: 30,
+    yrke: "ordenskrigare",
+    val: {
+      hantverk: ["Smide"],
+      vapen: ["Hederssvärd", "Ryttarlans", "Ryttarbåge"],
+    },
+    valfri: "rida",
+    slag: { svardshand: 8, socialtStand: 12, startkapital: 20 },
+    startpaketVapen: "Dolk",
+    kop: ["Ordenskrigarhjälm", "Axelskydd (par): Högländskt", "Rustningsolja", "Vapenputs"],
+    anteckningar: "Testrollperson från utvecklarläget. Högländsk ordensriddare med hederssvärd och ordenskrigarhjälm.",
+  },
 ];

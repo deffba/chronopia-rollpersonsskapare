@@ -5,7 +5,7 @@
 // varje post sparar exakt vad den ändrade där, så att den kan tas tillbaka.
 import {
   GRUNDEGENSKAPER, fardighetAv, status, grundegenskapFor, epPerFV, raknaHarledda, besvarjelsePris, skolFV,
-  namnFor, sarskildFormaga, yrkeAv, slaUpp, vapengrupp, bordaFor,
+  namnFor, sarskildFormaga, harTekniker, stilensTekniker, yrkeAv, slaUpp, vapengrupp, bordaFor,
 } from "./regelmotor.js";
 
 export { TOM_UTVECKLING } from "./sparformat.js";
@@ -121,12 +121,12 @@ export function utvecklad(regler, indata, res) {
     const kopt = s.fv[nyckel] ?? 0;
     let fv = Math.max(0, bas + kopt + (bonus[nyckel] ?? 0));
     if (minst[nyckel]) fv = Math.max(fv, minst[nyckel]);
-    const tekniker = f.id === "stridskonster" ? (gammal?.tekniker ?? indata.stridskonstTekniker?.[nyckel] ?? []) : undefined;
+    const tekniker = harTekniker(f) ? (gammal?.tekniker ?? stilensTekniker(regler, indata, nyckel)) : undefined;
     if (tekniker && kopt > 0 && !tekniker.length) fel.push(`${namnFor(regler, f, nyckel)}: stilen har inga tekniker (s. 68)`);
     fvNu[nyckel] = fv;
     fardigheter.push({
       nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: ge, start: gammal?.start ?? bas, fv, ep: gammal?.ep ?? 0,
-      epPerFV: epPerFV(regler, st, f, tekniker), kategoriB: f.kategoriB, kopt, ...(tekniker ? { tekniker } : {}),
+      epPerFV: epPerFV(regler, st, f, tekniker, nyckel), kategoriB: f.kategoriB, kopt, ...(tekniker ? { tekniker } : {}),
     });
   }
   // Vapen i samma vapengrupp har minst halva bästa FV i gruppen (s. 71)
@@ -212,7 +212,7 @@ export function psyOkning(regler, { magiker, psy, slag, t3 = 0, mod = 0 }) {
 
 export function psyMod(regler, res) {
   const tabell = regler.erfarenhet.psyHojning.sarskildFormagaMod;
-  return summa([res.sarskildFormaga, ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => tabell[f.namn] ?? 0));
+  return summa([...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => tabell[f.namn] ?? 0));
 }
 
 const MAGI = ["kanna-magi", "magisk-kanalisering", "magistudier"];
@@ -400,7 +400,9 @@ export function kontrolleraPost(regler, rpFore, rpEfter, resFore, resEfter, post
   // Det som posten ändrar får inte gå under noll
   const spel = rpEfter.spel;
   for (const [k, n] of Object.entries(spel.erf)) if (n < 0) fel.push(`${namn(k)}: bara ${rpFore.spel.erf[k] ?? 0} EP finns`);
-  if (spel.hjaltepoang < 0) fel.push(`Rollpersonen har bara ${rpFore.spel.hjaltepoang ?? 0} hjältepoäng`);
+  // Hjältepoäng som blev över vid skapandet (RB-003) hör också till rollpersonens hjältepoäng
+  const hpStart = resFore.hjaltepoang?.kvar ?? 0;
+  if (spel.hjaltepoang + hpStart < 0) fel.push(`Rollpersonen har bara ${(rpFore.spel.hjaltepoang ?? 0) + hpStart} hjältepoäng`);
   const kvar = resFore.utrustning.kvar;
   const bors = borsen(spel, kvar);
   for (const m of Object.keys(post.mynt ?? {})) {

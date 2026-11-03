@@ -1,5 +1,5 @@
 // Rollformuläret bredvid stegen, som visar rollpersonen medan den skapas.
-import { GRUNDEGENSKAPER, slaUpp } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, yrkesformagaText, bNivaText } from "../regelmotor.js";
 import { spelPotter } from "../spelmote.js";
 import { spelCtx } from "../app.js";
 import { saknas } from "../steg/saknas.js";
@@ -23,7 +23,7 @@ export function rollformular(res) {
       el("p", {}, [S.rp.ras ? res.ras.namn : null, S.rp.yrke ? res.yrke.namn : null, S.rp.alder == null ? null : `${S.rp.alder} år`, S.rp.kon].filter(Boolean).join(" · "))),
     S.vy === "spel" ? el("dl", { class: "nyckelvarden" },
       el("div", {}, el("dt", {}, "Osparade EP", info("EP")), el("dd", {}, spelPotter(spelCtx(res)).ep)),
-      el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, S.rp.spel.hjaltepoang ?? 0))) : el("div", { class: "potter" },
+      el("div", {}, el("dt", {}, "Hjältepoäng"), el("dd", {}, (S.rp.spel.hjaltepoang ?? 0) + (res.hjaltepoang?.kvar ?? 0)))) : el("div", { class: "potter" },
       el("div", { class: "pott" + (res.bp.kvar < 0 ? " over" : "") }, el("span", { class: "etikett" }, "BP kvar", info("BP")),
         el("span", { class: "pott-tal" }, res.bp.kvar - vaxlat), el("span", { class: "matare" }, el("span", { style: `width:${bpProcent}%` })),
         el("span", { class: "hjalp" }, vaxlat ? `av ${res.bp.start} · ${vaxlat} växlade till ${vaxlat * 5} EP` : `av ${res.bp.start}`)),
@@ -46,11 +46,18 @@ export function rollformular(res) {
     el("h3", {}, "Kroppsdelar"),
     el("ul", { class: "kroppsdelar" }, [0, 1].map(() => el("li", { class: "kolumnrubrik" }, el("span", {}, "Kroppsdel"), el("span", { class: "num" }, "KP"))),
       h.kroppsdelar.map((d) => el("li", {}, el("span", {}, d.namn), el("span", { class: "num" }, visa(d.kp))))),
-    [res.sarskildFormaga, ...res.extraFormagor].filter(Boolean).map((f, i) => [i === 0 ? el("h3", {}, "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
-    S.rp.yrke ? el("p", {}, el("strong", {}, "Yrkesförmåga: "), res.yrke.yrkesformaga) : null,
+    [...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...res.extraFormagor].filter(Boolean).map((f, i, alla) => [i === 0 ? el("h3", {}, alla.length > 1 ? "Särskilda förmågor" : "Särskild förmåga") : null, el("p", {}, el("strong", {}, f.namn), " ", f.effekt)]),
+    res.hjaltepoang?.totalt ? el("p", {}, el("strong", {}, "Hjältepoäng: "), `${res.hjaltepoang.kvar} av ${res.hjaltepoang.totalt} kvar`) : null,
+    S.rp.yrke ? el("p", {}, el("strong", {}, "Yrkesförmåga: "), yrkesformagaText(res.yrke)) : null,
+    res.stridshandlingar ? el("p", {}, el("strong", {}, "Handlingar per stridsrunda: "),
+      `${res.stridshandlingar.antal} (detaljerad strid${res.stridshandlingar.borda ? `, ${res.stridshandlingar.borda} av bördan` : ""})`) : null,
+    res.sinnen?.sinnen.some((x) => x.niva) ? el("p", {}, el("strong", {}, "Syn och hörsel: "),
+      res.sinnen.sinnen.filter((x) => x.niva).map((x) => `${x.namn} ${x.niva.toLowerCase()} (${x.mod > 0 ? "+" : x.mod < 0 ? "−" : "±"}${Math.abs(x.mod)})`).join(", ")) : null,
+    res.startutrustning?.length ? el("p", {}, el("strong", {}, "Startutrustning: "), res.startutrustning.join(", ")) : null,
     el("h3", {}, "Färdigheter", info("B-nivå")),
     el("ul", { class: "fardighetsrader" }, kolumnrubrik("Färdighet", "FV"), res.fardigheter.filter((f) => f.fv > 0).map((f) =>
-      el("li", { class: f.status }, el("span", {}, f.kategoriB ? medNiva(f.namn, slaUpp(S.R.fardigheter.bNivaer, f.fv)) : f.namn), el("span", { class: "num" }, f.fv)))),
+      el("li", { class: f.status }, el("span", {}, f.kategoriB ? medNiva(f.namn, bNivaText(S.R, f.fv, f.bNivaLagre)) : f.namn,
+        f.sinne ? el("span", { class: "hjalp" }, ` (${f.sinne > 0 ? "+" : "−"}${Math.abs(f.sinne)} syn/hörsel)`) : null), el("span", { class: "num" }, f.fv)))),
     res.besvarjelser.length ? [el("h3", {}, "Besvärjelser"), el("ul", { class: "fardighetsrader" }, kolumnrubrik("Besvärjelse", "FV"), res.besvarjelser.map((b) =>
       el("li", {}, el("span", {}, b.namn), el("span", { class: "num" }, b.fv))))] : null,
     res.utrustning.saker.length ? [el("h3", {}, "Utrustning"), el("ul", { class: "fardighetsrader" }, kolumnrubrik("Sak", "Vikt"), res.utrustning.saker.map((x) =>

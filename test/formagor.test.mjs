@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { raknaRollperson, sarskildFormaga, formagetabeller, tillgangligaFormagetabeller, formagetabell, tarningAv, slagIntervall } from "../regelmotor.js";
 import { regler, brutus, las } from "./brutus-data.mjs";
 
-const grund = las("sarskilda-formagor");
+const grund = las("sarskilda-formagor").tabeller.find((t) => t.id === "grund").rader;
 const enTabell = { ...regler, "sarskilda-formagor": grund };
 const rad = (slag, namn) => ({ slag, namn, effekt: "", sida: 1 });
 const flera = { ...regler, "sarskilda-formagor": { tabeller: [

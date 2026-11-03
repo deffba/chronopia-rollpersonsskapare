@@ -107,7 +107,7 @@ function oversikt(ctx) {
   const logg = rp.utveckling?.logg ?? [];
   const antal = (typ) => logg.filter((p) => p.typ === typ).length;
   const rader = epRader(ctx);
-  const hp = rp.spel.hjaltepoang ?? 0;
+  const hp = (rp.spel.hjaltepoang ?? 0) + (res.hjaltepoang?.kvar ?? 0);
   return [
     el("p", {}, "Här för du in det som händer med rollpersonen efter skapandet: erfarenhet, hjältepoäng, pengar och utrustning efter varje spelmöte, träning mellan äventyren och förbättringar när erfarenheten räcker till högre FV (kapitel 4, s. 73–76). Allt sparas i rollpersonens fil, så ladda ner den efter varje spelmöte."),
     el("dl", { class: "nyckelvarden spel-siffror" },
@@ -406,7 +406,7 @@ function forbattringVy(ctx) {
 }
 
 function hpTillganglig(ctx, p) {
-  return (ctx.rp().spel.hjaltepoang ?? 0) + p.post.hp;
+  return (ctx.rp().spel.hjaltepoang ?? 0) + (ctx.res.hjaltepoang?.kvar ?? 0) + p.post.hp;
 }
 
 function forbErfarenhet(ctx, p) {
@@ -592,5 +592,5 @@ function loggVy(ctx) {
 // Siffror för sidopanelen: osparade EP och hjältepoäng
 export function spelPotter(ctx) {
   const rader = epRader(ctx);
-  return { ep: summa(rader.map((r) => r.ep)), hp: ctx.rp().spel.hjaltepoang ?? 0, bniva: (fv) => slaUpp(ctx.R.fardigheter.bNivaer, fv) };
+  return { ep: summa(rader.map((r) => r.ep)), hp: (ctx.rp().spel.hjaltepoang ?? 0) + (ctx.res.hjaltepoang?.kvar ?? 0), bniva: (fv) => slaUpp(ctx.R.fardigheter.bNivaer, fv) };
 }

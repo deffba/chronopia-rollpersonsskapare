@@ -5,7 +5,7 @@
 // grundvärden, automatisk EP-fördelning) utifrån önskemålen i testrollpersoner.js, och kontrolleras sedan
 // av regelmotorn precis som en inläst fil. Går ett önskemål inte längre efter en regeländring väljs något
 // annat tillåtet i stället, och det sägs till i en notis.
-import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, varukatalog, tvahandsvapen, besvarjelsePris } from "./regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, vapenVillkor, varukatalog, tvahandsvapen, besvarjelsePris, iBocker, harTekniker, svardsskolaFor, teknikLista } from "./regelmotor.js";
 import { TESTROLLPERSONER } from "./testrollpersoner.js";
 import { startaPoanglogg } from "./poanglogg.js";
 import { startaAutofyll } from "./autofyll.js";
@@ -26,7 +26,10 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
   const rp = api.med(api.TOM(), (nu) => {
     const r = nu();
     Object.assign(r, { namn: recept.namn, spelare: "Test", kon: recept.kon, ras: recept.ras, alder: recept.alder, yrke: recept.yrke,
-      anteckningar: recept.anteckningar ?? "" });
+      anteckningar: recept.anteckningar ?? "", bocker: ["grund", ...(recept.bocker ?? [])], niva: recept.niva ?? 0,
+      valfriaRegler: recept.valfriaRegler ?? [] });
+    // Syn och hörsel (V&R s. 3): { syn: [BP, slag], horsel: [BP, slag] }
+    if (recept.sinnen) r.sinnen = Object.fromEntries(Object.entries(recept.sinnen).map(([id, [bp, slag]]) => [id, { bp, slag, tarningar: [slag] }]));
     const ras = rasAv(R, r.ras);
     const yrke = yrkeAv(R, r.yrke);
     const anvanda = new Set();
@@ -45,6 +48,15 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
       if (typeof post === "string") {
         const f = fardighetAv(R, post);
         if (f?.perVal) r.yrkesval[i] = ta(post, typeof val[post] === "string" ? val[post] : autoDelval(api, r, post, anvanda));
+      } else if (post.valPaket) {
+        // Receptet anger paketet som valPaket: { [postens index]: { paket, val } }, annars första paketet
+        const onskatPaket = onskat(recept.valPaket)?.[i];
+        const paket = post.valPaket[onskatPaket?.paket ?? 0];
+        const lista = [...(onskatPaket?.val ?? [])];
+        const n = paket.fasta ? 0 : paket.valfria ?? paket.antal;
+        while (lista.length < n) lista.push(paket.valfria ? R.fardigheter.lista.find((f) => f.typ === "sekundar" && !f.perVal && iBocker(f, r) && !lista.includes(f.id) && !MAGI.includes(f.id))?.id : ta(paket.fardighet, autoDelval(api, r, paket.fardighet, anvanda)));
+        if (paket.fardighet) lista.forEach((v) => anvanda.add(`${paket.fardighet}:${v}`));
+        r.yrkesval[i] = { paket: onskatPaket?.paket ?? 0, val: lista };
       } else if (post.valEn) {
         const alt = post.valEn.map((x) => (typeof x === "string" ? x : x.fardighet));
         const id = alt.find((a) => a in val) ?? alt[0];
@@ -53,6 +65,7 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
       } else if (post.antal) {
         const fasta = post.maste ?? [];
         const lista = [...fasta];
+        fasta.forEach((m) => anvanda.add(`${post.fardighet}:${m}`));
         for (const v of [].concat(val[post.fardighet] ?? [])) if (lista.length < post.antal && !anvanda.has(`${post.fardighet}:${v}`)) lista.push(ta(post.fardighet, v));
         while (lista.length < post.antal) lista.push(ta(post.fardighet, autoDelval(api, r, post.fardighet, anvanda)));
         fasta.forEach((m) => anvanda.add(`${post.fardighet}:${m}`));
@@ -67,12 +80,12 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
       const har = new Set(api.yrkesNycklar().map((k) => k.split(":")[0]));
       const kan = (id) => { const f = fardighetAv(R, id); return f && f.typ === "sekundar" && !f.perVal && !har.has(id) && !MAGI.includes(id); };
       const onskad = onskat(recept.valfri);
-      r.valfri = onskad && kan(onskad) ? onskad : R.fardigheter.lista.find((f) => kan(f.id))?.id ?? "";
+      r.valfri = onskad && kan(onskad) ? onskad : R.fardigheter.lista.find((f) => iBocker(f, r) && kan(f.id))?.id ?? "";
     }
 
     // Stridskonsternas tekniker
-    for (const nyckel of [...api.yrkesNycklar(), r.valfri].filter((k) => k?.startsWith("stridskonster:"))) {
-      const finns = new Set(R.fardigheter.stridskonstTekniker.map(([t]) => t));
+    for (const nyckel of [...api.yrkesNycklar(), r.valfri].filter((k) => harTekniker(fardighetAv(R, k ?? "")) && !svardsskolaFor(R, k))) {
+      const finns = new Set(teknikLista(R, fardighetAv(R, nyckel)).map(([t]) => t));
       const valda = (onskat(recept.tekniker) ?? []).filter((t) => finns.has(t));
       r.stridskonstTekniker[nyckel] = valda.length ? valda : [R.fardigheter.stridskonstTekniker[0][0]];
       r.stridskonstFardig[nyckel] = true;
@@ -82,17 +95,28 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
     r.grundvarden = api.grundvardesForslag() ?? r.grundvarden;
     if (api.rakna().magiformaga.behovs) r.magiformaga = { slag: 1 };
 
-    // Särskild förmåga. Kräver förmågan val som receptet inte har, prövas andra slag tills en förmåga utan val kommer upp.
-    const sf = recept.sarskildFormaga ?? { bp: 5, slag: 10 };
-    const provaSlag = (slag) => {
-      r.sarskildaFormagor = { bp: sf.bp, slag, val: [], avstar: !sf.bp };
-      const res = api.rakna();
-      r.sarskildaFormagor.formaga = res.sarskildFormaga?.namn;
-      return !res.fel.length && !res.saknas.length;
-    };
-    if (!provaSlag(onskat(sf.slag) ?? 0)) {
-      const slag = Array.from({ length: 39 }, (_, i) => i + 2).find(provaSlag);
-      if (slag === undefined) provaSlag(sf.slag);
+    // Särskilda förmågor, en per slag som erfarenhetsnivån ger. Kräver förmågan val som receptet inte har
+    // (val: förmågans val, t.ex. hjältepoängens slag), prövas andra slag tills en förmåga utan val kommer upp.
+    const sfLista = [].concat(recept.sarskildFormaga ?? { bp: 5, slag: 10 });
+    r.sarskildaFormagor = { bp: 0, slag: null, val: [], avstar: true, fler: [] };
+    sfLista.forEach((sf, i) => {
+      const satt = (o) => { if (i === 0) r.sarskildaFormagor = { ...o, fler: r.sarskildaFormagor.fler }; else r.sarskildaFormagor.fler[i - 1] = o; };
+      const provaSlag = (slag, val = []) => {
+        satt({ bp: sf.bp, slag, val, avstar: !sf.bp, ...(sf.tabell ? { tabell: sf.tabell } : {}) });
+        const res = api.rakna();
+        const o = i === 0 ? r.sarskildaFormagor : r.sarskildaFormagor.fler[i - 1];
+        o.formaga = res.sarskildaFormagorna?.[i]?.namn;
+        return !res.fel.length && !res.saknas.length;
+      };
+      if (!provaSlag(onskat(sf.slag) ?? 0, onskat(sf.val) ?? [])) {
+        const slag = Array.from({ length: 39 }, (_, j) => j + 1).find((x) => provaSlag(x));
+        if (slag === undefined) provaSlag(sf.slag, sf.val);
+      }
+    });
+    // Hjältepoäng från förmågorna används till grundegenskaper (RB-003)
+    if (onskat(recept.hjaltepoangKop)) {
+      r.hjaltepoangKop = { ...recept.hjaltepoangKop };
+      if (api.rakna().fel.length) r.hjaltepoangKop = {};
     }
 
     // Svärdshand, socialt stånd och startkapital med fasta slag
@@ -121,9 +145,9 @@ const MAGI = ["kanna-magi", "magisk-kanalisering", "magistudier", "animism", "el
 function autoDelval(api, rp, fid, anvanda) {
   const { R } = api;
   const ledig = (v) => !anvanda.has(`${fid}:${v}`);
-  if (fid === "vapen") return R.vapen.narstrid.filter((x) => x.grupp !== "slagsmal").map((x) => x.namn).find(ledig);
+  if (fid === "vapen") return R.vapen.narstrid.filter((x) => x.grupp !== "slagsmal" && !vapenVillkor(R, rp, x.namn)).map((x) => x.namn).find(ledig);
   if (fid === "tva-vapen") {
-    const enhand = R.vapen.narstrid.filter((x) => x.grupp !== "slagsmal" && !tvahandsvapen(R, x.namn, api.rakna().grundegenskaper)).map((x) => x.namn);
+    const enhand = R.vapen.narstrid.filter((x) => x.grupp !== "slagsmal" && !vapenVillkor(R, rp, x.namn) && !tvahandsvapen(R, x.namn, api.rakna().grundegenskaper)).map((x) => x.namn);
     return `${enhand[0]}+${enhand[1] ?? enhand[0]}`;
   }
   if (fid === "tala" || fid === "lasa-skriva") {
@@ -170,13 +194,15 @@ function kopBesvarjelser(api, rp, onskade) {
 function kopUtrustning(api, rp, onskatVapen, kop) {
   const { R } = api;
   const varden = api.rakna().grundegenskaper;
-  const katalog = varukatalog(R);
+  const katalog = varukatalog(R, rp);
   const max = R.utrustning.startpaket.vapenMaxPris;
   const kanna = new Set(api.rakna().fardigheter.filter((f) => f.nyckel.startsWith("vapen:") && f.fv > 0).map((f) => f.nyckel.split(":")[1]));
-  const enkla = katalog.filter((x) => ["Närstridsvapen", "Avståndsvapen", "Kastvapen"].includes(x.kategori) && x.pris <= max && kanAnvandaVapen(R, x.namn, varden))
+  const enkla = katalog.filter((x) => ["Närstridsvapen", "Avståndsvapen", "Kastvapen"].includes(x.kategori) && x.pris <= max && kanAnvandaVapen(R, x.namn, varden) && !vapenVillkor(R, rp, x.namn))
     .sort((a, b) => Number(kanna.has(b.namn)) - Number(kanna.has(a.namn)));
   const prova = (andra, tillbaka) => { andra(); if (api.rakna().fel.length) { tillbaka(); return false; } return true; };
-  for (const vapen of [onskatVapen, ...enkla.map((x) => x.namn)].filter((v) => v && enkla.some((x) => x.namn === v))) {
+  // Yrken med vapen i startutrustningen får startpaketet utan vapen
+  if (yrkeAv(R, rp.yrke)?.startvapen) prova(() => { rp.startpaket = { valt: true, vapen: "" }; }, () => { rp.startpaket = { valt: false, vapen: "" }; });
+  else for (const vapen of [onskatVapen, ...enkla.map((x) => x.namn)].filter((v) => v && enkla.some((x) => x.namn === v))) {
     if (prova(() => { rp.startpaket = { valt: true, vapen }; }, () => { rp.startpaket = { valt: false, vapen: "" }; })) break;
   }
   for (const namn of kop) {

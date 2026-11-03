@@ -21,7 +21,7 @@ export const STEG = [
 
 // Förklaringar till förkortningar, visas i små info-cirklar.
 export const FORKLARINGAR = {
-  BP: "BP (bakgrundspoäng) är poängen du bygger rollpersonen med i steg 1–10: 125 från start plus åldersbonus. Det som blir över växlas till 5 EP per BP när du kommer till steg 11 (s. 34); BP kan inte sparas.",
+  BP: "BP (bakgrundspoäng) är poängen du bygger rollpersonen med i steg 1–10: 125 från start (fler på en högre erfarenhetsnivå, steg 0) plus åldersbonus. Det som blir över växlas till 5 EP per BP när du kommer till steg 11 (s. 34); BP kan inte sparas.",
   EP: "EP (erfarenhetspoäng) köper FV i färdigheter: 2 EP per FV för primära, 3 för yrkesfärdigheter och 5 för sekundära (20 för en magiskola som sekundär).",
   FV: "FV (färdighetsvärde) visar hur bra rollpersonen är på något. Man slår 1T20, och ett resultat lika med eller under värdet lyckas. Vid start får FV inte vara högre än grundegenskapen.",
   BC: "BC (baschans) är gratis FV vid start i alla primära färdigheter och yrkesfärdigheter. Den beror på grundegenskapen. Sekundära färdigheter har ingen BC.",
@@ -50,6 +50,8 @@ export const DELVAL_HJALP = {
   djurhelning: "Skriv vilken sorts djur det gäller, till exempel hästar eller hundar. Färdigheten används för att vårda och hela sjuka eller skadade djur av den sorten (s. 58).",
   djurtraning: "Skriv vilken sorts djur det gäller, till exempel hästar eller hundar. Färdigheten används för att dressera och lära djur av den sorten att lyda (s. 58).",
   "spela-instrument": "Skriv vilket instrument det gäller, till exempel luta eller flöjt. Färdigheten lärs separat för varje instrument. Är den en yrkesfärdighet räknas alla instrument som yrkesfärdigheter (s. 68).",
+  vapentekniker: "Välj en svärdsskolas stridskonst i listan, eller skriv ett eget namn och sätt ihop stilen av tekniker i steg 11. En skolas stridskonst har färdiga tekniker och kostar skolans pris per FV, eller 3 EP som yrkesfärdighet (Vapen & rustningar s. 15, 32–33).",
+  heraldik: "Välj Allmän eller skriv en grupp, till exempel Högländare, Gatugäng, ett handelshus, Alver eller Dvärgar. Allmän heraldik gäller alla grupper, men B-nivån räknas fyra steg lägre. Specifik heraldik gäller bara den gruppen och räknas som vanligt (Vapen & rustningar s. 15).",
   stridskonster: "Skriv namnet på stridsstilen. Färdigheten används för obeväpnad strid med särskilda tekniker, som sparkar och dubbelslag. FV gäller alla tekniker i stilen. Teknikerna väljs i steg 11 och bestämmer vad varje FV kostar (s. 68–69).",
 };
 

@@ -432,7 +432,7 @@ async function start() {
     try { localStorage.setItem("chronopia-manuella-slag", S.manuellaSlag ? "ja" : "nej"); } catch { /* frivilligt */ }
     rita();
   });
-  // Info-cirklarnas förklaringar visas i en gemensam ruta
+  // Info-cirklarnas förklaringar (och andra element med data-tip, t.ex. åtkomligheten i utrustningen) visas i en gemensam ruta
   const tips = el("div", { id: "tips", role: "tooltip", hidden: true });
   document.body.append(tips);
   const visa = (knapp) => {
@@ -446,10 +446,10 @@ async function start() {
     tips.style.top = `${under + tips.offsetHeight > window.innerHeight ? r.top - tips.offsetHeight - 8 : under}px`;
   };
   const dolj = () => { tips.hidden = true; };
-  document.addEventListener("mouseover", (e) => { const k = e.target.closest?.(".info"); if (k) visa(k); });
-  document.addEventListener("mouseout", (e) => { if (e.target.closest?.(".info")) dolj(); });
-  document.addEventListener("focusin", (e) => { const k = e.target.closest?.(".info"); if (k) visa(k); else dolj(); });
-  document.addEventListener("click", (e) => { const k = e.target.closest?.(".info"); if (k) { e.stopPropagation(); visa(k); } else dolj(); }, true);
+  document.addEventListener("mouseover", (e) => { const k = e.target.closest?.("[data-tip]"); if (k) visa(k); });
+  document.addEventListener("mouseout", (e) => { if (e.target.closest?.("[data-tip]")) dolj(); });
+  document.addEventListener("focusin", (e) => { const k = e.target.closest?.("[data-tip]"); if (k) visa(k); else dolj(); });
+  document.addEventListener("click", (e) => { const k = e.target.closest?.("[data-tip]"); if (k) { e.stopPropagation(); visa(k); } else dolj(); }, true);
   window.addEventListener("scroll", dolj, { passive: true });
   // Även Ctrl+P eller Cmd+P föreslår rollpersonens namn som filnamn
   window.addEventListener("beforeprint", namnSomTitel);

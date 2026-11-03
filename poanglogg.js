@@ -4,7 +4,7 @@
 // ut eller ångras försvinner ur loggen (byts rasen syns bara den nya rasen). Summan av posterna jämförs
 // med det som visas på sidan, och stämmer de inte överens sägs det till längst ned i loggen.
 // Undantaget är ändringar som regelkontrollen stoppade: de är händelser och sparas medan sidan är öppen.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, namnFor, alderseffekter, slaUpp, sarskildFormaga } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, namnFor, alderseffekter, slaUpp, sarskildFormaga, formageslag, formagetabell } from "./regelmotor.js";
 
 // [typ, text i filtret, ikryssad från början, etikett på raden]
 const TYPER = [["BP", "BP", true, "BP"], ["EP", "EP", true, "EP"], ["Guld", "Guld", true, "sm"], ["GE", "GE", true, "GE"],
@@ -35,7 +35,7 @@ export function poster(api) {
   const egenskapsbonus = sarskildFormaga(R, api.motorIndata()).tillagg.egenskapsbonus ?? {};
   const fmt = (n) => (n > 0 ? `+ ${n}` : n < 0 ? `− ${-n}` : "");
 
-  lagg(null, "BP", "start", "Startpoäng", R.grundegenskaper.startBP);
+  lagg(null, "BP", "start", res.niva?.namn ? `Startpoäng (${res.niva.namn.toLowerCase()})` : "Startpoäng", res.niva?.bp ?? R.grundegenskaper.startBP);
 
   // 1. Ras
   lagg("ras", "BP", "ras", rp.ras ? `Ras: ${ras.namn}` : "Ingen ras vald än", -res.bp.utgifter.ras);
@@ -87,9 +87,18 @@ export function poster(api) {
   // 7–10. BP lagda på slagen
   const slagText = (s, utfall) => (s.slag === null || s.slag === undefined ? "inte slaget än" : `slag ${s.slag}: ${utfall}`);
   const gjort = (s) => s.slag !== null && s.slag !== undefined;
-  const sf = rp.sarskildaFormagor;
-  if (sf.bp) lagg("formagor", "BP", "sf", `BP på slaget, ${slagText(sf, res.sarskildFormaga?.namn ?? "ingen förmåga")}`, -sf.bp);
-  if (gjort(sf) && sf.bp) lagg("formagor", "Slag", "sf", `Särskild förmåga: 2T20 ${sf.slag} + ${sf.bp} BP = ${sf.slag + sf.bp}: ${res.sarskildFormaga?.namn ?? "ingen förmåga"}`, null, { visa: `${sf.slag}` });
+  // 6. Syn och hörsel (valfri regel, V&R s. 3)
+  for (const x of res.sinnen?.sinnen ?? []) {
+    if (x.bp) lagg("egenskaper", "BP", x.id, `BP på ${x.namn.toLowerCase()}, ${slagText(x, `${x.niva} (${x.mod > 0 ? "+" : ""}${x.mod})`)}`, -x.bp);
+    if (gjort(x)) lagg("egenskaper", "Slag", x.id, `${x.namn}: 1T6 ${x.slag}${x.bp ? ` + ${x.bp} BP = ${x.varde}` : ""}: ${x.niva}`, null, { visa: `${x.slag}` });
+  }
+  formageslag(R, api.motorIndata()).forEach((sf, i) => {
+    const id = i ? `sf${i + 1}` : "sf";
+    const namn = res.sarskildaFormagorna?.[i]?.namn ?? "ingen förmåga";
+    const tarning = formagetabell(R, api.motorIndata(), sf)?.tarning ?? "2T20";
+    if (sf.bp) lagg("formagor", "BP", id, `BP på slaget, ${slagText(sf, namn)}`, -sf.bp);
+    if (gjort(sf) && sf.bp) lagg("formagor", "Slag", id, `Särskild förmåga${i ? ` ${i + 1}` : ""}: ${tarning} ${sf.slag} + ${sf.bp} BP = ${sf.slag + sf.bp}: ${namn}`, null, { visa: `${sf.slag}` });
+  });
   for (const g of [...GRUNDEGENSKAPER, "STO"]) ge("formagor", g, "sf", `särskild förmåga (${res.sarskildFormaga?.namn ?? "?"})`, egenskapsbonus[g]);
   if (rp.svardshand.bp) lagg("svardshand", "BP", "sh", `BP på slaget, ${slagText(rp.svardshand, res.slag.svardshand)}`, -rp.svardshand.bp);
   if (gjort(rp.svardshand)) {

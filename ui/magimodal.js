@@ -85,6 +85,10 @@ export function oppnaMagiModal(vidare = null) {
   const visaByte = (knapp) => {
     const platser = bytesPlatser();
     const val = platser.map(() => "");
+    // Extra yrkesfärdigheter och sekundära färdigheter är frivilliga, så spelaren får avstå från att välja en ny.
+    // Den valfria yrkesfärdigheten hör till yrket och måste ersättas.
+    const avstar = platser.map(() => false);
+    const kanAvsta = (p) => p.typ !== "valfri";
     const fran = knapp.getBoundingClientRect();
     magiModal.fas = "byte";
     const rubrik = el("h2", { class: "magi-byte-rubrik", id: "magimodal-byte-rubrik" }, "FÖRLIKAS MED ÖDET");
@@ -92,14 +96,18 @@ export function oppnaMagiModal(vidare = null) {
     const fel = el("p", { class: "magi-byte-fel", role: "alert" });
     const gaVidare = el("button", { type: "button", class: "magi-knapp", id: "magimodal-ga-vidare", disabled: true, onclick: () => {
       const kandidat = structuredClone(S.rp);
+      const bort = new Set();
       platser.forEach((p, i) => {
         if (p.typ === "valfri") kandidat.valfri = val[i];
-        else if (p.typ === "extra") kandidat.extraYrkesfardigheter[p.i] = val[i];
+        else if (p.typ === "extra") { if (avstar[i]) bort.add(p.i); else kandidat.extraYrkesfardigheter[p.i] = val[i]; }
         else {
-          kandidat.sekundara[kandidat.sekundara.indexOf(p.nyckel)] = val[i];
+          if (avstar[i]) kandidat.sekundara = kandidat.sekundara.filter((k) => k !== p.nyckel);
+          else kandidat.sekundara[kandidat.sekundara.indexOf(p.nyckel)] = val[i];
           delete kandidat.fardigheter[p.nyckel];
         }
       });
+      for (const i of platser.filter((p) => p.typ === "extra").map((p) => p.i)) if (bort.has(i)) delete kandidat.fardigheter[kandidat.extraYrkesfardigheter[i]];
+      kandidat.extraYrkesfardigheter = kandidat.extraYrkesfardigheter.filter((_, i) => !bort.has(i));
       const problem = raknaFor(kandidat).fel;
       if (problem.length) { fel.textContent = `Det går inte: ${problem[0]}.`; return; }
       S.rp = kandidat;
@@ -109,14 +117,17 @@ export function oppnaMagiModal(vidare = null) {
       fel.textContent = "";
       // Färdigheter som rollpersonen redan har (eller väljer i en annan lista här) visas inte; delval spärras som i stegen
       const harRedan = new Set([...yrkesNycklar(), ...S.rp.extraYrkesfardigheter, ...S.rp.sekundara, ...val].filter(Boolean));
-      listor.replaceChildren(...platser.map((p, i) => el("div", { class: "magi-byte-plats" },
+      listor.replaceChildren(...platser.map((p, i) => el("div", { class: "magi-byte-plats" + (avstar[i] ? " avstar" : "") },
         el("label", { for: `magibyte-${i}-f` }, { valfri: "Ny valfri yrkesfärdighet", extra: "Ny extra yrkesfärdighet", sekundar: "Ny sekundär färdighet" }[p.typ]),
-        fardighetsVal(`magibyte-${i}`, val[i], (v) => { val[i] = v; ritaVal(); },
+        kanAvsta(p) ? el("label", { class: "magi-byte-avsta" },
+          el("input", { type: "checkbox", id: `magibyte-${i}-avsta`, checked: avstar[i], onchange: (e) => { avstar[i] = e.target.checked; if (avstar[i]) val[i] = ""; ritaVal(); } }),
+          p.typ === "extra" ? " Avstå: ingen ny extra yrkesfärdighet (BP:n blir kvar)" : " Avstå: ingen ny sekundär färdighet (EP:n blir kvar)") : null,
+        avstar[i] ? null : fardighetsVal(`magibyte-${i}`, val[i], (v) => { val[i] = v; ritaVal(); },
           (f) => f.typ !== "magiskola" && (p.typ === "extra" || f.typ !== "primar") && (f.perVal || !harRedan.has(f.id) || val[i].split(":")[0] === f.id),
           p.typ === "sekundar" ? {} : { yrke: true }),
-        valdBeskrivning(val[i]),
-        val[i].startsWith("stridskonster") ? stridskonstInfo() : null)));
-      gaVidare.disabled = val.some((v) => !v || paborjad(v));
+        avstar[i] ? null : valdBeskrivning(val[i]),
+        !avstar[i] && val[i].startsWith("stridskonster") ? stridskonstInfo() : null)));
+      gaVidare.disabled = val.some((v, i) => !avstar[i] && (!v || paborjad(v)));
     };
     ritaVal();
     modal.classList.add("byte");

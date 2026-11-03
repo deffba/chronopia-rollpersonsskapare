@@ -23,8 +23,10 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
     const felLista = [];
     let antal = 0;
     for (const ras of raser.lista ?? raser) for (const y of yrken.lista) {
+      if (y.villkor?.ras && !y.villkor.ras.includes(ras.id)) continue; // yrket är inte öppet för rasen (V&R)
       antal++;
-      const x = window.chronopiaDev.byggAuto({ id: 'x', namn: `${ras.id} ${y.id}`, kon: 'Man', ras: ras.id, alder: ras.alder.vuxen[0], yrke: y.id });
+      const bocker = [...new Set([ras.kalla?.bok, y.kalla?.bok].filter(Boolean))];
+      const x = window.chronopiaDev.byggAuto({ id: 'x', namn: `${ras.id} ${y.id}`, kon: 'Man', ras: ras.id, alder: ras.alder.vuxen[0], yrke: y.id, bocker });
       if (x.fel.length) felLista.push(`${ras.id}/${y.id}: ${x.fel[0]}`);
     }
     return { antal, felLista };
@@ -60,7 +62,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   ok('rollformuläret med erf', await p.locator('#rf-vy').isVisible() && Object.keys(erf).length > 0);
   const filer = []; p.on('download', d => filer.push(d.suggestedFilename()));
   await p.click('#menyknapp'); await p.click('#dev-ladda-ner'); await p.waitForTimeout(1000);
-  ok('ladda ner alla', filer.length === 3, filer.join(', '));
+  ok('ladda ner alla', filer.length === 6, filer.join(', '));
   await p.goto(URL); await p.waitForSelector('.utvecklarlage', { state: 'attached' });
   ok('valet sparas i webbläsaren', true);
   await p.goto(URL + '?dev=av'); await tillRas(p); await p.waitForTimeout(300);

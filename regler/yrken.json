@@ -607,6 +607,797 @@
       "skolTak": "INT",
       "stamning": "Tre skolor, en vilja: ärkemagikern böjer sig för ingen magi.",
       "beskrivning": "Den mest lärde av magiker, som studerar animism, elementarmagi och mentalism på en gång. Bredden har ett pris: färdigheten i en magiskola kan aldrig bli högre än intelligensen."
+    },
+    {
+      "id": "ceriansk-ulv",
+      "namn": "Ceriansk ulv",
+      "sida": 4,
+      "kalla": {
+        "bok": "vr",
+        "sida": 4
+      },
+      "yrkesformaga": "+5 CL med alla avståndsvapen.",
+      "initiativ": 3,
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 4
+        },
+        {
+          "fardighet": "vapentekniker",
+          "antal": 1,
+          "maste": [
+            "Ceriansk svärdsdans"
+          ]
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Två cerianska klingor av ypperlig kvalitet (+1 skada, +3 BV)",
+        "Ceriansk armslunga eller handarmborst",
+        "Ulvmedaljong"
+      ],
+      "startvaror": [
+        {
+          "text": "Två cerianska klingor av ypperlig kvalitet (+1 skada, +3 BV)",
+          "namn": "Ceriansk klinga",
+          "antal": 2
+        }
+      ],
+      "stamning": "Ulvarna rör sig som en flock: tyst, snabbt och alltid tillsammans.",
+      "beskrivning": "Alviska elitkrigare från Ulvskolan som lärt sig Ceriansk svärdsdans. De slåss med två lätta klingor och är fruktade skyttar.",
+      "villkor": {
+        "ras": [
+          "dimalv",
+          "ljusalv",
+          "stadsalv"
+        ]
+      },
+      "startvapen": true
+    },
+    {
+      "id": "dodsdansare",
+      "namn": "Dödsdansare",
+      "sida": 4,
+      "kalla": {
+        "bok": "vr",
+        "sida": 4
+      },
+      "yrkesformaga": "+7 på initiativet i dueller man mot man, +5 i andra strider. Har en skara supportrar (SL avgör).",
+      "initiativ": 3,
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        {
+          "valEn": [
+            "stridskonster",
+            "vapentekniker"
+          ]
+        },
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 5
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Förstklassiga vapen och rustning efter eget val (SL avgör)",
+        "Nyckel till Dödsdansarnas sal"
+      ],
+      "stamning": "Fyrtio dueller på arenans sand, och fortfarande vid liv.",
+      "beskrivning": "Gladiatorer som överlevt minst fyrtio dueller och blivit arenans stjärnor. De kommer från alla raser och samhällsskikt.",
+      "startvapen": true
+    },
+    {
+      "id": "hedersvakt",
+      "namn": "Hedersvakt",
+      "sida": 5,
+      "kalla": {
+        "bok": "vr",
+        "sida": 5
+      },
+      "yrkesformaga": "CL sänks aldrig av skador från den pågående striden. Ett lyckat FYS-slag gör att träffar på 2 eller mindre i skada (efter rustning) inte biter.",
+      "initiativ": 3,
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        "hantera-fallor",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "lasdyrkning",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Hedersyxa",
+        "Axelplåt",
+        "Skäggkam"
+      ],
+      "startvaror": [
+        {
+          "text": "Hedersyxa",
+          "namn": "Hedersyxa"
+        },
+        {
+          "text": "Axelplåt",
+          "namn": "Axelskydd (par): Dvärgiskt",
+          "kraverRegel": "detaljerad-strid",
+          "annars": "Armskydd (par): Metall"
+        },
+        {
+          "text": "Skäggkam",
+          "namn": "Skäggkam"
+        }
+      ],
+      "stamning": "Den som bär hedersyxan viker inte, hur hårt slagen än faller.",
+      "beskrivning": "Dvärgiska livvakter och väktare med en hederskodex lika hård som stålet i deras yxor.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "kejsarensTjanare": true,
+      "startvapen": true
+    },
+    {
+      "id": "huvudjagare",
+      "namn": "Huvudjägare",
+      "sida": 5,
+      "kalla": {
+        "bok": "vr",
+        "sida": 5
+      },
+      "yrkesformaga": "Ett sjätte sinne för fara: CL i Upptäcka fara blir aldrig lägre än 15.",
+      "initiativ": 3,
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        {
+          "valEn": [
+            "forfalskning",
+            "hasardspel"
+          ]
+        },
+        "muta",
+        "skadespeleri",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ett valfritt handvapen och ett valfritt avståndsvapen",
+        "Dokument: efterlysningar, kontrakt och lejdebrev",
+        "Kejserlig fullmakt"
+      ],
+      "stamning": "Varje efterlyst har ett pris, och huvudjägaren vet var de gömmer sig.",
+      "beskrivning": "Prisjägare med kejserlig fullmakt som spårar upp förrymda och efterlysta i Chronopias gränder och bortom.",
+      "startvapen": true
+    },
+    {
+      "id": "hyrsvard",
+      "namn": "Hyrsvärd",
+      "sida": 6,
+      "kalla": {
+        "bok": "vr",
+        "sida": 6
+      },
+      "yrkesformaga": "1T6 mycket goda vänner bland legosoldaterna kring Klingornas allians (SL avgör).",
+      "initiativ": 3,
+      "fardigheter": [
+        "dra-vapen",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "muta",
+        {
+          "fardighet": "tala",
+          "antal": 1
+        },
+        "tva-vapen",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ett valfritt vapen",
+        "Vapenfett",
+        "Medlemsbevis i Klingornas allians"
+      ],
+      "stamning": "Svärdet går till högstbjudande, men lojaliteten mot bröderna i alliansen är inte till salu.",
+      "beskrivning": "Legosoldater som säljer sina tjänster genom Klingornas allians. De har kontakter i varje garnisonsstad.",
+      "startvapen": true
+    },
+    {
+      "id": "krigarmunk",
+      "namn": "Krigarmunk",
+      "sida": 6,
+      "kalla": {
+        "bok": "vr",
+        "sida": 6
+      },
+      "yrkesformaga": "Drabbas aldrig av panik, −5 på slag på Skräcktabellen och +5 på motståndsslag mot besvärjelser.",
+      "initiativ": 3,
+      "fardigheter": [
+        {
+          "valEn": [
+            "dra-vapen",
+            "malning"
+          ]
+        },
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        "kulturkannedom",
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om religion"
+          ]
+        },
+        {
+          "valPaket": [
+            {
+              "fardighet": "lardom",
+              "antal": 2,
+              "namn": "Lärdomsfärdigheter (2)"
+            },
+            {
+              "fasta": [
+                "hantera-fallor",
+                "lasdyrkning"
+              ]
+            }
+          ]
+        },
+        "stridskonster",
+        {
+          "valPaket": [
+            {
+              "fardighet": "vapen",
+              "antal": 2,
+              "namn": "Vapenfärdigheter (2)"
+            },
+            {
+              "valfria": 2,
+              "namn": "Två valfria färdigheter"
+            }
+          ]
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ordens heliga urkund",
+        "Ordenssigill",
+        "Övrig utrustning avgör SL"
+      ],
+      "stamning": "Kroppen är ett vapen och tron dess sköld.",
+      "beskrivning": "Munkar som tjänar sin orden med både bön och svärd. Många ordnar tar inte emot troll, orcher, gobliner eller drakoniter."
+    },
+    {
+      "id": "ordenskrigare",
+      "namn": "Ordenskrigare",
+      "sida": 7,
+      "kalla": {
+        "bok": "vr",
+        "sida": 7
+      },
+      "yrkesformaga": "Slår aldrig färdighetsslag i Rida för rimliga manövrer; de lyckas alltid.",
+      "initiativ": 3,
+      "fardigheter": [
+        "dra-vapen",
+        "hantera-fallor",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        {
+          "fardighet": "heraldik",
+          "antal": 1,
+          "maste": [
+            "Högländare"
+          ]
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om religion"
+          ]
+        },
+        "orientering",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Hederssvärd",
+        "Högländsk stridshäst",
+        "Heraldiska vimplar"
+      ],
+      "startvaror": [
+        {
+          "text": "Hederssvärd",
+          "namn": "Hederssvärd"
+        },
+        {
+          "text": "Heraldiska vimplar",
+          "namn": "Heraldiska vimplar"
+        }
+      ],
+      "stamning": "Vimplarna fladdrar, hästen frustar, och ordens ära står på spel.",
+      "beskrivning": "Högländska riddare i en helig orden, födda i sadeln och uppfostrade i ordens heraldik och tro.",
+      "villkor": {
+        "ras": [
+          "hoglandare"
+        ]
+      },
+      "startvapen": true
+    },
+    {
+      "id": "sabransk-okenriddare",
+      "namn": "Sabransk ökenriddare",
+      "sida": 8,
+      "kalla": {
+        "bok": "vr",
+        "sida": 8
+      },
+      "yrkesformaga": "Väljer en magiskola som extra yrkesfärdighet, utan magiförmågeslag men med högst FV 10 vid start. Får FV 10 i Hypnotisera gratis, som primär färdighet.",
+      "initiativ": 3,
+      "fardigheter": [
+        "dra-vapen",
+        "giftkunskap",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om gas- och skjutvapen"
+          ]
+        },
+        {
+          "fardighet": "vapentekniker",
+          "antal": 1,
+          "maste": [
+            "Sabrans väg"
+          ]
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        },
+        "overlevnad",
+        {
+          "valEn": [
+            "animism",
+            "elementarmagi",
+            "mentalism"
+          ],
+          "takStart": 10,
+          "utanMagiformagaslag": true
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ett valfritt sabranskt närstridsvapen",
+        "Ett valfritt skjutvapen",
+        "Två sabranska gasbomber",
+        "Sabransk ökenrustning",
+        "Formelsamling (om rollpersonen kan magi)"
+      ],
+      "stamning": "Öknen tar den svage. Riddaren bär sin vatten, sitt svärd och sin magi.",
+      "beskrivning": "Ökenfolkets krigaradel, som förenar Sabrans väg med magi och hypnos.",
+      "villkor": {
+        "ras": [
+          "sabran"
+        ]
+      },
+      "primara": [
+        "hypnotisera"
+      ],
+      "startFV": [
+        {
+          "fardighet": "hypnotisera",
+          "fv": 10
+        }
+      ],
+      "startvapen": true
+    },
+    {
+      "id": "slaghok",
+      "namn": "Slaghök",
+      "sida": 8,
+      "kalla": {
+        "bok": "vr",
+        "sida": 8
+      },
+      "yrkesformaga": "Går aldrig vilse i gängets område och har +5 på initiativet i gatustrid.",
+      "initiativ": 3,
+      "fardigheter": [
+        "akrobatik",
+        "dra-vapen",
+        "hasardspel",
+        {
+          "fardighet": "heraldik",
+          "antal": 1,
+          "maste": [
+            "Gatugäng"
+          ]
+        },
+        "lasdyrkning",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Hökutstyrsel: läderväst och höktatuering",
+        "Piska",
+        "Ett lätt handvapen",
+        "Ett avståndsvapen"
+      ],
+      "startvaror": [
+        {
+          "text": "Piska",
+          "namn": "Piska"
+        }
+      ],
+      "stamning": "Hökarna äger gatorna, och varje gränd har ett namn.",
+      "beskrivning": "Medlemmar i gatugänget Hökarna. De kan varje genväg och varje tak i sitt kvarter.",
+      "startvapen": true
+    },
+    {
+      "id": "smidesmastare",
+      "namn": "Smidesmästare",
+      "sida": 8,
+      "kalla": {
+        "bok": "vr",
+        "sida": 8
+      },
+      "yrkesformaga": "Kontrollerat bärsärkaraseri (1 SR att väcka, varar tills han vill eller striden är över): kan ändå parera, motståndarna får −2 CL på attacker och parader och han +3 STY. Får FV 10 i Smide gratis, som primär färdighet.",
+      "initiativ": 3,
+      "fardigheter": [
+        {
+          "fardighet": "hantverk",
+          "antal": 3,
+          "maste": [
+            "Smide"
+          ]
+        },
+        "kulturkannedom",
+        "lasdyrkning",
+        "rakning",
+        {
+          "fardighet": "vapen",
+          "antal": 3,
+          "maste": [
+            "Stridshammare (dvärgisk)"
+          ]
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Hem och smedja i Stubbstan",
+        "Tvåhandshammare (+3 skada och BV)",
+        "Förkläde av härdat läder (enda rustningen)"
+      ],
+      "startvaror": [
+        {
+          "text": "Tvåhandshammare (+3 skada och BV)",
+          "namn": "Smidesmästarens stridshammare"
+        }
+      ],
+      "stamning": "Hammaren sjunger mot städet, och lika gärna mot en fiendes hjälm.",
+      "beskrivning": "Mästersmeder som smider sina egna vapen och svingar dem i strid med ett kontrollerat raseri. En av vapenfärdigheterna bör vara tvåhandshammaren.",
+      "villkor": {
+        "ras": [
+          "dvarg",
+          "manniska"
+        ]
+      },
+      "primara": [
+        "hantverk:Smide"
+      ],
+      "startFV": [
+        {
+          "fardighet": "hantverk:Smide",
+          "fv": 10
+        }
+      ],
+      "startvapen": true
+    },
+    {
+      "id": "stadspirat",
+      "namn": "Stadspirat",
+      "sida": 9,
+      "kalla": {
+        "bok": "vr",
+        "sida": 9
+      },
+      "yrkesformaga": "Blir aldrig sjösjuk och klarar halsbrytande akrobatik ombord (bonusar efter SL).",
+      "initiativ": 3,
+      "fardigheter": [
+        "dra-vapen",
+        "knopar",
+        "navigera",
+        "simma",
+        "sjokunnighet",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Liten snabb båt (till exempel en fryvisk kasell)",
+        "Hamnkarta",
+        "Gömställe",
+        "Tre valfria tatueringar"
+      ],
+      "startvaror": [
+        {
+          "text": "Liten snabb båt (till exempel en fryvisk kasell)",
+          "namn": "Fryvisk kasell"
+        },
+        {
+          "text": "Hamnkarta",
+          "namn": "Karta (kloak, hamn o.s.v.)"
+        }
+      ],
+      "stamning": "Kanalerna är vägar för den som vet vart de leder.",
+      "beskrivning": "Pirater som plundrar längs Chronopias kanaler och hamnar och försvinner i dimman innan vakten hinner fram."
+    },
+    {
+      "id": "svartgardist",
+      "namn": "Svartgardist",
+      "sida": 10,
+      "kalla": {
+        "bok": "vr",
+        "sida": 10
+      },
+      "yrkesformaga": "Börjar med ett nekrologiskt föremål (två som veteran, tre som hjälte; krafterna avgörs med SL). Anfaller aldrig oprovocerat. +5 CL på Övertala.",
+      "initiativ": 3,
+      "fardigheter": [
+        "dra-vapen",
+        {
+          "fardighet": "vapentekniker",
+          "antal": 1,
+          "maste": [
+            "Kejsarens hand"
+          ]
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om nekrologi"
+          ]
+        },
+        "rida-flygande-djur",
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        },
+        "overlevnad"
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Svart rustning och vapen",
+        "Metallring om fotleden",
+        "Kejsarens emblem tatuerat på ryggen"
+      ],
+      "stamning": "Kejsarens hand är svart, och den sluter sig aldrig i onödan.",
+      "beskrivning": "Latraciska elitsoldater i kejsarens Svarta garde, utvalda och tränade i stridskonsten Kejsarens hand.",
+      "villkor": {
+        "ras": [
+          "latracier"
+        ]
+      },
+      "kejsarensTjanare": true,
+      "startvapen": true
+    },
+    {
+      "id": "tunnelkrigare",
+      "namn": "Tunnelkrigare",
+      "sida": 11,
+      "kalla": {
+        "bok": "vr",
+        "sida": 11
+      },
+      "yrkesformaga": "CL i Orientering blir aldrig lägre än 15 under jord. +5 på initiativet i strid under jord, och strid i kloakerna ger inga avdrag.",
+      "initiativ": 3,
+      "fardigheter": [
+        "dra-vapen",
+        "hantera-fallor",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om Chronopias underjord"
+          ]
+        },
+        "simma",
+        "strid-i-morker",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ett lätt handvapen",
+        "Tjutare",
+        "Oljelykta",
+        "Pannlykta",
+        "Ofullständig kloakkarta",
+        "Saneringskontrakt",
+        "Lösskägg"
+      ],
+      "startvaror": [
+        {
+          "text": "Tjutare",
+          "namn": "Tjutare"
+        },
+        {
+          "text": "Oljelykta",
+          "namn": "Oljelykta (6 timmar)"
+        },
+        {
+          "text": "Pannlykta",
+          "namn": "Pannlykta"
+        },
+        {
+          "text": "Ofullständig kloakkarta",
+          "namn": "Karta (kloak, hamn o.s.v.)"
+        },
+        {
+          "text": "Lösskägg",
+          "namn": "Lösskägg"
+        }
+      ],
+      "stamning": "Under staden finns en annan stad, och någon måste hålla den ren.",
+      "beskrivning": "Krigare som rensar Chronopias kloaker och tunnlar från det som kryper där nere.",
+      "startvapen": true
+    },
+    {
+      "id": "vapenmastare",
+      "namn": "Vapenmästare",
+      "sida": 12,
+      "kalla": {
+        "bok": "vr",
+        "sida": 12
+      },
+      "yrkesformaga": "Tre valfria vapenfärdigheter med FV 10 gratis, som primära färdigheter. Kan lägga 5 PSY på en extra handling i strid, högst två gånger om dagen. Påverkas inte av motståndarens svärdshand.",
+      "initiativ": 3,
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om stridskonster"
+          ]
+        },
+        "strid-i-morker",
+        {
+          "fardighet": "vapentekniker",
+          "antal": 2
+        },
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 3,
+          "startFV": 10,
+          "primar": true
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Sina vapen",
+        "Övrig utrustning efter svärdsskolan"
+      ],
+      "stamning": "Varje vapen har sin dans, och mästaren kan dem alla.",
+      "beskrivning": "Krigare som ägnat livet åt vapnens konst och behärskar flera stridskonster.",
+      "startvapen": true
+    },
+    {
+      "id": "adling",
+      "namn": "Ädling",
+      "sida": 12,
+      "kalla": {
+        "bok": "vr",
+        "sida": 12
+      },
+      "yrkesformaga": "Alltid lugn och samlad: fiender får −2 CL på allt som rör honom. Börjar med minst 100 000 sm.",
+      "initiativ": 3,
+      "fardigheter": [
+        "administration",
+        "dans",
+        "dra-vapen",
+        "heraldik",
+        "malning",
+        "muta",
+        "spela-instrument",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Utsökta kläder",
+        "Hem i ett bättre kvarter",
+        "Minst 100 000 sm",
+        "En personlig tjänare"
+      ],
+      "stamning": "Ett leende, en bugning, och sedan klingans spets mot strupen.",
+      "beskrivning": "Alviska adelsmän som lärt sig fäktning lika väl som etikett.",
+      "villkor": {
+        "ras": [
+          "dimalv",
+          "ljusalv",
+          "stadsalv"
+        ]
+      },
+      "kapitalMinst": 100000
     }
   ],
   "extraYrkesfardigheter": {

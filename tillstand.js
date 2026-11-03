@@ -1,6 +1,6 @@
 // Rollpersonen och appens delade tillstånd, och kopplingen till regelmotorn.
 // Delat tillstånd som flera moduler ändrar ligger i S (till exempel S.rp, rollpersonen).
-import { raknaRollperson, rasAv, yrkeAv, fardighetAv, sarskildFormaga as sfFor, paborjad } from "./regelmotor.js";
+import { raknaRollperson, rasAv, yrkeAv, fardighetAv, sarskildFormaga as sfFor, paborjad, paketNycklar } from "./regelmotor.js";
 import { TOMT_SPEL, TOM_UTVECKLING } from "./sparformat.js";
 import { utvecklad } from "./utveckling.js";
 import { STEG } from "./texter.js";
@@ -11,9 +11,13 @@ export const LAGRING = "chronopia-rollperson-v2";
 
 export const TOM = () => ({
   bocker: ["grund"], // böckerna rollpersonen skapas med (steg 0); grundreglerna är alltid med
+  valfriaRegler: [], // valfria regler från de valda böckerna (steg 0), t.ex. "syn-och-horsel" (V&R s. 3, RB-002)
+  sinnen: { syn: { bp: 0, slag: null }, horsel: { bp: 0, slag: null } }, // Syn och hörsel: BP + 1T6 i steg 6
+  niva: 0, // erfarenhetsnivån (steg 0) när en vald bok har nivåer, t.ex. V&R:s krigare, veteran och hjälte (RB-001)
+  hjaltepoangKop: {}, // grundegenskaper som höjs med hjältepoäng från särskilda förmågor (RB-003), 5 HP per poäng
   namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",
   extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas
-  stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false }, svardshand: { bp: 0, slag: null },
+  stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false, fler: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
   magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
   spel: TOMT_SPEL(), utveckling: TOM_UTVECKLING(),
@@ -97,6 +101,8 @@ export function yrkesNycklar() {
       const f = fardighetAv(S.R, post);
       if (!delval(f)) nycklar.push(post);
       else if (val) nycklar.push(`${post}:${val}`);
+    } else if (post.valPaket) {
+      nycklar.push(...paketNycklar(S.R, post, val));
     } else if (post.valEn) {
       if (!val?.id) return;
       const f = fardighetAv(S.R, val.id);
@@ -128,6 +134,7 @@ function allaNycklar(yrkesfardigheter) {
   for (const f of S.R.fardigheter.lista) if (f.typ === "primar" && !ras.sekundara.includes(f.id)) mangd.add(f.id);
   for (const p of ras.primara) if (typeof p === "string") mangd.add(p);
   for (const k of S.rp.rasval) mangd.add(k);
+  for (const k of yrke.primara ?? []) mangd.add(k); // V&R: gratis FV 10 som primär (t.ex. Hypnotisera)
   for (const s of m.tala) mangd.add(`tala:${s}`);
   for (const s of m.lasaSkriva) mangd.add(`lasa-skriva:${s}`);
   for (const k of yrkesfardigheter) mangd.add(k);

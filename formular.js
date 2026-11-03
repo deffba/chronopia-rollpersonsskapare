@@ -1,7 +1,7 @@
 // Rollformuläret i bokens layout (s. 11–12), för utskrift och för att fylla i under spel.
 // Värden som reglerna räknar fram (grundegenskaper, FV, KP) visas som text och ändras i stegen.
 // Det spelaren skriver under spel (erf, hjältepoäng, pengar, egen utrustning) sparas i rp.spel.
-import { GRUNDEGENSKAPER, slaUpp, fardighetAv } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, slaUpp, fardighetAv, yrkesformagaText, bNivaText } from "./regelmotor.js";
 
 // Rader per lista. Får inte allt plats fortsätter listan på sida 3.
 const RADER = { formagor: 6, primar: 25, yrke: 12, sprak: 11, sekundar: 33, vapen: 6, besvarjelser: 12, utrustning: 8 };
@@ -13,6 +13,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const res = tom ? tomtResultat(raknat) : raknat;
   const antalRutor = (n, tomt) => (tom ? tomt : n);
   const spel = rp.spel;
+  const hpStart = tom ? 0 : raknat.hjaltepoang?.kvar ?? 0;
   const g = res.grundegenskaper;
   const h = res.harledda;
 
@@ -45,8 +46,10 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const fardighetsrad = (f) => el("div", { class: "rf-rad" + (f.kategoriB ? " kat-b" : "") },
     el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock", title: "Bocka vid första lyckade slaget efter sömn (s. 74)" }),
       el("span", { class: "rf-namntext" }, f.status === "primar" && f.grundegenskap ? `${f.namn} (${f.grundegenskap})` : f.namn),
-      f.kategoriB ? el("small", {}, bNiva(f.fv)) : null,
+      f.kategoriB ? el("small", {}, bNivaText(R, f.fv, f.bNivaLagre)) : null,
       tak(f) ? el("small", {}, tak(f)) : null,
+      f.grundegenskapText ? el("small", {}, f.grundegenskapText) : null,
+      f.sinne ? el("small", { title: "Syn och hörsel (Vapen & rustningar s. 3)" }, `${f.sinne > 0 ? "+" : "−"}${Math.abs(f.sinne)} sinne`) : null,
       sidhanvisning(sidaFor(f.nyckel))),
     el("span", { class: "rf-cell rf-erf" + (f.kategoriB ? " b" : "") }, erfFalt(f.nyckel, f.namn)),
     el("span", { class: "rf-cell rf-tal" }, f.fv));
@@ -74,8 +77,9 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   // Särskilda förmågor med en kort förklaring: rasens, den slagna, yrkesförmågan och stridskonstens tekniker
   const formagor = [
     ...(res.ras?.formagor ?? []).map((t) => ({ namn: t, text: `Rasförmåga (${res.ras.namn.toLowerCase()})` })),
-    ...[res.sarskildFormaga, ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
-    rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: res.yrke.yrkesformaga } : null,
+    ...[...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
+    rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: yrkesformagaText(res.yrke) } : null,
+    ...(res.sinnen?.sinnen ?? []).filter((x) => x.niva).map((x) => ({ namn: `${x.namn}: ${x.niva.toLowerCase()}`, text: `${x.mod > 0 ? "+" : x.mod < 0 ? "−" : "±"}${Math.abs(x.mod)} på ${x.text}` })),
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
   ].filter(Boolean);
 
@@ -109,7 +113,8 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
                 fyll(formagor.slice(0, RADER.formagor).map((f) => el("div", { class: "rf-rad" }, el("span", { class: "rf-cell rf-namn rf-formaga", title: f.text },
                   el("strong", {}, f.namn), el("span", {}, f.text)))), RADER.formagor, 1)),
               el("div", { class: "rf-hjaltepoang" }, el("span", {}, "Hjältepoäng"),
-                inmatning(spel.hjaltepoang || "", (v) => { spel.hjaltepoang = Math.max(0, heltal(v) ?? 0); }, { inputmode: "numeric", "aria-label": "Hjältepoäng" })),
+                // Hjältepoäng som blev över vid skapandet (RB-003) räknas in; spel.hjaltepoang är det som har ändrats sedan
+                inmatning((spel.hjaltepoang ?? 0) + hpStart || "", (v) => { spel.hjaltepoang = Math.max(0, heltal(v) ?? 0) - hpStart; }, { inputmode: "numeric", "aria-label": "Hjältepoäng" })),
               lista("rf-fardigheter", rubrik("Yrkesfärdigheter", ["erf", "FV"], 16), listor.yrke.map(fardighetsrad), RADER.yrke),
               lista("rf-sprak", rubrik("Språk (INT)", ["FV", "B-FV"], 17), sprak.slice(0, RADER.sprak).map((f) => el("div", { class: "rf-rad" },
                 el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-namntext" }, f.namn), sidhanvisning(sidaFor(f.nyckel))),
@@ -124,7 +129,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const vapennamn = [...new Set([...Object.keys(vapenFV), ...agda])];
   const vapenrader = vapennamn.map((namn) => {
     const v = katalog[namn] ?? {};
-    const f = vapenFV[namn];
+    const f = vapenFV[namn] ?? vapenFV[v.somVapen]; // ett vapen av mästarkvalitet används med sitt vanliga vapens färdighet
     return el("div", { class: "rf-rad" },
       el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, namn), sidhanvisning(sidaFor("vapen:" + namn))),
       el("span", { class: "rf-cell rf-tal" }, f?.fv ?? ""),
@@ -161,7 +166,8 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   }, { "aria-label": `${mynt} ${var_ === "bors" ? "i börs" : "på bank"}` });
 
   // Utrustning: köpta saker först, sedan rader spelaren själv skriver i
-  const kopta = res.utrustning.saker.map((x) => ({ namn: sakNamn(x), vikt: x.vikt ? x.vikt.toLocaleString("sv-SE") : "", last: true }));
+  const kopta = [...(tom ? [] : res.startutrustning ?? []).map((t) => ({ namn: t, vikt: "", last: true })),
+    ...res.utrustning.saker.map((x) => ({ namn: sakNamn(x), vikt: x.vikt ? x.vikt.toLocaleString("sv-SE") : "", last: true }))];
   const egnaPlatser = Math.max(4, RADER.utrustning * 2 - kopta.length);
   const egna = Array.from({ length: Math.max(egnaPlatser, spel.utrustning.length + 1) }, (_, i) => ({ ...(spel.utrustning[i] ?? { namn: "", vikt: "" }), i }));
   const sattEgen = (i, falt_, v) => {
@@ -178,6 +184,21 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const sakPlatser = Math.max(RADER.utrustning * 2, sakrader.length + (sakrader.length % 2));
   const sakkolumner = [0, 1].map((k) => el("div", { class: "rf-lista rf-sakkolumn" },
     fyll(sakrader.slice(k * sakPlatser / 2, (k + 1) * sakPlatser / 2), sakPlatser / 2, 2)));
+
+  // Detaljerad strid (V&R s. 18–19, 26–30, 69; RB-017): en egen ruta på sida 2, bara när regeln är på.
+  // Axelskydd står på armarna i kroppsdelarna ovan, så formuläret behöver ingen egen variant.
+  const sh = res.stridshandlingar;
+  const rvapen = res.utrustning.saker.filter((x) => x.kategori === "Rustningsvapen").map((x) => {
+    const v = R.utrustning.varor.find((y) => y.namn === x.namn);
+    return `${x.namn.replace(/^Rustningsvapen: /, "")}${x.antal > 1 ? ` ×${x.antal}` : ""} (${[v?.skada, v?.bv ? `BV ${v.bv}` : null].filter(Boolean).join(", ")})`;
+  });
+  const dsRad = (etikett, varde) => el("div", { class: "rf-rad" }, el("span", { class: "rf-cell rf-namn" }, el("strong", {}, `${etikett}: `), varde));
+  const detaljeradStrid = sh ? el("div", { class: "rf-lista rf-detaljerad", id: "rf-detaljerad-strid" }, rubrik("Detaljerad strid"),
+    dsRad("Handlingar per SR", tom ? "" : `${sh.antal} (${sh.bas} av SMI${sh.borda ? `, ${sh.borda} av bördan` : ""})`),
+    dsRad("+1 handling vardera", sh.extra.join(", ")),
+    dsRad("Börda", tom ? "" : sh.borda ? `${sh.borda} handlingar` : "inget avdrag"),
+    dsRad("Rustningsvapen", tom ? "" : rvapen.join("; ") || "inga"),
+    el("div", { class: "rf-rad rf-detaljerad-not" }, el("span", { class: "rf-cell rf-namn" }, `Träffområden och kritiska träffar: Vapen & rustningar s. ${sh.sida}, 26–30.`))) : null;
 
   const sida2 = el("section", { class: "rf-sida", "aria-label": "Rollformulär sida 2" },
     el("div", { class: "rf-band" }, "Drakar & Demoner"),
@@ -209,6 +230,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
               ["gm", "sm", "km"].map((m) => el("span", { class: "rf-cell rf-tal" }, pengarFalt(var_, m))))),
             el("div", { class: "rf-rad rf-juveler" }, el("span", { class: "rf-cell rf-namn" }, "Juveler",
               inmatning(pengar.juveler, (v) => { spel.pengar ??= structuredClone(pengar); spel.pengar.juveler = v; }, { "aria-label": "Juveler" })))),
+          detaljeradStrid,
           el("div", { class: "rf-block rf-utseende" }, rubrik("Utseende och bakgrund"),
             [h.langd, h.vikt].some(Boolean) ? el("p", { class: "rf-utseende-matt" }, [h.langd, h.vikt].filter(Boolean).join(", ")) : null,
             el("textarea", { class: "rf-in rf-textyta linjerad", "aria-label": "Utseende och bakgrund",
@@ -230,7 +252,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
       flerFormagor.length ? el("div", { class: "rf-lista rf-formagor" }, rubrik("Fler särskilda förmågor"), flerFormagor.map((f) => el("div", { class: "rf-rad" },
         el("span", { class: "rf-cell rf-namn rf-formaga" }, el("strong", {}, f.namn), el("span", {}, f.text))))) : null,
       overflode.length || flerBesvarjelser.length ? el("div", { class: "rf-lista rf-overflode" }, rubrik("Fler färdigheter och besvärjelser", ["Typ", "erf", "FV"]), overflode.map((f) => el("div", { class: "rf-rad" },
-        el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, f.namn), f.kategoriB ? el("small", {}, bNiva(f.fv)) : null, sidhanvisning(sidaFor(f.nyckel))),
+        el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, f.namn), f.kategoriB ? el("small", {}, bNivaText(R, f.fv, f.bNivaLagre)) : null, sidhanvisning(sidaFor(f.nyckel))),
         el("span", { class: "rf-cell" }, arSprak(f) ? "Språk" : STATUSNAMN[f.status]),
         el("span", { class: "rf-cell rf-erf" + (f.kategoriB ? " b" : "") }, arSprak(f) ? null : erfFalt(f.nyckel, f.namn)),
         el("span", { class: "rf-cell rf-tal" }, f.fv))), flerBesvarjelser.map(besvarjelsesrad)) : null),
@@ -256,7 +278,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
         el("p", { class: "rf-regel-namn" }, el("strong", {}, x.namn),
           el("span", {}, [x.grundegenskap === "varierar" ? "grundegenskap varierar" : x.grundegenskap, typnamn[x.typ], x.kategoriB ? "kategori B" : null, `s. ${x.sida}`].filter(Boolean).join(" · "))),
         el("p", {}, x.beskrivning),
-        mina.length ? el("p", { class: "rf-regel-egen" }, "Rollpersonen: ", mina.map((f) => `${f.namn} FV ${f.kategoriB ? `${f.fv} (${bNiva(f.fv)})` : f.fv}`).join(", ")) : null);
+        mina.length ? el("p", { class: "rf-regel-egen" }, "Rollpersonen: ", mina.map((f) => `${f.namn} FV ${f.kategoriB ? `${f.fv} (${bNivaText(R, f.fv, f.bNivaLagre)})` : f.fv}`).join(", ")) : null);
     };
     const grupper = [
       [`Yrkesfärdigheter (${res.yrke.namn.toLowerCase()})`, "yrke"],

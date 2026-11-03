@@ -101,7 +101,7 @@ const BILD = process.env.BILD; // katalog för skärmbilder (valfritt)
 
   // ---- Flera tabeller: grundreglerna, en påhittad tabell och en som rollpersonen inte har tillgång till
   const route = async (r) => {
-    const svar = await r.fetch(); const grund = await svar.json();
+    const svar = await r.fetch(); const data = await svar.json(); const grund = data.tabeller ? data.tabeller.find(t => t.id === 'grund').rader : data;
     const rad = (slag, namn) => ({ slag, namn, effekt: `Effekt för ${namn}.`, sida: 1 });
     await r.fulfill({ response: svar, json: { tabeller: [
       { id: 'grund', namn: 'Grundreglerna', tarning: '2T20', sida: '30–32', rader: grund },
@@ -113,7 +113,7 @@ const BILD = process.env.BILD; // katalog för skärmbilder (valfritt)
   const flikar = await p.locator('#sf-flikar [role=tab]').allTextContents();
   ok('flikar för tabellerna rollpersonen har', JSON.stringify(flikar) === '["Grundreglerna","Testtabell"]', JSON.stringify(flikar));
   const alt = await p.locator('#sf-tabell option').allTextContents();
-  ok('rullgardin bredvid tärningsrutan', JSON.stringify(alt) === '["Grundreglerna (2T20)","Testtabell (1T20)"]'
+  ok('rullgardin bredvid tärningsrutan', JSON.stringify(alt) === '["Grundreglerna (2T20, högst 40 BP)","Testtabell (1T20, högst 40 BP)"]'
     && await p.evaluate(() => document.querySelector('#sf-tabell').closest('.rad') === document.querySelector('#sf-sla').closest('.rad')), JSON.stringify(alt));
   await p.locator('#sf-flikar [data-tabell=test]').click(); await p.waitForTimeout(80);
   ok('flik: visar den andra tabellens kort', await p.locator('.formagekort-knapp').count() === 3 && (await p.inputValue('#sf-tabell')) === 'grund');

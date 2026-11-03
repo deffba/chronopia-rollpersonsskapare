@@ -1,5 +1,5 @@
 // Små kontroller: tal, listor, knappar och info-cirklar.
-import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor } from "../regelmotor.js";
+import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker, vapenVillkor, svardsskolaFor } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { DELVAL_HJALP, FORKLARINGAR, SPRAK_HJALP } from "../texter.js";
 import { S, modersmal, rakna, uppdatera, yrkesNycklar } from "../tillstand.js";
@@ -69,8 +69,9 @@ function vapenGrupper(enhandsNarstrid = false) {
   const v = S.R.vapen;
   const varden = rakna().grundegenskaper;
   // Två vapen: bara närstridsvapen som rollpersonen kan hålla med en hand (s. 71–72)
-  const lista = enhandsNarstrid ? v.narstrid.filter((x) => x.grupp !== "slagsmal" && !tvahandsvapen(S.R, x.namn, varden))
-    : [...v.narstrid.filter((x) => x.grupp !== "slagsmal"), ...v.projektil, ...v.kast, ...v.skoldar];
+  const lista = (enhandsNarstrid ? v.narstrid.filter((x) => x.grupp !== "slagsmal" && !tvahandsvapen(S.R, x.namn, varden))
+    : [...v.narstrid.filter((x) => x.grupp !== "slagsmal"), ...v.projektil, ...v.kast, ...v.skoldar])
+    .filter((x) => !vapenVillkor(S.R, S.rp, x.namn)); // bara vapen ur de valda böckerna som rasen får bära
   const sty = varden.STY;
   const grupper = new Map(S.R.vapen.grupper.map((g) => [g.id, []]));
   for (const x of lista) grupper.get(vapengrupp(S.R, x.namn, sty))?.push([x.namn, x.namn]);
@@ -145,15 +146,33 @@ export function delvalKontroll(id, fardighetId, varde, onchange, { yrke = false 
       gruppLista(`${id}-a`, a, vapen, (v) => onchange(v && b ? `${v}+${b}` : v ? `${v}+` : ""), "Första vapnet …"),
       gruppLista(`${id}-b`, b, vapen, (v) => onchange(a && v ? `${a}+${v}` : ""), "Andra vapnet …"));
   }
-  if (fardighetId === "kulturkannedom") return valLista(id, varde, markeraValda(kulturer(S.R).map((k) => [k, k]), redanValda(fardighetId, varde)), onchange, "Välj kultur …");
+  if (fardighetId === "kulturkannedom") return valLista(id, varde, markeraValda(kulturer(S.R, S.rp).map((k) => [k, k]), redanValda(fardighetId, varde)), onchange, "Välj kultur …");
   if (fardighetId === "tala" || fardighetId === "lasa-skriva") return sprakLista(id, fardighetId, varde, onchange, yrke);
   if (fardighetId === "hantverk") {
     const lista = valLista(id, varde, markeraValda(S.R.fardigheter.hantverk.map(([n, g]) => [n, `${n} (${g})`]), redanValda(fardighetId, varde)), onchange, "Välj hantverk …");
     const text = S.R.fardigheter.hantverkBeskrivning?.[varde];
     return text ? el("div", { class: "delval-med-text" }, lista, el("p", { class: "fbeskr" }, text)) : lista;
   }
-  if (fardighetId === "kanna-magi") return valLista(id, varde, markeraValda(magiskolor(S.R).map((f) => [f.id, f.namn]), redanValda(fardighetId, varde)), onchange, "Välj skola …");
+  if (fardighetId === "kanna-magi") return valLista(id, varde, markeraValda(magiskolor(S.R, S.rp).map((f) => [f.id, f.namn]), redanValda(fardighetId, varde)), onchange, "Välj skola …");
   const f = fardighetAv(S.R, fardighetId);
+  // Vapentekniker: svärdsskolornas stridskonster föreslås (V&R s. 32–33); ett eget namn ger en egen stil
+  if (fardighetId === "vapentekniker") {
+    const skolor = (S.R.fardigheter.svardsskolor ?? []).filter((x) => iBocker(x, S.rp));
+    const vald = svardsskolaFor(S.R, `vapentekniker:${varde ?? ""}`);
+    return el("span", { class: "delval-stil" },
+      el("input", { id, type: "text", value: varde ?? "", list: `${id}-skolor`, maxlength: 125, placeholder: "t.ex. Kejsarens hand eller ett eget namn",
+        onchange: (e) => onchange(e.target.value.trim()) }),
+      el("datalist", { id: `${id}-skolor` }, skolor.map((x) => el("option", { value: x.namn }, `${x.skola} (${x.kostnad} EP per FV): ${x.tekniker.join(", ")}`))),
+      // En svärdsskolas färdiga stridskonst: teknikerna som ingår (V&R s. 32–33)
+      vald ? el("small", { class: "hjalp skoltekniker" }, ` Tekniker: ${vald.tekniker.join(", ")}`) : null);
+  }
+  // Heraldik med V&R: allmän eller för en grupp (V&R s. 15)
+  if (f?.perVal === "heraldik") {
+    return el("span", { class: "delval-stil" },
+      el("input", { id, type: "text", value: varde ?? "", list: `${id}-grupper`, maxlength: 125, placeholder: `${f.allman.namn} eller en grupp, t.ex. Högländare`,
+        onchange: (e) => onchange(e.target.value.trim()) }),
+      el("datalist", { id: `${id}-grupper` }, [f.allman.namn, ...f.grupper].map((g) => el("option", { value: g }))));
+  }
   const lista = fardighetId === "lardom" ? "lardomar" : null;
   return el("input", {
     id, type: "text", value: varde ?? "", list: lista, maxlength: 125,
@@ -180,7 +199,7 @@ function sprakLista(id, fardighetId, varde, onchange, yrke) {
 
 export function fardighetsVal(idPrefix, nyckel, onchange, filter = () => true, val = {}) {
   const [id, sub] = (nyckel ?? "").split(":");
-  const lista = S.R.fardigheter.lista.filter(filter).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
+  const lista = S.R.fardigheter.lista.filter((x) => iBocker(x, S.rp) && filter(x)).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
   const f = id ? fardighetAv(S.R, id) : null;
   return el("div", { class: "rad" },
     valLista(`${idPrefix}-f`, id, lista.map((x) => [x.id, x.namn]), (v) => onchange(v ? (fardighetAv(S.R, v).perVal ? `${v}:` : v) : "")),

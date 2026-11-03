@@ -1,7 +1,7 @@
 // Vad som saknas i varje steg, och vilka steg som syns.
-import { rasAv, yrkeAv, fardighetAv, paborjad, skolFV, namnFor } from "../regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, paborjad, skolFV, namnFor, formageslag, paketNamn } from "../regelmotor.js";
 import { STEG } from "../texter.js";
-import { S, rasId, yrkeId, yrkesNycklar } from "../tillstand.js";
+import { S, motorIndata, rasId, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { MAGISLAG } from "../ui/magimodal.js";
 
 // Val som ännu inte är gjorda, per steg. Ett steg med obligatoriska val kvar går inte att lämna framåt.
@@ -19,6 +19,12 @@ export function saknasPerSteg(res) {
     const val = S.rp.yrkesval[i];
     if (typeof post === "string") {
       if (fardighetAv(S.R, post)?.perVal && !klar(val)) lista.extra.push(`${fardighetAv(S.R, post).namn}: vad den gäller`);
+    } else if (post.valPaket) {
+      const paket = post.valPaket[val?.paket];
+      const behov = !paket ? 1 : paket.fasta ? 0 : paket.valfria ?? paket.antal;
+      const gjorda = [].concat(val?.val ?? []).slice(0, behov).filter(klar).length;
+      if (!paket) lista.extra.push(post.valPaket.map((p) => paketNamn(S.R, p)).join(" eller "));
+      else if (gjorda < behov) lista.extra.push(`${paketNamn(S.R, paket)}: ${behov - gjorda} val kvar`);
     } else if (post.valEn) {
       if (!val?.id || (fardighetAv(S.R, val.id).perVal && !klar(val.sub))) lista.extra.push(post.valEn.map((x) => fardighetAv(S.R, x.fardighet ?? x).namn).join(" eller "));
     } else if (post.antal !== null) {
@@ -31,9 +37,15 @@ export function saknasPerSteg(res) {
   if (S.rp.extraYrkesfardigheter.some((k) => !klar(k))) lista.extra.push("En extra yrkesfärdighet är inte färdigvald (välj klart eller ta bort den)");
   if (!S.rp.namn.trim()) lista.kon.push("Namn");
   if (!S.rp.kon) lista.kon.push("Kön");
-  if (S.rp.sarskildaFormagor.bp && S.rp.sarskildaFormagor.slag === null) lista.formagor.push("Slaget för särskilda förmågor");
-  if (!S.rp.sarskildaFormagor.bp && !S.rp.sarskildaFormagor.avstar) lista.formagor.push("Lägg BP på särskilda förmågor, eller kryssa i att du inte vill det");
+  // Ett slag per särskild förmåga som erfarenhetsnivån ger (RB-001)
+  const slagen = formageslag(S.R, motorIndata());
+  slagen.forEach((sf, i) => {
+    const nr = slagen.length > 1 ? ` ${i + 1}` : "";
+    if (sf.bp && (sf.slag === null || sf.slag === undefined)) lista.formagor.push(slagen.length > 1 ? `Slaget för särskild förmåga${nr}` : "Slaget för särskilda förmågor");
+    if (!sf.bp && !sf.avstar) lista.formagor.push(slagen.length > 1 ? `Lägg BP på särskild förmåga${nr}, eller kryssa i att du inte vill det` : "Lägg BP på särskilda förmågor, eller kryssa i att du inte vill det");
+  });
   if (!res.grundegenskaperSatta) lista.egenskaper.push("Grundegenskaperna");
+  for (const x of res.sinnen?.sinnen ?? []) if (x.slag == null) lista.egenskaper.push(`Slaget för ${x.namn.toLowerCase()}`);
   lista.egenskaper.push(...res.forLagaEgenskaper);
   lista.formagor.push(...res.saknas);
   // Magiförmågeslaget görs i steg 6 (eller 11 för en sekundär magiskola); misslyckas det ska skolan bytas ut
@@ -46,7 +58,7 @@ export function saknasPerSteg(res) {
     else (iYrke || iExtra ? lista.egenskaper : lista.fardigheter).push("Magiförmågeslaget misslyckades: byt magiskolan mot en annan färdighet");
   }
   for (const f of res.fardigheter.filter((x) => x.tekniker && !x.tekniker.length)) lista.fardigheter.push(`${f.namn}: välj stilens tekniker`);
-  if (S.rp.startpaket.valt && !S.rp.startpaket.vapen) lista.utrustning.push("Startpaketets vapen");
+  if (S.rp.startpaket.valt && !S.rp.startpaket.vapen && !yrkeAv(S.R, S.rp.yrke)?.startvapen) lista.utrustning.push("Startpaketets vapen");
   if (S.rp.svardshand.slag === null && !(res.sarskildFormaga?.regel ?? []).some((d) => d.typ === "svardshand")) lista.svardshand.push("Slaget för svärdshand");
   if (S.rp.socialtStand.slag === null && !S.rp.socialtStand.valt) lista.stand.push("Slaget för socialt stånd");
   if (S.rp.startkapital.slag === null) lista.kapital.push("Slaget för startkapital");
@@ -82,7 +94,7 @@ export function synligaSteg(res) {
 
 export function bpForSteg(id, res) {
   const u = res.bp.utgifter;
-  const v = { ras: u.ras, extra: u.extraYrkesfardigheter, egenskaper: u.grundegenskaper, formagor: u.sarskildaFormagor,
+  const v = { ras: u.ras, extra: u.extraYrkesfardigheter, egenskaper: u.grundegenskaper + (u.sinnen ?? 0), formagor: u.sarskildaFormagor,
     svardshand: u.svardshand, stand: u.socialtStand, kapital: u.startkapital }[id];
   return v ? `${v} BP` : "";
 }

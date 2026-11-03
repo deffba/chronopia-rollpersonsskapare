@@ -43,7 +43,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
     await nasta();
   }
   await p.fill('#sf-bp', '1'); await p.press('#sf-bp', 'Enter'); await p.waitForTimeout(80);
-  const sf = await p.evaluate(() => fetch('regler/sarskilda-formagor.json').then(r => r.json()));
+  const sf = await p.evaluate(() => fetch('regler/sarskilda-formagor.json').then(r => r.json()).then(d => d.tabeller ? d.tabeller.find(t => t.id === 'grund').rader : d));
   const ofyllda = [];
   for (const x of sf.filter(x => x.regel?.some(r => r.valj))) {
     const sum = x.slag[0], bp = Math.max(1, sum - 40), slag = sum - bp;

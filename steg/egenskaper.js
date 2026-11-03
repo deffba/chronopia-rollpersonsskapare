@@ -4,6 +4,7 @@ import { visaNotis } from "../app.js";
 import { S, rakna, rasId, uppdatera } from "../tillstand.js";
 import { el } from "../ui/dom.js";
 import { info, markera, tal } from "../ui/kontroller.js";
+import { inteSlaget, slagSteg } from "../ui/tarningar.js";
 import { fmtMod } from "./alder.js";
 
 export function stegEgenskaper(res) {
@@ -45,7 +46,22 @@ export function stegEgenskaper(res) {
       el("div", { class: "tabellram" }, el("table", { class: "tabell kostnadstabell" }, el("tbody", {},
         el("tr", {}, el("th", { scope: "row" }, "Grundvärde"), Object.keys(kostnad).map((v) => el("td", { class: "num" }, v))),
         el("tr", {}, el("th", { scope: "row" }, "BP", info("BP")), Object.values(kostnad).map((k) => el("td", { class: "num" }, k))))))),
+    res.sinnen ? stegSinnen(res) : null,
   ];
+}
+
+// Syn och hörsel (valfri regel, V&R s. 3, RB-002): BP + 1T6 för varje sinne
+function stegSinnen(res) {
+  const { regel, sinnen } = res.sinnen;
+  const tabell = regel.tabell.map(([max, namn, mod], i) => `${i === 0 ? 1 : regel.tabell[i - 1][0] + 1}${max === null ? "+" : max > (i === 0 ? 1 : regel.tabell[i - 1][0] + 1) ? `–${max}` : ""} ${namn.toLowerCase()} (${fmtMod(mod)})`).join(", ");
+  return el("section", { class: "rutor sinnen", id: "sinnen" }, el("div", {},
+    el("h3", {}, `${regel.namn} (Vapen & rustningar s. ${regel.sida})`),
+    el("p", { class: "hjalp" }, `Valfri regel. Lägg BP på varje sinne och slå 1T6; summan ger: ${tabell}. ${regel.not}`),
+    sinnen.map((x) => el("div", { class: "sinne", "data-sinne": x.id },
+      el("h4", {}, x.namn),
+      ...slagSteg(`sinne-${x.id}`, () => S.rp.sinnen[x.id], x.namn, regel.tarning,
+        x.slag == null ? inteSlaget() : [`Resultat: ${x.varde}.`, `${x.namn}: ${x.niva.toLowerCase()} (${fmtMod(x.mod)}).`],
+        `${x.namn} påverkar ${x.text}.`)))));
 }
 
 // Föreslagna grundvärden: högst där yrkets färdigheter och rasens styrkor ligger (s. 18–29).
@@ -63,6 +79,7 @@ export function grundvardesForslag() {
   };
   for (const post of yrke.fardigheter) {
     if (typeof post === "string") lagg(post, 1);
+    else if (post.valPaket) lagg(post.valPaket[0].fardighet ?? post.valPaket[0].fasta?.[0], 2);
     else if (post.valEn) post.valEn.forEach((x) => lagg(x.fardighet ?? x, 1 / post.valEn.length));
     else lagg(post.fardighet, post.antal ?? 2);
   }
