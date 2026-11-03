@@ -77,6 +77,9 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const formagor = [
     ...(res.ras?.formagor ?? []).map((t) => ({ namn: t, text: `Rasförmåga (${res.ras.namn.toLowerCase()})` })),
     ...[...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
+    // Dvärgar i Chronopia: klanförmågan (s. 18–26) och levande tatueringar (s. 27–28)
+    res.klan?.formaga ? { namn: `${res.klan.formaga.namn} (klan ${res.klan.klan.namn})`, text: res.klan.formaga.effekt } : null,
+    ...(res.tatueringar?.lista ?? []).map((t) => ({ namn: `Tatuering: ${t.namn}`, text: `${t.effekt} Kostnad ${t.kostnad}, ${t.antal} (${t.fran}).` })),
     rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: yrkesformagaText(res.yrke) } : null,
     ...(res.sinnen?.sinnen ?? []).filter((x) => x.niva).map((x) => ({ namn: `${x.namn}: ${x.niva.toLowerCase()}`, text: `${x.mod > 0 ? "+" : x.mod < 0 ? "−" : "±"}${Math.abs(x.mod)} på ${x.text}` })),
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
@@ -92,7 +95,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
           falt("Spelare", 1, inmatning(rp.spelare, (v) => { rp.spelare = v; }, { "aria-label": "Spelare" }), "s3"),
           falt("Spelledare", 2, inmatning(spel.spelledare, (v) => { spel.spelledare = v; }, { "aria-label": "Spelledare" }), "s3"),
           falt("Namn", 3, inmatning(rp.namn, (v) => { rp.namn = v; }, { "aria-label": "Namn" }), "s6"),
-          falt("Ras", 4, text(rp.ras ? res.ras.namn : ""), "s2"),
+          falt("Ras", 4, text(rp.ras ? res.ras.namn + (res.klan?.klan ? ` (${res.klan.klan.namn})` : "") : ""), "s2"),
           falt("Kön", 6, text(rp.kon), "s2"),
           falt("Socialt stånd", 8, text(res.slag.socialtStand), "s2"),
           falt("Yrke", 5, text(rp.yrke ? res.yrke.namn : ""), "s2"),

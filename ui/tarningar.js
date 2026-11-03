@@ -1,5 +1,5 @@
 // Tärningsslag: tärningsknapparna, inskrivna slag och slag-stegen (steg 7–10).
-import { fardighetAv, passarBland, tarningAv } from "../regelmotor.js";
+import { fardighetAv, passarBland, tarningAv, magiskolor } from "../regelmotor.js";
 import { rita } from "../app.js";
 import { fmtMod } from "../steg/alder.js";
 import { S, motorIndata, spara, uppdatera } from "../tillstand.js";
@@ -175,9 +175,10 @@ export function valjFardighet(id, bland, varde, onchange) {
   if (bland === "sprak") {
     return delvalKontroll(id, "tala", varde?.split(":")[1], (v) => onchange(v ? `tala:${v}` : ""));
   }
-  if (Array.isArray(bland)) {
-    return valLista(id, varde, bland.map((f) => [f, fardighetAv(S.R, f).namn]), onchange);
-  }
+  // En lista med färdigheter, t.ex. stridsfärdigheterna i Mindirs klanförmåga; de med delval (vapen) väljs med delvalet
+  if (Array.isArray(bland)) return fardighetsVal(id, varde, onchange, (f) => bland.includes(f.id));
+  // En valfri magiskola (Durbans klanförmåga Magiker, RB-021)
+  if (bland === "magiskola") return valLista(id, varde, magiskolor(S.R, motorIndata()).map((f) => [f.id, f.namn]), onchange, "Välj magiskola …");
   const fast = fardighetAv(S.R, bland);
   if (fast) {
     if (!fast.perVal) return el("span", {}, fast.namn);

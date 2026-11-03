@@ -5,7 +5,7 @@
 // grundvärden, automatisk EP-fördelning) utifrån önskemålen i testrollpersoner.js, och kontrolleras sedan
 // av regelmotorn precis som en inläst fil. Går ett önskemål inte längre efter en regeländring väljs något
 // annat tillåtet i stället, och det sägs till i en notis.
-import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, vapenVillkor, varukatalog, tvahandsvapen, besvarjelsePris, iBocker, harTekniker, svardsskolaFor, teknikLista } from "./regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, vapenVillkor, varukatalog, tvahandsvapen, besvarjelsePris, iBocker, harTekniker, svardsskolaFor, teknikLista, klanAv, klanTillganglig } from "./regelmotor.js";
 import { TESTROLLPERSONER } from "./testrollpersoner.js";
 import { startaPoanglogg } from "./poanglogg.js";
 import { startaAutofyll } from "./autofyll.js";
@@ -17,6 +17,13 @@ const VYER = [
 ];
 
 // ------------------------------------------------------------ bygget
+// Böckerna med de böcker de kräver (Dvärgar kräver V&R)
+const medKrav = (R, bocker) => {
+  const alla = new Set(bocker);
+  for (const id of bocker) for (const k of R.bocker.lista.find((b) => b.id === id)?.kraver ?? []) alla.add(k);
+  return [...alla];
+};
+
 // Bygger en testrollperson. foljRecept = false väljer allt utom ras, yrke och namn automatiskt.
 // Ger { rp, fel } där fel är regelbrott och val som saknas (tom lista = rollpersonen är klar och tillåten).
 export function bygg(api, recept, { foljRecept = true } = {}) {
@@ -27,10 +34,20 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
     const r = nu();
     Object.assign(r, { namn: recept.namn, spelare: "Test", kon: yrkeAv(api.R, recept.yrke)?.villkor?.kon ?? recept.kon, // Svartsyster: bara kvinnor
       ras: recept.ras, alder: recept.alder, yrke: recept.yrke,
-      anteckningar: recept.anteckningar ?? "", bocker: ["grund", ...(recept.bocker ?? [])], niva: recept.niva ?? 0,
+      anteckningar: recept.anteckningar ?? "", bocker: medKrav(R, ["grund", ...(recept.bocker ?? [])]), niva: recept.niva ?? 0,
       valfriaRegler: recept.valfriaRegler ?? [] });
     // Syn och hörsel (V&R s. 3): { syn: [BP, slag], horsel: [BP, slag] }
     if (recept.sinnen) r.sinnen = Object.fromEntries(Object.entries(recept.sinnen).map(([id, [bp, slag]]) => [id, { bp, slag, tarningar: [slag] }]));
+    // Dvärgar i Chronopia: klanen och klanförmågan (s. 4, 18–26), bärsärkens levande tatueringar (s. 27–28)
+    if (recept.klan) r.klan = { id: "", slag: null, formagaSlag: null, val: [], ...recept.klan };
+    else if (klanTillganglig(R, r)) { // utan önskemål: yrkets klan (Präst: Mindir) eller en klan utan förmåga, annars Ingenting särskilt
+      const id = yrkeAv(R, r.yrke)?.villkor?.klan?.[0] ?? "annan";
+      r.klan = { id, slag: null, formagaSlag: klanAv(R, id)?.formagor.length ? 1 : null, val: [] };
+    }
+    const tatYrke = yrkeAv(R, r.yrke)?.tatueringar;
+    if (recept.tatueringar) r.tatueringar = [...recept.tatueringar];
+    else if (tatYrke && iBocker(yrkeAv(R, r.yrke), r)) // utan önskemål: de första tatueringarna, så många som nivån ger
+      r.tatueringar = (R.fardigheter.tatueringar?.lista ?? []).slice(0, tatYrke[Math.min(r.niva, tatYrke.length - 1)]).map((t) => t.id);
     const ras = rasAv(R, r.ras);
     const yrke = yrkeAv(R, r.yrke);
     const anvanda = new Set();
@@ -122,7 +139,7 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
 
     // Svärdshand, socialt stånd och startkapital med fasta slag
     const slag = { svardshand: 6, socialtStand: 7, startkapital: 9, ...recept.slag };
-    const sfSvardshand = (api.rakna().sarskildFormaga?.regel ?? []).some((d) => d.typ === "svardshand");
+    const sfSvardshand = [...(api.rakna().sarskildaFormagorna ?? []), api.rakna().klan?.formaga].some((f) => (f?.regel ?? []).some((d) => d.typ === "svardshand"));
     r.svardshand = { bp: 0, slag: sfSvardshand ? null : slag.svardshand };
     r.socialtStand = { bp: 0, slag: slag.socialtStand };
     r.startkapital = { bp: 0, slag: slag.startkapital };

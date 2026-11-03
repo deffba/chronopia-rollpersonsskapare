@@ -1,5 +1,5 @@
 // Steg 7: särskilda förmågor.
-import { GRUNDEGENSKAPER, familjarAv, sarskildFormaga as sfFor, tillgangligaFormagetabeller, formagetabell, formageslag, nivaFor, slagIntervall, tarningAv } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, familjarAv, tatueringAv, sarskildFormaga as sfFor, tillgangligaFormagetabeller, formagetabell, formageslag, nivaFor, slagIntervall, tarningAv } from "../regelmotor.js";
 import { rita } from "../app.js";
 import { S, motorIndata, uppdatera } from "../tillstand.js";
 import { el, slaT } from "../ui/dom.js";
@@ -120,6 +120,14 @@ export function stegFormagor() {
       const { slagfalt, knapp } = slagKontroll(id, `Slag (${del.tarning})`, `Slå ${del.tarning}`, n, n * sidor,
         (slag) => sattVal(i, { slag, tarningar: S.manuellaSlag ? null : tarningar }), slumpa, sidor);
       return el("li", {}, el("span", { class: "fnamn" }, `Slå ${del.tarning} hjältepoäng`), el("div", { class: "rad" }, slagfalt, knapp));
+    }
+    if (del.typ === "tatuering") {
+      // Bärsärk: en levande tatuering med insikt högst maxNr (Dvärgar i Chronopia s. 15, 27–28)
+      const lista = (S.R.fardigheter.tatueringar?.lista ?? []).filter((t) => !del.maxNr || t.nr <= del.maxNr);
+      const t = val(i) ? tatueringAv(S.R, val(i)) : null;
+      return el("li", {}, el("span", { class: "fnamn" }, "Välj tatuering (med SL)"),
+        valLista(`${pid}-${i}-tatuering`, val(i), lista.map((x) => [x.id, `${x.nr} ${x.namn}`]), (v) => sattVal(i, v || undefined), "Välj tatuering …"),
+        t ? el("p", { class: "hjalp" }, `${t.effekt} Kostnad ${t.kostnad}, ${t.antal}.`) : null);
     }
     if (del.typ === "familjar") {
       // Spiritus familiarius: en valfri familjar gratis (Magi i Chronopia s. 17)

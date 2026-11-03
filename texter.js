@@ -70,4 +70,4 @@ export const RASFORMAGOR = {
 export const RAS_SEKUNDAR_INFO = "Färdigheter som är primära för de flesta men sekundära för den här rasen. Rollpersonen får ingen baschans i dem och de kostar som sekundära färdigheter, om de inte väljs som yrkesfärdigheter (s. 14–16).";
 
 
-export const LARDOMSFORSLAG = ["Kunskap om magi", "Kunskap om religion", "Kunskap om demoner", "Kunskap om odöda", "Kunskap om språk"];
+export const LARDOMSFORSLAG = ["Kunskap om magi", "Kunskap om religion", "Kunskap om religion (Atum)", "Kunskap om demoner", "Kunskap om odöda", "Kunskap om språk"];

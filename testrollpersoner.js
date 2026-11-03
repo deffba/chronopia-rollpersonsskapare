@@ -201,4 +201,50 @@ export const TESTROLLPERSONER = [
     startpaketVapen: "Trästav",
     anteckningar: "Testrollperson från utvecklarläget. Fågelbroder med sin lystat och en pratsam jefta.",
   },
+  {
+    // Dvärgar i Chronopia: klan Mindir med Magikerbakgrund (+3 i Atums väg), Atums väg utan magiförmågeslag
+    // och Kunskap om religion (Atum) som primär färdighet
+    id: "dvarg-prast",
+    etikett: "Dvärg, präst ur klan Mindir (Dvärgar)",
+    namn: "Thrain Atumsord",
+    kon: "Man",
+    bocker: ["vr", "dvargar"],
+    niva: 0,
+    ras: "dvarg",
+    alder: 80,
+    yrke: "prast",
+    klan: { id: "mindir", slag: 52, formagaSlag: 10 },
+    rasval: "hantverk:Smide",
+    val: { lardom: ["Historia om Stubbstan", "Kunskap om magi"], vapen: ["Stridsyxa (dvärgisk)", "Handyxa"] },
+    valfri: "geografi",
+    sarskildFormaga: { bp: 5, slag: 10, tabell: "dvargar" }, // 15: Ölhävare
+    slag: { svardshand: 6, socialtStand: 8, startkapital: 9 },
+    epTillBesvarjelser: 40,
+    besvarjelser: ["atums-valsignelse", "himmelsk-eld"],
+    anteckningar: "Testrollperson från utvecklarläget. Präst i katedralen i Stubbstan.",
+  },
+  {
+    // Dvärgar i Chronopia: veteran (två tatueringar från yrket), klan Zodan med Smärttålig, och förmågan
+    // Bärsärk från dvärgarnas tabell (en tatuering till)
+    id: "dvarg-barsark",
+    etikett: "Dvärg, bärsärk ur klan Zodan (Dvärgar, veteran)",
+    namn: "Grimvar Lothansson",
+    kon: "Man",
+    bocker: ["vr", "dvargar"],
+    niva: 1,
+    ras: "dvarg",
+    alder: 60,
+    yrke: "barsark",
+    klan: { id: "zodan", slag: 68, formagaSlag: 9 },
+    rasval: "hantverk:Smide",
+    tatueringar: ["lothans-marke", "fjallhud"],
+    val: { hantverk: ["Läderarbete"], "tva-vapen": "Stridsyxa (dvärgisk)+Handyxa", vapen: ["Stridsyxa (dvärgisk)", "Handyxa", "Drakdödare", "Kastkniv (dvärgisk)"] },
+    valfri: "simma",
+    sarskildFormaga: [
+      { bp: 7, slag: 20, tabell: "dvargar", val: ["hjalpare"] }, // 27: Bärsärk
+      { bp: 1, slag: 25, tabell: "dvargar" }, // 26: Gott läkekött
+    ],
+    slag: { svardshand: 7, socialtStand: 6, startkapital: 8 },
+    anteckningar: "Testrollperson från utvecklarläget. Vildman från Zodans hallar med Lothans märke på axeln.",
+  },
 ];

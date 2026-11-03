@@ -35,6 +35,7 @@ export function saknasPerSteg(res) {
   });
   if (S.rp.yrke && yrke.valfri && !klar(S.rp.valfri)) lista.extra.push("Den valfria yrkesfärdigheten");
   if (S.rp.yrke && yrke.startbonus?.some((b) => b.valEttAv) && !yrkesNycklar().includes(S.rp.hantverkBonus)) lista.extra.push("Hantverket som får gratis FV");
+  if (res.tatueringar?.tak && (S.rp.tatueringar ?? []).length < res.tatueringar.tak) lista.extra.push(`Levande tatueringar: ${res.tatueringar.tak - (S.rp.tatueringar ?? []).length} val kvar`);
   if (S.rp.extraYrkesfardigheter.some((k) => !klar(k))) lista.extra.push("En extra yrkesfärdighet är inte färdigvald (välj klart eller ta bort den)");
   if (!S.rp.namn.trim()) lista.kon.push("Namn");
   if (!S.rp.kon) lista.kon.push("Kön");

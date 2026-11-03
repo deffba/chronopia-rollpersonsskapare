@@ -1,14 +1,21 @@
 // Svärdshand, socialt stånd och startkapital.
 import { rasAv, yrkeAv, standsvarde } from "../regelmotor.js";
-import { S, rasId, sarskildFormaga, uppdatera, yrkeId } from "../tillstand.js";
+import { S, rasId, uppdatera, yrkeId } from "../tillstand.js";
 import { el, sm } from "../ui/dom.js";
 import { valLista } from "../ui/kontroller.js";
 import { inteSlaget, slagSteg } from "../ui/tarningar.js";
+import { svardshandGiven } from "./saknas.js";
+
+// Klanförmågans bonus på slaget för socialt stånd eller startkapital (Dvärgar i Chronopia s. 19–25)
+const klanBonus = (res, falt) => {
+  const v = (res.klan?.formaga?.regel ?? []).filter((d) => d.typ === "slagbonus").reduce((a, d) => a + (d[falt] ?? 0), 0);
+  return v ? [`Klanförmåga (${res.klan.formaga.namn.toLowerCase()})`, v] : null;
+};
 
 export function stegSvardshand(res) {
-  const sf = sarskildFormaga();
-  if (sf && ["Dubbelhänt", "Ambidextriös"].includes(sf.namn)) {
-    return [el("p", { class: "summering" }, `Den särskilda förmågan ger ${sf.namn.toLowerCase()} rollperson, så du behöver inte slå (s. 32).`)];
+  const sf = svardshandGiven(res);
+  if (sf) {
+    return [el("p", { class: "summering" }, `${res.klan?.formaga === sf ? "Klanförmågan" : "Den särskilda förmågan"} ger ${res.slag.svardshand.toLowerCase()} rollperson, så du behöver inte slå (s. 32).`)];
   }
   return slagSteg("sh", "svardshand", "Svärdshand", "2T6",
     S.rp.svardshand.slag === null ? inteSlaget() : [`Resultat: ${S.rp.svardshand.slag + S.rp.svardshand.bp}.`, `Svärdshand: ${res.slag.svardshand}.`],
@@ -31,7 +38,7 @@ export function stegStand(res) {
   return [...slagSteg("ss", "socialtStand", "Socialt stånd", "2T6",
     S.rp.socialtStand.slag === null ? inteSlaget() : [`Resultat: ${res.slag.ssResultat}.`, `Socialt stånd: ${res.slag.socialtStand}.`],
     "Slå 2T6 plus lagda BP. Socialt stånd påverkar läs- och skrivkunnighet i modersmålet och taket för startkapitalet. Hälften av de BP du lägger här (avrundat uppåt) läggs också som bonus på slaget för startkapital i steg 10.",
-    undefined, bonus ? [[`Ras (${ras.namn.toLowerCase()})`, bonus]] : []), valja];
+    undefined, [bonus ? [`Ras (${ras.namn.toLowerCase()})`, bonus] : null, klanBonus(res, "socialtStand")].filter(Boolean)), valja];
 }
 
 export function stegKapital(res) {
@@ -43,6 +50,7 @@ export function stegKapital(res) {
     halva ? ["Halva BP från socialt stånd", halva] : null,
     ras.slagbonus.startkapital ? [`Ras (${ras.namn.toLowerCase()})`, ras.slagbonus.startkapital] : null,
     yrke.slagbonus?.startkapital ? [`Yrke (${yrke.namn.toLowerCase()})`, yrke.slagbonus.startkapital] : null,
+    klanBonus(res, "startkapital"),
   ].filter(Boolean);
   const utanTak = S.rp.startkapital.slag + S.rp.startkapital.bp + bonusar.reduce((a, [, v]) => a + v, 0);
   return slagSteg("sk", "startkapital", "Startkapital", "2T6",

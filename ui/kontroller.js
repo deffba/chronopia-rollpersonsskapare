@@ -149,7 +149,8 @@ export function delvalKontroll(id, fardighetId, varde, onchange, { yrke = false 
   if (fardighetId === "kulturkannedom") return valLista(id, varde, markeraValda(kulturer(S.R, S.rp).map((k) => [k, k]), redanValda(fardighetId, varde)), onchange, "Välj kultur …");
   if (fardighetId === "tala" || fardighetId === "lasa-skriva") return sprakLista(id, fardighetId, varde, onchange, yrke);
   if (fardighetId === "hantverk") {
-    const lista = valLista(id, varde, markeraValda(S.R.fardigheter.hantverk.map(([n, g]) => [n, `${n} (${g})`]), redanValda(fardighetId, varde)), onchange, "Välj hantverk …");
+    const hantverk = S.R.fardigheter.hantverk.filter(([, , kalla]) => !kalla || iBocker({ kalla }, S.rp)); // Bryggning och Matlagning: Dvärgar (RB-014)
+    const lista = valLista(id, varde, markeraValda(hantverk.map(([n, g]) => [n, `${n} (${g})`]), redanValda(fardighetId, varde)), onchange, "Välj hantverk …");
     const text = S.R.fardigheter.hantverkBeskrivning?.[varde];
     return text ? el("div", { class: "delval-med-text" }, lista, el("p", { class: "fbeskr" }, text)) : lista;
   }
