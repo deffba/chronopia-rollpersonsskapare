@@ -10,6 +10,7 @@ export const STEG = [
   { id: "kon", namn: "Kön och namn", sida: "27" },
   { id: "egenskaper", namn: "Grundegenskaper", sida: "27–29", bp: true },
   { id: "formagor", namn: "Särskilda förmågor", sida: "30–32", bp: true },
+  { id: "familjarer", namn: "Familjarer", sida: "Magi i Chronopia 40–43", bp: true }, // bara när Magi är vald
   { id: "svardshand", namn: "Svärdshand", sida: "32", bp: true },
   { id: "stand", namn: "Socialt stånd", sida: "33", bp: true },
   { id: "kapital", namn: "Startkapital", sida: "33", bp: true },

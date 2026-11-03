@@ -67,7 +67,7 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
   }
 
   if (steg === "kon") {
-    if (!rp.kon) rp.kon = valj(["Man", "Kvinna"]);
+    if (!rp.kon) rp.kon = yrkeAv(R, rp.yrke)?.villkor?.kon ?? valj(["Man", "Kvinna"]);
     if (!rp.namn.trim()) rp.namn = valj(NAMN[rp.kon] ?? NAMN.Man);
     if (!rp.spelare.trim()) rp.spelare = "Test";
   }
@@ -164,6 +164,11 @@ function fyllFormaga(api, autoDelval, anvanda, slag) {
         const forsok = [{ lage: "tre", egenskaper: ["STY", "FYS", "SMI"] }, { lage: "tre", egenskaper: ["INT", "PSY", "KAR"] },
           ...GRUNDEGENSKAPER.map((g) => ({ lage: "en", egenskaper: [g] }))];
         for (const v of forsok) { sattVal(v); if (gar()) break; }
+      }
+      if (del.typ === "familjar" && !val[i]) {
+        // Spiritus familiarius: en slumpad familjar som rollpersonen får ha (Magi i Chronopia s. 17)
+        const lista = [...(R.foljeslagare?.familjarer?.lista ?? [])].sort(() => Math.random() - 0.5);
+        for (const f of lista) { sattVal(f.id); if (gar()) break; }
       }
       if (del.typ === "hjaltepoang" && slag && !Number.isInteger(val[i]?.slag)) {
         const { n, sidor } = tarningAv(del.tarning);

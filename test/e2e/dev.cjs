@@ -36,10 +36,10 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
     await p.click('#menyknapp'); await p.click('#dev-' + id); await p.waitForTimeout(200);
     ok(`${id} inläst i sista steget`, (await p.locator('.steg-huvud h2').textContent()) === 'Spara och exportera' && await p.locator('.steg-knapp[disabled]').count() === 0);
   }
-  const steg = await p.locator('#dev-lage optgroup[label="Steg"] option').evaluateAll(o => o.map(x => [x.value, x.textContent.replace(/^\d+\. | \(bara magiker\)$/g, '')]));
+  const steg = await p.locator('#dev-lage optgroup[label="Steg"] option').evaluateAll(o => o.map(x => [x.value, x.textContent.replace(/^\d+\. | \(bara (magiker|med Magi)\)$/g, '')]));
   let fel_steg = [];
   for (const [id, namn] of steg) {
-    await p.click('#menyknapp'); await p.selectOption('#dev-lage', id); await p.click('#dev-magiker'); await p.waitForTimeout(150);
+    await p.click('#menyknapp'); await p.selectOption('#dev-lage', id); await p.click(id === 'familjarer' ? '#dev-magi-chronomag' : '#dev-magiker'); await p.waitForTimeout(150);
     const h2 = await p.locator('.steg-huvud h2').textContent();
     if (h2 !== namn) fel_steg.push(`${id}: ${h2}`);
   }
@@ -62,7 +62,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   ok('rollformuläret med erf', await p.locator('#rf-vy').isVisible() && Object.keys(erf).length > 0);
   const filer = []; p.on('download', d => filer.push(d.suggestedFilename()));
   await p.click('#menyknapp'); await p.click('#dev-ladda-ner'); await p.waitForTimeout(1000);
-  ok('ladda ner alla', filer.length === 6, filer.join(', '));
+  ok('ladda ner alla', filer.length === 8, filer.join(', '));
   await p.goto(URL); await p.waitForSelector('.utvecklarlage', { state: 'attached' });
   ok('valet sparas i webbläsaren', true);
   await p.goto(URL + '?dev=av'); await tillRas(p); await p.waitForTimeout(300);

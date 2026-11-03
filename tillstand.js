@@ -6,7 +6,7 @@ import { utvecklad } from "./utveckling.js";
 import { STEG } from "./texter.js";
 import { rita, visaNotis } from "./app.js";
 
-export const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning", "erfarenhet", "bocker"];
+export const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning", "erfarenhet", "bocker", "foljeslagare"];
 export const LAGRING = "chronopia-rollperson-v2";
 
 export const TOM = () => ({
@@ -19,7 +19,7 @@ export const TOM = () => ({
   extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false, fler: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
-  magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
+  magiformaga: { slag: null }, stridskonstTekniker: {}, stridskonstFardig: {}, besvarjelser: {}, minimagi: [], familjarer: [], utrustning: {}, startpaket: { valt: false, vapen: "" }, anteckningar: "",
   spel: TOMT_SPEL(), utveckling: TOM_UTVECKLING(),
 });
 // En sparad rollperson kompletteras med fält som har tillkommit sedan den sparades
@@ -144,6 +144,7 @@ function allaNycklar(yrkesfardigheter) {
   for (const b of [...(sf?.fvBonus ?? []), ...(sf?.fvMinst ?? [])]) mangd.add(b.fardighet);
   if (yrke.magiker) {
     mangd.add("lardom:Kunskap om magi");
+    if (yrke.automatiska?.includes("minimagi")) mangd.add("minimagi"); // Magi i Chronopia s. 8–9
     for (const k of [...mangd]) if (fardighetAv(S.R, k)?.typ === "magiskola") mangd.add(`kanna-magi:${k}`);
   }
   return [...mangd].filter((k) => !paborjad(k) && fardighetAv(S.R, k));

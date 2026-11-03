@@ -2755,6 +2755,840 @@
         "bok": "vr",
         "sida": 69
       }
+    },
+    {
+      "namn": "Kolv",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.3,
+      "pris": 50,
+      "atkomlighet": "MA, S, W, C",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Pipett",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.1,
+      "pris": 45,
+      "atkomlighet": "MA, S, W, C",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Pincett",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.1,
+      "pris": 40,
+      "atkomlighet": "CH, B",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Gasbrännare",
+      "kategori": "Magikerutrustning",
+      "vikt": 2,
+      "pris": 750,
+      "atkomlighet": "MA, S, C",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Glasrör (härdat)",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.2,
+      "pris": 60,
+      "atkomlighet": "MA, S, W, C",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Stativ",
+      "kategori": "Magikerutrustning",
+      "vikt": 2,
+      "pris": 250,
+      "atkomlighet": "CH, C",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Svart gas (0,5 l, räcker 10 timmar)",
+      "kategori": "Magikerutrustning",
+      "vikt": 1,
+      "pris": 450,
+      "atkomlighet": "MA, S, C",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Labbtång",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.5,
+      "pris": 35,
+      "atkomlighet": "CH, C",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Burk (i lirium)",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.5,
+      "pris": 2000,
+      "atkomlighet": "MA, S, D, 1",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Magisk behållare: rund",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.5,
+      "pris": 8000,
+      "atkomlighet": "MA, S, D, 4",
+      "not": "Rymmer 5 PSY-poäng.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Magisk behållare: kubisk",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.5,
+      "pris": 12000,
+      "atkomlighet": "MA, S, D, 4",
+      "not": "Rymmer 8 PSY-poäng.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Magisk behållare: pyramid",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.5,
+      "pris": 18000,
+      "atkomlighet": "MA, S, D, 4",
+      "not": "Rymmer 12 PSY-poäng.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Magisk behållare: tub",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.5,
+      "pris": 24000,
+      "atkomlighet": "MA, S, D, 4",
+      "not": "Rymmer 17 PSY-poäng.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Magisk behållare: heptagon",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.5,
+      "pris": 35000,
+      "atkomlighet": "MA, S, D, 4",
+      "not": "Rymmer 22 PSY-poäng.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Larmare",
+      "kategori": "Magikerutrustning",
+      "vikt": 0.5,
+      "pris": 3000,
+      "atkomlighet": "MA, D",
+      "not": "Skriker när något i laboratoriet håller på att överbelastas.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Meditari",
+      "kategori": "Magikerutrustning",
+      "vikt": 5,
+      "pris": 30000,
+      "atkomlighet": "MA, D, 4",
+      "not": "Magisk sfär: B-nivån i Meditation räknas ett steg högre.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Skyddskläder",
+      "kategori": "Magikerutrustning",
+      "vikt": null,
+      "pris": 4500,
+      "atkomlighet": "MA, D",
+      "not": "Tål svavel, syror och explosioner och absorberar 1T6 poäng från eld- och syraattacker.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 48
+      }
+    },
+    {
+      "namn": "Badkar (varmt, kallt, bubblor)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 50,
+      "pris": 4400,
+      "atkomlighet": "MA, S, D, 2",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Brännjärn (magiskt)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 2,
+      "pris": 1500,
+      "atkomlighet": "MA, S, D, 3",
+      "not": "Märker återfallsförbrytare.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Demonernas dagar (bok)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 4,
+      "pris": 3500,
+      "atkomlighet": "MA, U, E, X",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Flöjt (magisk)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 0.5,
+      "pris": 1500,
+      "atkomlighet": "MA, M, C, 1",
+      "not": "Låter alltid obeskrivligt bra.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Fyrverkeripjäser",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": null,
+      "pris": 50,
+      "prisText": "50+ sm",
+      "atkomlighet": "MA, S, W, C, 1",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Förtrollade frön",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": null,
+      "pris": 85,
+      "atkomlighet": "CH, B",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Harpa (magisk)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 80,
+      "pris": 10000,
+      "atkomlighet": "M, MA, D, 1",
+      "not": "Låter alltid obeskrivligt bra.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Kalla bägaren",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 1,
+      "pris": 500,
+      "atkomlighet": "CH, C",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Kejsarens kläde",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": null,
+      "pris": 4000,
+      "prisText": "4 000+ sm",
+      "atkomlighet": "MA, F, D, 2",
+      "not": "Bäraren ser betydelsefull ut: upp till +5 på KAR och KAR-baserade färdigheter beroende på kvaliteten.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Kokande gryta",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 10,
+      "pris": 1000,
+      "atkomlighet": "MA, F, S, 1",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Krukväxter (magiska)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": null,
+      "pris": 160,
+      "prisText": "160+ sm",
+      "atkomlighet": "MA, C, 1",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Lergoblin",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 0.2,
+      "pris": 50,
+      "atkomlighet": "CH, B",
+      "not": "Spelar Kloaksonaten tvåstämmigt.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Ljusglob",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 0.5,
+      "pris": 3000,
+      "prisText": "3 000+ sm",
+      "atkomlighet": "MA, F, D, 2",
+      "not": "Lyser upp ett område upp till tio meter i diameter när man gnider den.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 50
+      }
+    },
+    {
+      "namn": "Luskam (sväljer själv)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 0.2,
+      "pris": 165,
+      "atkomlighet": "CH, B",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Nattschal",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 0.5,
+      "pris": 3500,
+      "atkomlighet": "MA, F, D, 1",
+      "not": "En liten mörkerelementar i ett tygstycke som stänger ute ljuset.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 50
+      }
+    },
+    {
+      "namn": "Orbovision",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 10,
+      "pris": 15000,
+      "prisText": "15 000+ sm",
+      "atkomlighet": "MA, E, 4",
+      "not": "Kristallkula som visar avlägsna platser, till exempel Arenan.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 50
+      }
+    },
+    {
+      "namn": "Outslitliga kläder",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": null,
+      "pris": 1500,
+      "prisText": "1 500+ sm",
+      "atkomlighet": "MA, F, C",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Portens väktare (bok)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 5,
+      "pris": 1900,
+      "atkomlighet": "MA, F, D",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Regnskydd",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 0.5,
+      "pris": 1200,
+      "atkomlighet": "MA, F, C, 1",
+      "not": "Halskedja som skyddar mot regn, som minimagin med samma namn.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 50
+      }
+    },
+    {
+      "namn": "Vindskydd",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 0.5,
+      "pris": 1200,
+      "atkomlighet": "MA, F, C, 1",
+      "not": "Halskedja som skyddar mot vind, som minimagin med samma namn.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 50
+      }
+    },
+    {
+      "namn": "Renare",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 5,
+      "pris": 6000,
+      "atkomlighet": "MA, D, 4",
+      "not": "En liten vattenelementar på flaska som städar.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 50
+      }
+    },
+    {
+      "namn": "Sagan om Ilvan (bok)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 3,
+      "pris": 2300,
+      "atkomlighet": "MA, F, D",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Självfejande sopkvast",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 2,
+      "pris": 1950,
+      "atkomlighet": "MA, F, C, 1",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Självlysande relik",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": null,
+      "pris": 500,
+      "prisText": "500–35 000 sm",
+      "atkomlighet": "T, B, 2",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Skack",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 6,
+      "pris": 4500,
+      "prisText": "4 500–25 000 sm",
+      "atkomlighet": "MA, F, S, M, D, 4",
+      "not": "Schack med levande pjäser.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 50
+      }
+    },
+    {
+      "namn": "Smaksättande gryta",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 10,
+      "pris": 2000,
+      "atkomlighet": "MA, F, D, 1",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Spegel (+5 i KAR)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 15,
+      "pris": 5000,
+      "prisText": "5 000+ sm",
+      "atkomlighet": "MA, F, M, D, 2",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Svävande bärstol",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 200,
+      "pris": 45000,
+      "prisText": "45 000+ sm",
+      "atkomlighet": "MA, D, 4",
+      "not": "Svävar upp till femton meter över marken, styrs med tankarna och bär 300 kg.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 51
+      }
+    },
+    {
+      "namn": "Stövelknekt (drar av)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 3,
+      "pris": 450,
+      "atkomlighet": "MA, F, C, 2",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Talande dörrkläpp",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 3,
+      "pris": 800,
+      "atkomlighet": "MA, F, C, 2",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Tändare",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 1,
+      "pris": 1500,
+      "atkomlighet": "MA, C, 4",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Varma koppen",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": 1,
+      "pris": 750,
+      "atkomlighet": "CH, B, 1",
+      "kalla": {
+        "bok": "magi",
+        "sida": 49
+      }
+    },
+    {
+      "namn": "Ögonglas (magiska)",
+      "kategori": "Magiska vardagsföremål",
+      "vikt": null,
+      "pris": 500,
+      "prisText": "500+ sm",
+      "atkomlighet": "MA, F, S, D, 2",
+      "not": "500 sm för +1, 1 500 för +2, 3 000 för +3 och så vidare. Kan förbättra synen hur många steg som helst.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 51
+      }
+    },
+    {
+      "namn": "Gondolinsk stridshandske",
+      "kategori": "Magiska vapen",
+      "vikt": 3,
+      "pris": 6000,
+      "atkomlighet": "U, D, 5",
+      "not": "Ser ut som drakskinn. Utfällbara klor ger +1T6 i närstrid, och den ökar användarens STY med 4.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 52
+      }
+    },
+    {
+      "namn": "Skuggvapen",
+      "kategori": "Magiska vapen",
+      "vikt": 0.5,
+      "pris": 15000,
+      "prisText": "15 000+ sm",
+      "atkomlighet": "U, E, X",
+      "not": "Hugger genom allt utom levande vävnad: ingen rustning skyddar, men det går inte att parera med det. Förbjudet.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 52
+      }
+    },
+    {
+      "namn": "Alviska stövlar",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 1,
+      "pris": 1500,
+      "atkomlighet": "M, D, 2",
+      "not": "+5 CL i Smyga.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Auraglas",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.2,
+      "pris": 3500,
+      "atkomlighet": "MA, D, 4",
+      "not": "Bäraren ser auror kring levande och döda ting.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Helare",
+      "kategori": "Magiska droger",
+      "vikt": 0.2,
+      "pris": 850,
+      "atkomlighet": "MA, D, 2",
+      "not": "Läker 1T6 KP på 1T20 SR.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Starkare",
+      "kategori": "Magiska droger",
+      "vikt": 0.2,
+      "pris": 550,
+      "atkomlighet": "MA, D, 2",
+      "not": "STY +1T8 i 1T10 SR, sedan lika mycket lägre lika länge.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Stoppare",
+      "kategori": "Magiska droger",
+      "vikt": 0.2,
+      "pris": 600,
+      "atkomlighet": "MA, D, 2",
+      "not": "+5 på alla motståndsslag mot magi i 1T6 minuter.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Snabbare",
+      "kategori": "Magiska droger",
+      "vikt": 0.2,
+      "pris": 800,
+      "atkomlighet": "MA, D, 2",
+      "not": "SMI och SMI-baserade färdigheter +1T6 i 2T6 SR.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Slöare",
+      "kategori": "Magiska droger",
+      "vikt": 0.2,
+      "pris": 500,
+      "atkomlighet": "MA, D, 2",
+      "not": "SMI och SMI-baserade färdigheter −1T6 i 2T6 SR.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Tänkare",
+      "kategori": "Magiska droger",
+      "vikt": 0.2,
+      "pris": 450,
+      "atkomlighet": "MA, D, 2",
+      "not": "INT och INT-baserade färdigheter +1T4 i lika många minuter.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Vakare",
+      "kategori": "Magiska droger",
+      "vikt": 0.2,
+      "pris": 450,
+      "atkomlighet": "MA, D, 2",
+      "not": "+5 CL i Finna dolda ting, Lyssna och Upptäcka fara i 2T10 minuter.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Fördoldhetens kåpa",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 1,
+      "pris": 5000,
+      "atkomlighet": "MA, U, D, X",
+      "not": "Döljer bärarens magiska aura: −10 CL för den som försöker se den.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Halsboja",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 2,
+      "pris": 3000,
+      "atkomlighet": "MA, S, D, 4",
+      "not": "Den som bär den kan inte använda magi (som Antimagi E10). Öppnas bara med rätt nyckel.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 54
+      }
+    },
+    {
+      "namn": "Kristallstoft",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.2,
+      "pris": 200,
+      "atkomlighet": "MA, C, 1",
+      "not": "Djur och växter stelnar i 2T6 SR (PSY 10 emot); människor och alver får −5 i SMI i 2T6 SR.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 54
+      }
+    },
+    {
+      "namn": "Merils amulett",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.1,
+      "pris": 4000,
+      "atkomlighet": "MA, D, 4",
+      "not": "Absorberar två effektgrader magi per SR, men inte fysiska manifestationer (F).",
+      "kalla": {
+        "bok": "magi",
+        "sida": 54
+      }
+    },
+    {
+      "namn": "Mörkerglas",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.5,
+      "pris": 3500,
+      "atkomlighet": "MA, W, D, 2",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Pendel (magisk)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 2,
+      "pris": 1250,
+      "atkomlighet": "MA, S, W, D, 4",
+      "not": "Leder mot närmaste magiska kraftkälla; tydningen kräver ett slag i Kunskap om magi.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 54
+      }
+    },
+    {
+      "namn": "Rep som snöre (50 m)",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 1,
+      "pris": 1750,
+      "atkomlighet": "MA, U, D, 2",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Tiris levande mask",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 4,
+      "pris": 6500,
+      "atkomlighet": "MA, U, E, 4",
+      "not": "Antar en form efter bärarens sinnesstämning.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 53
+      }
+    },
+    {
+      "namn": "Ubiriskt stjärnstoft",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.2,
+      "pris": 450,
+      "atkomlighet": "MA, C, 2",
+      "not": "Kastas mot en magiker: −5 CL på magi i 1T6 SR.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 54
+      }
+    },
+    {
+      "namn": "Vendelstoft",
+      "kategori": "Äventyrarutrustning",
+      "vikt": 0.2,
+      "pris": 100,
+      "atkomlighet": "CH, B, 1",
+      "not": "Glittrar blått nära magi; ju starkare magi, desto starkare glitter. Används en gång.",
+      "kalla": {
+        "bok": "magi",
+        "sida": 54
+      }
     }
   ],
   "rustningar": [
@@ -3993,7 +4827,8 @@
       "H": "hamnarna",
       "U": "undre världen",
       "CH": "hela Chronopia",
-      "L": "lufthamnarna"
+      "L": "lufthamnarna",
+      "MA": "Magikerstaden"
     },
     "sallsynthet": {
       "A": "extremt vanlig",
@@ -4255,6 +5090,54 @@
           "Passerskort på Arenan"
         ]
       }
+    },
+    "Magiska vardagsföremål": {
+      "varor": {
+        "Böcker": [
+          "Demonernas dagar (bok)",
+          "Portens väktare (bok)",
+          "Sagan om Ilvan (bok)"
+        ],
+        "Hushåll": [
+          "Badkar (varmt, kallt, bubblor)",
+          "Kalla bägaren",
+          "Kokande gryta",
+          "Luskam (sväljer själv)",
+          "Renare",
+          "Självfejande sopkvast",
+          "Smaksättande gryta",
+          "Stövelknekt (drar av)",
+          "Talande dörrkläpp",
+          "Tändare",
+          "Varma koppen",
+          "Krukväxter (magiska)",
+          "Förtrollade frön"
+        ],
+        "Kläder och smycken": [
+          "Kejsarens kläde",
+          "Nattschal",
+          "Outslitliga kläder",
+          "Regnskydd",
+          "Vindskydd",
+          "Ögonglas (magiska)",
+          "Spegel (+5 i KAR)"
+        ],
+        "Nöjen och instrument": [
+          "Flöjt (magisk)",
+          "Harpa (magisk)",
+          "Lergoblin",
+          "Fyrverkeripjäser",
+          "Orbovision",
+          "Skack"
+        ]
+      }
     }
+  },
+  "magiskaVapen": {
+    "kalla": {
+      "bok": "magi",
+      "sida": 51
+    },
+    "text": "Hungervapen (vapnets pris ×15), liriumvapen (×40: BV +8 och skada +2, rustning +2 i absorbering) och miniatyrvapen (×20) är vanliga vapen med magi. De köps genom spelledaren (Magi i Chronopia s. 51–52)."
   }
 }

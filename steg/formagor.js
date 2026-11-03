@@ -1,5 +1,5 @@
 // Steg 7: särskilda förmågor.
-import { GRUNDEGENSKAPER, sarskildFormaga as sfFor, tillgangligaFormagetabeller, formagetabell, formageslag, nivaFor, slagIntervall, tarningAv } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, familjarAv, sarskildFormaga as sfFor, tillgangligaFormagetabeller, formagetabell, formageslag, nivaFor, slagIntervall, tarningAv } from "../regelmotor.js";
 import { rita } from "../app.js";
 import { S, motorIndata, uppdatera } from "../tillstand.js";
 import { el, slaT } from "../ui/dom.js";
@@ -121,6 +121,13 @@ export function stegFormagor() {
         (slag) => sattVal(i, { slag, tarningar: S.manuellaSlag ? null : tarningar }), slumpa, sidor);
       return el("li", {}, el("span", { class: "fnamn" }, `Slå ${del.tarning} hjältepoäng`), el("div", { class: "rad" }, slagfalt, knapp));
     }
+    if (del.typ === "familjar") {
+      // Spiritus familiarius: en valfri familjar gratis (Magi i Chronopia s. 17)
+      const lista = S.R.foljeslagare?.familjarer?.lista ?? [];
+      return el("li", {}, el("span", { class: "fnamn" }, "Välj familjar"),
+        valLista(`${pid}-${i}-familjar`, val(i), lista.map((f) => [f.id, `${f.namn} (värd ${f.bp} BP)`]), (v) => sattVal(i, v || undefined)),
+        val(i) ? el("p", { class: "hjalp" }, familjarAv(S.R, val(i))?.beskrivning) : null);
+    }
     return null;
   }).filter(Boolean);
 
@@ -230,3 +237,4 @@ function hjaltepoangKop(hp) {
       el("span", { class: "hp-antal", id: `hp-${g}` }, kop[g] ? `+${kop[g]}` : "0"),
       el("button", { type: "button", class: "knapp liten", id: `hp-${g}-upp`, "aria-label": `Höj ${g}`, disabled: hp.kvar < pris, onclick: () => andra(g, 1) }, "+"))))));
 }
+

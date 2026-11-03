@@ -1,0 +1,380 @@
+{
+  "familjarer": {
+    "kalla": {
+      "bok": "magi",
+      "sida": 40
+    },
+    "beslut": "RB-010",
+    "text": "Familjarer köps för BP. Erfarenhetsnivån avgör hur många rollpersonen får ha: 1 som magus, 3 som magus regis och 5 som häxmästare (RB-010). Familjarer som yrket eller en särskild förmåga ger är gratis och räknas inte mot taket. De talar chronos om inget annat sägs.",
+    "gratisRaknas": false,
+    "lista": [
+      {
+        "id": "demonette",
+        "namn": "Demonette",
+        "STO": 5,
+        "STY": 7,
+        "FYS": 6,
+        "SMI": 14,
+        "INT": 5,
+        "PSY": 9,
+        "KP": 6,
+        "SB": "±0",
+        "bp": 5,
+        "fardigheter": "Bett (1, 1T4) 8, Gömma sig 10, Hoppa 10, Klor (2, 1T4), Klättra 15, Kunskap om magiska substanser 19",
+        "beskrivning": "En liten demonisk hjälpreda med svans och horn, som känner igen magiska substanser. Ofta laboratorieassistent.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 40
+        }
+      },
+      {
+        "id": "dragonette",
+        "namn": "Dragonette",
+        "STO": 8,
+        "STY": 14,
+        "FYS": 13,
+        "SMI": 15,
+        "INT": 12,
+        "PSY": 11,
+        "KP": 11,
+        "SB": "±0",
+        "bp": 15,
+        "fardigheter": "Bett (1, 1T6) 10, Eldkvast (2T6+3) 9, Flyga ljudlöst 14, Hoppa 7, Klor (2, 1T4), Kunskap om (tre valfria) 15",
+        "beskrivning": "En liten drake med vässat intellekt som konverserar, flyger och sprutar eld. Hårt pansar (abs 4).",
+        "kalla": {
+          "bok": "magi",
+          "sida": 40
+        }
+      },
+      {
+        "id": "gaboon",
+        "namn": "Gaboon",
+        "STO": 6,
+        "STY": 7,
+        "FYS": 9,
+        "SMI": 16,
+        "INT": 6,
+        "PSY": 8,
+        "KP": 8,
+        "SB": "±0",
+        "bp": 5,
+        "fardigheter": "Hoppa 15, Klättra 12, Knytnävar (2, 1T3) 8, Smyga 13, Upptäcka fara 10",
+        "beskrivning": "Smal och snabb budbärare med svart läderhud. Talar inte, men förstår chronos perfekt.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 41
+        }
+      },
+      {
+        "id": "gargoyl",
+        "namn": "Gargoyl",
+        "STO": 2,
+        "STY": 4,
+        "FYS": 5,
+        "SMI": 10,
+        "INT": 4,
+        "PSY": 7,
+        "KP": 4,
+        "SB": "±0",
+        "bp": 2,
+        "fardigheter": "Flyga 10, Näbb (1T2) 8",
+        "beskrivning": "Mycket mindre än sina kusiner på husfasaderna. Flyger klumpigt och är inte särskilt klok, men ett utmärkt husdjur.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 41
+        }
+      },
+      {
+        "id": "geryon",
+        "namn": "Geryon",
+        "STO": 2,
+        "STY": 2,
+        "FYS": 4,
+        "SMI": 4,
+        "INT": 9,
+        "PSY": 16,
+        "KP": 3,
+        "SB": "±0",
+        "bp": 10,
+        "fardigheter": "",
+        "beskrivning": "Suger sig fast i magikerns bakhuvud: magikern ser auror, läser tankar (PSY mot PSY) och kan använda geryonens PSY. Dör den sjunker magikerns PSY och INT med 6 för alltid.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 41
+        }
+      },
+      {
+        "id": "gonk",
+        "namn": "Gonk",
+        "STO": 1,
+        "STY": 1,
+        "FYS": 5,
+        "SMI": 6,
+        "INT": 4,
+        "PSY": 6,
+        "KP": 3,
+        "SB": "±0",
+        "bp": 2,
+        "fardigheter": "Eldkvast (1T2) 10, Gömma sig 7, Hoppa 6",
+        "beskrivning": "En liten lurvig pladdrande figur som spottar eldbollar. Används som tändare.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 41
+        }
+      },
+      {
+        "id": "jefta",
+        "namn": "Jefta",
+        "STO": 3,
+        "STY": 3,
+        "FYS": 5,
+        "SMI": 10,
+        "INT": 5,
+        "PSY": 8,
+        "KP": 4,
+        "SB": "±0",
+        "bp": 4,
+        "fardigheter": "Flyga 12, Gömma sig 11, Näbb (1T2) 10",
+        "beskrivning": "Papegojlik budbärare som ordagrant upprepar allt den hör, utan att förstå det.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 41
+        }
+      },
+      {
+        "id": "kalchas",
+        "namn": "Kalchas",
+        "STO": 1,
+        "STY": 2,
+        "FYS": 3,
+        "SMI": 8,
+        "INT": 2,
+        "PSY": 7,
+        "KP": 2,
+        "SB": "±0",
+        "bp": 1,
+        "fardigheter": "Hoppa 15, Känna magi 23",
+        "beskrivning": "En liten fisklik varelse som luktar sig fram till magi, men bara förstår utomjordiska språk.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 41
+        }
+      },
+      {
+        "id": "kerub",
+        "namn": "Kerub",
+        "STO": 3,
+        "STY": 6,
+        "FYS": 5,
+        "SMI": 12,
+        "INT": 11,
+        "PSY": 10,
+        "KP": 4,
+        "SB": "±0",
+        "bp": 7,
+        "fardigheter": "Flyga 13, Lyssna 15, Lärdomsfärdigheter (3) 10; 1T3 minimagiska besvärjelser med FV 10",
+        "beskrivning": "En änglalik varelse med sotiga vingar och en trevlig samtalspartner.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 41
+        }
+      },
+      {
+        "id": "larbatt",
+        "namn": "Larbatt",
+        "STO": 4,
+        "STY": 6,
+        "FYS": 8,
+        "SMI": 7,
+        "INT": 4,
+        "PSY": 6,
+        "KP": 6,
+        "SB": "±0",
+        "bp": 4,
+        "fardigheter": "",
+        "beskrivning": "Glupsk och allätande, med förkärlek för saker som smakar magi. Magikerns avfallskvarn.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 41
+        }
+      },
+      {
+        "id": "leukip",
+        "namn": "Leukip",
+        "STO": 1,
+        "STY": 5,
+        "FYS": 5,
+        "SMI": 15,
+        "INT": 6,
+        "PSY": 7,
+        "KP": 3,
+        "SB": "±0",
+        "bp": 3,
+        "fardigheter": "Finna dolda ting 10, Flyga ljudlöst 14, Hoppa 5, Klättra 12, Smyga 15, Upptäcka fara 10",
+        "beskrivning": "En liten luftdemon vars långa svans når in i varje skrymsle. Kan flyga.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 42
+        }
+      },
+      {
+        "id": "lystat",
+        "namn": "Lystat",
+        "STO": 3,
+        "STY": 4,
+        "FYS": 4,
+        "SMI": 16,
+        "INT": 9,
+        "PSY": 11,
+        "KP": 4,
+        "SB": "±0",
+        "bp": 5,
+        "fardigheter": "Finna dolda ting 13, Lyssna 15, Lärdomsfärdigheter (1) 8, Näbb (1, 1T3) 8, Smyga 13, Upptäcka fara 10, Zoologi 10",
+        "beskrivning": "Fågellik, med vansinnigt skarpa ögon och öron och ett inte oävet intellekt. Fågelbrödernas favorit.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 42
+        }
+      },
+      {
+        "id": "ohumu",
+        "namn": "Ohumu",
+        "STO": 6,
+        "STY": 16,
+        "FYS": 11,
+        "SMI": 13,
+        "INT": 8,
+        "PSY": 8,
+        "KP": 11,
+        "SB": "±0",
+        "bp": 15,
+        "fardigheter": "Finna dolda ting 15, Smyga 13, Upptäcka fara 20, Gömma sig 7, Klor (2, 1T6+2) 10",
+        "beskrivning": "Ohumu Klokrigare: en trogen och svartsjuk livvakt som dör för sin ägare om den måste. Ögon runt hela ansiktet.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 42
+        }
+      },
+      {
+        "id": "palydor",
+        "namn": "Palydor",
+        "STO": 5,
+        "STY": 10,
+        "FYS": 11,
+        "SMI": 11,
+        "INT": 5,
+        "PSY": 8,
+        "KP": 8,
+        "SB": "±0",
+        "bp": 7,
+        "fardigheter": "Bett (1T10) 10, Klor (1T6) 10, Hoppa 15; luktar rädsla och ont uppsåt 14",
+        "beskrivning": "Magikerns vakthund: hundlik, men kraftigare, med spetsiga öron och starka käkar.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 42
+        }
+      },
+      {
+        "id": "skalle",
+        "namn": "Skalle",
+        "STO": 3,
+        "STY": 15,
+        "FYS": 11,
+        "SMI": 8,
+        "INT": 5,
+        "PSY": 7,
+        "KP": 7,
+        "SB": "±0",
+        "bp": 7,
+        "fardigheter": "",
+        "beskrivning": "Liten och stark bärare med vansinnigt balanssinne. Den som oförberedd ser den slår PSY eller på Skräcktabellen.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 42
+        }
+      },
+      {
+        "id": "slukare",
+        "namn": "Slukare",
+        "STO": 5,
+        "STY": 6,
+        "FYS": 5,
+        "SMI": 5,
+        "INT": 5,
+        "PSY": 8,
+        "KP": 5,
+        "SB": "±0",
+        "bp": 4,
+        "fardigheter": "",
+        "beskrivning": "Hårig och färgskiftande; äter magisk energi och hindrar läckor vid experiment, men spricker om den får för mycket.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 42
+        }
+      },
+      {
+        "id": "spanare",
+        "namn": "Spanare",
+        "STO": 4,
+        "STY": 6,
+        "FYS": 7,
+        "SMI": 5,
+        "INT": 7,
+        "PSY": 6,
+        "KP": 5,
+        "SB": "±0",
+        "bp": 5,
+        "fardigheter": "Finna dolda ting 15, Hoppa 10, Klättra 20, Upptäcka fara 10",
+        "beskrivning": "Sparar det den ser och visar det i ett magiskt ljusspel. Klarar sig utan mat och luft och går på väggar.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 42
+        }
+      },
+      {
+        "id": "sparare",
+        "namn": "Spårare",
+        "STO": 5,
+        "STY": 5,
+        "FYS": 6,
+        "SMI": 12,
+        "INT": 5,
+        "PSY": 8,
+        "KP": 6,
+        "SB": "±0",
+        "bp": 5,
+        "fardigheter": "Hoppa 15, Klättra 12, Knytnävar (2, 1T2) 7, Smyga 13, Spåra 25, Upptäcka fara 7",
+        "beskrivning": "Kort och senig, med sträv päls. Följer ofelbart varje magiskt doftspår. Häxjägarnas favorit.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 43
+        }
+      },
+      {
+        "id": "tefalon",
+        "namn": "Tefalon",
+        "STO": 5,
+        "STY": 5,
+        "FYS": 5,
+        "SMI": 10,
+        "INT": 16,
+        "PSY": 18,
+        "KP": 5,
+        "SB": "±0",
+        "bp": 10,
+        "fardigheter": "Hoppa 5, Näbb (1T3) 8, Lärdomsfärdigheter (2) 14, Smyga 13, Upptäcka fara 10; en tidsmagibesvärjelse med FV 10",
+        "beskrivning": "Född i Evighetspalatset; bara tidsmagiker kan ha en.",
+        "kalla": {
+          "bok": "magi",
+          "sida": 43
+        },
+        "villkor": {
+          "yrken": [
+            "chronomag",
+            "divinator"
+          ]
+        }
+      }
+    ]
+  }
+}

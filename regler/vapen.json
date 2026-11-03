@@ -1662,6 +1662,24 @@
         "bok": "vr",
         "sida": 67
       }
+    },
+    {
+      "namn": "Frälsningsklinga",
+      "skada": "2T10+4",
+      "styKrav": 31,
+      "langd": 1,
+      "vikt": 8,
+      "bv": 17,
+      "pris": null,
+      "grupp": "svard",
+      "enHandOmStoOverKrav": true,
+      "atkomlighet": "E, X, 5",
+      "beslut": "RB-019",
+      "not": "Smidd kring en kärna av lirium åt svartsystrarna: dubbel skada mot magiska varelser. Säljs inte. STY-krav och längd som tvåhandssvärdet, som väger lika mycket (RB-019).",
+      "kalla": {
+        "bok": "magi",
+        "sida": 51
+      }
     }
   ],
   "projektil": [

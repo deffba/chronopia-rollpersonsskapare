@@ -777,6 +777,82 @@
       },
       "perVal": "stil",
       "beskrivning": "Beväpnade stridskonster. En stil sätts ihop av vapentekniker (och gärna grundreglernas obeväpnade tekniker); EP per FV är summan av teknikernas kostnad. En svärdsskolas färdiga stridskonst kostar skolans pris, eller som en vanlig yrkesfärdighet om den är yrkesfärdighet. Med vapen slår man både för vapnet och för tekniken."
+    },
+    {
+      "id": "tidsmagi",
+      "namn": "Tidsmagi",
+      "grundegenskap": "INT",
+      "typ": "magiskola",
+      "kategoriB": false,
+      "sida": 35,
+      "kalla": {
+        "bok": "magi",
+        "sida": 35
+      },
+      "villkor": {
+        "yrken": [
+          "chronomag",
+          "divinator"
+        ]
+      },
+      "beskrivning": "Den mäktigaste och svåraste magiskolan, i två grenar: divinatorernas förutskickelsens magi och chronomagernas contortismens magi. Kan bara läras av chronomager och divinatorer."
+    },
+    {
+      "id": "interpretation",
+      "namn": "Interpretation",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 18,
+      "kalla": {
+        "bok": "magi",
+        "sida": 18
+      },
+      "beskrivning": "Att tyda spådomar, varsel och de kryptiska bilder som tidsmagin ger, och göra begripliga betänkanden av dem."
+    },
+    {
+      "id": "kunskap-om-tid",
+      "namn": "Kunskap om tid",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 18,
+      "kalla": {
+        "bok": "magi",
+        "sida": 18
+      },
+      "beskrivning": "Kunskap om tidens natur, tidsstormar och tidsreva och om vad som händer när man rubbar tidsflödet. Ger ingen magisk förmåga."
+    },
+    {
+      "id": "meditation",
+      "namn": "Meditation",
+      "grundegenskap": "INT/PSY",
+      "hogstaAv": [
+        "INT",
+        "PSY"
+      ],
+      "typ": "sekundar",
+      "kategoriB": true,
+      "sida": 18,
+      "kalla": {
+        "bok": "magi",
+        "sida": 18
+      },
+      "beslut": "RB-018",
+      "beskrivning": "Att samla sina krafter genom meditation inför en besvärjelse. B-nivån avgör hur länge man kan meditera och hur stor bonus på CL det ger: B1 +1 per timme (högst 1 timme), B3 +2 per timme, B5 +3 per timme utan tidsgräns. Startvärdet räknas på den högre av INT och PSY."
+    },
+    {
+      "id": "minimagi",
+      "namn": "Minimagi",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 19,
+      "kalla": {
+        "bok": "magi",
+        "sida": 19
+      },
+      "beskrivning": "Små vardagsbesvärjelser som inte kostar någon PSY. För varje FV kan magikern två valfria minimagiska besvärjelser, som läggs med FV i Minimagi. Magiker i Magi i Chronopia har den automatiskt med samma FV som i sin bästa magiskola."
     }
   ],
   "kostnad": {

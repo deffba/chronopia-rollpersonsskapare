@@ -1398,6 +1398,689 @@
         ]
       },
       "kapitalMinst": 100000
+    },
+    {
+      "id": "agere-imperator",
+      "namn": "Agere imperator",
+      "sida": 9,
+      "kalla": {
+        "bok": "magi",
+        "sida": 9
+      },
+      "yrkesformaga": "FV 5 gratis i Hypnotisera, som primär färdighet. Initiativbonusen gäller även vid magi.",
+      "fardigheter": [
+        "akrobatik",
+        "dra-vapen",
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap"
+          ]
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        "magistudier",
+        "mentalism",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Väska med auraglas, pendel, magiskt brännjärn, Merils amulett, ubiriskt stjärnstoft (5 doser) och vendelstoft",
+        "Fullmakt",
+        "Licenser",
+        "Kejserligt fribrev"
+      ],
+      "initiativ": 3,
+      "primara": [
+        "hypnotisera"
+      ],
+      "startFV": [
+        {
+          "fardighet": "hypnotisera",
+          "fv": 5
+        }
+      ],
+      "startvaror": [
+        {
+          "text": "Auraglas",
+          "namn": "Auraglas"
+        },
+        {
+          "text": "Pendel",
+          "namn": "Pendel (magisk)"
+        },
+        {
+          "text": "Magiskt brännjärn",
+          "namn": "Brännjärn (magiskt)"
+        },
+        {
+          "text": "Merils amulett",
+          "namn": "Merils amulett"
+        },
+        {
+          "text": "Ubiriskt stjärnstoft (5 doser)",
+          "namn": "Ubiriskt stjärnstoft",
+          "antal": 5
+        },
+        {
+          "text": "Vendelstoft",
+          "namn": "Vendelstoft"
+        }
+      ],
+      "stamning": "Kejsarens vilja är lag, och agenten är den som ser till att den följs.",
+      "beskrivning": "Kejserlig agent med inriktning på det magiska och övernaturliga, handplockad ur magikerklostren och skolad tillsammans med svartsystrar och svartgardister. Jagar missbrukare av magin."
+    },
+    {
+      "id": "avfalling",
+      "namn": "Avfälling",
+      "sida": 9,
+      "kalla": {
+        "bok": "magi",
+        "sida": 9
+      },
+      "yrkesformaga": "Ett sjätte sinne för fara: CL i Upptäcka fara är aldrig lägre än 15.",
+      "fardigheter": [
+        {
+          "valEn": [
+            "alkemi",
+            "astrologi"
+          ]
+        },
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        "magisk-kanalisering",
+        {
+          "valEn": [
+            "animism",
+            "elementarmagi",
+            "mentalism"
+          ]
+        },
+        "magistudier",
+        "muta",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Formelsamling",
+        "Förfalskad fullmakt",
+        "Vendelstoft (3 doser)",
+        "Fördoldhetens kåpa"
+      ],
+      "startvaror": [
+        {
+          "text": "Vendelstoft (3 doser)",
+          "namn": "Vendelstoft",
+          "antal": 3
+        },
+        {
+          "text": "Fördoldhetens kåpa",
+          "namn": "Fördoldhetens kåpa"
+        }
+      ],
+      "stamning": "Ingen orden, ingen fullmakt, inga vänner. Bara magin och mörkret.",
+      "beskrivning": "Magiker som har brutit med sin orden och nu utövar magi utan kejserlig fullmakt, jagad av svartsystrarna. Lever på tvivelaktiga uppdrag i undre världen."
+    },
+    {
+      "id": "cestodit",
+      "namn": "Cestodit",
+      "sida": 10,
+      "kalla": {
+        "bok": "magi",
+        "sida": 10
+      },
+      "yrkesformaga": "Angrips aldrig av kloakråttor, maskar, vildhundar och liknande. Kan utan PSY-kostnad kontrollera PSY×3 små, PSY×2 medelstora eller PSY×1 stora sådana varelser. Kan lära sig underjordens magi.",
+      "fardigheter": [
+        "animism",
+        "djurtraning",
+        "giftkunskap",
+        {
+          "fardighet": "lardom",
+          "antal": 2
+        },
+        "magistudier",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        },
+        "zoologi"
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Rustning med behornad ordenshjälm (magisk behållare, 10 PSY)",
+        "Ett förruttnelsevapen",
+        "Fullmakt"
+      ],
+      "stamning": "Det som ruttnar lever också, och cestoditen talar med allt som kryper.",
+      "beskrivning": "Animister från kloakerna under staden, vars magi har vridits mot förruttnelse och de varelser som lever i mörkret. Behärskar underjordens magi."
+    },
+    {
+      "id": "chronomag",
+      "namn": "Chronomag",
+      "sida": 11,
+      "kalla": {
+        "bok": "magi",
+        "sida": 11
+      },
+      "yrkesformaga": "Ser magiska auror och hör kraftflödet: +5 FV i Finna dolda ting, Lyssna, Upptäcka fara och två lärdomsfärdigheter, som räknas som primära. Åldras hälften så fort.",
+      "fardigheter": [
+        "kunskap-om-tid",
+        {
+          "fardighet": "lardom",
+          "antal": 2,
+          "bonus": 5,
+          "primar": true
+        },
+        "magisk-kanalisering",
+        {
+          "valEn": [
+            "animism",
+            "elementarmagi",
+            "mentalism"
+          ]
+        },
+        "magistudier",
+        "meditation",
+        "tidsmagi",
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Högtidsdräkt och vardagsdräkt med ögonlös hjälm",
+        "Formelsamling",
+        "Kubisk magisk behållare"
+      ],
+      "startbonus": [
+        {
+          "fardighet": "finna-dolda-ting",
+          "bc": 5
+        },
+        {
+          "fardighet": "lyssna",
+          "bc": 5
+        },
+        {
+          "fardighet": "upptacka-fara",
+          "bc": 5
+        }
+      ],
+      "startvaror": [
+        {
+          "text": "Kubisk magisk behållare",
+          "namn": "Magisk behållare: kubisk"
+        }
+      ],
+      "stamning": "Tiden är en flod, och chronomagen har lärt sig gå mot strömmen.",
+      "beskrivning": "Kejsarens tidsmagiker, som behärskar contortismens magi: att bromsa, stoppa och vrida tidens flöde. Fruktade på slagfälten."
+    },
+    {
+      "id": "divinator",
+      "namn": "Divinator",
+      "sida": 11,
+      "kalla": {
+        "bok": "magi",
+        "sida": 11
+      },
+      "yrkesformaga": "Sinnena påverkas inte av ljus och mörker. +5 på alla parader och undvikande manövrer. Åldras hälften så fort.",
+      "fardigheter": [
+        "astrologi",
+        "historia",
+        "interpretation",
+        "kunskap-om-tid",
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        "magisk-kanalisering",
+        "magistudier",
+        "tidsmagi",
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Högtidsdräkt och vardagsdräkt med ögonlös hjälm",
+        "Formelsamling",
+        "Rund magisk behållare på en magikerstav"
+      ],
+      "villkor": {
+        "ras": [
+          "manniska"
+        ],
+        "fodd": "under den femte månen"
+      },
+      "beslut": "RB-018",
+      "startvaror": [
+        {
+          "text": "Rund magisk behållare på en magikerstav",
+          "namn": "Magisk behållare: rund"
+        }
+      ],
+      "stamning": "Det som har varit lämnar spår, och det som ska komma kastar skugga.",
+      "beskrivning": "Tidsmagiker som behärskar förutskickelsens magi och läser det förflutna och framtiden. Bara människor födda under den femte månen kan bli divinatorer."
+    },
+    {
+      "id": "fagelbroder",
+      "namn": "Fågelbroder",
+      "sida": 12,
+      "kalla": {
+        "bok": "magi",
+        "sida": 12
+      },
+      "yrkesformaga": "Anfalls aldrig av djur, utom sådana som cestoditerna eller ondskan under staden har förvridit. Får en lystat gratis som familjar.",
+      "fardigheter": [
+        "animism",
+        "djurhelning",
+        "djurtraning",
+        {
+          "valEn": [
+            "drogkunskap",
+            "ortkunskap"
+          ]
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        "magistudier",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        },
+        "zoologi"
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Fullmakt",
+        "Rund magisk behållare",
+        "Förtrollade frön",
+        "Kristallstoft"
+      ],
+      "gratisFamiljar": [
+        "lystat"
+      ],
+      "startvaror": [
+        {
+          "text": "Rund magisk behållare",
+          "namn": "Magisk behållare: rund"
+        },
+        {
+          "text": "Förtrollade frön",
+          "namn": "Förtrollade frön"
+        },
+        {
+          "text": "Kristallstoft",
+          "namn": "Kristallstoft"
+        }
+      ],
+      "stamning": "Fåglarna ser allt, och de berättar för den som lyssnar.",
+      "beskrivning": "Animister som lever med fåglarna och djuren på stadens tak. Djuren litar på dem, och en lystat följer dem som familjar."
+    },
+    {
+      "id": "haxjagare",
+      "namn": "Häxjägare",
+      "sida": 13,
+      "kalla": {
+        "bok": "magi",
+        "sida": 13
+      },
+      "yrkesformaga": "Stort kontaktnät: skaffar laglig och olaglig utrustning billigt. Får en spårare gratis som familjar.",
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        {
+          "valEn": [
+            "animism",
+            "elementarmagi",
+            "mentalism"
+          ]
+        },
+        "muta",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Auraglas",
+        "Pendel",
+        "Vendelstoft (3 doser)",
+        "Ubiriskt stjärnstoft (3 doser)",
+        "Magisk halsboja",
+        "Duglig rustning",
+        "Ett handvapen"
+      ],
+      "gratisFamiljar": [
+        "sparare"
+      ],
+      "startvaror": [
+        {
+          "text": "Auraglas",
+          "namn": "Auraglas"
+        },
+        {
+          "text": "Pendel",
+          "namn": "Pendel (magisk)"
+        },
+        {
+          "text": "Vendelstoft (3 doser)",
+          "namn": "Vendelstoft",
+          "antal": 3
+        },
+        {
+          "text": "Ubiriskt stjärnstoft (3 doser)",
+          "namn": "Ubiriskt stjärnstoft",
+          "antal": 3
+        },
+        {
+          "text": "Magisk halsboja",
+          "namn": "Halsboja"
+        }
+      ],
+      "stamning": "Varje magiker lämnar ett spår, och häxjägaren följer dem alla.",
+      "beskrivning": "Jägare av magiker som har gått för långt, med en spårare som följer magiska doftspår och ett nät av kontakter i hela staden.",
+      "startvapen": true
+    },
+    {
+      "id": "lubriticus",
+      "namn": "Lubriticus",
+      "sida": 13,
+      "kalla": {
+        "bok": "magi",
+        "sida": 13
+      },
+      "yrkesformaga": "B-nivån i Meditation räknas alltid ett steg högre.",
+      "fardigheter": [
+        "akrobatik",
+        {
+          "valEn": [
+            "dans",
+            "malning",
+            "schack"
+          ]
+        },
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        "magistudier",
+        "meditation",
+        "mentalism",
+        "stridskonster",
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Vardagskläder och festkläder",
+        "Kubisk magisk behållare",
+        "Formelsamling"
+      ],
+      "bNivaHogre": {
+        "meditation": 1
+      },
+      "startvaror": [
+        {
+          "text": "Kubisk magisk behållare",
+          "namn": "Magisk behållare: kubisk"
+        }
+      ],
+      "stamning": "Kropp och själ i balans; först då blir magin ren.",
+      "beskrivning": "Magikermunkar som förenar mentalism med meditation, dans och stridskonst. Kan tjäna som mall för andra sorters magikermunkar."
+    },
+    {
+      "id": "ordensmagiker",
+      "namn": "Ordensmagiker",
+      "sida": 14,
+      "kalla": {
+        "bok": "magi",
+        "sida": 14
+      },
+      "yrkesformaga": "+3 CL på alla motståndsslag mot magi.",
+      "fardigheter": [
+        "administration",
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        "elementarmagi",
+        "hantera-fallor",
+        {
+          "fardighet": "lardom",
+          "antal": 2
+        },
+        "magisk-kanalisering",
+        "magistudier",
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Rund magisk behållare",
+        "Officiell ordensdräkt",
+        "Utrustning för skumraskaktiviteter (beror på orden, SL avgör)"
+      ],
+      "startvaror": [
+        {
+          "text": "Rund magisk behållare",
+          "namn": "Magisk behållare: rund"
+        }
+      ],
+      "stamning": "Orden först, magin sedan, och den egna viljan sist av allt.",
+      "beskrivning": "Elementarmagiker i någon av magikerkvarterens ordnar, som sköter ordens ärenden, offentliga som hemliga."
+    },
+    {
+      "id": "svartsyster",
+      "namn": "Svartsyster",
+      "sida": 15,
+      "kalla": {
+        "bok": "magi",
+        "sida": 15
+      },
+      "yrkesformaga": "Lyckas automatiskt med motståndsslag mot alla besvärjelser och behöver aldrig slå på Skräcktabellen.",
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        "kanna-magi",
+        {
+          "fardighet": "lardom",
+          "antal": 2,
+          "maste": [
+            "Kunskap om demoner",
+            "Kunskap om magi"
+          ]
+        },
+        "stridskonster",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "utanMagi": true,
+      "startutrustning": [
+        "Frälsningsklinga",
+        "Tunn liriumrustning (abs 6)",
+        "Vendelstoft (3 doser)",
+        "Ubiriskt stjärnstoft (3 doser)"
+      ],
+      "villkor": {
+        "ras": [
+          "manniska"
+        ],
+        "kon": "Kvinna",
+        "fodd": "i den mörka månens tecken"
+      },
+      "beslut": "RB-018",
+      "startvapen": true,
+      "startvaror": [
+        {
+          "text": "Frälsningsklinga",
+          "namn": "Frälsningsklinga"
+        },
+        {
+          "text": "Vendelstoft (3 doser)",
+          "namn": "Vendelstoft",
+          "antal": 3
+        },
+        {
+          "text": "Ubiriskt stjärnstoft (3 doser)",
+          "namn": "Ubiriskt stjärnstoft",
+          "antal": 3
+        }
+      ],
+      "stamning": "Där magin går över gränsen väntar systrarna, och de förlåter ingen.",
+      "beskrivning": "Kejsarens bödlar för dem som missbrukar magin. Svartsystrarna kan ingen magi själva men står emot all magi. Bara kvinnor av människosläkte födda i den mörka månens tecken."
+    },
+    {
+      "id": "warlock",
+      "namn": "Warlock",
+      "sida": 15,
+      "kalla": {
+        "bok": "magi",
+        "sida": 15
+      },
+      "yrkesformaga": "Alla besvärjelser räknas som kvicka, men kostar 1 PSY extra oavsett effektgrad.",
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        {
+          "valEn": [
+            "elementarmagi",
+            "mentalism"
+          ]
+        },
+        "magisk-kanalisering",
+        "magistudier",
+        "stridskonster",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "magiker": true,
+      "magiyrke": true,
+      "startutrustning": [
+        "Formelsamling fastkedjad vid rustningen",
+        "Ett handvapen som är magisk behållare (7 PSY) och fokus"
+      ],
+      "startvapen": true,
+      "stamning": "Svärdet i ena handen, besvärjelsen i den andra, och båda lika snabba.",
+      "beskrivning": "Stridsmagiker som slåss mitt i striden och kastar besvärjelser lika snabbt som de hugger."
     }
   ],
   "extraYrkesfardigheter": {

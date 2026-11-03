@@ -7,6 +7,7 @@ import { laggTill, angraSenaste, kontrolleraPost } from "./utveckling.js";
 import { spelInnehall, spelDelar, aktivDel, valjDel, nollstallSpel, spelPotter } from "./spelmote.js";
 import { stegAlder } from "./steg/alder.js";
 import { stegBesvarjelser } from "./steg/besvarjelser.js";
+import { stegFamiljarer } from "./steg/familjarer.js";
 import { stegBocker } from "./steg/bocker.js";
 import { grundvardesForslag, stegEgenskaper } from "./steg/egenskaper.js";
 import { filnamn, laddaNer, stegExport } from "./steg/export.js";
@@ -125,7 +126,7 @@ function ritaVy() {
   const index = STEG.indexOf(steg);
   const innehall = {
     bocker: stegBocker, ras: stegRas, alder: stegAlder, yrke: stegYrke, extra: stegExtra, kon: stegKon, egenskaper: stegEgenskaper,
-    formagor: stegFormagor, svardshand: stegSvardshand, stand: stegStand, kapital: stegKapital, fardigheter: stegFardigheter,
+    formagor: stegFormagor, familjarer: stegFamiljarer, svardshand: stegSvardshand, stand: stegStand, kapital: stegKapital, fardigheter: stegFardigheter,
     besvarjelser: stegBesvarjelser, utrustning: stegUtrustning, export: stegExport,
   }[steg.id](res);
   // Ett steg kan lägga en del under knapparna (t.ex. förmågetabellen i steg 7)

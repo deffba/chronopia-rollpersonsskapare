@@ -200,6 +200,16 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     dsRad("Rustningsvapen", tom ? "" : rvapen.join("; ") || "inga"),
     el("div", { class: "rf-rad rf-detaljerad-not" }, el("span", { class: "rf-cell rf-namn" }, `Träffområden och kritiska träffar: Vapen & rustningar s. ${sh.sida}, 26–30.`))) : null;
 
+  // Magi i Chronopia: familjarer (s. 40–43) och minimagiska besvärjelser (s. 19) i en egen ruta på sida 2,
+  // bara när rollpersonen har några
+  const fam = res.familjarer?.lista ?? [];
+  const mini = res.minimagi?.valda ?? [];
+  const famText = (f) => `${f.namn} (${["STO", "STY", "FYS", "SMI", "INT", "PSY", "KP"].map((k) => `${k} ${f[k]}`).join(", ")}${f.gratis ? `; gratis, ${f.kallaGratis}` : ""})`;
+  const magiRuta = fam.length || mini.length ? el("div", { class: "rf-lista rf-detaljerad", id: "rf-magi" }, rubrik("Familjarer och minimagi"),
+    fam.length ? dsRad(fam.length > 1 ? "Familjarer" : "Familjar", fam.map(famText).join("; ")) : null,
+    mini.length ? dsRad(`Minimagi (FV ${res.minimagi.fv})`, mini.map((m) => m.namn).join(", ")) : null,
+    el("div", { class: "rf-rad rf-detaljerad-not" }, el("span", { class: "rf-cell rf-namn" }, "Familjarerna: Magi i Chronopia s. 40–43. Minimagi: s. 19–20."))) : null;
+
   const sida2 = el("section", { class: "rf-sida", "aria-label": "Rollformulär sida 2" },
     el("div", { class: "rf-band" }, "Drakar & Demoner"),
     el("div", { class: "rf-ram" },
@@ -231,6 +241,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
             el("div", { class: "rf-rad rf-juveler" }, el("span", { class: "rf-cell rf-namn" }, "Juveler",
               inmatning(pengar.juveler, (v) => { spel.pengar ??= structuredClone(pengar); spel.pengar.juveler = v; }, { "aria-label": "Juveler" })))),
           detaljeradStrid,
+          magiRuta,
           el("div", { class: "rf-block rf-utseende" }, rubrik("Utseende och bakgrund"),
             [h.langd, h.vikt].some(Boolean) ? el("p", { class: "rf-utseende-matt" }, [h.langd, h.vikt].filter(Boolean).join(", ")) : null,
             el("textarea", { class: "rf-in rf-textyta linjerad", "aria-label": "Utseende och bakgrund",
