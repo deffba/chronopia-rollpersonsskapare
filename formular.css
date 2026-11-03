@@ -148,6 +148,10 @@
 .rf-vy .rf-utseende .rf-textyta { flex: 1; border-radius: 0; resize: none; line-height: var(--rf-rad); padding-top: 0; font-size: 8.6pt;
   background-color: var(--rf-in); background-image: linear-gradient(to top, #b9aba6 .25mm, transparent .25mm); background-size: 100% var(--rf-rad); }
 .rf-pengar .rf-rad { grid-template-columns: 1fr 10mm 10mm 10mm; }
+/* Detaljerad strid (V&R, valfri regel): kort ruta under pengarna */
+.rf-detaljerad .rf-rad { grid-template-columns: 1fr; height: auto; min-height: var(--rf-rad); }
+.rf-detaljerad .rf-namn { display: block; white-space: normal; font-size: 7.6pt; line-height: 1.25; padding-block: .4mm; }
+.rf-detaljerad-not .rf-namn { color: var(--rf-etikett); font-style: italic; }
 .rf-pengar .rf-rubrik-kol { width: 10mm; }
 .rf-juveler { grid-template-columns: 1fr !important; }
 .rf-juveler .rf-in { margin-left: 1mm; }

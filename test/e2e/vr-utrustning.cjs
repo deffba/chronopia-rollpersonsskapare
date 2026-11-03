@@ -97,7 +97,11 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   await ladda(p, 'vr-ordenskrigare', 'formular');
   const rf = await p.locator('#rf-vy').textContent();
   ok('rollformuläret: hederssvärdet och startutrustningen', rf.includes('Hederssvärd') && rf.includes('Högländsk stridshäst') && rf.includes('Ordenskrigarhjälm'));
-  ok('rollformuläret: handlingar per stridsrunda och kritiska träffar (detaljerad strid)', /Handlingar per stridsrunda: \d/.test(rf) && rf.includes('kritiska träffar'), rf.match(/Handlingar per stridsrunda[^(]*/)?.[0]);
+  const ds = await p.locator('#rf-detaljerad-strid').textContent().catch(() => '');
+  ok('rollformuläret: rutan Detaljerad strid med handlingar och kritiska träffar', /Handlingar per SR: \d/.test(ds) && ds.includes('kritiska träffar') && ds.includes('Rustningsvapen'), ds);
+  ok('rollformuläret: axelskyddet står på armarna', (await p.locator('.rf-kroppsdel.del-hoger-arm').textContent()).includes('Axelskydd (par): Högländskt'));
+  const sida2 = await p.locator('.rf-sida').nth(1).evaluate((s) => s.scrollHeight <= s.clientHeight + 1);
+  ok('rollformuläret: sida 2 rymmer rutan', sida2);
   ok('inga konsolfel (V&R)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
@@ -115,7 +119,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   const arm = await synligaRader(p);
   ok('utan detaljerad strid: vanliga armskydd men inga halva', arm.length >= 5 && !arm.some((n) => n.includes('halva')), arm.join(','));
   await ladda(p, 'vr-svartgardist', 'formular');
-  ok('utan detaljerad strid: inga handlingar på formuläret', !(await p.locator('#rf-vy').textContent()).includes('Handlingar per stridsrunda'));
+  ok('utan detaljerad strid: ingen ruta på formuläret', await p.locator('#rf-detaljerad-strid').count() === 0);
   ok('inga konsolfel (utan detaljerad strid)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 

@@ -80,12 +80,6 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     ...[...(res.sarskildaFormagorna ?? [res.sarskildFormaga]), ...(res.extraFormagor ?? [])].filter(Boolean).map((f) => ({ namn: f.namn, text: f.effekt })),
     rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: yrkesformagaText(res.yrke) } : null,
     ...(res.sinnen?.sinnen ?? []).filter((x) => x.niva).map((x) => ({ namn: `${x.namn}: ${x.niva.toLowerCase()}`, text: `${x.mod > 0 ? "+" : x.mod < 0 ? "−" : "±"}${Math.abs(x.mod)} på ${x.text}` })),
-    // Detaljerad strid (V&R s. 18–19, RB-017): handlingar per stridsrunda, träffområden och kritiska träffar
-    ...(res.stridshandlingar ? [
-      { namn: `Handlingar per stridsrunda: ${res.stridshandlingar.antal}`,
-        text: `${res.stridshandlingar.bas} av SMI${res.stridshandlingar.borda ? `, ${res.stridshandlingar.borda} av bördan` : ""}; +1 vardera för ${res.stridshandlingar.extra.join(", ")} (V&R s. ${res.stridshandlingar.sida})` },
-      { namn: "Detaljerad strid", text: res.stridshandlingar.spel },
-    ] : []),
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
   ].filter(Boolean);
 
@@ -191,6 +185,21 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const sakkolumner = [0, 1].map((k) => el("div", { class: "rf-lista rf-sakkolumn" },
     fyll(sakrader.slice(k * sakPlatser / 2, (k + 1) * sakPlatser / 2), sakPlatser / 2, 2)));
 
+  // Detaljerad strid (V&R s. 18–19, 26–30, 69; RB-017): en egen ruta på sida 2, bara när regeln är på.
+  // Axelskydd står på armarna i kroppsdelarna ovan, så formuläret behöver ingen egen variant.
+  const sh = res.stridshandlingar;
+  const rvapen = res.utrustning.saker.filter((x) => x.kategori === "Rustningsvapen").map((x) => {
+    const v = R.utrustning.varor.find((y) => y.namn === x.namn);
+    return `${x.namn.replace(/^Rustningsvapen: /, "")}${x.antal > 1 ? ` ×${x.antal}` : ""} (${[v?.skada, v?.bv ? `BV ${v.bv}` : null].filter(Boolean).join(", ")})`;
+  });
+  const dsRad = (etikett, varde) => el("div", { class: "rf-rad" }, el("span", { class: "rf-cell rf-namn" }, el("strong", {}, `${etikett}: `), varde));
+  const detaljeradStrid = sh ? el("div", { class: "rf-lista rf-detaljerad", id: "rf-detaljerad-strid" }, rubrik("Detaljerad strid"),
+    dsRad("Handlingar per SR", tom ? "" : `${sh.antal} (${sh.bas} av SMI${sh.borda ? `, ${sh.borda} av bördan` : ""})`),
+    dsRad("+1 handling vardera", sh.extra.join(", ")),
+    dsRad("Börda", tom ? "" : sh.borda ? `${sh.borda} handlingar` : "inget avdrag"),
+    dsRad("Rustningsvapen", tom ? "" : rvapen.join("; ") || "inga"),
+    el("div", { class: "rf-rad rf-detaljerad-not" }, el("span", { class: "rf-cell rf-namn" }, `Träffområden och kritiska träffar: Vapen & rustningar s. ${sh.sida}, 26–30.`))) : null;
+
   const sida2 = el("section", { class: "rf-sida", "aria-label": "Rollformulär sida 2" },
     el("div", { class: "rf-band" }, "Drakar & Demoner"),
     el("div", { class: "rf-ram" },
@@ -221,6 +230,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
               ["gm", "sm", "km"].map((m) => el("span", { class: "rf-cell rf-tal" }, pengarFalt(var_, m))))),
             el("div", { class: "rf-rad rf-juveler" }, el("span", { class: "rf-cell rf-namn" }, "Juveler",
               inmatning(pengar.juveler, (v) => { spel.pengar ??= structuredClone(pengar); spel.pengar.juveler = v; }, { "aria-label": "Juveler" })))),
+          detaljeradStrid,
           el("div", { class: "rf-block rf-utseende" }, rubrik("Utseende och bakgrund"),
             [h.langd, h.vikt].some(Boolean) ? el("p", { class: "rf-utseende-matt" }, [h.langd, h.vikt].filter(Boolean).join(", ")) : null,
             el("textarea", { class: "rf-in rf-textyta linjerad", "aria-label": "Utseende och bakgrund",
