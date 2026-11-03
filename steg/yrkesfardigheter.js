@@ -1,9 +1,9 @@
 // Steg 4: yrkesfärdigheter och extra yrkesfärdigheter.
-import { fardighetAv, paborjad, namnFor, kallText } from "../regelmotor.js";
+import { fardighetAv, paborjad, namnFor, kallText, yrkeAv, valbaraYrken, tackyrketsFardigheter } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
-import { S, uppdatera, yrkesNycklar } from "../tillstand.js";
+import { S, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
-import { fardighetsInfo, fardighetsVal, info, kortBeskrivning, utanMagiInfo } from "../ui/kontroller.js";
+import { falt, fardighetsInfo, fardighetsVal, info, kortBeskrivning, utanMagiInfo, valLista } from "../ui/kontroller.js";
 import { magiInfo, magiMojlig } from "../ui/magimodal.js";
 import { stridskonstInfo } from "./fardigheter.js";
 import { yrketsVal } from "./yrke.js";
@@ -50,6 +50,7 @@ export function stegExtra(res) {
     utanMagiInfo(),
     ...yrketsVal(),
     tatueringsVal(res),
+    tackyrkesVal(res),
     el("h3", {}, "Fler yrkesfärdigheter"),
     el("p", {}, `Den första extra yrkesfärdigheten kostar ${k.forsta} BP, den andra ${k.andra} BP och varje därefter ${k.darefter} BP. En magiskola kostar ${k.magiskola} BP och kräver ett lyckat magiförmågeslag (1T100 högst (INT+PSY)/2, s. 106). Slaget görs när du går vidare från steg 6, när INT och PSY är bestämda.`),
     el("h4", {}, "Dina yrkesfärdigheter"),
@@ -106,4 +107,25 @@ function tatueringsVal(res) {
           el("td", {}, el("strong", {}, x.namn), el("div", { class: "hjalp" }, x.effekt)),
           el("td", {}, x.mod), el("td", {}, x.kostnad), el("td", {}, x.antal));
       }))))));
+}
+
+// Pierrotens täckyrke (Alver i Chronopia s. 44): ett annat yrke, två av dess yrkesfärdigheter med FV 5 och
+// det yrkets startutrustning. Färdigheterna blir pierrotens yrkesfärdigheter.
+function tackyrkesVal(res) {
+  const T = yrkeAv(S.R, yrkeId())?.tackyrke;
+  if (!T || !res.tackyrke?.regel) return null;
+  const v = S.rp.tackyrke ?? { yrke: "", fardigheter: [] };
+  const satt = (ny) => { S.rp.tackyrke = ny; uppdatera(); };
+  const yrken = valbaraYrken(S.R, S.rp).filter((y) => y.id !== yrkeId()).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
+  const tack = v.yrke ? yrkeAv(S.R, v.yrke) : null;
+  const bland = tack ? tackyrketsFardigheter(S.R, tack) : [];
+  const valda = v.fardigheter ?? [];
+  return el("div", { class: "rutor", id: "tackyrke" }, el("div", {},
+    el("h3", {}, "Täckyrke"),
+    el("p", {}, `Pierroten låtsas ha ett annat yrke. Välj täckyrket och ${T.antal} av dess yrkesfärdigheter: de blir yrkesfärdigheter med FV ${T.fv}, och täckyrkets startutrustning ingår (Alver i Chronopia s. 44).`),
+    falt("Täckyrke", valLista("tackyrke-yrke", v.yrke, yrken.map((y) => [y.id, y.namn]), (id) => satt({ yrke: id, fardigheter: [] }), "Välj täckyrke …")),
+    tack ? el("div", { class: "rad" }, Array.from({ length: T.antal }, (_, j) => fardighetsVal(`tackyrke-${j}`, valda[j], (n) => {
+      const ny = [...valda]; ny[j] = n; satt({ ...v, fardigheter: ny.map((x) => x ?? "") });
+    }, (f) => bland.includes(f.id)))) : null,
+    tack?.startutrustning?.length ? el("p", { class: "hjalp" }, `Täckyrkets startutrustning: ${tack.startutrustning.join(" · ")}.`) : null));
 }

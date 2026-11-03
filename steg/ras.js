@@ -4,7 +4,7 @@ import { nollstallSpel } from "../spelmote.js";
 import { RAS_SEKUNDAR_INFO, RASFORMAGOR } from "../texter.js";
 import { S, harLogg, uppdatera } from "../tillstand.js";
 import { el } from "../ui/dom.js";
-import { delvalKontroll, falt, fardighetsInfo, infoKnapp } from "../ui/kontroller.js";
+import { delvalKontroll, falt, fardighetsInfo, infoKnapp, valLista } from "../ui/kontroller.js";
 
 // ------------------------------------------------------------ stegen
 export function stegRas() {
@@ -15,6 +15,7 @@ export function stegRas() {
       // Ett tryck på den valda rasen avmarkerar den
       S.rp.ras = r.id === S.rp.ras ? "" : r.id; S.rp.rasval = []; S.rp.stoSteg = 0;
       if (r.id !== "dvarg") S.rp.klan = { id: "", slag: null, formagaSlag: null, val: [] }; // klaner finns bara för dvärgar
+      S.rp.masker = []; // Degas masker (Alver i Chronopia s. 41) hör till rasen
       // Ett yrke som inte är öppet för den nya rasen väljs bort (t.ex. Hedersvakt, bara dvärgar)
       if (S.rp.yrke && yrkeVillkor(S.R, S.rp, yrkeAv(S.R, S.rp.yrke))) { S.rp.yrke = ""; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = []; }
       uppdatera();
@@ -32,6 +33,17 @@ export function stegRas() {
     extra.push(falt("Valfritt hantverk som primär (s. 59)",
       delvalKontroll("rasval-hantverk", "hantverk", S.rp.rasval[0]?.split(":")[1], (v) => { S.rp.rasval = v ? [`hantverk:${v}`] : []; uppdatera(); })));
   }
+  // Ett val mellan några färdigheter (Belisariusalv: en konstnärlig färdighet; Ceriasalv: en vapenfärdighet
+  // eller Smide, Alver i Chronopia s. 3–4). Ett alternativ är en färdighet, eventuellt med delval, eller en hel nyckel.
+  const alt = valt.primara.find((p) => Array.isArray(p.valfri))?.valfri;
+  if (alt) {
+    const nu = S.rp.rasval[0] ?? "";
+    const valtAlt = alt.find((a) => nu === a) ?? alt.find((a) => !a.includes(":") && nu.startsWith(`${a}:`)) ?? "";
+    const perVal = valtAlt && !valtAlt.includes(":") && fardighetAv(S.R, valtAlt)?.perVal;
+    extra.push(falt(`Primär färdighet (${kallText(S.R, valt, "")})`, el("div", { class: "rad" },
+      valLista("rasval-alt", valtAlt, alt.map((a) => [a, rasvalNamn(a)]), (v) => { S.rp.rasval = v ? [fardighetAv(S.R, v)?.perVal && !v.includes(":") ? `${v}:` : v] : []; uppdatera(); }),
+      perVal ? delvalKontroll("rasval-delval", valtAlt, nu.split(":")[1] || undefined, (v) => { S.rp.rasval = [`${valtAlt}:${v ?? ""}`]; uppdatera(); }) : null)));
+  }
   const sprak = (lista) => lista.map((x) => S.R.fardigheter.sprak.find((s) => s.id === (x.sprak ?? x))?.namn ?? x).join(", ") || "inget skriftspråk";
   return [
     huvud,
@@ -48,6 +60,7 @@ export function stegRas() {
           valt.formagor.map((t) => el("li", {}, t, RASFORMAGOR[t] ? infoKnapp(RASFORMAGOR[t], `Om ${t.toLowerCase()}`) : null)),
           valt.primara.length ? el("li", {}, "Extra primära färdigheter: ", valt.primara.map((p, i) => [i ? ", " : "",
             typeof p === "string" ? [p.split(":")[1] ?? fardighetAv(S.R, p).namn, fardighetsInfo(p.split(":")[0])]
+              : Array.isArray(p.valfri) ? `valfritt: ${p.valfri.map((a) => rasvalNamn(a).toLowerCase()).join(" eller ")}`
               : [p.valfri === "vapen" ? "valfri vapenfärdighet" : "valfritt hantverk", fardighetsInfo(p.valfri)]])) : null,
           valt.sekundara.length ? el("li", {}, "Sekundära för rasen: ", valt.sekundara.map((p) => fardighetAv(S.R, p).namn).join(", "),
             infoKnapp(RAS_SEKUNDAR_INFO, "Vad betyder sekundära för rasen?")) : null,
@@ -58,6 +71,13 @@ export function stegRas() {
           el("li", {}, "Läser och skriver: ", sprak(valt.lasaSkrivaModersmal)))),
       extra.length ? el("div", { class: "rasval-extra" }, extra) : null),
   ];
+}
+
+// Namnet på ett alternativ för rasens primära färdighet: "Målning", "En vapenfärdighet", "Smide (hantverk)"
+function rasvalNamn(a) {
+  const [id, val] = a.split(":");
+  if (val) return `${val} (${fardighetAv(S.R, id).namn.toLowerCase()})`;
+  return id === "vapen" ? "En vapenfärdighet" : fardighetAv(S.R, id).perVal ? `${fardighetAv(S.R, id).namn} (valfritt)` : fardighetAv(S.R, id).namn;
 }
 
 // Erbjuder rollpersonen från förra besöket tills spelaren har börjat på en ny

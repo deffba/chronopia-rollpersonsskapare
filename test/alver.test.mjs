@@ -141,7 +141,7 @@ test("Salvatori: Vit apostels färdiga stridskonst", () => {
 
 test("Pierrot: täckyrket ger två yrkesfärdigheter med FV 5", () => {
   const pierrot = { ...alv, ras: "degasalv", yrke: "pierrot", yrkesfardigheter: ["bluffa"], fardigheter: { akrobatik: 0, "spela-instrument:Luta": 0 } };
-  assert.deepEqual(raknaRollperson(regler, pierrot).saknas, ["Täckyrket"]);
+  assert.deepEqual(raknaRollperson(regler, pierrot).tackyrke.saknas, ["Täckyrket"]);
   const med = { ...pierrot, tackyrke: { yrke: "bard", fardigheter: ["spela-instrument:Luta", "undre-varlden:Chronopia"] },
     yrkesfardigheter: ["spela-instrument:Luta", "undre-varlden:Chronopia"] };
   const r = raknaRollperson(regler, med);
@@ -151,22 +151,23 @@ test("Pierrot: täckyrket ger två yrkesfärdigheter med FV 5", () => {
   assert.match(fel({ ...med, tackyrke: { yrke: "bard", fardigheter: ["simma", "undre-varlden:Chronopia"] } }).join(), /ingen yrkesfärdighet för bard/);
 });
 
-test("masker: bara degasalver, +2 BP per extra egenskap, Pierrotens masker gratis", () => {
-  const degas = { ...alv, ras: "degasalv" };
-  const r = raknaRollperson(regler, { ...degas, masker: [["bestens-ansikte", "riddaren"]] });
+test("masker: bara pierroter, +2 BP per extra egenskap, högst 5/10/15 BP och inga egna BP (RB-024)", () => {
+  const pierrot = { ...alv, ras: "degasalv", yrke: "pierrot", yrkesfardigheter: [] };
+  const r = raknaRollperson(regler, { ...pierrot, niva: 2, masker: [["bestens-ansikte", "riddaren"]] });
   assert.equal(r.masker.varde, 13);
-  assert.equal(r.bp.utgifter.masker, 13);
-  assert.match(fel({ ...alv, masker: [["riddaren"]] }).join(), /bara för degasalver/);
-  const p = raknaRollperson(regler, { ...degas, yrke: "pierrot", yrkesfardigheter: [], masker: [["riddaren"], ["gycklaren"]] });
-  assert.equal(p.bp.utgifter.masker, 13 - 5);
+  assert.equal(r.masker.gratis, 15);
+  assert.equal(r.bp.utgifter.masker, 0);
+  assert.match(fel({ ...alv, ras: "degasalv", masker: [["riddaren"]] }).join(), /bara för pierroter/);
+  assert.deepEqual(fel({ ...pierrot, masker: [["riddaren"]] }), []);
+  assert.match(fel({ ...pierrot, masker: [["riddaren"], ["gycklaren"]] }).join(), /bara masker för 5 BP/);
 });
 
-test("dockor: dockmästarens 15/20/25 BP, livsgnistan kostar extra", () => {
+test("dockor: dockmästarens 15/20/25 BP, livsgnistan kostar extra, inga egna BP (RB-024)", () => {
   const dm = { ...alv, ras: "belisariusalv", rasval: ["malning"], yrke: "dockmastare", yrkesfardigheter: [] };
-  const r = raknaRollperson(regler, { ...dm, dockor: [{ id: "docka-hamnare", gnista: 2 }, { id: "spejare", gnista: 1 }] });
-  assert.equal(r.dockor.varde, 8 + 3 + 5 + 1);
-  assert.equal(r.bp.utgifter.dockor, 2);
-  assert.equal(raknaRollperson(regler, { ...dm, niva: 1, dockor: [{ id: "docka-hamnare", gnista: 2 }, { id: "spejare", gnista: 1 }] }).bp.utgifter.dockor, 0);
+  const lista = [{ id: "docka-hamnare", gnista: 2 }, { id: "spejare", gnista: 1 }];
+  assert.equal(raknaRollperson(regler, { ...dm, niva: 1, dockor: lista }).dockor.varde, 8 + 3 + 5 + 1);
+  assert.equal(raknaRollperson(regler, { ...dm, niva: 1, dockor: lista }).bp.utgifter.dockor, 0);
+  assert.match(fel({ ...dm, dockor: lista }).join(), /bara dockor för 15 BP/);
   assert.match(fel({ ...alv, dockor: [{ id: "spejare" }] }).join(), /bara för dockmästare/);
 });
 

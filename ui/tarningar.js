@@ -131,10 +131,10 @@ const bpFaltet = (etikett, kontroll) => { const f = falt(etikett, kontroll); f.c
 // Lagda BP räknas också som en bonus när de är fler än 0, men står bara i BP-fältet, inte bland punkterna.
 // Bonusarna visas var för sig i tärningsrutan, t.ex. 2T6+2+4.
 // Tillval: fore = fält som står före slaget (t.ex. vilken tabell som slås på), kanSla = false spärrar tärningen,
-// under = det som står direkt under raden med slaget.
+// under = det som står direkt under raden med slaget, bpLast = BP-fältet går inte att ändra (ett gratisslag).
 // nyckel är namnet på slaget i rollpersonen (t.ex. "svardshand") eller en funktion som ger slaget
 // (t.ex. ett av de fler slagen för särskilda förmågor).
-export function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = [], { fore = null, kanSla = true, under = null } = {}) {
+export function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = [], { fore = null, kanSla = true, under = null, bpLast = false } = {}) {
   const hamta = typeof nyckel === "function" ? nyckel : () => S.rp[nyckel];
   const s = hamta();
   const bonusar = [s.bp > 0 ? ["BP lagda", s.bp] : null, ...fastaBonusar].filter(Boolean);
@@ -160,7 +160,7 @@ export function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = ()
   const sla = () => { const t = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sidor)); hamta().tarningar = t; return t.reduce((a, b) => a + b, 0); };
   const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => { if (S.manuellaSlag) hamta().tarningar = delaSumma(v, true, sidor); satt("slag", v); }, sla, sidor);
   if (!kanSla) for (const e of [slagfalt, knapp].filter(Boolean)) for (const k of e.matches("button, input") ? [e] : e.querySelectorAll("button, input")) k.disabled = true;
-  const bpFalt = rullar === id ? lastFalt(`${id}-bp`, s.bp ?? 0) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
+  const bpFalt = rullar === id || bpLast ? lastFalt(`${id}-bp`, s.bp ?? 0) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
   return [
     el("p", {}, hjalp),
     bonuslista,

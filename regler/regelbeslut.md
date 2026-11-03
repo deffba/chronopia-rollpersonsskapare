@@ -245,3 +245,35 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Motivering:** Familjartaket hör till magikernivåerna, och familjarer är magikernas följeslagare.
 - **Påverkar:** Steget Familjarer.
 - **Beslutat:** 2026-11-03, Deffba.
+
+## RB-024 Alver i Chronopia i appen
+- **Fråga:** Hur läggs husalverna, drakalven, alvyrkena, alvernas förmågetabell med husens egna rader, masker, dockor och Påfågelsdansen in, där boken är kortfattad eller inte passar grundreglernas system?
+- **Källor:** *Alver i Chronopia* s. 3–5 (nivåer, syn och hörsel), 6–29 (yrken, husen Aramas och Belisarius, dockor), 30–35 (Lysander, drakalven och defekterna), 37–38 (bestar), 40–44 (Degas, masker, Pierrot), 49–70 (Ventura, Cerias, Kothal); grundreglerna s. 14–16, 30–34.
+- **Beslut:**
+  - **Nivåer:** Alv 125 BP och 1 särskild förmåga, Veteran 150/2, Upphöjd 175/3 (RB-001).
+  - **Husalverna** (Aramas, Belisarius, Cerias, Degas, Kothal, Lysander, Ventura) är stadsalver med husets ändringar. Belisarius +20 på socialt stånd och startkapital **ersätter** stadsalvens +15. Belisarius väljer en av Målning, Skådespeleri eller Spela instrument som primär färdighet; Cerias en vapenfärdighet eller Hantverk: Smide.
+  - **Drakalven** går inte att välja direkt, bara genom Lysanders förmåga **Drakblod**. Drakalvens värden (grundegenskaper, STO 13–21, +10 på stånd och kapital) **ersätter** lysanderalvens helt. Den valda rasen (lysanderalv) gäller för BP och för vilka yrken som får väljas (RB-012). Defekterna slås med 1T20; 19 ger två slag till där 1–8 och 19 slås om.
+  - **Husens rader** i alvernas förmågetabell ersätter tabellens rader med samma slag för alver ur det huset.
+  - **Utstött:** bara +10 på startkapitalet, **i stället för** rasens bonus.
+  - **Syn och hörsel** (valfri regel, RB-002): alvernas bättre tabell (−1…+4) gäller alla alver utom halvalver. Övriga raser har V&R:s tabell.
+  - **Masker** får bara **pierroten**: masker till ett värde av högst 5/10/15 BP efter erfarenhetsnivån. Varje egenskap utöver den första i samma mask kostar 2 BP till. Mer går inte att köpa för egna BP.
+  - **Dockor** får bara **dockmästaren**: dockor till ett värde av högst 15/20/25 BP efter erfarenhetsnivån, där varje docka kostar sitt pris plus livsgnistans grad (1/3/5/7 BP). Mer går inte att köpa för egna BP.
+  - Masker och dockor väljs i ett eget steg, *Masker och dockor*, som bara visas för pierroter och dockmästare.
+  - **Pierrotens täckyrke:** ett annat yrke ur de valda böckerna; två av dess yrkesfärdigheter blir pierrotens yrkesfärdigheter med FV minst 5, och täckyrkets startutrustning ingår.
+  - **Bastardmagiker** och Cerias förmåga **Dimalv:** magiskolan är en gratis extra yrkesfärdighet utan magiförmågeslag.
+  - **Salvatori** (vita apostlarnas svärdsskola) kostar teknikernas summa, 8.
+  - **Påfågelsdansen** (Flamboyant): komponenterna är grundreglernas obeväpnade tekniker som boken räknar upp, V&R:s vapentekniker och dansens egna tekniker. En grundkostnad över 8 kostar 2 BP per poäng.
+  - **Spindelmästaren** får ett extra slag utan BP med +10 på Magis tabell (kräver Magi i Chronopia). Ritualmagi kan bara läras av spindelmästare och stridsbesvärjelserna bara av eldsfurstar.
+  - **Stormfågelns Mekanik** är Teknologi när Dvärgar i Chronopia är vald, annars en vapenfärdighet till. ”Undervattensorientering” = Undervattensnavigering, ”Sjökunnighet (luftrummet)” = Sjökunnighet.
+  - **Arvinge** anger ingen summa, så SL avgör.
+- **Motivering:** Så nära boken som möjligt, med grundreglernas system där boken inte säger något.
+- **Påverkar:** Bokvalet, rassteget, yrkessteget, yrkesfärdigheterna, särskilda förmågor, steget Masker och dockor, färdigheterna, besvärjelserna, rollformuläret.
+- **Beslutat:** 2026-11-03, Deffba (frågorna om Belisarius, drakalven, Utstött, syn och hörsel, masker, dockor och magiskolorna); övrigt tolkning vid importen.
+
+## RB-025 Belisarisk eldgaffel
+- **Fråga:** Eldgaffeln saknar vapengrupp.
+- **Källor:** *Alver i Chronopia* s. 28; *Vapen & rustningar* (vapengrupper, RB-017).
+- **Beslut:** Eldgaffeln räknas till **stickvapen**.
+- **Motivering:** Gaffeln är ett stickande vapen, och stickvapen är den närmaste gruppen.
+- **Påverkar:** Vapenlistan, utrustningssteget.
+- **Beslutat:** 2026-11-03 (tolkning vid importen).

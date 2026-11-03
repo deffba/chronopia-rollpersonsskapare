@@ -13,7 +13,7 @@ export function saknasPerSteg(res) {
   if (!S.rp.ras) lista.ras.push("Ras");
   if (S.rp.alder == null) lista.alder.push("Ålder");
   const valfriRas = ras.primara.find((p) => p.valfri);
-  if (valfriRas && !S.rp.rasval.some(klar)) lista.ras.push(`Rasens valfria ${valfriRas.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`);
+  if (valfriRas && !S.rp.rasval.some(klar)) lista.ras.push(Array.isArray(valfriRas.valfri) ? "Rasens primära färdighet" : `Rasens valfria ${valfriRas.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`);
   lista.klan.push(...(res.klan?.saknas ?? []));
   if (res.familjarer && !res.familjarer.kanKopa && (S.rp.familjarer ?? []).length) lista.familjarer.push("Köpta familjarer: bara rollpersoner som kan magi får köpa familjarer (ta bort dem)");
   if (!S.rp.yrke) lista.yrke.push("Yrke");
@@ -37,6 +37,7 @@ export function saknasPerSteg(res) {
   if (S.rp.yrke && yrke.valfri && !klar(S.rp.valfri)) lista.extra.push("Den valfria yrkesfärdigheten");
   if (S.rp.yrke && yrke.startbonus?.some((b) => b.valEttAv) && !yrkesNycklar().includes(S.rp.hantverkBonus)) lista.extra.push("Hantverket som får gratis FV");
   if (res.tatueringar?.tak && (S.rp.tatueringar ?? []).length < res.tatueringar.tak) lista.extra.push(`Levande tatueringar: ${res.tatueringar.tak - (S.rp.tatueringar ?? []).length} val kvar`);
+  lista.extra.push(...(res.tackyrke?.saknas ?? []));
   if (S.rp.extraYrkesfardigheter.some((k) => !klar(k))) lista.extra.push("En extra yrkesfärdighet är inte färdigvald (välj klart eller ta bort den)");
   if (!S.rp.namn.trim()) lista.kon.push("Namn");
   if (!S.rp.kon) lista.kon.push("Kön");
@@ -44,6 +45,11 @@ export function saknasPerSteg(res) {
   const slagen = formageslag(S.R, motorIndata());
   slagen.forEach((sf, i) => {
     const nr = slagen.length > 1 ? ` ${i + 1}` : "";
+    if (sf.gratis) {
+      // Yrkets gratisslag (Spindelmästare) kostar inga BP: det ska slås, eller väljas bort
+      if ((sf.slag === null || sf.slag === undefined) && !sf.avstar) lista.formagor.push(`Det extra slaget för särskild förmåga${nr} (gratis, +${sf.bonus}), eller kryssa i att du inte vill slå`);
+      return;
+    }
     if (sf.bp && (sf.slag === null || sf.slag === undefined)) lista.formagor.push(slagen.length > 1 ? `Slaget för särskild förmåga${nr}` : "Slaget för särskilda förmågor");
     if (!sf.bp && !sf.avstar) lista.formagor.push(slagen.length > 1 ? `Lägg BP på särskild förmåga${nr}, eller kryssa i att du inte vill det` : "Lägg BP på särskilda förmågor, eller kryssa i att du inte vill det");
   });
@@ -99,12 +105,13 @@ export const svardshandGiven = (res) => [...(res.sarskildaFormagorna ?? []), res
 export function synligaSteg(res) {
   const kanMagi = res.kanMagi && skolFV(res.fardigheter).allman > 0;
   return STEG.filter((s) => (s.id !== "besvarjelser" || kanMagi) && (s.id !== "familjarer" || res.familjarer?.tillganglig)
-    && (s.id !== "klan" || res.klan?.tillganglig));
+    && (s.id !== "klan" || res.klan?.tillganglig) && (s.id !== "masker" || res.masker?.tillganglig || res.dockor?.tillganglig));
 }
 
 export function bpForSteg(id, res) {
   const u = res.bp.utgifter;
   const v = { ras: u.ras, extra: u.extraYrkesfardigheter, egenskaper: u.grundegenskaper + (u.sinnen ?? 0), formagor: u.sarskildaFormagor,
-    svardshand: u.svardshand, stand: u.socialtStand, kapital: u.startkapital, familjarer: u.familjarer }[id];
+    svardshand: u.svardshand, stand: u.socialtStand, kapital: u.startkapital, familjarer: u.familjarer,
+    masker: (u.masker ?? 0) + (u.dockor ?? 0), fardigheter: u.stil ?? 0 }[id];
   return v ? `${v} BP` : "";
 }

@@ -2,7 +2,7 @@
 // listor och textfält som är tomma, åldern (enkel metod), särskilda förmågans val, startpaketets vapen och alla tärningsslag.
 // Ras och yrke väljer spelaren själv, och knapparna Föreslå värden och Fördela EP används aldrig.
 // Bara tomma val fylls i, så det som spelaren själv har valt ändras inte. Byts yrket fylls det nya yrkets val i.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, vapenVillkor, varukatalog, formagetabell, formageslag, tarningAv, iBocker, sarskildFormaga as sfFor, klanForSlag, magiskolor } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, vapenVillkor, varukatalog, formagetabell, formageslag, tarningAv, iBocker, sarskildFormaga as sfFor, klanForSlag, magiskolor, rasAv as rasFor, valbaraYrken, tackyrketsFardigheter, teknikLista } from "./regelmotor.js";
 
 const LAGRING = "chronopia-dev-autofyll";
 const slaT = (antal, sidor) => Array.from({ length: antal }, () => 1 + Math.floor(Math.random() * sidor)).reduce((a, b) => a + b, 0);
@@ -25,7 +25,9 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
 
   if (steg === "ras" && rp.ras) {
     const valfriRas = rasAv(R, rp.ras).primara.find((p) => p.valfri)?.valfri;
-    if (valfriRas && !rp.rasval.some(klar)) rp.rasval = [`${valfriRas}:${delval(valfriRas)}`];
+    // En lista med alternativ (Belisarius: Målning, Skådespeleri eller Spela instrument): ett slumpat
+    const ett = (alt) => (alt.includes(":") || !fardighetAv(R, alt)?.perVal ? alt : `${alt}:${delval(alt)}`);
+    if (valfriRas && !rp.rasval.some(klar)) rp.rasval = [Array.isArray(valfriRas) ? ett(valj(valfriRas)) : `${valfriRas}:${delval(valfriRas)}`];
   }
 
   // Klanen (Dvärgar i Chronopia s. 4): 1T100 på klantabellen, sedan 1T10 för klanförmågan och dess val
@@ -85,6 +87,25 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
       if ((rp.tatueringar ?? []).length >= tak) break;
       if (!(rp.tatueringar ?? []).includes(t.id)) rp.tatueringar = [...(rp.tatueringar ?? []), t.id];
     }
+    // Pierrotens täckyrke (Alver i Chronopia s. 44): ett slumpat yrke och två av dess yrkesfärdigheter som går
+    if (yrke.tackyrke && !(rp.tackyrke?.yrke && rp.tackyrke.fardigheter?.filter(klar).length >= yrke.tackyrke.antal)) {
+      const yrken = valbaraYrken(R, rp).filter((y) => y.id !== yrke.id).sort(() => Math.random() - 0.5);
+      for (const y of yrken) {
+        const valda = [];
+        for (const id of tackyrketsFardigheter(R, y)) {
+          if (valda.length >= yrke.tackyrke.antal) break;
+          const f = fardighetAv(R, id);
+          if (!f || MAGI.includes(id) || f.typ === "magiskola") continue;
+          const nyckel = f.perVal ? `${id}:${delval(id) ?? ""}` : id;
+          if (paborjad(nyckel) || api.yrkesNycklar().includes(nyckel) || valda.includes(nyckel)) continue;
+          rp.tackyrke = { yrke: y.id, fardigheter: [...valda, nyckel] };
+          if (!api.rakna().fel.length) valda.push(nyckel);
+        }
+        rp.tackyrke = { yrke: y.id, fardigheter: valda };
+        if (valda.length >= yrke.tackyrke.antal && !api.rakna().fel.length) break;
+        rp.tackyrke = { yrke: "", fardigheter: [] };
+      }
+    }
     if (yrke.startbonus?.some((b) => b.valEttAv) && !api.yrkesNycklar().includes(rp.hantverkBonus)) {
       rp.hantverkBonus = api.yrkesNycklar().find((n) => n.startsWith("hantverk:")) ?? "";
     }
@@ -123,9 +144,9 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
   }
 
   if (steg === "fardigheter") {
-    // Stridskonster: stilens första teknik
+    // Stridskonster: stilens första teknik (Påfågelsdansen: den första av dansens komponenter)
     for (const f of res.fardigheter.filter((x) => x.tekniker && !x.tekniker.length)) {
-      rp.stridskonstTekniker = { ...rp.stridskonstTekniker, [f.nyckel]: [R.fardigheter.stridskonstTekniker[0][0]] };
+      rp.stridskonstTekniker = { ...rp.stridskonstTekniker, [f.nyckel]: [teknikLista(R, fardighetAv(R, f.nyckel), f.nyckel).find(([n]) => R.fardigheter.stridskonstTekniker.some(([m]) => m === n))?.[0] ?? R.fardigheter.stridskonstTekniker[0][0]] };
       rp.stridskonstFardig = { ...rp.stridskonstFardig, [f.nyckel]: true };
     }
   }
@@ -154,10 +175,12 @@ function fyllFormaga(api, autoDelval, anvanda, slag) {
     const satt = (o) => { if (nr === 0) rp.sarskildaFormagor = o; else { rp.sarskildaFormagor.fler = [...rp.sarskildaFormagor.fler]; rp.sarskildaFormagor.fler[nr - 1] = o; } };
     if (nr > 0) { rp.sarskildaFormagor.fler ??= []; while (rp.sarskildaFormagor.fler.length < nr) rp.sarskildaFormagor.fler.push({ bp: 0, slag: null, val: [], avstar: false }); }
     const s = hamta();
+    // Yrkets gratisslag (Spindelmästare, Alver i Chronopia s. 69) slås alltid, utan BP
+    const motor = formageslag(R, api.motorIndata())[nr];
     // Utan lagda BP kryssas rutan i: rollpersonen avstår från förmågan
-    if (!s.bp && !s.avstar && (s.slag === null || s.slag === undefined)) satt({ ...s, avstar: true });
-    if (slag && s.bp && (s.slag === null || s.slag === undefined)) {
-      const { n, sidor } = tarningAv(formagetabell(R, api.motorIndata(), s)?.tarning ?? "2T20");
+    if (!motor.gratis && !s.bp && !s.avstar && (s.slag === null || s.slag === undefined)) satt({ ...s, avstar: true });
+    if (slag && (s.bp || (motor.gratis && !s.avstar)) && (s.slag === null || s.slag === undefined)) {
+      const { n, sidor } = tarningAv(formagetabell(R, api.motorIndata(), motor.gratis ? motor : s)?.tarning ?? "2T20");
       // Samma förmåga som ett tidigare slag slås om (högst 50 försök)
       for (let forsok = 0; forsok < 50; forsok++) {
         satt({ ...hamta(), slag: slaT(n, sidor), val: [] });
@@ -193,6 +216,16 @@ function fyllFormaga(api, autoDelval, anvanda, slag) {
         // Bärsärk: en slumpad tatuering med tillåten insikt (Dvärgar i Chronopia s. 15)
         const lista = (R.fardigheter.tatueringar?.lista ?? []).filter((t) => !del.maxNr || t.nr <= del.maxNr).sort(() => Math.random() - 0.5);
         for (const t of lista) { sattVal(t.id); if (gar()) break; }
+      }
+      if (del.typ === "best" && !val[i]) sattVal(valj(R.foljeslagare?.bestar?.lista ?? [{}]).id); // Bestarnas herre
+      if (del.typ === "defekt" && slag) {
+        // Drakalvens defekter (Alver i Chronopia s. 33): 1T20, och vid 19 två slag till där 1–8 och 19 slås om
+        const T = rasFor(R, del.ras).defekter;
+        const ignoreras = (x) => T.ignorera.some(([fran, till]) => x >= fran && x <= till);
+        const lista = [...(val[i]?.slag ?? [])];
+        if (!lista.length) lista.push(slaT(1, 20));
+        while (lista[0] === T.slaTva && lista.length < 3) { const x = slaT(1, 20); if (!ignoreras(x)) lista.push(x); }
+        if (JSON.stringify(lista) !== JSON.stringify(val[i]?.slag ?? [])) sattVal({ slag: lista });
       }
       if (del.typ === "familjar" && !val[i]) {
         // Spiritus familiarius: en slumpad familjar som rollpersonen får ha (Magi i Chronopia s. 17)

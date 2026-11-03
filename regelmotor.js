@@ -27,6 +27,12 @@ export const iBocker = (post, rp) => valdaBocker(rp).includes(bokFor(post));
 // och bokens fält läggs på när boken är vald. Reglerna ändras på plats, så anropet görs före varje uträkning.
 export function tillampaBocker(regler, rp) {
   const bocker = valdaBocker(rp);
+  // Anropas ofta (för varje yrkespost); samma böcker som förra gången ger inget nytt att ändra
+  // (nyckeln sitter på listorna som ändras, så att regelobjekt som delar listor inte blir fel)
+  const nyckel = bocker.join(",");
+  const listor = [regler.fardigheter?.lista, regler.yrken?.lista].filter(Boolean);
+  if (listor.every((l) => l._bocker === nyckel)) return regler;
+  for (const l of listor) Object.defineProperty(l, "_bocker", { value: nyckel, writable: true, configurable: true, enumerable: false });
   for (const f of regler.fardigheter?.lista ?? []) {
     if (!f.medBok) continue;
     f._grund ??= Object.fromEntries(Object.values(f.medBok).flatMap((a) => Object.keys(a)).map((k) => [k, f[k]]));
@@ -202,21 +208,21 @@ export function raknaTatueringar(regler, rp, franFormagor = []) {
 }
 
 // ------------------------------------------------------------ masker och dockor (Alver i Chronopia s. 26–27, 41–42)
-// Degas masker (s. 41–42) köps för BP av degasalver. En mask är en lista med egenskaper; varje egenskap utöver
-// den första kostar extraPerEgenskap BP (Bestens ansikte + Riddaren = 6 + 5 + 2 = 13 BP). Pierroten får masker
-// för 5/10/15 BP gratis efter erfarenhetsnivån (s. 44, RB-024). rp.masker = [[egenskapens id, …], …]
+// Degas masker (s. 41–42) får bara pierroten (s. 44, RB-024): masker till ett värde av högst 5/10/15 BP efter
+// erfarenhetsnivån, utan att lägga egna BP. En mask är en lista med egenskaper; varje egenskap utöver den första
+// kostar extraPerEgenskap BP till (Bestens ansikte + Riddaren = 6 + 5 + 2 = 13). rp.masker = [[egenskapens id, …], …]
 export function raknaMasker(regler, rp) {
   const M = regler.foljeslagare?.masker;
   const svar = { tillganglig: false, lista: [], varde: 0, gratis: 0, bp: 0, fel: [] };
   if (!M) return svar;
   const yrke = yrkeAv(regler, rp.yrke);
-  svar.tillganglig = valdaBocker(rp).includes(M.kalla.bok) && (!M.villkor?.ras || M.villkor.ras.includes(rp.ras));
+  svar.tillganglig = Boolean(yrke?.masker) && iBocker(yrke, rp) && valdaBocker(rp).includes(M.kalla.bok);
   const masker = rp.masker ?? [];
   if (!svar.tillganglig) {
-    if (masker.length) svar.fel.push(`Magiska masker finns bara för degasalver (${kallText(regler, M, "")})`);
+    if (masker.length) svar.fel.push(`Magiska masker finns bara för pierroter (${kallText(regler, M, "")})`);
     return svar;
   }
-  svar.gratis = iBocker(yrke, rp) && yrke?.masker ? yrke.masker[Math.min(rp.niva ?? 0, yrke.masker.length - 1)] : 0;
+  svar.gratis = yrke.masker[Math.min(rp.niva ?? 0, yrke.masker.length - 1)];
   masker.forEach((ids, i) => {
     const egenskaper = ids.map((id) => M.egenskaper.find((e) => e.id === id));
     if (!ids.length) svar.fel.push(`Mask ${i + 1} har ingen egenskap`);
@@ -226,13 +232,13 @@ export function raknaMasker(regler, rp) {
     svar.lista.push({ nr: i + 1, egenskaper: egenskaper.filter(Boolean), bp });
     svar.varde += bp;
   });
-  svar.bp = Math.max(0, svar.varde - svar.gratis);
+  if (svar.varde > svar.gratis) svar.fel.push(`Maskerna är värda ${svar.varde} BP, men pierroten får bara masker för ${svar.gratis} BP på den här erfarenhetsnivån (RB-024)`);
   return svar;
 }
 
-// Dockmästarens dockor (s. 25–27): yrket ger dockor till ett värde av 15/20/25 BP efter erfarenhetsnivån.
-// Varje docka kostar sitt pris plus livsgnistans grad (1/3/5/7 BP); det som överstiger yrkets värde betalas
-// med egna BP (RB-024). rp.dockor = [{ id, gnista }]
+// Dockmästarens dockor (s. 25–27): yrket ger dockor till ett värde av högst 15/20/25 BP efter erfarenhetsnivån,
+// utan att lägga egna BP (RB-024). Varje docka kostar sitt pris plus livsgnistans grad (1/3/5/7 BP).
+// rp.dockor = [{ id, gnista }]
 export function raknaDockor(regler, rp) {
   const D = regler.foljeslagare?.dockor;
   const svar = { tillganglig: false, lista: [], varde: 0, gratis: 0, bp: 0, fel: [] };
@@ -254,7 +260,7 @@ export function raknaDockor(regler, rp) {
     svar.lista.push({ ...docka, nr: i + 1, gnista: d.gnista ?? 1, varde: bp });
     svar.varde += bp;
   });
-  svar.bp = Math.max(0, svar.varde - svar.gratis);
+  if (svar.varde > svar.gratis) svar.fel.push(`Dockorna är värda ${svar.varde} BP, men dockmästaren får bara dockor för ${svar.gratis} BP på den här erfarenhetsnivån (RB-024)`);
   return svar;
 }
 
@@ -868,7 +874,6 @@ export function raknaRollperson(regler, indata) {
   // Slaget görs först när INT och PSY är bestämda, så ett saknat eller misslyckat slag är inte ett regelbrott
   // i sig utan något som återstår: slaget ska göras, eller magiskolan bytas ut.
   const vantar = [];
-  sf.saknas.push(...tackyrke.saknas);
   if (behoverSlag && !magiformaga.lyckat) {
     vantar.push(magiformaga.slag === null ? "Magiskolor kräver ett magiförmågeslag (s. 106)" : "Magiförmågeslaget misslyckades, så rollpersonen kan inte lära sig magi (s. 106)");
   }

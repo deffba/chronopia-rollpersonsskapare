@@ -6,7 +6,7 @@ En rollpersonsskapare för Chronopia (Drakar och Demoner). Den följer kapitlet 
 
 Appen öppnar på en startsida med stora val: **Skapa rollperson** (stegen nedan), **Ladda ned rollformulär** (ett tomt formulär som ifyllbar PDF) och **Regelresonemang** (husreglerna i `regler/husregler.json` och regelbesluten i `regler/regelbeslut.md`). Redigera rollperson, Förbättra rollperson och Kampanj är markerade som *kommer snart*. Titeln och menyvalet Startsidan leder tillbaka.
 
-Skapandet börjar med **steg 0, Böcker**: vilka böcker rollpersonen skapas med. Böckerna står i `regler/bocker.json` (grupp, status `inlagd` eller `kommerSnart`, och `kraver` för obligatoriska beroenden). Grundreglerna är alltid med; expansionerna visas med *(Kommer snart!)* tills de är inlagda. Valet sparas i rollpersonen (`rp.bocker`) och låses när en ras är vald. Övriga steg har kvar sina nummer 1–13.
+Skapandet börjar med **steg 0, Böcker**: vilka böcker rollpersonen skapas med. Böckerna står i `regler/bocker.json` (grupp, status `inlagd` eller `kommerSnart`, och `kraver` för obligatoriska beroenden). Grundreglerna är alltid med; expansionerna visas med *(Kommer snart!)* tills de är inlagda. Inlagda är Vapen & rustningar, Magi i Chronopia, Dvärgar i Chronopia och Alver i Chronopia. Valet sparas i rollpersonen (`rp.bocker`) och låses när en ras är vald. Övriga steg har kvar sina nummer 1–13.
 
 Längst ner står appens version och när sidan senast publicerades (`version.json`).
 

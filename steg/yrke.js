@@ -38,7 +38,7 @@ export function stegYrke() {
           // Nej: inget ändras och spelaren väljer ett annat yrke. Ja: klanen byts och klanförmågan slås om direkt.
           fragaKlanbyte(y, nyKlan, (formagaSlag, val) => {
             S.rp.klan = { id: nyKlan.id, slag: null, formagaSlag, val };
-            S.rp.yrke = y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = [];
+            S.rp.yrke = y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = []; S.rp.tackyrke = { yrke: "", fardigheter: [] }; S.rp.dockor = [];
             uppdatera();
             const f = rakna().klan?.formaga;
             visaNotis(`Klanen är nu ${nyKlan.namn}.${f ? ` Nya klanförmågan: ${f.namn}.` : ""}`);
@@ -47,6 +47,7 @@ export function stegYrke() {
         }
         // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1
         S.rp.yrke = y.id === S.rp.yrke ? "" : y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = "";
+        S.rp.tackyrke = { yrke: "", fardigheter: [] }; S.rp.dockor = []; // Pierrotens täckyrke, dockmästarens dockor
         // Yrken med vapen i startutrustningen får inget vapen i startpaketet
         if (y.startvapen && S.rp.startpaket?.vapen) S.rp.startpaket = { ...S.rp.startpaket, vapen: "" };
         if (y.villkor?.kon && S.rp.yrke === y.id) S.rp.kon = y.villkor.kon; // Svartsyster: bara kvinnor (Magi s. 15)
@@ -71,12 +72,12 @@ export function stegYrke() {
       return punkt(text, null, val?.id ? [namn(val.id), val.sub].filter(Boolean).join(": ") : null, extraFor(post));
     }
     if (post.antal === null) return punkt(`${namn(post.fardighet)} (alla)`, post.fardighet);
-    if (!post.antal && !post.maste) return punkt(namn(post.fardighet), post.fardighet, null, extraFor(post)); // fast färdighet (Präst: Atums väg)
+    if (!post.antal && !post.maste) return punkt(post.namn ?? namn(post.fardighet), post.fardighet, null, extraFor(post)); // fast färdighet (Präst: Atums väg)
     const valda = [].concat(val ?? []);
     post.maste?.forEach((m, j) => { valda[j] = m; });
     const fasta = post.maste && post.antal === post.maste.length;
     const tekniker = skolTekniker(post);
-    return punkt(fasta ? `${namn(post.fardighet)}: ${post.maste.join(", ")}` : `${namn(post.fardighet)} (${post.antal})`, post.fardighet,
+    return punkt(fasta ? `${namn(post.fardighet)}: ${post.maste.join(", ")}` : post.namn ? `${post.namn}${post.antal > 1 ? ` (${post.antal})` : ""}` : `${namn(post.fardighet)} (${post.antal})`, post.fardighet,
       fasta ? null : valda.filter((v) => v && !paborjad(v)).join(", ") || null, [extraFor(post), tekniker ? `tekniker ${tekniker}` : null].filter(Boolean).join("; ") || null);
   });
   // Gratis FV i en färdighet som inte är yrkesfärdighet (Hypnotisera för sabransk ökenriddare)
@@ -154,7 +155,7 @@ export function yrketsVal() {
     }
     const f = fardighetAv(S.R, post.fardighet);
     if (!post.antal && post.antal !== null && !post.maste) {
-      return el("li", {}, el("span", { class: "fnamn" }, f.namn), kortBeskrivning(post.fardighet),
+      return el("li", {}, el("span", { class: "fnamn" }, post.namn ?? f.namn), kortBeskrivning(post.fardighet),
         extraFor(post) ? el("p", { class: "hjalp" }, `${storBokstav(extraFor(post))} (${kallText(S.R, yrke, `s. ${yrke.sida}`)}).`) : null);
     }
     if (post.antal === null) {
@@ -164,7 +165,7 @@ export function yrketsVal() {
     const varden = [].concat(S.rp.yrkesval[i] ?? []);
     // Ett förbestämt val (t.ex. Kunskap om religion för munk och paladin) ligger först och går inte att ändra
     post.maste?.forEach((m, j) => { varden[j] = m; });
-    return el("li", {}, el("span", { class: "fnamn" }, `${f.namn} (${post.antal})`), kortBeskrivning(post.fardighet),
+    return el("li", {}, el("span", { class: "fnamn" }, post.namn ? `${post.namn}${post.antal > 1 ? ` (${post.antal})` : ""}` : `${f.namn} (${post.antal})`), kortBeskrivning(post.fardighet),
       el("div", { class: "rad" }, Array.from({ length: post.antal }, (_, j) => (j < (post.maste?.length ?? 0)
         ? el("span", { class: "fast" }, varden[j])
         : delvalKontroll(`${id}-${j}`, post.fardighet, varden[j], (v) => {

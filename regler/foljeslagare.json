@@ -383,7 +383,7 @@
       "sida": 26
     },
     "beslut": "RB-024",
-    "text": "Dockmästarens magiska marionetter. Yrket ger dockor till ett värde av 15/20/25 BP efter erfarenhetsnivån; dyrare dockor betalas med egna BP. Varje docka har en livsgnista av grad 1–4, som kostar 1/3/5/7 BP utöver dockan. Dockornas grundegenskaper och KP står i tabellen på s. 26.",
+    "text": "Dockmästarens magiska marionetter. Yrket ger dockor till ett värde av högst 15/20/25 BP efter erfarenhetsnivån, utan egna BP. Varje docka har en livsgnista av grad 1–4, som kostar 1/3/5/7 BP utöver dockan. Dockornas grundegenskaper och KP står i tabellen på s. 26.",
     "livsgnista": [
       1,
       3,
@@ -454,7 +454,7 @@
       ]
     },
     "extraPerEgenskap": 2,
-    "text": "Huset Degas magiska masker köps för BP när rollpersonen skapas, senare bara genom tjänster åt huset. En mask kan ha flera egenskaper; varje egenskap utöver den första kostar 2 BP extra (Bestens ansikte och Riddaren i samma mask: 6 + 5 + 2 = 13 BP). Pierrotens masker från yrket är gratis upp till 5/10/15 BP.",
+    "text": "Huset Degas magiska masker. Bara pierroten får masker när rollpersonen skapas: masker till ett värde av högst 5/10/15 BP efter erfarenhetsnivån, utan egna BP. En mask kan ha flera egenskaper; varje egenskap utöver den första kostar 2 BP extra (Bestens ansikte och Riddaren i samma mask: 6 + 5 + 2 = 13 BP).",
     "egenskaper": [
       {
         "id": "bedragaren",

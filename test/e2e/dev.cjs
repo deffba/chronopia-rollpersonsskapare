@@ -24,6 +24,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
     let antal = 0;
     for (const ras of raser.lista ?? raser) for (const y of yrken.lista) {
       if (y.villkor?.ras && !y.villkor.ras.includes(ras.id)) continue; // yrket är inte öppet för rasen (V&R)
+      if (y.villkor?.ejRas?.includes(ras.id) || ras.endastGenom) continue; // Drakgardist; drakalven väljs inte direkt (Alver)
       antal++;
       const bocker = [...new Set([ras.kalla?.bok, y.kalla?.bok].filter(Boolean))];
       const x = window.chronopiaDev.byggAuto({ id: 'x', namn: `${ras.id} ${y.id}`, kon: 'Man', ras: ras.id, alder: ras.alder.vuxen[0], yrke: y.id, bocker });
@@ -39,7 +40,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   const steg = await p.locator('#dev-lage optgroup[label="Steg"] option').evaluateAll(o => o.map(x => [x.value, x.textContent.replace(/^\d+\. | \(bara (magiker|med Magi)\)$/g, '')]));
   let fel_steg = [];
   for (const [id, namn] of steg) {
-    await p.click('#menyknapp'); await p.selectOption('#dev-lage', id); await p.click(id === 'familjarer' ? '#dev-magi-chronomag' : id === 'klan' ? '#dev-dvarg-prast' : '#dev-magiker'); await p.waitForTimeout(150);
+    await p.click('#menyknapp'); await p.selectOption('#dev-lage', id); await p.click(id === 'familjarer' ? '#dev-magi-chronomag' : id === 'klan' ? '#dev-dvarg-prast' : id === 'masker' ? '#dev-alv-pierrot' : '#dev-magiker'); await p.waitForTimeout(150);
     const h2 = await p.locator('.steg-huvud h2').textContent();
     if (h2 !== namn) fel_steg.push(`${id}: ${h2}`);
   }
@@ -62,7 +63,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   ok('rollformuläret med erf', await p.locator('#rf-vy').isVisible() && Object.keys(erf).length > 0);
   const filer = []; p.on('download', d => filer.push(d.suggestedFilename()));
   await p.click('#menyknapp'); await p.click('#dev-ladda-ner'); await p.waitForTimeout(1000);
-  ok('ladda ner alla', filer.length === 10, filer.join(', '));
+  ok('ladda ner alla', filer.length === 15, filer.join(', '));
   await p.goto(URL); await p.waitForSelector('.utvecklarlage', { state: 'attached' });
   ok('valet sparas i webbläsaren', true);
   await p.goto(URL + '?dev=av'); await tillRas(p); await p.waitForTimeout(300);
