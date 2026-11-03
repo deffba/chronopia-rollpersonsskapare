@@ -148,7 +148,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
   - **Smidesmästare:** *Smide* = Hantverk (Smide). *Tvåhandshammare* = vapenfärdigheten för den dvärgiska **Stridshammaren** (*V&R* s. 60) och räknas som en av vapenfärdigheterna (3 i stället för 2). Startutrustningens tvåhandshammare är en sådan med +3 i skada och BV: **1T10+3, STY 15, vikt 5, BV 16** (ändrat 2026-11-02, Deffba; ingen bok har en egen tvåhandshammare). Yrket är bara öppet för Människa och Dvärg (s. 8); födelseorten följs inte.
   - **Krigarmunk:** ”Lärdomsfärdigheter (2) eller Hantera fällor och Låsdyrkning” är ett enda val: antingen två valfria lärdomsfärdigheter, eller både Hantera fällor och Låsdyrkning. ”Vapenfärdigheter (2) eller två valfria färdigheter” är också ett val: först vapenfärdigheter eller valfria färdigheter, sedan vilka två. (Ändrat 2026-11-02, Deffba.)
   - **Heraldik:** med bara grundreglerna gäller grundreglernas Heraldik. Med V&R påslagen väljer man efter färdigheten om den är **allmän** (som grundreglerna, men B-FV räknas fyra steg lägre) eller **specifik** för en grupp (t.ex. gatugäng, handelshus, alver, dvärgar, högländare; normal FV), *V&R* s. 15. Ordenskrigarens Heraldik (högländsk) och Slaghökens Heraldik (gatugäng) är specifika. (Ändrat 2026-11-02, Deffba.)
-  - **Strid i mörker:** grundegenskap **SMI/INT (SL avgör)** som i boken (s. 15); SL väljer i varje situation. Bara startvärdet (BC) räknas på den högre av SMI och INT. (Ändrat 2026-11-02, Deffba.)
+  - **Strid i mörker:** grundegenskap **SMI/INT** (s. 15). Värdet är snittet av SMI och INT, avrundat nedåt, se RB-020. (Ändrat 2026-11-02 och 2026-11-03, Deffba.)
   - **Alver** (Ceriansk ulv, Ädling) = dimalv, ljusalv och stadsalv, inte halvalv.
   - **Startutrustningen** står som text på yrket, i steg 13 och på rollformuläret, och kostar inget. Rader som motsvarar en vara i V&R:s eller grundreglernas varulistor läggs i packningen och räknas i bördan (se RB-017); resten står bara som text.
 - **Motivering:** Färre nya färdigheter och undantag; samma lösningar som för grundreglerna och RB-014.
@@ -179,7 +179,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Beslut:**
   - **Magikeryrke** = de yrken i Magi som har en magiskola bland yrkesfärdigheterna. De slipper magiförmågeslaget (RB-011) och får Känna magi, Kunskap om magi och Minimagi gratis. **Svartsyster** är inget magikeryrke (s. 8: andra kan inte använda magi); yrket är bara för kvinnliga människor. En svartsyster kan inte lära sig några magiskolor alls, varken som yrkesfärdighet, extra yrkesfärdighet eller sekundär färdighet; Känna magi har hon ändå (2026-11-03).
   - **Födelsemånen** (Divinator: född under den femte månen, Svartsyster: född i den mörka månens tecken) finns inte i grundreglerna. Den står som villkor på yrket och som bakgrund på rollformuläret, men kontrolleras inte.
-  - **Meditation (INT/PSY)** räknas på den högre av INT och PSY.
+  - **Meditation (INT/PSY)** räknas på snittet av INT och PSY, avrundat nedåt (RB-020; ändrat 2026-11-03).
   - **Minimagi** kräver att rollpersonen kan magi (magikeryrke eller lyckat magiförmågeslag). Magikeryrkena börjar med samma FV som sin bästa magiskola. Rollpersonen får kunna två minimagiska besvärjelser per FV (s. 19).
   - **Tidsmagi** är en egen magiskola som bara chronomager och divinatorer får lära sig. Grenarna Förutskickelse och Contortism följer s. 35: en chronomag får högst var tredje tidsbesvärjelse ur förutskickelse, en divinator högst varannan ur contortism.
   - **Underjordens magi** = animismbesvärjelser som bara cestoditer får lära sig.
@@ -197,3 +197,12 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Motivering:** Klingan väger lika mycket som ett tvåhandssvärd och har liknande skada och BV; STY-krav och längd tas därifrån.
 - **Påverkar:** Vapenlistan.
 - **Beslutat:** 2026-11-03 (tolkning vid importen).
+
+## RB-020 Färdigheter med två grundegenskaper
+
+- **Fråga:** Vilket värde gäller när en färdighet bygger på två grundegenskaper, till exempel Strid i mörker (SMI/INT)?
+- **Källor:** *Vapen & rustningar* s. 15 (Strid i mörker), *Magi i Chronopia* s. 18 (Meditation). Grundreglerna s. 34–35 (baschans och tak vid start).
+- **Beslut:** Färdigheten bygger på **snittet av de två grundegenskaperna, alltid avrundat nedåt**: (A + B) / 2. Exempel: SMI 15 och INT 8 ger 11. Snittet används överallt där grundegenskapen används: baschansen (BC), taket för FV vid start och för sekundära färdigheter, ändringar när en grundegenskap höjs efter skapandet och grundegenskapsslaget vid ensamträning. Spelledaren väljer inte längre mellan dem, och den högre används inte. Ersätter ”SL avgör / den högre” i RB-016 och, med Magi, RB-018 (Meditation).
+- **Motivering:** Båda grundegenskaperna räknas lika, och samma regel gäller alla sådana färdigheter.
+- **Påverkar:** Färdighetssteget, yrkesfärdigheterna, rollformuläret, utvecklingen efter skapandet.
+- **Beslutat:** 2026-11-03, Deffba.

@@ -425,12 +425,21 @@ export function vapengrupp(regler, vapennamn, sty) {
   return vapen.grupp;
 }
 
+// Värdet av en grundegenskap. En färdighet med två grundegenskaper ("SMI/INT", t.ex. Strid i mörker)
+// bygger på snittet av dem, alltid avrundat nedåt (RB-020).
+export function egenskapsvarde(varden, ge) {
+  const delar = String(ge ?? "").split("/");
+  if (delar.length === 2) {
+    const [a, b] = delar.map((d) => varden?.[d.trim()]);
+    return a == null || b == null ? undefined : Math.floor((a + b) / 2);
+  }
+  return varden?.[ge];
+}
+
 // Grundegenskap för en färdighetsnyckel som "vapen:Bredsvärd" eller "hantverk:Smide".
 export function grundegenskapFor(regler, nyckel, varden) {
   const f = fardighetAv(regler, nyckel);
   const val = nyckel.split(":")[1];
-  // Strid i mörker: SMI eller INT efter situationen (SL avgör); startvärdet räknas på den högre (V&R s. 15, RB-016)
-  if (f.hogstaAv) return f.hogstaAv.reduce((a, b) => ((varden[b] ?? 0) > (varden[a] ?? 0) ? b : a));
   if (f.grundegenskap !== "varierar") return f.grundegenskap;
   if (f.id === "vapen") {
     const g = vapengrupp(regler, val, varden.STY);
@@ -481,7 +490,7 @@ export function startvarde(regler, rp, nyckel, varden, stand, fvHittills) {
     const sankt = ras.lasaSkrivaModersmal.find((x) => typeof x === "object" && x.sprak === val);
     if (sankt) start = sankaBNiva(regler, start, sankt.bNivaLagre);
   } else if (st !== "sekundar") {
-    start = BC(regler, varden[grundegenskapFor(regler, nyckel, varden)]);
+    start = BC(regler, egenskapsvarde(varden, grundegenskapFor(regler, nyckel, varden)));
   }
 
   // Magiker: Känna magi och Kunskap om magi följer FV i skolan (s. 62, 64). Magis magiker har också
@@ -625,7 +634,7 @@ export function raknaRollperson(regler, indata) {
     const ep = epKostnad(regler, st, f, start, mal, tekniker, nyckel);
     epSpenderat += ep;
     fvHittills[nyckel] = Math.max(mal, start);
-    fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, ...(f.hogstaAv ? { grundegenskapText: f.grundegenskap } : {}), start, fv: Math.max(mal, start), ep,
+    fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, start, fv: Math.max(mal, start), ep,
       epPerFV: epPerFV(regler, st, f, tekniker, nyckel), kategoriB: f.kategoriB, ...(bNivaLagre(regler, nyckel) ? { bNivaLagre: bNivaLagre(regler, nyckel) } : {}), ...(tekniker ? { tekniker } : {}),
       ...(svardsskolaFor(regler, nyckel) ? { skola: svardsskolaFor(regler, nyckel) } : {}), ...(f.typ === "magiskola" ? { magiskola: true } : {}) });
   }
@@ -894,7 +903,7 @@ export function bordaFor(regler, saker, varden) {
 }
 
 function takFor(regler, rp, nyckel, f, varden, fvHittills) {
-  let tak = varden[grundegenskapFor(regler, nyckel, varden)] ?? 20;
+  let tak = egenskapsvarde(varden, grundegenskapFor(regler, nyckel, varden)) ?? 20;
   if (f.tak === "PSY") tak = Math.min(tak, varden.PSY);
   if (f.tak === "lasa-skriva") {
     const ls = Object.entries(fvHittills).filter(([k]) => k.startsWith("lasa-skriva:")).map(([, v]) => v);

@@ -74,7 +74,8 @@ export function grundvardesForslag() {
   const lagg = (id, v) => {
     const f = fardighetAv(S.R, id);
     if (!f) return;
-    if (GRUNDEGENSKAPER.includes(f.grundegenskap)) vikt[f.grundegenskap] += v;
+    const delar = String(f.grundegenskap).split("/").filter((g) => GRUNDEGENSKAPER.includes(g));
+    if (delar.length) for (const g of delar) vikt[g] += v / delar.length; // två grundegenskaper: snittet (RB-020)
     else { vikt.STY += v / 2; vikt.SMI += v / 2; } // vapen och hantverk varierar
   };
   for (const post of yrke.fardigheter) {

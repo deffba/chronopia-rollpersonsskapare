@@ -1,7 +1,7 @@
 // Rollformuläret i bokens layout (s. 11–12), för utskrift och för att fylla i under spel.
 // Värden som reglerna räknar fram (grundegenskaper, FV, KP) visas som text och ändras i stegen.
 // Det spelaren skriver under spel (erf, hjältepoäng, pengar, egen utrustning) sparas i rp.spel.
-import { GRUNDEGENSKAPER, slaUpp, fardighetAv, yrkesformagaText, bNivaText } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, egenskapsvarde, slaUpp, fardighetAv, yrkesformagaText, bNivaText } from "./regelmotor.js";
 
 // Rader per lista. Får inte allt plats fortsätter listan på sida 3.
 const RADER = { formagor: 6, primar: 25, yrke: 12, sprak: 11, sekundar: 33, vapen: 6, besvarjelser: 12, utrustning: 8 };
@@ -42,13 +42,12 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   // Sidan där färdighetens regler står, i parentes efter namnet
   const sidaFor = (nyckel) => fardighetAv(R, nyckel)?.sida;
   const sidhanvisning = (sida) => (sida ? el("small", { class: "rf-sida-ref" }, `(s. ${sida})`) : null);
-  const tak = (f) => (f.status === "sekundar" ? `max ${g[f.grundegenskap] ?? "–"}` : null);
+  const tak = (f) => (f.status === "sekundar" ? `max ${egenskapsvarde(g, f.grundegenskap) ?? "–"}` : null);
   const fardighetsrad = (f) => el("div", { class: "rf-rad" + (f.kategoriB ? " kat-b" : "") },
     el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock", title: "Bocka vid första lyckade slaget efter sömn (s. 74)" }),
       el("span", { class: "rf-namntext" }, f.status === "primar" && f.grundegenskap ? `${f.namn} (${f.grundegenskap})` : f.namn),
       f.kategoriB ? el("small", {}, bNivaText(R, f.fv, f.bNivaLagre)) : null,
       tak(f) ? el("small", {}, tak(f)) : null,
-      f.grundegenskapText ? el("small", {}, f.grundegenskapText) : null,
       f.sinne ? el("small", { title: "Syn och hörsel (Vapen & rustningar s. 3)" }, `${f.sinne > 0 ? "+" : "−"}${Math.abs(f.sinne)} sinne`) : null,
       sidhanvisning(sidaFor(f.nyckel))),
     el("span", { class: "rf-cell rf-erf" + (f.kategoriB ? " b" : "") }, erfFalt(f.nyckel, f.namn)),

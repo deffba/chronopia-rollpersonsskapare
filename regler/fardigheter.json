@@ -737,11 +737,7 @@
     {
       "id": "strid-i-morker",
       "namn": "Strid i mörker",
-      "grundegenskap": "SMI/INT (SL avgör)",
-      "hogstaAv": [
-        "SMI",
-        "INT"
-      ],
+      "grundegenskap": "SMI/INT",
       "typ": "sekundar",
       "kategoriB": false,
       "sida": 15,
@@ -749,7 +745,7 @@
         "bok": "vr",
         "sida": 15
       },
-      "beskrivning": "Att slåss i mörker och dåligt ljus. Avdraget för mörker minskar med differensvärdet i ett lyckat slag. Grundegenskapen är SMI eller INT efter situationen, och SL avgör vilken. Startvärdet räknas på den högre av dem."
+      "beskrivning": "Att slåss i mörker och dåligt ljus. Avdraget för mörker minskar med differensvärdet i ett lyckat slag. Grundegenskapen är snittet av SMI och INT, avrundat nedåt."
     },
     {
       "id": "taktik",
@@ -827,10 +823,6 @@
       "id": "meditation",
       "namn": "Meditation",
       "grundegenskap": "INT/PSY",
-      "hogstaAv": [
-        "INT",
-        "PSY"
-      ],
       "typ": "sekundar",
       "kategoriB": true,
       "sida": 18,
@@ -839,7 +831,7 @@
         "sida": 18
       },
       "beslut": "RB-018",
-      "beskrivning": "Att samla sina krafter genom meditation inför en besvärjelse. B-nivån avgör hur länge man kan meditera och hur stor bonus på CL det ger: B1 +1 per timme (högst 1 timme), B3 +2 per timme, B5 +3 per timme utan tidsgräns. Startvärdet räknas på den högre av INT och PSY."
+      "beskrivning": "Att samla sina krafter genom meditation inför en besvärjelse. B-nivån avgör hur länge man kan meditera och hur stor bonus på CL det ger: B1 +1 per timme (högst 1 timme), B3 +2 per timme, B5 +3 per timme utan tidsgräns. Grundegenskapen är snittet av INT och PSY, avrundat nedåt."
     },
     {
       "id": "minimagi",

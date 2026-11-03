@@ -1,5 +1,5 @@
 // Färdigheter, stridskonster och fördelning av EP.
-import { yrkeAv, fardighetAv, paborjad, teknikLista, bNivaText } from "../regelmotor.js";
+import { yrkeAv, egenskapsvarde, fardighetAv, paborjad, teknikLista, bNivaText } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { S, rakna, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -34,7 +34,7 @@ export function stegFardigheter(res) {
         type: "button", class: "lank", "aria-label": `Ta bort ${f.namn}`,
         onclick: () => { S.rp.sekundara = S.rp.sekundara.filter((k) => k !== f.nyckel); delete S.rp.fardigheter[f.nyckel]; uppdatera(); },
       }, "ta bort") : null),
-      el("td", {}, f.grundegenskapText ?? f.grundegenskap),
+      el("td", {}, f.grundegenskap),
       el("td", { class: "num" }, f.start),
       el("td", { class: "num" }, markera(tal(`fv-${f.nyckel}`, f.fv, (v) => { S.rp.fardigheter[f.nyckel] = v ?? 0; uppdatera(); }, { min: 0, max: 30 }), f.fv, f.start),
         el("span", { class: "bniva" }, f.kategoriB ? bNivaText(S.R, f.fv, f.bNivaLagre) : "")),
@@ -195,7 +195,7 @@ export function epFordelning(reserv = 0) {
   const vikt = {};
   for (const f of borjan.fardigheter) {
     const def = fardighetAv(S.R, f.nyckel);
-    const ge = borjan.grundegenskaper[f.grundegenskap] ?? 10;
+    const ge = egenskapsvarde(borjan.grundegenskaper, f.grundegenskap) ?? 10;
     if (def.typ === "sprak") vikt[f.nyckel] = 0.3;
     else if (f.status === "yrke") vikt[f.nyckel] = 4 + (def.typ === "magiskola" ? 2 : 0) + (def.id === "vapen" ? 1 : 0);
     else if (f.status === "sekundar") vikt[f.nyckel] = 3;
