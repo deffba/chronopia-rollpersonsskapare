@@ -2849,6 +2849,861 @@
         "lardom"
       ],
       "startvapen": true
+    },
+    {
+      "id": "hetsare",
+      "namn": "Hetsare",
+      "sida": 5,
+      "kalla": {
+        "bok": "alver",
+        "sida": 5
+      },
+      "yrkesformaga": "Förfinat balanssinne: tappar aldrig balansen om den inte knuffas eller skadas, och landar alltid på fötterna eller får tag i något.",
+      "fardigheter": [
+        "akrobatik",
+        "dra-vapen",
+        "hantera-fallor",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "orientering",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        },
+        "overlevnad"
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Lättare läderrustning",
+        "Fem snaror",
+        "Två rävsaxar",
+        "En långbåge",
+        "Ett valfritt handvapen",
+        "Färger för ansikts- och kroppsmålning"
+      ],
+      "stamning": "Skogen ser allt, och hetsaren ser det skogen ser.",
+      "beskrivning": "Ljusalviska jägare och spårare som driver villebråd, och ibland människor, genom skogarna kring staden.",
+      "villkor": {
+        "ras": [
+          "ljusalv"
+        ]
+      },
+      "startvapen": true,
+      "startvaror": [
+        {
+          "text": "Två rävsaxar",
+          "namn": "Rävsax",
+          "antal": 2
+        },
+        {
+          "text": "En långbåge",
+          "namn": "Långbåge"
+        },
+        {
+          "text": "Färger för ansikts- och kroppsmålning",
+          "namn": "Målarfärger"
+        }
+      ]
+    },
+    {
+      "id": "utstott",
+      "namn": "Utstött",
+      "sida": 6,
+      "kalla": {
+        "bok": "alver",
+        "sida": 6
+      },
+      "yrkesformaga": "Övervärdslig charm på det motsatta könet: den som charmas måste lyckas med ett INT-slag för att inte bli förälskad. Har 1T6 kontakter, alla av det motsatta könet. Slaget för socialt stånd gäller ståndet innan rollpersonen lämnade huset, och slaget för startkapital får bara +10 (i stället för rasens bonus, RB-024).",
+      "fardigheter": [
+        {
+          "valEn": [
+            "dans",
+            "malning"
+          ]
+        },
+        "dra-vapen",
+        "hasardspel",
+        "heraldik",
+        "muta",
+        "spela-instrument",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Kläder av yppersta snitt",
+        "Två handvapen av god kvalitet",
+        "Ett välfyllt förråd av soma och svart tobak"
+      ],
+      "stamning": "Huset stängde dörren. Staden öppnade tusen andra.",
+      "beskrivning": "En alv som har lämnat eller stötts ut ur sitt Stora hus och nu lever på sin charm i stadens salonger och spelhålor.",
+      "villkor": {
+        "ras": [
+          "aramasalv",
+          "belisariusalv",
+          "ceriasalv",
+          "degasalv",
+          "kothalv",
+          "lysanderalv",
+          "venturaalv"
+        ]
+      },
+      "startvapen": true,
+      "ersattRasbonus": {
+        "startkapital": 10
+      },
+      "beslut": "RB-024"
+    },
+    {
+      "id": "vit-apostel",
+      "namn": "Vit apostel",
+      "sida": 7,
+      "kalla": {
+        "bok": "alver",
+        "sida": 7
+      },
+      "yrkesformaga": "Kan försänka sig i en djup dvala utan näring så länge den vill och bestämmer i förväg när den ska vakna; bara en annan apostel kan väcka den. Har också krigarens yrkesförmåga.",
+      "fardigheter": [
+        "dans",
+        "dra-vapen",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om religion"
+          ]
+        },
+        {
+          "fardighet": "vapentekniker",
+          "antal": 1,
+          "maste": [
+            "Salvatori"
+          ]
+        },
+        "spela-instrument",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Lindor",
+        "Kåpa",
+        "Två valfria vapen",
+        "Ett instrument, vanligen en trumma"
+      ],
+      "stamning": "Trumman slår, och aposteln vaknar till strid.",
+      "beskrivning": "Alviska krigarmunkar i vitt som vakar i djup dvala tills de behövs och då strider med den väpnade stridskonsten Salvatori.",
+      "villkor": {
+        "ras": [
+          "dimalv",
+          "ljusalv",
+          "stadsalv",
+          "aramasalv",
+          "belisariusalv",
+          "ceriasalv",
+          "degasalv",
+          "kothalv",
+          "lysanderalv",
+          "venturaalv"
+        ]
+      },
+      "initiativ": 3,
+      "startvapen": true,
+      "startvaror": [
+        {
+          "text": "Ett instrument, vanligen en trumma",
+          "namn": "Trumma"
+        }
+      ]
+    },
+    {
+      "id": "dockmastare",
+      "namn": "Dockmästare",
+      "sida": 25,
+      "kalla": {
+        "bok": "alver",
+        "sida": 25
+      },
+      "yrkesformaga": "Styr upp till PSY/4 marionetter samtidigt, på PSY×3 meters avstånd som alv, PSY×5 som veteran och PSY×7 som upphöjd. Skådespeleri omfattar också konsten att föra marionetterna. Dockorna köps i steget Masker och dockor.",
+      "fardigheter": [
+        "buktala",
+        {
+          "fardighet": "hantverk",
+          "antal": 3
+        },
+        "knopar",
+        "malning",
+        "rakning",
+        "skadespeleri",
+        {
+          "fardighet": "vapen",
+          "antal": 1
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Dockor till ett värde av 15 BP (alv), 20 BP (veteran) eller 25 BP (upphöjd)",
+        "En stor väska",
+        "Verktyg för underhåll av dockorna"
+      ],
+      "stamning": "Varje tråd är en vilja, och dockmästaren håller dem alla.",
+      "beskrivning": "Belisariska konstnärer som ger liv åt magiska marionetter och låter dem spela, spionera och strida åt sig.",
+      "villkor": {
+        "ras": [
+          "belisariusalv"
+        ]
+      },
+      "dockor": [
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "id": "husar",
+      "namn": "Husar",
+      "sida": 27,
+      "kalla": {
+        "bok": "alver",
+        "sida": 27
+      },
+      "yrkesformaga": "Krigarens yrkesförmåga, +8 på FV i Rida, och kastas aldrig av en häst. Taktik är yrkesfärdighet utan extra kostnad (Vapen & rustningar).",
+      "fardigheter": [
+        "akrobatik",
+        "djurtraning",
+        "dra-vapen",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        {
+          "valEn": [
+            "stridskonster",
+            "vapentekniker"
+          ]
+        },
+        "taktik",
+        {
+          "fardighet": "vapen",
+          "antal": 4
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Lättare rustning med den belisariska rosen",
+        "Belisarisk eldgaffel",
+        "Ett valfritt handvapen av god kvalitet",
+        "Två lätta stridstränade hästar"
+      ],
+      "stamning": "Rosen blommar bäst i sadeln.",
+      "beskrivning": "Belisariusalvernas kvinnliga kavalleri, som rider ut med eldgaffel och ros på bröstet.",
+      "villkor": {
+        "ras": [
+          "belisariusalv"
+        ],
+        "kon": "Kvinna"
+      },
+      "initiativ": 3,
+      "startvapen": true,
+      "startbonus": [
+        {
+          "fardighet": "rida",
+          "bc": 8
+        }
+      ],
+      "startvaror": [
+        {
+          "text": "Belisarisk eldgaffel",
+          "namn": "Belisarisk eldgaffel"
+        }
+      ]
+    },
+    {
+      "id": "bestherre",
+      "namn": "Bestherre",
+      "sida": 34,
+      "kalla": {
+        "bok": "alver",
+        "sida": 34
+      },
+      "yrkesformaga": "Läser osvikligt djurs och bestars känsloläge och kan föra enklare samtal med dem. Anfalls aldrig av djur som inte har provocerats eller står under magiskt inflytande.",
+      "fardigheter": [
+        "djurhelning",
+        "djurtraning",
+        "hantera-fallor",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "knopar",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        },
+        "zoologi"
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Fångstredskap",
+        "Piskor",
+        "Koppel och selar",
+        "25 % chans till ett husdjur ur Vildmarkens bestar (s. 37–38, SL slår)"
+      ],
+      "stamning": "Ingen best är vild för den som förstår den.",
+      "beskrivning": "Lysanders djurfångare och djurtämjare, som hämtar bestar ur vildmarken till husets menagerier och arenor.",
+      "villkor": {
+        "ras": [
+          "lysanderalv"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Koppel och selar",
+          "namn": "Koppel"
+        }
+      ]
+    },
+    {
+      "id": "drakgardist",
+      "namn": "Drakgardist",
+      "sida": 35,
+      "kalla": {
+        "bok": "alver",
+        "sida": 35
+      },
+      "yrkesformaga": "Krigarens eller gladiatorns yrkesförmåga, fritt val (krigaren: +3 på alla initiativslag; gladiatorn: +5 på initiativet i dueller man mot man. börjar med 0 dödspoäng.). Får inga avdrag för att strida i luften, men måste slå för Rida flygande djur. Drakflykt är extra yrkesfärdighet (Vapen & rustningar).",
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "rida-flygande-djur",
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 4
+        },
+        {
+          "fardighet": "vapentekniker",
+          "antal": 1,
+          "maste": [
+            "Drakflykt"
+          ]
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Gyllene rustning med drakhjälm",
+        "Vapen av god kvalitet",
+        "En personlig sekuda",
+        "Allt återlämnas efter tjänstgöringen"
+      ],
+      "stamning": "Draken flyger dit gardet pekar.",
+      "beskrivning": "Huset Lysanders drakryttare, som patrullerar stadens himmel på sekudor. Gardet tar emot alla raser utom alver från andra hus.",
+      "villkor": {
+        "ejRas": [
+          "dimalv",
+          "ljusalv",
+          "stadsalv",
+          "aramasalv",
+          "belisariusalv",
+          "ceriasalv",
+          "degasalv",
+          "kothalv",
+          "venturaalv"
+        ]
+      },
+      "startvapen": true,
+      "beslut": "RB-024"
+    },
+    {
+      "id": "distributor",
+      "namn": "Distributor",
+      "sida": 43,
+      "kalla": {
+        "bok": "alver",
+        "sida": 43
+      },
+      "yrkesformaga": "Stort kontaktnät (1T6 kontakter), +5 på slaget för startkapital, och känner igen droger på lukten.",
+      "fardigheter": [
+        "administration",
+        "dra-vapen",
+        "hasardspel",
+        "drogkunskap",
+        "muta",
+        "rakning",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Väska med varuprover",
+        "Ett handvapen",
+        "1 livvakt (alv), 2 (veteran) eller 4 (upphöjd)"
+      ],
+      "stamning": "Allt har ett pris, och distributören vet vem som betalar det.",
+      "beskrivning": "Degas langare och mellanhänder, som för husets droger ut på stadens gator och in i salongerna.",
+      "villkor": {
+        "ras": [
+          "degasalv"
+        ]
+      },
+      "startvapen": true,
+      "slagbonus": {
+        "startkapital": 5
+      }
+    },
+    {
+      "id": "pierrot",
+      "namn": "Pierrot",
+      "sida": 44,
+      "kalla": {
+        "bok": "alver",
+        "sida": 44
+      },
+      "yrkesformaga": "Lönnmördarens yrkesförmåga (lönnmord: lyckat Smyga mot misslyckat Upptäcka fara ger dubbel (perfekt: fyrdubbel) vapenskada utan SB.). Har ett täckyrke: två valfria yrkesfärdigheter från ett annat yrke med FV 5 och det yrkets startutrustning. Får magiska masker för 5 BP (alv), 10 (veteran) eller 15 (upphöjd), som köps i steget Masker och dockor.",
+      "fardigheter": [
+        "akrobatik",
+        "dra-vapen",
+        "gyckelkonster",
+        "hantera-fallor",
+        "lasdyrkning",
+        "skadespeleri",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Harlekindräkt",
+        "Magiska masker för 5/10/15 BP",
+        "Inbrottsverktyg av yppersta kvalitet",
+        "Två valfria lättare vapen"
+      ],
+      "stamning": "Bakom masken ler den som kommer för att döda.",
+      "beskrivning": "Degas lönnmördare i harlekindräkt, som lever under en täckidentitet tills masken åker på.",
+      "villkor": {
+        "ras": [
+          "degasalv"
+        ]
+      },
+      "startvapen": true,
+      "masker": [
+        5,
+        10,
+        15
+      ],
+      "tackyrke": {
+        "antal": 2,
+        "fv": 5
+      },
+      "beslut": "RB-024"
+    },
+    {
+      "id": "huggare",
+      "namn": "Huggare",
+      "sida": 49,
+      "kalla": {
+        "bok": "alver",
+        "sida": 49
+      },
+      "yrkesformaga": "Håller andan i 5 minuter (sedan ett FYS-slag per minut, med −1 per minut), simmar dubbelt så fort och kan anfalla med ett hopp ur vattnet (Simma enligt reglerna för Hoppa). FV 10 gratis i Simma, som primär färdighet.",
+      "fardigheter": [
+        "dra-vapen",
+        "knopar",
+        "navigera",
+        "simma",
+        "sjokunnighet",
+        {
+          "fardighet": "undervattensnavigering",
+          "namn": "Undervattensorientering"
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ett par lätta handvapen",
+        "Lättare rustning",
+        "Sekudafett"
+      ],
+      "stamning": "Under ytan är huggaren hemma, och fienden blind.",
+      "beskrivning": "Venturas sjökrigare, som simmar under fiendens skepp och anfaller ur vattnet.",
+      "villkor": {
+        "ras": [
+          "venturaalv"
+        ]
+      },
+      "startvapen": true,
+      "primara": [
+        "simma"
+      ],
+      "startFV": [
+        {
+          "fardighet": "simma",
+          "fv": 10
+        }
+      ],
+      "beslut": "RB-024",
+      "startvaror": [
+        {
+          "text": "Sekudafett",
+          "namn": "Sekudafett (impregnering)"
+        }
+      ]
+    },
+    {
+      "id": "stormfagel",
+      "namn": "Stormfågel",
+      "sida": 50,
+      "kalla": {
+        "bok": "alver",
+        "sida": 50
+      },
+      "yrkesformaga": "+5 på alla motståndsslag mot elementen och +5 på initiativet i luftstrid. Flyga luftskepp gäller bara stålfåglar och Sjökunnighet luftrummet. Mekanik är Teknologi ur Dvärgar i Chronopia; utan den boken blir det en vapenfärdighet till (RB-014).",
+      "fardigheter": [
+        {
+          "valEn": [
+            "dans",
+            "malning",
+            "spela-instrument"
+          ]
+        },
+        "dra-vapen",
+        "flyga-luftskepp",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        {
+          "fardighet": "teknologi",
+          "namn": "Mekanik (Teknologi)",
+          "kraverBok": "dvargar",
+          "annars": {
+            "fardighet": "vapen",
+            "antal": 1,
+            "namn": "En extra vapenfärdighet (i stället för Mekanik)"
+          }
+        },
+        "orientering",
+        {
+          "fardighet": "sjokunnighet",
+          "namn": "Sjökunnighet (luftrummet)"
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Skyddsglasögon",
+        "Kraftig läderrustning",
+        "En stålfågel (en person och 100 kg last, 100 km/h, två automatarmborst, kort räckvidd)"
+      ],
+      "stamning": "Över molnen är stormen en vän.",
+      "beskrivning": "Venturas flygare, som styr husets små stålfåglar mellan stadens torn och ut över havet.",
+      "villkor": {
+        "ras": [
+          "venturaalv"
+        ]
+      },
+      "beslut": "RB-014"
+    },
+    {
+      "id": "flamboyant",
+      "namn": "Flamboyant",
+      "sida": 56,
+      "kalla": {
+        "bok": "alver",
+        "sida": 56
+      },
+      "yrkesformaga": "Lyckas med vansinniga stunts, +7 på initiativet i dueller man mot man och +4 i andra lägen. Komponerar en egen variant av Påfågelsdansen med grundkostnad högst 8; varje poäng över kostar 2 BP.",
+      "fardigheter": [
+        "akrobatik",
+        "dans",
+        "dra-vapen",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        {
+          "fardighet": "vapentekniker",
+          "antal": 1,
+          "maste": [
+            "Påfågelsdansen"
+          ]
+        },
+        "spela-instrument",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "En garderob med påkostade kläder",
+        "Ett par värjor eller andra lätta fäktvapen",
+        "En mänsklig sekundant"
+      ],
+      "stamning": "En duell är en dans, och påfågeln dansar sist.",
+      "beskrivning": "Aramas duellanter och showmän, som fäktas med två klingor och gör varje strid till en föreställning.",
+      "villkor": {
+        "ras": [
+          "aramasalv"
+        ]
+      },
+      "startvapen": true,
+      "stilTak": {
+        "fardighet": "vapentekniker:Påfågelsdansen",
+        "grundkostnad": 8,
+        "bpPerPoang": 2
+      },
+      "beslut": "RB-024"
+    },
+    {
+      "id": "bataljsmed",
+      "namn": "Bataljsmed",
+      "sida": 61,
+      "kalla": {
+        "bok": "alver",
+        "sida": 61
+      },
+      "yrkesformaga": "FV 10 gratis i Smide, som primär färdighet. Kan efter ett äventyr förbättra vapen och rustningar en vecka i husets smedjor: ett vapen får BV +1 eller väger 10 % mindre, en rustning väger 10 % mindre, och egg- och stickvapen kan få +1 i skada (högst +50 %). Reparerar vapen och rustningar.",
+      "fardigheter": [
+        "dra-vapen",
+        {
+          "fardighet": "hantverk",
+          "antal": 2,
+          "maste": [
+            "Smide"
+          ]
+        },
+        "heraldik",
+        {
+          "fardighet": "vapentekniker",
+          "antal": 1,
+          "maste": [
+            "Ceriansk svärdsdans"
+          ]
+        },
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        },
+        "tva-vapen"
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Två välsmidda svärd (+4 BV, +1 skada)",
+        "Välsmidd rustning (25 % lättare)",
+        "Smideshammare"
+      ],
+      "stamning": "Klingan är bara så god som smeden.",
+      "beskrivning": "Cerias krigarsmeder, som smider husets klingor och slåss med dem i Ulvskolans stil.",
+      "villkor": {
+        "ras": [
+          "ceriasalv"
+        ]
+      },
+      "startvapen": true,
+      "primara": [
+        "hantverk:Smide"
+      ],
+      "startFV": [
+        {
+          "fardighet": "hantverk:Smide",
+          "fv": 10
+        }
+      ]
+    },
+    {
+      "id": "eldsfurste",
+      "namn": "Eldsfurste",
+      "sida": 63,
+      "kalla": {
+        "bok": "alver",
+        "sida": 63
+      },
+      "yrkesformaga": "Behöver inget magiförmågeslag för att lära sig magiskolor. Får Känna magi, Kunskap om magi och Minimagi med samma FV som sin bästa magiskola. Ensam om husets stridsbesvärjelser (s. 59–60).",
+      "fardigheter": [
+        "astrologi",
+        "dra-vapen",
+        "elementarmagi",
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        "magisk-kanalisering",
+        "magistudier",
+        "mentalism",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "startutrustning": [
+        "Färgstarka kläder",
+        "Ett gott handvapen (+1 skada, +2 BV)",
+        "Lättare rustning",
+        "Formelsamling"
+      ],
+      "stamning": "Elden lyder den som inte fruktar den.",
+      "beskrivning": "Cerias krigsmagiker, som strider i första ledet med svärd i ena handen och eld i den andra.",
+      "villkor": {
+        "ras": [
+          "ceriasalv"
+        ]
+      },
+      "startvapen": true,
+      "beslut": "RB-011",
+      "magiker": true
+    },
+    {
+      "id": "hamnare",
+      "namn": "Hämnare",
+      "sida": 68,
+      "kalla": {
+        "bok": "alver",
+        "sida": 68
+      },
+      "yrkesformaga": "Lönnmördarens yrkesförmåga (lönnmord: lyckat Smyga mot misslyckat Upptäcka fara ger dubbel (perfekt: fyrdubbel) vapenskada utan SB.). Lugnar små insekter, spindlar och reptiler (egen PSY mot deras på motståndstabellen, även magiskt påverkade). +7 på motståndsslag mot gifter. Djurträning gäller bara små obehagliga lönnmördardjur.",
+      "fardigheter": [
+        "akrobatik",
+        "djurtraning",
+        "dra-vapen",
+        "hantera-fallor",
+        "lasdyrkning",
+        {
+          "valEn": [
+            "stridskonster",
+            "vapentekniker"
+          ]
+        },
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Svarta kläder med vita spindlar",
+        "Dyrkar",
+        "Vapen",
+        "Några giftiga ormar, spindlar eller skorpioner i burar"
+      ],
+      "stamning": "Spindeln väntar. Spindeln glömmer aldrig.",
+      "beskrivning": "Koths lönnmördare, som kommer i natten med gift och små kryp i burar.",
+      "villkor": {
+        "ras": [
+          "kothalv"
+        ]
+      },
+      "startvapen": true,
+      "startvaror": [
+        {
+          "text": "Dyrkar",
+          "namn": "Dyrkar (för små lås, 10 st)"
+        }
+      ]
+    },
+    {
+      "id": "spindelmastare",
+      "namn": "Spindelmästare",
+      "sida": 69,
+      "kalla": {
+        "bok": "alver",
+        "sida": 69
+      },
+      "yrkesformaga": "Behöver inget magiförmågeslag för att lära sig magi och återfår PSY dubbelt så fort. Får Känna magi, Kunskap om magi och Minimagi med samma FV som sin bästa magiskola. Får ett gratis slag med +10 på tabellen för särskilda förmågor i Magi i Chronopia.",
+      "fardigheter": [
+        {
+          "valEn": [
+            "elementarmagi",
+            "mentalism"
+          ]
+        },
+        "giftkunskap",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        "magisk-kanalisering",
+        "magistudier",
+        "ritualmagi",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [
+        "kanna-magi",
+        "kunskap-om-magi",
+        "minimagi"
+      ],
+      "startutrustning": [
+        "Lång svart kåpa med en spindel",
+        "Vit dok",
+        "Magikerstav med en magisk behållare som lagrar upp till 8 PSY",
+        "Tillgång till ett laboratorium"
+      ],
+      "stamning": "Nätet är spunnet långt innan flugan landar.",
+      "beskrivning": "Koths magiker och präster i Spindeltornet, som behärskar ritualmagin och binder slavar med galenskapens märke.",
+      "villkor": {
+        "ras": [
+          "kothalv"
+        ]
+      },
+      "extraFormaga": {
+        "tabell": "magi",
+        "bonus": 10
+      },
+      "beslut": "RB-024",
+      "magiker": true
     }
   ],
   "extraYrkesfardigheter": {

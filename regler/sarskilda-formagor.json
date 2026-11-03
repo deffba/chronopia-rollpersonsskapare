@@ -2038,6 +2038,722 @@
           "sida": 16
         }
       ]
+    },
+    {
+      "id": "alver",
+      "namn": "Alver i Chronopia",
+      "tarning": "1T20",
+      "sida": "7–10",
+      "maxBP": 20,
+      "kalla": {
+        "bok": "alver",
+        "sida": 7
+      },
+      "kraver": {
+        "bok": "alver",
+        "raser": [
+          "dimalv",
+          "ljusalv",
+          "stadsalv",
+          "aramasalv",
+          "belisariusalv",
+          "ceriasalv",
+          "degasalv",
+          "kothalv",
+          "lysanderalv",
+          "venturaalv",
+          "drakalv"
+        ]
+      },
+      "text": "Medlemmar av några av de Stora husen har egna förmågor, som ersätter rader i tabellen (Alver i Chronopia s. 29, 31, 40, 48, 54, 62, 67).",
+      "rader": [
+        {
+          "slag": [
+            1,
+            2
+          ],
+          "namn": "Empati",
+          "effekt": "Känner andras känslor, men läser inte tankar.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            3,
+            4
+          ],
+          "namn": "Hängiven student",
+          "effekt": "FV 10 gratis i en valfri lärdomsfärdighet, som också räknas som primär.",
+          "sida": 8,
+          "regel": [
+            {
+              "typ": "fv",
+              "fv": 10,
+              "valj": 1,
+              "bland": "lardom",
+              "minst": true,
+              "status": "primar"
+            }
+          ],
+          "beslut": "RB-024"
+        },
+        {
+          "slag": [
+            5,
+            6
+          ],
+          "namn": "Absolut gehör",
+          "effekt": "+5 på FV i Sjunga och i ett valfritt instrument (Spela instrument). Plågas av ostämda ljud; långvarigt kan ett PSY-slag krävas mot panik.",
+          "sida": 8,
+          "regel": [
+            {
+              "typ": "fv",
+              "fv": 5,
+              "fasta": [
+                "sjunga"
+              ]
+            },
+            {
+              "typ": "fv",
+              "fv": 5,
+              "valj": 1,
+              "bland": "spela-instrument"
+            }
+          ]
+        },
+        {
+          "slag": [
+            7,
+            8
+          ],
+          "namn": "Charmör",
+          "effekt": "KAR ökar permanent med 2. Att förföra någon är KAR mot offrets INT eller PSY (SL avgör) på motståndstabellen.",
+          "sida": 8,
+          "regel": [
+            {
+              "typ": "egenskap",
+              "mod": {
+                "KAR": 2
+              }
+            }
+          ]
+        },
+        {
+          "slag": [
+            9,
+            10
+          ],
+          "namn": "Skuldsatt",
+          "effekt": "Står i skuld, i pengar eller tjänster. SL avgör till vem.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            11,
+            12
+          ],
+          "namn": "Ädling",
+          "effekt": "+7 på slagen för socialt stånd och startkapital.",
+          "sida": 8,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "socialtStand": 7,
+              "startkapital": 7
+            }
+          ]
+        },
+        {
+          "slag": [
+            13,
+            14
+          ],
+          "namn": "Arvinge",
+          "effekt": "Föräldrarna har lämnat ett stort arv. Storleken beror på det sociala ståndet; boken anger ingen summa, så SL avgör (RB-024).",
+          "sida": 8,
+          "beslut": "RB-024"
+        },
+        {
+          "slag": [
+            15,
+            16
+          ],
+          "namn": "Kristallhuvud",
+          "effekt": "Missbrukar soma. FYS minskar med 1 varje halvår tills missbruket upphör.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            17,
+            18
+          ],
+          "namn": "Respektingivande skepnad",
+          "effekt": "Fientliga personer får −1 CL på allt de gör i rollpersonens närhet, och bundsförvanter inom tio meter +1 CL.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            19,
+            20
+          ],
+          "namn": "Beryktad",
+          "effekt": "Känd på stadens gator, med ungefär 20 % chans att bli igenkänd.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            21,
+            21
+          ],
+          "namn": "Dödsdrift",
+          "effekt": "Dras till det farliga och dödliga.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            22,
+            22
+          ],
+          "namn": "Skumraskkontakter",
+          "effekt": "Kontakter i undre världen som kan ordna olagliga substanser, nekrologiska vapen och gifter.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            23,
+            23
+          ],
+          "namn": "Hovman",
+          "effekt": "Hör till ett alviskt furstehov, med kontakter där.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            24,
+            24
+          ],
+          "namn": "Ärkefiende",
+          "effekt": "Har en ärkefiende. SL avgör vem.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            25,
+            25
+          ],
+          "namn": "Efterlyst",
+          "effekt": "Det finns ett pris på rollpersonens huvud.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            26,
+            26
+          ],
+          "namn": "Dvärgkontakter",
+          "effekt": "Har goda kontakter i Stubbstan.",
+          "sida": 8
+        },
+        {
+          "slag": [
+            27,
+            27
+          ],
+          "namn": "Motståndskraftig",
+          "effekt": "+10 på alla motståndsslag mot gifter, och helt immun mot droger som soma och svart tobak.",
+          "sida": 9
+        },
+        {
+          "slag": [
+            28,
+            28
+          ],
+          "namn": "Nekrologi",
+          "effekt": "Äger ett nekrologiskt föremål eller vapen. SL avgör vilket.",
+          "sida": 9
+        },
+        {
+          "slag": [
+            29,
+            29
+          ],
+          "namn": "Kattfotad",
+          "effekt": "Övernaturligt balanssinne: faller aldrig och landar alltid på fötterna.",
+          "sida": 9
+        },
+        {
+          "slag": [
+            30,
+            30
+          ],
+          "namn": "Bastardmagiker",
+          "effekt": "FV 5 gratis i en valfri magiskola, som räknas som extra yrkesfärdighet. Rollpersonen kan lära sig besvärjelser från början, utan magiförmågeslag (RB-024).",
+          "sida": 9,
+          "regel": [
+            {
+              "typ": "fv",
+              "fv": 5,
+              "valj": 1,
+              "bland": "magiskola",
+              "minst": true,
+              "status": "yrke",
+              "friSkola": true
+            }
+          ],
+          "beslut": "RB-024"
+        },
+        {
+          "slag": [
+            31,
+            31
+          ],
+          "namn": "Mäktiga vänner",
+          "effekt": "Har vänner i samhällets övre skikt som kan ge skydd, gömställen och utrustning.",
+          "sida": 9
+        },
+        {
+          "slag": [
+            32,
+            32
+          ],
+          "namn": "Smittbärare",
+          "effekt": "Alla i närheten måste lyckas med ett FYS-slag varje dag eller insjukna. En stadsalv med förmågan blir själv immun mot alla sjukdomar.",
+          "sida": 9
+        },
+        {
+          "slag": [
+            33,
+            33
+          ],
+          "namn": "Snabbslående",
+          "effekt": "Vinner automatiskt initiativet varje stridsrunda.",
+          "sida": 9
+        },
+        {
+          "slag": [
+            34,
+            34
+          ],
+          "namn": "Stålblick",
+          "effekt": "Ser alltid om någon ljuger: motståndarens CL i Skådespeleri och Bluffa sänks med rollpersonens PSY, och den som vill ljuga måste klara ett PSY-slag. Mot samma förmåga gäller PSY mot PSY.",
+          "sida": 9
+        },
+        {
+          "slag": [
+            35,
+            35
+          ],
+          "namn": "Vapenbärare",
+          "effekt": "Äger ett mäktigt magiskt föremål. SL avgör vilket.",
+          "sida": 9
+        },
+        {
+          "slag": [
+            36,
+            36
+          ],
+          "namn": "Furstens gunstling",
+          "effekt": "Husets furstes favorit.",
+          "sida": 10
+        },
+        {
+          "slag": [
+            37,
+            37
+          ],
+          "namn": "Baneman",
+          "effekt": "+10 CL i strid mot ett visst folkslag eller en viss sorts varelse, som spelaren väljer.",
+          "sida": 10
+        },
+        {
+          "slag": [
+            38,
+            38
+          ],
+          "namn": "Hängiven",
+          "effekt": "Har slutit en pakt med de mörka krafterna.",
+          "sida": 10
+        },
+        {
+          "slag": [
+            39,
+            39
+          ],
+          "namn": "Snabb uppfattningsförmåga",
+          "effekt": "+5 CL på allt i alla stridssituationer.",
+          "sida": 10
+        },
+        {
+          "slag": [
+            40,
+            null
+          ],
+          "namn": "Utvald",
+          "effekt": "Gudarnas redskap och en hjälte.",
+          "sida": 10
+        }
+      ],
+      "husRader": {
+        "belisarius": [
+          {
+            "slag": [
+              7,
+              8
+            ],
+            "namn": "Skådespelare",
+            "effekt": "+5 FV i Skådespeleri, som räknas som extra yrkesfärdighet.",
+            "sida": 29,
+            "regel": [
+              {
+                "typ": "fv",
+                "fv": 5,
+                "fasta": [
+                  "skadespeleri"
+                ],
+                "status": "yrke"
+              }
+            ]
+          },
+          {
+            "slag": [
+              19,
+              20
+            ],
+            "namn": "Kändis",
+            "effekt": "+5 FV i en valfri konstnärlig färdighet (Dans, Hantverk, Målning, Sjunga, Spela instrument eller Skådespeleri), som räknas som yrkesfärdighet.",
+            "sida": 29,
+            "regel": [
+              {
+                "typ": "fv",
+                "fv": 5,
+                "valj": 1,
+                "bland": [
+                  "dans",
+                  "hantverk",
+                  "malning",
+                  "sjunga",
+                  "spela-instrument",
+                  "skadespeleri"
+                ],
+                "status": "yrke"
+              }
+            ]
+          }
+        ],
+        "lysander": [
+          {
+            "slag": [
+              17,
+              18
+            ],
+            "namn": "Vilddjurens vän",
+            "effekt": "Läser djurs tankar, och de förstår rollpersonen. Anfalls aldrig av djur som inte har provocerats eller står under magiskt inflytande.",
+            "sida": 31
+          },
+          {
+            "slag": [
+              25,
+              25
+            ],
+            "namn": "Bestarnas herre",
+            "effekt": "Ett vilt djur är rollpersonens trogna följeslagare. Välj ett ur Vildmarkens bestar (s. 37–38).",
+            "sida": 31,
+            "regel": [
+              {
+                "typ": "best"
+              }
+            ]
+          },
+          {
+            "slag": [
+              30,
+              30
+            ],
+            "namn": "Besatt",
+            "effekt": "Spelberoende.",
+            "sida": 31
+          },
+          {
+            "slag": [
+              34,
+              34
+            ],
+            "namn": "Drakblod",
+            "effekt": "Rollpersonen blir drakalv utan extra kostnad i BP och slår på tabellen över defekter (s. 32–33, RB-012).",
+            "sida": 31,
+            "regel": [
+              {
+                "typ": "rasbyte",
+                "ras": "drakalv"
+              },
+              {
+                "typ": "defekt",
+                "ras": "drakalv"
+              }
+            ],
+            "beslut": "RB-012"
+          }
+        ],
+        "degas": [
+          {
+            "slag": [
+              3,
+              4
+            ],
+            "namn": "Tvivelaktig bakgrund",
+            "effekt": "−3 CL på allt i situationer med andra alver från huset.",
+            "sida": 40
+          },
+          {
+            "slag": [
+              26,
+              26
+            ],
+            "namn": "Hyrsvärdskontakter",
+            "effekt": "Känner 1T4 kompanikaptener och 1T10 sergeanter väl, och dubbelt så många ytligt.",
+            "sida": 40
+          },
+          {
+            "slag": [
+              30,
+              30
+            ],
+            "namn": "Vedervärdigt utseende",
+            "effekt": "KAR sänks permanent till 3. Det kan döljas med smink.",
+            "sida": 40,
+            "regel": [
+              {
+                "typ": "egenskapSatt",
+                "varden": {
+                  "KAR": 3
+                }
+              }
+            ]
+          },
+          {
+            "slag": [
+              34,
+              34
+            ],
+            "namn": "Sektmedlem",
+            "effekt": "Medlem i en underjordisk sekt.",
+            "sida": 40
+          }
+        ],
+        "ventura": [
+          {
+            "slag": [
+              5,
+              6
+            ],
+            "namn": "Sjövana",
+            "effekt": "Blir aldrig sjösjuk.",
+            "sida": 48
+          },
+          {
+            "slag": [
+              9,
+              10
+            ],
+            "namn": "Uthållig simmare",
+            "effekt": "Simmar i timmar utan att tröttna.",
+            "sida": 48
+          },
+          {
+            "slag": [
+              17,
+              18
+            ],
+            "namn": "Rik",
+            "effekt": "+10 på slaget för startkapital.",
+            "sida": 48,
+            "regel": [
+              {
+                "typ": "slagbonus",
+                "startkapital": 10
+              }
+            ]
+          },
+          {
+            "slag": [
+              27,
+              27
+            ],
+            "namn": "Härdig mot elementen",
+            "effekt": "+10 på alla motståndsslag mot elementen.",
+            "sida": 48
+          }
+        ],
+        "aramas": [
+          {
+            "slag": [
+              21,
+              21
+            ],
+            "namn": "Hjältetur",
+            "effekt": "Har en obeskrivlig tur. SL avgör hur den visar sig.",
+            "sida": 54
+          },
+          {
+            "slag": [
+              26,
+              26
+            ],
+            "namn": "Oäkting",
+            "effekt": "Ett oäkta barn söker upp rollpersonen.",
+            "sida": 54
+          },
+          {
+            "slag": [
+              32,
+              32
+            ],
+            "namn": "Dubbelagent",
+            "effekt": "Spionerar åt huset Degas.",
+            "sida": 54
+          }
+        ],
+        "cerias": [
+          {
+            "slag": [
+              23,
+              23
+            ],
+            "namn": "Vapenmästare",
+            "effekt": "Dubbla baschanser i alla vapenfärdigheter.",
+            "sida": 62,
+            "regel": [
+              {
+                "typ": "dubbelBC",
+                "fardighet": "vapen"
+              }
+            ]
+          },
+          {
+            "slag": [
+              28,
+              28
+            ],
+            "namn": "Mästersmed",
+            "effekt": "+10 FV i Smide.",
+            "sida": 62,
+            "regel": [
+              {
+                "typ": "fv",
+                "fv": 10,
+                "fasta": [
+                  "hantverk:Smide"
+                ]
+              }
+            ]
+          },
+          {
+            "slag": [
+              30,
+              30
+            ],
+            "namn": "Kvick",
+            "effekt": "Motståndarna får −5 CL när de parerar rollpersonens attacker, och den får en extra attack i slutet av varje stridsrunda.",
+            "sida": 62
+          },
+          {
+            "slag": [
+              38,
+              38
+            ],
+            "namn": "Dimalv",
+            "effekt": "STY +1, SMI +1, INT +2 och PSY +2. Får en valfri magiskola som extra yrkesfärdighet, utan BP och utan magiförmågeslag (RB-024).",
+            "sida": 62,
+            "regel": [
+              {
+                "typ": "egenskap",
+                "mod": {
+                  "STY": 1,
+                  "SMI": 1,
+                  "INT": 2,
+                  "PSY": 2
+                }
+              },
+              {
+                "typ": "fv",
+                "fv": 0,
+                "valj": 1,
+                "bland": "magiskola",
+                "status": "yrke",
+                "friSkola": true
+              }
+            ],
+            "beslut": "RB-024"
+          }
+        ],
+        "koth": [
+          {
+            "slag": [
+              13,
+              14
+            ],
+            "namn": "Giftmästare",
+            "effekt": "FV 10 gratis i Giftkunskap, som räknas som primär färdighet.",
+            "sida": 67,
+            "regel": [
+              {
+                "typ": "fv",
+                "fv": 10,
+                "fasta": [
+                  "giftkunskap"
+                ],
+                "minst": true,
+                "status": "primar"
+              }
+            ]
+          },
+          {
+            "slag": [
+              23,
+              23
+            ],
+            "namn": "Nattalv",
+            "effekt": "Solljus skadar 1T6 per timme utan tjocka kläder. Ser i allt mörker, även magiskt.",
+            "sida": 67
+          },
+          {
+            "slag": [
+              26,
+              26
+            ],
+            "namn": "Slavherre",
+            "effekt": "Befaller ett hundratal slavar.",
+            "sida": 67
+          },
+          {
+            "slag": [
+              29,
+              29
+            ],
+            "namn": "Blodtörst",
+            "effekt": "Kan bara livnära sig på färskt blod.",
+            "sida": 67
+          },
+          {
+            "slag": [
+              35,
+              35
+            ],
+            "namn": "Spindelalv",
+            "effekt": "Giftkörtlar (gift med STY lika med FYS, FYS doser per dygn). STY +3, FYS +2 och STO +2 utan extra kostnad.",
+            "sida": 67,
+            "regel": [
+              {
+                "typ": "egenskap",
+                "mod": {
+                  "STY": 3,
+                  "FYS": 2,
+                  "STO": 2
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }

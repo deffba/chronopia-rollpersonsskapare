@@ -342,7 +342,7 @@
       "id": "alver",
       "namn": "Alver i Chronopia",
       "grupp": "Rasböcker",
-      "status": "kommerSnart",
+      "status": "inlagd",
       "kraver": [
         "vr",
         "magi"
@@ -355,6 +355,107 @@
         {
           "bok": "morkrets-vaktare",
           "varfor": "krävs för Spindelmästarens mörkermagi"
+        }
+      ],
+      "nivaer": {
+        "sida": 3,
+        "lista": [
+          {
+            "namn": "Alv",
+            "bp": 125,
+            "formagor": 1,
+            "beskrivning": "En ung alv från ett av de Stora husen, som ännu inte har gjort sig ett namn utanför husets murar."
+          },
+          {
+            "namn": "Veteran",
+            "bp": 150,
+            "formagor": 2,
+            "beskrivning": "En erfaren alv som har tjänat sitt hus väl och är känd i stadens salonger och gränder."
+          },
+          {
+            "namn": "Upphöjd",
+            "bp": 175,
+            "formagor": 3,
+            "beskrivning": "En av husets främsta, vars namn viskas med respekt eller fruktan i hela Chronopia."
+          }
+        ]
+      },
+      "valfriaRegler": [
+        {
+          "id": "syn-och-horsel",
+          "namn": "Syn och hörsel",
+          "sida": "4–5",
+          "beskrivning": "Syn och hörsel blir egna värden. Lägg BP på vart och ett i steg 6 och slå 1T6; summan ger en modifikation på vissa färdigheter. Alvernas tabell är ett steg bättre än de andra böckernas och gäller alver (RB-024).",
+          "tarning": "1T6",
+          "tabell": [
+            [
+              1,
+              "Dålig",
+              -1
+            ],
+            [
+              2,
+              "Nedsatt",
+              0
+            ],
+            [
+              4,
+              "Normal",
+              1
+            ],
+            [
+              6,
+              "God",
+              2
+            ],
+            [
+              9,
+              "Mycket god",
+              3
+            ],
+            [
+              null,
+              "Utmärkt",
+              4
+            ]
+          ],
+          "sinnen": [
+            {
+              "id": "syn",
+              "namn": "Syn",
+              "galler": "CL",
+              "fardigheter": [
+                "finna-dolda-ting",
+                "upptacka-fara"
+              ],
+              "avstandsvapen": true,
+              "text": "CL i avståndsvapen, Finna dolda ting och Upptäcka fara"
+            },
+            {
+              "id": "horsel",
+              "namn": "Hörsel",
+              "galler": "FV",
+              "fardigheter": [
+                "lyssna",
+                "upptacka-fara"
+              ],
+              "text": "FV i Lyssna och Upptäcka fara"
+            }
+          ],
+          "not": "Modifikationerna läggs ihop: god syn och god hörsel ger +4 i Upptäcka fara. Dålig syn kan rättas med ögonglas.",
+          "raser": [
+            "dimalv",
+            "ljusalv",
+            "stadsalv",
+            "aramasalv",
+            "belisariusalv",
+            "ceriasalv",
+            "degasalv",
+            "kothalv",
+            "lysanderalv",
+            "venturaalv",
+            "drakalv"
+          ]
         }
       ]
     },
