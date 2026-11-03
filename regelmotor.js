@@ -56,8 +56,8 @@ export const kallText = (regler, post, grundSida) => (bokFor(post) === "grund" ?
 // Det som går att välja med rollpersonens böcker
 export const valbaraRaser = (regler, rp) => regler.raser.filter((r) => iBocker(r, rp));
 export const valbaraYrken = (regler, rp) => regler.yrken.lista.filter((y) => iBocker(y, rp));
-export const valbaraFardigheter = (regler, rp) => regler.fardigheter.lista.filter((f) => iBocker(f, rp));
-export const magiskolor = (regler, rp) => regler.fardigheter.lista.filter((f) => f.typ === "magiskola" && iBocker(f, rp));
+export const valbaraFardigheter = (regler, rp) => regler.fardigheter.lista.filter((f) => fardighetValbar(regler, rp, f));
+export const magiskolor = (regler, rp) => regler.fardigheter.lista.filter((f) => f.typ === "magiskola" && fardighetValbar(regler, rp, f));
 // Kulturer för Kulturkännedom: rasernas kulturer och de övriga i färdighetens data (s. 62)
 // Valfria regler som de valda böckerna erbjuder (V&R s. 3: Syn och hörsel, RB-002), och om en är påslagen
 export const valfriaRegler = (regler, rp) => {
@@ -95,25 +95,93 @@ export const kulturer = (regler, rp) => [...valbaraRaser(regler, rp).map((r) => 
 
 // Erfarenhetsnivån (V&R s. 3 och de andra expansionerna, RB-001): BP från start och antal särskilda förmågor.
 // Nivåerna kommer från den första valda boken som har nivåer; utan en sådan bok gäller grundreglerna (en nivå).
+// Med flera sådana böcker (V&R och Magi) är BP och förmågor desamma (RB-001); namnen visas ihop ("Krigare / Magus")
+// och Magis tak för familjarer (s. 8, RB-010) följer med.
 export function nivaer(regler, rp) {
-  const bok = (regler.bocker?.lista ?? []).find((b) => b.nivaer && valdaBocker(rp).includes(b.id));
-  return bok ? bok.nivaer.lista.map((n) => ({ ...n, bok: bok.id, sida: bok.nivaer.sida })) : null;
+  const bocker = (regler.bocker?.lista ?? []).filter((b) => b.nivaer && valdaBocker(rp).includes(b.id));
+  if (!bocker.length) return null;
+  const [bok] = bocker;
+  return bok.nivaer.lista.map((n, i) => {
+    const alla = bocker.map((b) => b.nivaer.lista[i]);
+    const familjarer = alla.find((x) => x.familjarer !== undefined)?.familjarer;
+    return { ...n, namn: alla.map((x) => x.namn).join(" / "), bok: bok.id, sida: bok.nivaer.sida,
+      ...(familjarer !== undefined ? { familjarer } : {}) };
+  });
 }
 export function nivaFor(regler, rp) {
   const lista = nivaer(regler, rp);
   return lista?.[rp?.niva ?? 0] ?? { namn: null, bp: regler.grundegenskaper.startBP, formagor: 1 };
 }
 
-// Yrkets villkor (design-expansioner.md): t.ex. { ras: ["dvarg"] }. Ger en förklaring om rollpersonen inte uppfyller det.
+// Yrkets villkor (design-expansioner.md): t.ex. { ras: ["dvarg"] }, { ras: ["manniska"], kon: "Kvinna", fodd: "…" }.
+// Ger en förklaring om rollpersonen inte uppfyller det. Födelsemånen finns inte i grundreglerna; den står som
+// bakgrund på rollformuläret och kontrolleras inte (RB-018).
 export function yrkeVillkor(regler, rp, yrke) {
   const v = yrke?.villkor;
   if (!v) return null;
-  if (v.ras && rp.ras && !v.ras.includes(rp.ras)) {
-    const namn = v.ras.map((id) => rasAv(regler, id)?.namn ?? id);
-    return `Bara för ${namn.length > 1 ? `${namn.slice(0, -1).join(", ")} och ${namn.at(-1)}` : namn[0]}`;
-  }
-  return null;
+  const rasFel = v.ras && rp.ras && !v.ras.includes(rp.ras);
+  const konFel = v.kon && rp.kon && rp.kon !== v.kon;
+  return rasFel || konFel ? villkorText(regler, v) : null;
 }
+const ochLista = (namn) => (namn.length > 1 ? `${namn.slice(0, -1).join(", ")} och ${namn.at(-1)}` : namn[0]);
+export function villkorText(regler, v) {
+  const delar = [v.ras ? ochLista(v.ras.map((id) => rasAv(regler, id)?.namn ?? id)) : null,
+    v.kon ? (v.kon === "Kvinna" ? "kvinnor" : "män") : null, v.fodd ? `födda ${v.fodd}` : null].filter(Boolean);
+  return `Bara för ${delar.join(", ")}`;
+}
+
+// ------------------------------------------------------------ familjarer (Magi i Chronopia s. 40–43)
+export const familjarAv = (regler, id) => regler.foljeslagare?.familjarer?.lista.find((f) => f.id === id);
+// Familjarer köps för BP (rp.familjarer, en post per familjar). Erfarenhetsnivån ger taket 1/3/5 (RB-010).
+// Familjarer från yrket (Fågelbroder, Häxjägare) och från Spiritus familiarius är gratis och räknas inte
+// mot taket så länge regelfilen säger gratisRaknas: false.
+export function raknaFamiljarer(regler, rp) {
+  const F = regler.foljeslagare?.familjarer;
+  const svar = { lista: [], bp: 0, tak: 0, antal: 0, fel: [], tillganglig: false };
+  if (!F) return svar;
+  const magi = valdaBocker(rp).includes(F.kalla.bok);
+  const yrke = yrkeAv(regler, rp.yrke);
+  svar.tillganglig = magi;
+  const gratis = [
+    ...(magi && iBocker(yrke, rp) ? (yrke.gratisFamiljar ?? []).map((id) => ({ id, kalla: yrke.namn })) : []),
+    ...(rp.gratisFamiljarer ?? []),
+  ];
+  const kopta = rp.familjarer ?? [];
+  if (!magi) {
+    if (kopta.length) svar.fel.push(`Familjarer finns i ${bokNamn(regler, F.kalla.bok)}, som inte är vald (steg 0)`);
+    return svar;
+  }
+  for (const g of gratis) {
+    const f = familjarAv(regler, g.id);
+    if (f) svar.lista.push({ ...f, gratis: true, kallaGratis: g.kalla });
+  }
+  for (const id of kopta) {
+    const f = familjarAv(regler, id);
+    if (!f) { svar.fel.push(`Okänd familjar: ${id}`); continue; }
+    svar.lista.push({ ...f, gratis: false });
+    svar.bp += f.bp;
+  }
+  for (const f of svar.lista) {
+    if (f.villkor?.yrken && !f.villkor.yrken.includes(rp.yrke)) {
+      svar.fel.push(`${f.namn}: bara för ${ochLista(f.villkor.yrken.map((y) => yrkeAv(regler, y)?.namn ?? y))} (${kallText(regler, f, "")})`);
+    }
+  }
+  const niva = nivaFor(regler, rp);
+  svar.tak = niva.familjarer ?? 0;
+  svar.antal = kopta.length + (F.gratisRaknas ? gratis.length : 0);
+  if (svar.antal > svar.tak) {
+    svar.fel.push(`Högst ${svar.tak} ${svar.tak === 1 ? "familjar" : "familjarer"} som ${(niva.namn ?? "").toLowerCase()} (${bokNamn(regler, F.kalla.bok)} s. ${regler.bocker.lista.find((b) => b.id === F.kalla.bok)?.nivaer?.sida ?? F.kalla.sida}, ${F.beslut})`);
+  }
+  return svar;
+}
+
+// Färdigheter som bara vissa yrken får lära sig (Tidsmagi, Magi i Chronopia s. 35)
+export function fardighetVillkor(regler, rp, f) {
+  const yrken = f?.villkor?.yrken;
+  if (!yrken || yrken.includes(rp.yrke)) return null;
+  return `${f.namn} kan bara läras av ${ochLista(yrken.map((id) => yrkeAv(regler, id)?.namn ?? id).map((n) => n.toLowerCase()))}`;
+}
+export const fardighetValbar = (regler, rp, f) => iBocker(f, rp) && !fardighetVillkor(regler, rp, f);
 
 // Yrkesförmågan med V&R:s initiativbonus (s. 4: alla krigaryrken i boken har +3 på initiativ)
 export const yrkesformagaText = (yrke) => (yrke.initiativ ? `${yrke.yrkesformaga} +${yrke.initiativ} på initiativet.` : yrke.yrkesformaga);
@@ -383,6 +451,7 @@ export function status(regler, rp, nyckel) {
   if (yrkeAv(regler, rp.yrke)?.yrkesgrupper?.includes(id)) return "yrke"; // t.ex. all lärdom för lärd man
   if (id === "kanna-magi" && yrkeAv(regler, rp.yrke)?.magiker) return "primar";
   if (nyckel === "lardom:Kunskap om magi" && yrkeAv(regler, rp.yrke)?.magiker) return "yrke";
+  if (yrkeAv(regler, rp.yrke)?.automatiska?.includes(id)) return "yrke"; // Minimagi för Magis magiker (s. 8–9, 19)
   if (rp.rasval?.includes(nyckel)) return "primar";
   if (ras.primara.includes(id) || ras.primara.includes(nyckel)) return "primar";
   if (f.typ === "primar" && !ras.sekundara.includes(id)) return "primar";
@@ -410,11 +479,14 @@ export function startvarde(regler, rp, nyckel, varden, stand, fvHittills) {
     start = BC(regler, varden[grundegenskapFor(regler, nyckel, varden)]);
   }
 
-  // Magiker: Känna magi och Kunskap om magi följer FV i skolan (s. 62, 64)
+  // Magiker: Känna magi och Kunskap om magi följer FV i skolan (s. 62, 64). Magis magiker har också
+  // Minimagi med samma FV som den bästa skolan (Magi i Chronopia s. 8–9, 19).
   if (yrke.magiker) {
-    const skolor = ["animism", "elementarmagi", "mentalism"];
+    const skolor = regler.fardigheter.lista.filter((x) => x.typ === "magiskola").map((x) => x.id);
+    const basta = Math.max(0, ...skolor.map((k) => fvHittills[k] ?? 0));
     if (f.id === "kanna-magi" && skolor.includes(val) && fvHittills[val]) start = Math.max(start, fvHittills[val]);
-    if (nyckel === "lardom:Kunskap om magi") start = Math.max(start, ...skolor.map((k) => fvHittills[k] ?? 0));
+    if (nyckel === "lardom:Kunskap om magi") start = Math.max(start, basta);
+    if (f.id === "minimagi" && yrke.automatiska?.includes("minimagi")) start = Math.max(start, basta);
   }
 
   // Ras- och yrkesbonusar vid start (s. 14–16, 21–22, 40, 60)
@@ -427,6 +499,7 @@ export function startvarde(regler, rp, nyckel, varden, stand, fvHittills) {
   for (const b of yrke.startFV ?? []) if (b.fardighet === nyckel) start = Math.max(start, b.fv);
   const startPost = postFor(regler, rp, nyckel, "startFV");
   if (startPost) start = Math.max(start, startPost.startFV);
+  start += postFor(regler, rp, nyckel, "bonus")?.bonus ?? 0; // Chronomag: +5 på två lärdomsfärdigheter (Magi s. 11)
   for (const s of rp.sarskildaFormagor?.fvBonus ?? []) if (s.fardighet === nyckel) start += s.fv;
   for (const s of rp.sarskildaFormagor?.fvMinst ?? []) if (s.fardighet === nyckel) start = Math.max(start, s.fv);
 
@@ -495,6 +568,8 @@ export function raknaRollperson(regler, indata) {
   const ge = raknaGrundegenskaper(regler, rp);
   fel.push(...ge.fel);
   const sinnen = raknaSinnen(regler, rp);
+  const familjarer = raknaFamiljarer(regler, rp);
+  fel.push(...familjarer.fel);
   if ((rp.valfriaRegler ?? []).some((id) => !valfriaRegler(regler, rp).some((v) => v.id === id))) fel.push("En valfri regel hör till en bok som inte är vald (steg 0)");
   const bpUtgifter = {
     ras: rp.rasVald === false ? 0 : ras.bp, // ingen ras vald än: motorn räknar som för en människa, men inget kostar
@@ -505,6 +580,7 @@ export function raknaRollperson(regler, indata) {
     socialtStand: rp.socialtStand.bp,
     startkapital: rp.startkapital.bp,
     sinnen: sinnen?.bp ?? 0,
+    familjarer: familjarer.bp,
   };
   const bpKvar = bpStart - Object.values(bpUtgifter).reduce((a, b) => a + b, 0);
   // Högst 40 BP per slag på grundreglernas tabell (s. 30), 20 på V&R:s (s. 14)
@@ -534,6 +610,7 @@ export function raknaRollperson(regler, indata) {
     const tak = Math.max(start, takFor(regler, rp, nyckel, f, ge.varden, fvHittills));
     if (mal > tak) fel.push(`${namnFor(regler, f, nyckel)}: högst FV ${tak} vid start (s. 35)`);
     if (!iBocker(f, rp)) fel.push(`${f.namn} finns i ${bokNamn(regler, bokFor(f))}, som inte är vald (steg 0)`);
+    if (fardighetVillkor(regler, rp, f)) fel.push(`${fardighetVillkor(regler, rp, f)} (${kallText(regler, f, `s. ${f.sida}`)})`);
     const tekniker = harTekniker(f) ? stilensTekniker(regler, rp, nyckel) : undefined;
     if (tekniker) {
       const okanda = tekniker.filter((t) => !teknikLista(regler, f).some(([n]) => n === t));
@@ -545,7 +622,7 @@ export function raknaRollperson(regler, indata) {
     fvHittills[nyckel] = Math.max(mal, start);
     fardigheter.push({ nyckel, namn: namnFor(regler, f, nyckel), status: st, grundegenskap: egenskap, ...(f.hogstaAv ? { grundegenskapText: f.grundegenskap } : {}), start, fv: Math.max(mal, start), ep,
       epPerFV: epPerFV(regler, st, f, tekniker, nyckel), kategoriB: f.kategoriB, ...(bNivaLagre(regler, nyckel) ? { bNivaLagre: bNivaLagre(regler, nyckel) } : {}), ...(tekniker ? { tekniker } : {}),
-      ...(svardsskolaFor(regler, nyckel) ? { skola: svardsskolaFor(regler, nyckel) } : {}) });
+      ...(svardsskolaFor(regler, nyckel) ? { skola: svardsskolaFor(regler, nyckel) } : {}), ...(f.typ === "magiskola" ? { magiskola: true } : {}) });
   }
   kontrolleraVal(regler, rp, ge.varden, fel);
 
@@ -573,6 +650,7 @@ export function raknaRollperson(regler, indata) {
   }
 
   const besvarjelser = raknaBesvarjelser(regler, rp, fardigheter, ge.varden, yrke.magiker || magiformaga.lyckat || harFriSkola, fel);
+  const minimagi = raknaMinimagi(regler, rp, fardigheter, fel, Boolean(yrke.magiker || magiformaga.lyckat || harFriSkola));
   epSpenderat += besvarjelser.reduce((a, b) => a + b.ep, 0);
   if (epSpenderat > epStart) fel.push(`${epSpenderat - epStart} EP för mycket har spenderats (s. 34)`);
   const utrustning = raknaUtrustning(regler, rp, ge.varden, slag.startkapital, fel);
@@ -585,7 +663,7 @@ export function raknaRollperson(regler, indata) {
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.map((f) => (sinnesMod(regler, sinnen, f.nyckel) ? { ...f, sinne: sinnesMod(regler, sinnen, f.nyckel) } : f))
       .sort((a, b) => a.namn.localeCompare(b.namn, "sv")),
-    besvarjelser, utrustning, startutrustning: startvaror(regler, rp).ovriga, sinnen, stridshandlingar,
+    besvarjelser, minimagi, familjarer, utrustning, startutrustning: startvaror(regler, rp).ovriga, sinnen, stridshandlingar,
     fel,
   };
 }
@@ -593,7 +671,7 @@ export function raknaRollperson(regler, indata) {
 // FV i varje magiskola; allmänna besvärjelser styrs av den högsta (s. 106)
 export function skolFV(fardigheter) {
   const fv = { animism: 0, elementarmagi: 0, mentalism: 0 };
-  for (const f of fardigheter) if (f.nyckel in fv) fv[f.nyckel] = f.fv;
+  for (const f of fardigheter) if (f.nyckel in fv || f.magiskola) fv[f.nyckel] = f.fv;
   return { ...fv, allman: Math.max(...Object.values(fv)) };
 }
 
@@ -610,21 +688,54 @@ function raknaBesvarjelser(regler, rp, fardigheter, varden, kanMagi, fel) {
   const valda = Object.entries(rp.besvarjelser ?? {}).filter(([, fv]) => fv > 0);
   if (!B) return [];
   const skola = skolFV(fardigheter);
-  return valda.map(([nyckel, fv]) => {
+  const lista = valda.map(([nyckel, fv]) => {
     const [id, val] = nyckel.split(":");
     const b = B.lista.find((x) => x.id === id);
     if (!b) { fel.push(`Okänd besvärjelse: ${nyckel}`); return null; }
     const namn = val ? `${b.namn} (${val})` : b.namn;
     const tillatna = b.perVal === "varelsegrupp" ? B.varelsegrupper : b.perVal === "elementar" ? B.elementarer : null;
     if (tillatna && !tillatna.includes(val)) fel.push(`${b.namn}: välj vilken ${b.perVal === "elementar" ? "elementar" : "grupp av varelser"} den gäller (s. 120, 123)`);
+    if (!iBocker(b, rp)) fel.push(`${namn} finns i ${bokNamn(regler, bokFor(b))}, som inte är vald (steg 0)`);
+    if (b.villkor?.yrken && !b.villkor.yrken.includes(rp.yrke)) fel.push(`${namn}: ${B.grupper?.[b.grupp]?.namn ?? namn} kan bara läras av ${b.villkor.yrken.map((y) => yrkeAv(regler, y)?.namn.toLowerCase() ?? y).join(" och ")} (${kallText(regler, b)})`);
     if (!kanMagi) fel.push(`${namn}: rollpersonen kan inte lära sig magi (s. 106)`);
-    else if (b.sv > skola[b.skola]) {
-      fel.push(`${namn} har skolvärde ${b.sv} men FV i ${b.skola === "allman" ? "bästa magiskolan" : B.skolor[b.skola].toLowerCase()} är ${skola[b.skola]} (s. 106)`);
+    else if (b.sv > (skola[b.skola] ?? 0)) {
+      fel.push(`${namn} har skolvärde ${b.sv} men FV i ${b.skola === "allman" ? "bästa magiskolan" : B.skolor[b.skola].toLowerCase()} är ${skola[b.skola] ?? 0} (s. 106)`);
     }
     if (fv > varden.PSY) fel.push(`${namn}: högst FV ${varden.PSY}, samma som PSY (s. 36)`);
     const epPerFV = besvarjelsePris(regler, b.sv);
-    return { nyckel, id, namn, skola: b.skola, sv: b.sv, fv, epPerFV, ep: fv * epPerFV, rackvidd: b.rackvidd, varaktighet: b.varaktighet };
+    return { nyckel, id, namn, skola: b.skola, ...(b.grupp ? { grupp: b.grupp } : {}), sv: b.sv, fv, epPerFV, ep: fv * epPerFV, rackvidd: b.rackvidd, varaktighet: b.varaktighet };
   }).filter(Boolean).sort((a, b) => a.skola.localeCompare(b.skola) || a.sv - b.sv || a.namn.localeCompare(b.namn, "sv"));
+  tidsgrenar(regler, rp, lista, fel);
+  return lista;
+}
+
+// Tidsmagins grenar (Magi i Chronopia s. 35): en divinator får en besvärjelse ur contortismen för varannan
+// besvärjelse i förutskickelsen som den har lärt sig till FV 10, en chronomag en ur förutskickelsen för var tredje i contortismen.
+export function tidsgrenTak(regler, rp, lista) {
+  const T = regler.besvarjelser.tidsgrenar?.[rp.yrke];
+  if (!T) return null;
+  const egna = lista.filter((b) => b.grupp === T.egen && b.fv >= regler.besvarjelser.tidsgrenar.fv).length;
+  return { ...T, tak: Math.floor(egna / T.per), anvanda: lista.filter((b) => b.grupp === T.annan).length };
+}
+function tidsgrenar(regler, rp, lista, fel) {
+  const t = tidsgrenTak(regler, rp, lista);
+  if (!t || t.anvanda <= t.tak) return;
+  const G = regler.besvarjelser.grupper;
+  fel.push(`${G[t.annan].namn}: högst ${t.tak} besvärjelse${t.tak === 1 ? "" : "r"}, en per ${t.per === 2 ? "varannan" : "var tredje"} besvärjelse i ${G[t.egen].namn.toLowerCase()} med FV ${regler.besvarjelser.tidsgrenar.fv} (Magi i Chronopia s. 35)`);
+}
+
+// Minimagiska besvärjelser (Magi i Chronopia s. 19, 28–29): gratis, två per FV i Minimagi
+// Minimagi är magi: den som inte kan lära sig magi kan inte heller ha Minimagi (RB-018).
+export function raknaMinimagi(regler, rp, fardigheter, fel = [], kanMagi = true) {
+  const M = regler.besvarjelser?.minimagi;
+  const valda = rp.minimagi ?? [];
+  if (!M) return { fv: 0, max: 0, valda: [] };
+  const fv = fardigheter.find((f) => f.nyckel === "minimagi")?.fv ?? 0;
+  const max = fv * M.perFV;
+  if (fv > 0 && !kanMagi) fel.push("Minimagi: rollpersonen kan inte lära sig magi (Magi i Chronopia s. 19, RB-018)");
+  if (valda.length > max) fel.push(`Minimagi: högst ${max} minimagiska besvärjelser med FV ${fv} (Magi i Chronopia s. 19)`);
+  for (const id of valda) if (!M.lista.some((x) => x.id === id)) fel.push(`Okänd minimagisk besvärjelse: ${id}`);
+  return { fv, max, valda: valda.map((id) => M.lista.find((x) => x.id === id)).filter(Boolean) };
 }
 
 // Alla vapen och sköldar i en lista
@@ -876,6 +987,7 @@ export function sarskildFormaga(regler, rp) {
   let svardshand;
   let hp = 0;
   let hpSlagna = true;
+  const gratisFamiljarer = [];
   slag.forEach((sl, nr) => {
     const r = enFormaga(regler, rp, sl);
     const pre = flera ? `Förmåga ${nr + 1}: ` : "";
@@ -900,6 +1012,7 @@ export function sarskildFormaga(regler, rp) {
     arv += d.arv;
     if (d.svardshand !== undefined) svardshand = d.svardshand;
     if (d.hp !== null) { hp += d.hp ?? 0; if (d.hp === undefined) hpSlagna = false; }
+    gratisFamiljarer.push(...d.familjarer.map((id) => ({ id, kalla: r.formaga.namn })));
   });
   // Slag utöver nivåns antal får inte ha BP (t.ex. kvar från en högre nivå)
   (s.fler ?? []).slice(slag.length - 1).forEach((sl) => { if (sl?.bp) svar.fel.push("Rollpersonen har inte fler särskilda förmågor på den här nivån"); });
@@ -917,7 +1030,7 @@ export function sarskildFormaga(regler, rp) {
   }
   svar.tillagg = {
     sarskildaFormagor: { ...s, fvBonus, fvMinst, takBonus, status: andrad },
-    egenskapsbonus, harleddaJustering: harledda, arv,
+    egenskapsbonus, harleddaJustering: harledda, arv, gratisFamiljarer,
     svardshand: { ...rp.svardshand, overstyrd: svardshand },
   };
   return svar;
@@ -926,7 +1039,7 @@ export function sarskildFormaga(regler, rp) {
 // Ett slag på en tabell för särskilda förmågor. s = { bp, slag, val, tabell, avstar }.
 export function enFormaga(regler, rp, s) {
   const svar = { formaga: null, tabell: null, fel: [], saknas: [], magiformaga: 0,
-    delar: { fvBonus: [], fvMinst: [], takBonus: {}, andrad: {}, egenskapsbonus: {}, kpFaktor: 1, forflyttningBonus: 0, arv: 0, svardshand: undefined, hp: null } };
+    delar: { fvBonus: [], fvMinst: [], takBonus: {}, andrad: {}, egenskapsbonus: {}, kpFaktor: 1, forflyttningBonus: 0, arv: 0, svardshand: undefined, hp: null, familjarer: [] } };
   const tabell = formagetabell(regler, rp, s);
   svar.tabell = tabell;
   if (s.tabell && (!tabell || !tabellTillganglig(tabell, rp))) svar.fel.push(`Rollpersonen kan inte slå på tabellen ${tabell?.namn ?? s.tabell}`);
@@ -984,6 +1097,11 @@ export function enFormaga(regler, rp, s) {
       if (!Number.isInteger(val?.slag)) { svar.saknas.push(`Slå ${del.tarning} för hjältepoängen (${formaga.namn})`); d.hp = undefined; }
       else if (val.slag < n || val.slag > n * sidor) svar.fel.push(`${formaga.namn}: hjältepoängen är ${del.tarning}, ${n}–${n * sidor}`);
       else d.hp = val.slag;
+    } else if (del.typ === "familjar") {
+      // Spiritus familiarius: en valfri familjar gratis (Magi i Chronopia s. 17). val = familjarens id
+      if (!val) svar.saknas.push(`Välj familjar för ${formaga.namn}`);
+      else if (!familjarAv(regler, val)) svar.fel.push(`${formaga.namn}: okänd familjar ${val}`);
+      else d.familjarer.push(val);
     }
   });
   return svar;

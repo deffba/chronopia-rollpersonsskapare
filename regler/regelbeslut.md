@@ -86,6 +86,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Fråga:** Betyder Familiari 1/3/5 att familjarerna är gratis, eller är det ett tak?
 - **Källor:** *Magi i Chronopia* s. 8 (Familiari), s. 40–43 (familjarerna, 1–15 BP).
 - **Beslut:** Siffran är det **högsta antal** familjarer rollpersonen får ha. Familjarerna kostar BP som vanligt.
+- **Gratis familjarer (2026-11-03, Deffba):** familjarer som yrket ger (Fågelbroderns lystat, Häxjägarens spårare) och familjaren från den särskilda förmågan Spiritus familiarius är gratis och räknas **inte** mot taket. Familjarerna köps i steg 7 och står i en egen ruta på rollformuläret.
 - **Motivering:** Deffbas läsning av texten.
 - **Påverkar:** Familjarvalet (följeslagare) för Magi.
 - **Beslutat:** 2026-11-01, Deffba.
@@ -171,3 +172,28 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Motivering:** Vapnen behöver en färdighet för att gå att välja; grupperna följer vapnens typ och BV. Resten håller sig så nära boken som möjligt utan nya regler.
 - **Påverkar:** Vapenval i yrkes- och färdighetsstegen, utrustningssteget, rollformuläret.
 - **Beslutat:** 2026-11-02, Deffba (med Detaljerad strid som valfri regel).
+
+## RB-018 Magi i Chronopia i appen
+- **Fråga:** Hur läggs Magis yrken, nya färdigheter, Tidsmagi, underjordens magi, minimagi och förmågetabell in, när boken förutsätter saker som grundreglerna saknar (födelsemånar, färdigheter med två grundegenskaper)?
+- **Källor:** *Magi i Chronopia* s. 8–9 (nivåer och magikeryrken), s. 10–15 (yrkena), s. 16–18 (förmågetabellen), s. 19–20 (minimagi), s. 21–39 (besvärjelserna, Tidsmagi s. 35), s. 40–43 (familjarerna). Grundreglerna s. 33–34, 104–106.
+- **Beslut:**
+  - **Magikeryrke** = de yrken i Magi som har en magiskola bland yrkesfärdigheterna. De slipper magiförmågeslaget (RB-011) och får Känna magi, Kunskap om magi och Minimagi gratis. **Svartsyster** är inget magikeryrke (s. 8: andra kan inte använda magi); yrket är bara för kvinnliga människor.
+  - **Födelsemånen** (Divinator: född under den femte månen, Svartsyster: född i den mörka månens tecken) finns inte i grundreglerna. Den står som villkor på yrket och som bakgrund på rollformuläret, men kontrolleras inte.
+  - **Meditation (INT/PSY)** räknas på den högre av INT och PSY.
+  - **Minimagi** kräver att rollpersonen kan magi (magikeryrke eller lyckat magiförmågeslag). Magikeryrkena börjar med samma FV som sin bästa magiskola. Rollpersonen får kunna två minimagiska besvärjelser per FV (s. 19).
+  - **Tidsmagi** är en egen magiskola som bara chronomager och divinatorer får lära sig. Grenarna Förutskickelse och Contortism följer s. 35: en chronomag får högst var tredje tidsbesvärjelse ur förutskickelse, en divinator högst varannan ur contortism.
+  - **Underjordens magi** = animismbesvärjelser som bara cestoditer får lära sig.
+  - **Kraftfull magiker** (förmågetabellen s. 18) står bara som text: PSY-poäng för besvärjelser ×1,5, avrundat uppåt, räknas under spel.
+  - **Lubriticus:** B-nivån i Meditation räknas ett steg högre; det gäller under spel och står som yrkesförmåga.
+  - **Magiska vapen och droger:** hunger-, lirium- och miniatyrvapen är prismultiplikatorer och säljs inte vid skapandet. Varor med samma namn som i grundreglerna eller V&R får ett tillägg i namnet, till exempel *Pendel (magisk)*.
+- **Motivering:** Så nära boken som möjligt, utan nya system för sådant grundreglerna saknar.
+- **Påverkar:** Bokvalet, yrkessteget, färdigheterna, besvärjelsesteget, steg 7 (familjarer), utrustningen, rollformuläret.
+- **Beslutat:** 2026-11-03 (tolkning vid importen; familjartaket bekräftat av Deffba, se RB-010).
+
+## RB-019 Frälsningsklingan
+- **Fråga:** Frälsningsklingan (*Magi i Chronopia*, magiska vapen) har skada, BV och vikt men saknar STY-krav och längd.
+- **Källor:** *Magi i Chronopia* s. 51; grundreglerna s. 89 (Tvåhandssvärd).
+- **Beslut:** Klingan räknas som ett tvåhandssvärd: **2T10+4, STY 31, längd 1, vikt 8, BV 17**, vapenfärdighet Svärd. Den har inget pris och säljs inte vid skapandet.
+- **Motivering:** Klingan väger lika mycket som ett tvåhandssvärd och har liknande skada och BV; STY-krav och längd tas därifrån.
+- **Påverkar:** Vapenlistan.
+- **Beslutat:** 2026-11-03 (tolkning vid importen).

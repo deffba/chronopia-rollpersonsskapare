@@ -1,5 +1,5 @@
 // Steg 3: yrke.
-import { yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar, svardsskolaFor } from "../regelmotor.js";
+import { yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, villkorText, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar, svardsskolaFor } from "../regelmotor.js";
 import { visaNotis } from "../app.js";
 import { S, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -25,13 +25,14 @@ export function stegYrke() {
     const rasyrke = Boolean(S.rp.ras && y.villkor?.ras?.includes(S.rp.ras));
     return el("button", {
       type: "button", class: "valkort yrkeskort" + (y.id === S.rp.yrke ? " valt" : "") + (villkor ? " ej-valbar" : "") + (rasyrke ? " rasyrke" : ""), "aria-pressed": y.id === S.rp.yrke ? "true" : "false", "data-yrke": y.id,
-      "aria-disabled": villkor ? "true" : null, title: villkor ?? (rasyrke ? yrkeVillkor(S.R, { ras: "-" }, y) : null),
+      "aria-disabled": villkor ? "true" : null, title: villkor ?? (rasyrke ? villkorText(S.R, y.villkor) : null),
       onclick: () => {
         if (villkor) { visaNotis(`${y.namn}: ${villkor.charAt(0).toLowerCase()}${villkor.slice(1)}.`); return; }
         // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1
         S.rp.yrke = y.id === S.rp.yrke ? "" : y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = "";
         // Yrken med vapen i startutrustningen får inget vapen i startpaketet
         if (y.startvapen && S.rp.startpaket?.vapen) S.rp.startpaket = { ...S.rp.startpaket, vapen: "" };
+        if (y.villkor?.kon && S.rp.yrke === y.id) S.rp.kon = y.villkor.kon; // Svartsyster: bara kvinnor (Magi s. 15)
         uppdatera();
       },
     }, el("span", { class: "valkort-namn" }, y.namn.replace(/^(.{5,})(magiker)$/, "$1\u00ad$2")), // Elementar-magiker avstavas om namnet inte får plats
@@ -66,7 +67,8 @@ export function stegYrke() {
     punkter.push(punkt(namnFor(S.R, fardighetAv(S.R, b.fardighet), b.fardighet), b.fardighet.split(":")[0], null, `FV ${b.fv} gratis, som primär`));
   }
   if (yrke.valfri) punkter.push(punkt("En valfri färdighet", null, S.rp.valfri && !paborjad(S.rp.valfri) ? namn(S.rp.valfri.split(":")[0]) + (S.rp.valfri.split(":")[1] ? `: ${S.rp.valfri.split(":")[1]}` : "") : null));
-  if (yrke.automatiska.length) punkter.push(punkt("Känna magi och Kunskap om magi, automatiskt med samma FV som magiskolan (s. 62, 64)", null));
+  if (yrke.automatiska.includes("minimagi")) punkter.push(punkt("Känna magi, Kunskap om magi och Minimagi, automatiskt med samma FV som den bästa magiskolan, och inget magiförmågeslag (Magi i Chronopia s. 8–9)", null));
+  else if (yrke.automatiska.length) punkter.push(punkt("Känna magi och Kunskap om magi, automatiskt med samma FV som magiskolan (s. 62, 64)", null));
   const bonus = yrke.startbonus?.find((b) => b.valEttAv);
   return [
     el("div", { class: "valkort-rutnat liten fyra" }, kort),
@@ -76,7 +78,7 @@ export function stegYrke() {
       yrke.beskrivning ? el("p", { class: "yrkestext" }, yrke.beskrivning, el("span", { class: "sida" }, ` (${kallText(S.R, yrke, `s. ${yrke.sida}`)})`)) : null,
       el("dl", { class: "valdata bred" },
         el("div", {}, el("dt", {}, "Yrkesförmåga"), el("dd", {}, yrkesformagaText(yrke))),
-        yrke.villkor ? el("div", {}, el("dt", {}, "Vem"), el("dd", {}, yrkeVillkor(S.R, { ras: "-" }, yrke))) : null,
+        yrke.villkor ? el("div", {}, el("dt", {}, "Vem"), el("dd", {}, villkorText(S.R, yrke.villkor))) : null,
         yrke.startutrustning?.length ? el("div", {}, el("dt", {}, "Startutrustning"), el("dd", {}, yrke.startutrustning.join(" · "), el("span", { class: "hjalp" }, " (gratis)"))) : null)),
     el("div", { class: "rutor" },
       el("div", {}, el("h4", {}, "Yrkesfärdigheter"),

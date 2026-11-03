@@ -25,7 +25,8 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
   let fel = [];
   const rp = api.med(api.TOM(), (nu) => {
     const r = nu();
-    Object.assign(r, { namn: recept.namn, spelare: "Test", kon: recept.kon, ras: recept.ras, alder: recept.alder, yrke: recept.yrke,
+    Object.assign(r, { namn: recept.namn, spelare: "Test", kon: yrkeAv(api.R, recept.yrke)?.villkor?.kon ?? recept.kon, // Svartsyster: bara kvinnor
+      ras: recept.ras, alder: recept.alder, yrke: recept.yrke,
       anteckningar: recept.anteckningar ?? "", bocker: ["grund", ...(recept.bocker ?? [])], niva: recept.niva ?? 0,
       valfriaRegler: recept.valfriaRegler ?? [] });
     // Syn och hörsel (V&R s. 3): { syn: [BP, slag], horsel: [BP, slag] }
@@ -126,10 +127,25 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
     r.socialtStand = { bp: 0, slag: slag.socialtStand };
     r.startkapital = { bp: 0, slag: slag.startkapital };
 
+    // Familjarer köps för BP i steg 7 (Magi i Chronopia s. 40–43), innan BP som blir över växlas till EP
+    for (const id of onskat(recept.familjarer) ?? []) {
+      const fore = r.familjarer ?? [];
+      r.familjarer = [...fore, id];
+      if (api.rakna().fel.length) r.familjarer = fore;
+    }
+
     // EP som knappen Fördela EP, med en del sparad till besvärjelser
     const kanMagi = () => { const res = api.rakna(); return (res.yrke.magiker || res.magiformaga.lyckat) && skolFV(res.fardigheter).allman > 0; };
     api.epFordelning(kanMagi() ? recept.epTillBesvarjelser ?? 40 : 0);
     if (kanMagi()) kopBesvarjelser(api, nu(), onskat(recept.besvarjelser) ?? []);
+    // Minimagiska besvärjelser (Magi i Chronopia s. 19), så många av de önskade som FV i Minimagi räcker till
+    for (const [falt, onskade] of [["minimagi", onskat(recept.minimagi)]]) {
+      for (const id of onskade ?? []) {
+        const fore = r[falt] ?? [];
+        r[falt] = [...fore, id];
+        if (api.rakna().fel.length) r[falt] = fore;
+      }
+    }
 
     kopUtrustning(api, nu(), onskat(recept.startpaketVapen), onskat(recept.kop) ?? []);
 

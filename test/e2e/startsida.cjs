@@ -36,11 +36,13 @@ const NAMN = new RegExp(Buffer.from('bmljbGFzfGRlIGZhaXJl', 'base64').toString()
     ok('åtta böcker', bocker.length === 8, bocker.map(x => x.id).join(','));
     const grund = bocker.find(x => x.id === 'grund');
     ok('grundreglerna är alltid med och går inte att välja bort', grund.pa && grund.av && /Alltid med/.test(grund.text));
-    const snart = bocker.filter(x => !['grund', 'vr'].includes(x.id));
+    const snart = bocker.filter(x => !['grund', 'vr', 'magi'].includes(x.id));
     const vr = bocker.find(x => x.id === 'vr');
     ok('Vapen & rustningar går att välja och är inte vald från början', vr && !vr.pa && !vr.av && !vr.text.includes('Kommer snart'));
+    const magi = bocker.find(x => x.id === 'magi');
+    ok('Magi i Chronopia går att välja och är inte vald från början', magi && !magi.pa && !magi.av && !magi.text.includes('Kommer snart'));
     ok('expansionerna visas med (Kommer snart!) och går inte att välja', snart.every(x => !x.pa && x.av && x.text.includes('(Kommer snart!)')));
-    ok('expansionerna är de rätta', ['Magi', 'Dvärgar', 'Alver', 'Svartblod', 'Mörkrets väktare', 'Mörkrets krigare'].every(n => snart.some(x => x.text.includes(n))));
+    ok('expansionerna är de rätta', ['Dvärgar', 'Alver', 'Svartblod', 'Mörkrets väktare', 'Mörkrets krigare'].every(n => snart.some(x => x.text.includes(n))));
     await p.click('#nasta-steg');
     ok('Nästa går till steg 1 Ras', (await rubrik()) === 'Ras' && (await p.locator('.steg-huvud .eyebrow').textContent()).startsWith('Steg 1 av 13'));
     await p.click('.raskort >> nth=0'); await p.waitForTimeout(200);

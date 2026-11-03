@@ -145,8 +145,100 @@
       "id": "magi",
       "namn": "Magi i Chronopia",
       "grupp": "Kärnböcker",
-      "status": "kommerSnart",
-      "kraver": []
+      "status": "inlagd",
+      "kraver": [],
+      "nivaer": {
+        "sida": 8,
+        "lista": [
+          {
+            "namn": "Magus",
+            "bp": 125,
+            "formagor": 1,
+            "familjarer": 1,
+            "beskrivning": "En ung magiker eller en lärling som just har lämnat sin mästare, med större delen av karriären framför sig."
+          },
+          {
+            "namn": "Magus regis",
+            "bp": 150,
+            "formagor": 2,
+            "familjarer": 3,
+            "beskrivning": "En erfaren magiker som har gjort sig ett namn i magikerkvarteren och har några äventyr bakom sig."
+          },
+          {
+            "namn": "Häxmästare",
+            "bp": 175,
+            "formagor": 3,
+            "familjarer": 5,
+            "beslut": "RB-001",
+            "beskrivning": "En av Chronopias mäktigaste magiker, med kunskaper större än ett bibliotek och ett rykte som är ännu större."
+          }
+        ]
+      },
+      "valfriaRegler": [
+        {
+          "id": "syn-och-horsel",
+          "namn": "Syn och hörsel",
+          "sida": 8,
+          "beskrivning": "Syn och hörsel blir egna värden. Lägg BP på vart och ett i steg 6 och slå 1T6; summan ger en modifikation på vissa färdigheter.",
+          "tarning": "1T6",
+          "tabell": [
+            [
+              1,
+              "Dålig",
+              -2
+            ],
+            [
+              2,
+              "Nedsatt",
+              -1
+            ],
+            [
+              4,
+              "Normal",
+              0
+            ],
+            [
+              6,
+              "God",
+              1
+            ],
+            [
+              9,
+              "Mycket god",
+              2
+            ],
+            [
+              null,
+              "Utmärkt",
+              3
+            ]
+          ],
+          "sinnen": [
+            {
+              "id": "syn",
+              "namn": "Syn",
+              "galler": "CL",
+              "fardigheter": [
+                "finna-dolda-ting",
+                "upptacka-fara"
+              ],
+              "avstandsvapen": true,
+              "text": "CL i avståndsvapen, Finna dolda ting och Upptäcka fara"
+            },
+            {
+              "id": "horsel",
+              "namn": "Hörsel",
+              "galler": "FV",
+              "fardigheter": [
+                "lyssna",
+                "upptacka-fara"
+              ],
+              "text": "FV i Lyssna och Upptäcka fara"
+            }
+          ],
+          "not": "Modifikationerna läggs ihop: god syn och god hörsel ger +2 i Upptäcka fara. Dålig syn kan rättas med ögonglas."
+        }
+      ]
     },
     {
       "id": "dvargar",

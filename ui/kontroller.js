@@ -1,8 +1,8 @@
 // Små kontroller: tal, listor, knappar och info-cirklar.
-import { fardighetAv, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker, vapenVillkor, svardsskolaFor } from "../regelmotor.js";
+import { fardighetAv, fardighetValbar, tvahandsvapen, vapengrupp, kulturer, magiskolor, iBocker, vapenVillkor, svardsskolaFor } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { DELVAL_HJALP, FORKLARINGAR, SPRAK_HJALP } from "../texter.js";
-import { S, modersmal, rakna, uppdatera, yrkesNycklar } from "../tillstand.js";
+import { S, modersmal, rakna, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "./dom.js";
 
 export const infoKnapp = (text, etikett) => el("button", { type: "button", class: "info", "data-tip": text, "aria-label": etikett }, "i");
@@ -199,7 +199,7 @@ function sprakLista(id, fardighetId, varde, onchange, yrke) {
 
 export function fardighetsVal(idPrefix, nyckel, onchange, filter = () => true, val = {}) {
   const [id, sub] = (nyckel ?? "").split(":");
-  const lista = S.R.fardigheter.lista.filter((x) => iBocker(x, S.rp) && filter(x)).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
+  const lista = S.R.fardigheter.lista.filter((x) => fardighetValbar(S.R, { ...S.rp, yrke: yrkeId() }, x) && filter(x)).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
   const f = id ? fardighetAv(S.R, id) : null;
   return el("div", { class: "rad" },
     valLista(`${idPrefix}-f`, id, lista.map((x) => [x.id, x.namn]), (v) => onchange(v ? (fardighetAv(S.R, v).perVal ? `${v}:` : v) : "")),

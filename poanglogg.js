@@ -99,6 +99,8 @@ export function poster(api) {
     if (sf.bp) lagg("formagor", "BP", id, `BP på slaget, ${slagText(sf, namn)}`, -sf.bp);
     if (gjort(sf) && sf.bp) lagg("formagor", "Slag", id, `Särskild förmåga${i ? ` ${i + 1}` : ""}: ${tarning} ${sf.slag} + ${sf.bp} BP = ${sf.slag + sf.bp}: ${namn}`, null, { visa: `${sf.slag}` });
   });
+  // Familjarer köpta för BP (Magi i Chronopia s. 40–43)
+  (res.familjarer?.lista ?? []).filter((f) => !f.gratis).forEach((f, i) => lagg("formagor", "BP", `familjar${i}`, `Familjar: ${f.namn}`, -f.bp));
   for (const g of [...GRUNDEGENSKAPER, "STO"]) ge("formagor", g, "sf", `särskild förmåga (${res.sarskildFormaga?.namn ?? "?"})`, egenskapsbonus[g]);
   if (rp.svardshand.bp) lagg("svardshand", "BP", "sh", `BP på slaget, ${slagText(rp.svardshand, res.slag.svardshand)}`, -rp.svardshand.bp);
   if (gjort(rp.svardshand)) {

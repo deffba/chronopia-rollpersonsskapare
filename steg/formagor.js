@@ -1,7 +1,7 @@
 // Steg 7: särskilda förmågor.
-import { GRUNDEGENSKAPER, sarskildFormaga as sfFor, tillgangligaFormagetabeller, formagetabell, formageslag, nivaFor, slagIntervall, tarningAv } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, raknaFamiljarer, familjarAv, kallText, sarskildFormaga as sfFor, tillgangligaFormagetabeller, formagetabell, formageslag, nivaFor, slagIntervall, tarningAv } from "../regelmotor.js";
 import { rita } from "../app.js";
-import { S, motorIndata, uppdatera } from "../tillstand.js";
+import { S, motorIndata, rakna, uppdatera } from "../tillstand.js";
 import { el, slaT } from "../ui/dom.js";
 import { falt, valLista } from "../ui/kontroller.js";
 import { inteSlaget, landatSlag, lastFalt, rullar, slagKontroll, slagSteg, valjFardighet } from "../ui/tarningar.js";
@@ -121,6 +121,13 @@ export function stegFormagor() {
         (slag) => sattVal(i, { slag, tarningar: S.manuellaSlag ? null : tarningar }), slumpa, sidor);
       return el("li", {}, el("span", { class: "fnamn" }, `Slå ${del.tarning} hjältepoäng`), el("div", { class: "rad" }, slagfalt, knapp));
     }
+    if (del.typ === "familjar") {
+      // Spiritus familiarius: en valfri familjar gratis (Magi i Chronopia s. 17)
+      const lista = S.R.foljeslagare?.familjarer?.lista ?? [];
+      return el("li", {}, el("span", { class: "fnamn" }, "Välj familjar"),
+        valLista(`${pid}-${i}-familjar`, val(i), lista.map((f) => [f.id, `${f.namn} (värd ${f.bp} BP)`]), (v) => sattVal(i, v || undefined)),
+        val(i) ? el("p", { class: "hjalp" }, familjarAv(S.R, val(i))?.beskrivning) : null);
+    }
     return null;
   }).filter(Boolean);
 
@@ -202,6 +209,7 @@ export function stegFormagor() {
     delar.length && !visaModal ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
     sf && !sf.regel ? el("p", { class: "hjalp" }, ingaVarden) : null,
     hp?.totalt > 0 && !visaModal ? hjaltepoangKop(hp) : null,
+    !visaModal ? familjarRuta() : null,
     visaModal ? modal : null,
     // Tabellen ritas under stegets knappar (ritaVy flyttar den dit), eftersom den är lång
     el("div", { class: "steg-innehall efter-fot" },
@@ -229,4 +237,41 @@ function hjaltepoangKop(hp) {
       el("button", { type: "button", class: "knapp liten", id: `hp-${g}-ner`, "aria-label": `Sänk ${g}`, disabled: !kop[g], onclick: () => andra(g, -1) }, "−"),
       el("span", { class: "hp-antal", id: `hp-${g}` }, kop[g] ? `+${kop[g]}` : "0"),
       el("button", { type: "button", class: "knapp liten", id: `hp-${g}-upp`, "aria-label": `Höj ${g}`, disabled: hp.kvar < pris, onclick: () => andra(g, 1) }, "+"))))));
+}
+
+// Familjarer (Magi i Chronopia s. 40–43) köps för BP här i steg 7. Erfarenhetsnivån avgör hur många
+// rollpersonen får ha (RB-010); de som yrket eller Spiritus familiarius ger är gratis.
+function familjarRuta() {
+  const F = S.R.foljeslagare?.familjarer;
+  const fam = rakna().familjarer ?? raknaFamiljarer(S.R, motorIndata()); // med gratis familjarer från förmågorna
+  if (!F || !fam.tillganglig) return null;
+  const kopta = S.rp.familjarer ?? [];
+  const antal = (id) => kopta.filter((x) => x === id).length;
+  const andra = (id, d) => {
+    const ny = [...kopta];
+    if (d > 0) ny.push(id); else ny.splice(ny.lastIndexOf(id), 1);
+    S.rp.familjarer = ny;
+    uppdatera();
+  };
+  const gratis = fam.lista.filter((f) => f.gratis);
+  const varden = (f) => ["STO", "STY", "FYS", "SMI", "INT", "PSY", "KP"].map((g) => `${g} ${f[g]}`).join(", ");
+  return el("div", { class: "rutor", id: "familjarer" }, el("div", {},
+    el("h3", {}, "Familjarer"),
+    el("p", {}, `Rollpersonen får ha högst ${fam.tak} köpt${fam.tak === 1 ? "" : "a"} familjar${fam.tak === 1 ? "" : "er"} och har köpt ${fam.antal}. De kostar ${fam.bp} BP.`),
+    el("p", { class: "hjalp" }, `${F.text} (${kallText(S.R, F, "")}).`),
+    gratis.length ? el("p", { id: "familjarer-gratis" }, `Gratis: ${gratis.map((f) => `${f.namn} (${f.kallaGratis})`).join(", ")}.`) : null,
+    el("div", { class: "tabellram" }, el("table", { class: "tabell varutabell" },
+      el("thead", {}, el("tr", {}, el("th", {}, "Familjar"), el("th", {}, "BP"), el("th", {}, "Värden"), el("th", {}, "Antal"))),
+      el("tbody", {}, F.lista.map((f) => {
+        const n = antal(f.id);
+        const sparrad = f.villkor?.yrken && !f.villkor.yrken.includes(S.rp.yrke);
+        return el("tr", { "data-familjar": f.id, class: sparrad ? "sparrad" : "" },
+          el("td", {}, el("strong", {}, f.namn), el("div", { class: "hjalp" }, f.beskrivning, sparrad ? " Bara för chronomager och divinatorer." : "")),
+          el("td", {}, String(f.bp)),
+          el("td", { class: "hjalp" }, varden(f), f.fardigheter ? el("div", {}, f.fardigheter) : null),
+          el("td", { class: "antal" },
+            el("button", { type: "button", class: "knapp liten", "aria-label": `Ta bort ${f.namn}`, disabled: !n, onclick: () => andra(f.id, -1) }, "−"),
+            el("span", { id: `familjar-${f.id}` }, String(n)),
+            el("button", { type: "button", class: "knapp liten", "aria-label": `Köp ${f.namn}`, disabled: sparrad || fam.antal >= fam.tak, onclick: () => andra(f.id, 1) }, "+")));
+      }))))));
 }

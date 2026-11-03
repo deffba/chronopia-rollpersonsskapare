@@ -154,4 +154,51 @@ export const TESTROLLPERSONER = [
     kop: ["Ordenskrigarhjälm", "Axelskydd (par): Högländskt", "Rustningsolja", "Vapenputs"],
     anteckningar: "Testrollperson från utvecklarläget. Högländsk ordensriddare med hederssvärd och ordenskrigarhjälm.",
   },
+  {
+    // Magi i Chronopia: magus regis (två förmågor, tre familjarer), Tidsmagi med grenarna, minimagi och
+    // Spiritus familiarius (en gratis familjar) från Magis förmågetabell
+    id: "magi-chronomag",
+    etikett: "Människa, chronomag (Magi, magus regis)",
+    namn: "Aurelia Timglas",
+    kon: "Kvinna",
+    bocker: ["magi"],
+    niva: 1,
+    ras: "manniska",
+    alder: 32,
+    yrke: "chronomag",
+    val: { lardom: ["Astronomi", "Kunskap om demoner"], mentalism: true, vapen: ["Dolk"] },
+    valfri: "astrologi",
+    sarskildFormaga: [
+      { bp: 1, slag: 20, tabell: "magi", val: ["dragonette"] }, // 21: Spiritus familiarius
+      { bp: 1, slag: 2, tabell: "magi", val: [["mentalism"]] }, // 3: Magikänsla
+    ],
+    slag: { svardshand: 6, socialtStand: 10, startkapital: 12 },
+    epTillBesvarjelser: 80,
+    besvarjelser: ["slohet", "sinnesskarpa"],
+    minimagi: ["mini-eld", "mini-laka", "mini-ljusskken"],
+    familjarer: ["tefalon", "gargoyl"],
+    startpaketVapen: "Dolk",
+    anteckningar: "Testrollperson från utvecklarläget. Född i Evighetspalatset under den femte månen.",
+  },
+  {
+    // Magi i Chronopia: fågelbroderns gratis lystat utöver taket, och en köpt familjar på nivån magus
+    id: "magi-fagelbroder",
+    etikett: "Människa, fågelbroder (Magi, gratis familjar)",
+    namn: "Corvin Fjäderhand",
+    kon: "Man",
+    bocker: ["magi"],
+    niva: 0,
+    ras: "manniska",
+    alder: 25,
+    yrke: "fagelbroder",
+    val: { ortkunskap: true, lardom: ["Kunskap om fåglar"], vapen: ["Trästav", "Slunga"] },
+    valfri: "overlevnad",
+    sarskildFormaga: { bp: 5, slag: 10, tabell: "grund" },
+    slag: { svardshand: 7, socialtStand: 6, startkapital: 8 },
+    besvarjelser: [],
+    minimagi: ["mini-ljusskken"],
+    familjarer: ["jefta"],
+    startpaketVapen: "Trästav",
+    anteckningar: "Testrollperson från utvecklarläget. Fågelbroder med sin lystat och en pratsam jefta.",
+  },
 ];

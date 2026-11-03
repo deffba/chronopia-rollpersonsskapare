@@ -3,7 +3,8 @@
     "allman": "Allmänna",
     "animism": "Animism",
     "elementarmagi": "Elementarmagi",
-    "mentalism": "Mentalism"
+    "mentalism": "Mentalism",
+    "tidsmagi": "Tidsmagi"
   },
   "lista": [
     {
@@ -735,6 +736,753 @@
       "varaktighet": "FV×1 minuter",
       "sida": 129,
       "beskrivning": "Den förhäxade behöver aldrig slå på Skräcktabellen."
+    },
+    {
+      "id": "se-aura",
+      "namn": "Se aura",
+      "skola": "allman",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 SR",
+      "sida": 29,
+      "kalla": {
+        "bok": "magi",
+        "sida": 29
+      },
+      "beskrivning": "Ser auror runt levande och döda ting. Färgen visar sinnesstämning, ras och vilken magi någon utövar; en pulserande aura är farlig och en skimrande stark."
+    },
+    {
+      "id": "avskarmning",
+      "namn": "Avskärmning",
+      "skola": "allman",
+      "sv": 12,
+      "typ": "",
+      "rackvidd": "FV×1 rutor",
+      "varaktighet": "FV×1 minuter",
+      "sida": 30,
+      "kalla": {
+        "bok": "magi",
+        "sida": 30
+      },
+      "beskrivning": "Döljer magikerns krafter: Känna magi, Se aura och liknande avslöjar inte att magikern eller dess föremål är magiska."
+    },
+    {
+      "id": "utvinna-kara",
+      "namn": "Utvinna kara",
+      "skola": "allman",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "FV×1 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 30,
+      "kalla": {
+        "bok": "magi",
+        "sida": 30
+      },
+      "beskrivning": "Nära en ghanlinje: lagrar kara som PSY i en magisk behållare, 1 PSY per SR och effektgrad. Misslyckas slaget blir det ett svårt PSY-slag eller en snedtändning."
+    },
+    {
+      "id": "tala-med-tra",
+      "namn": "Tala med trä",
+      "skola": "animism",
+      "sv": 7,
+      "typ": "",
+      "rackvidd": "FV/2 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 30,
+      "kalla": {
+        "bok": "magi",
+        "sida": 30
+      },
+      "beskrivning": "Samtal med träd och träföremål. Äldre och mer bearbetat trä kräver fler effektgrader."
+    },
+    {
+      "id": "vaxthamn",
+      "namn": "Växthamn",
+      "skola": "animism",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 timmar",
+      "sida": 30,
+      "kalla": {
+        "bok": "magi",
+        "sida": 30
+      },
+      "beskrivning": "Magikern blir ett skogsväsen: talar med växter och djur, rör sig fritt i skog, angrips inte av djur. Knytnävar 1T4+1 och 1 poängs naturligt skydd per effektgrad."
+    },
+    {
+      "id": "maskmissil",
+      "namn": "Maskmissil",
+      "skola": "animism",
+      "sv": 5,
+      "typ": "",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 31,
+      "kalla": {
+        "bok": "magi",
+        "sida": 31
+      },
+      "beskrivning": "Slungar en tandlarv mot målet: 1T2 skada per effektgrad, och larven fortsätter tugga sig igenom rustningen tills den stoppas.",
+      "grupp": "underjord",
+      "villkor": {
+        "yrken": [
+          "cestodit"
+        ]
+      }
+    },
+    {
+      "id": "galenskap",
+      "namn": "Galenskap",
+      "skola": "animism",
+      "sv": 7,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 31,
+      "kalla": {
+        "bok": "magi",
+        "sida": 31
+      },
+      "beskrivning": "Djur (5 STO per effektgrad) blir vansinniga och anfaller allt utom magikern.",
+      "grupp": "underjord",
+      "villkor": {
+        "yrken": [
+          "cestodit"
+        ]
+      }
+    },
+    {
+      "id": "forruttnelse",
+      "namn": "Förruttnelse",
+      "skola": "animism",
+      "sv": 9,
+      "typ": "",
+      "rackvidd": "FV×5 rutor",
+      "varaktighet": "Permanent",
+      "sida": 31,
+      "kalla": {
+        "bok": "magi",
+        "sida": 31
+      },
+      "beskrivning": "Växter, trä och tyg ruttnar, 1 m³ och 1 m till per effektgrad. Påverkar inte levande varelser.",
+      "grupp": "underjord",
+      "villkor": {
+        "yrken": [
+          "cestodit"
+        ]
+      }
+    },
+    {
+      "id": "forvridning",
+      "namn": "Förvridning",
+      "skola": "animism",
+      "sv": 13,
+      "typ": "",
+      "rackvidd": "FV/2 rutor",
+      "varaktighet": "Permanent",
+      "sida": 31,
+      "kalla": {
+        "bok": "magi",
+        "sida": 31
+      },
+      "beskrivning": "Förändrar en varelse, till exempel för att skapa nya kloakvarelser. Misslyckas besvärjelsen dör målet.",
+      "grupp": "underjord",
+      "villkor": {
+        "yrken": [
+          "cestodit"
+        ]
+      }
+    },
+    {
+      "id": "cestods-forbannelse",
+      "namn": "Cestods förbannelse",
+      "skola": "animism",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 31,
+      "kalla": {
+        "bok": "magi",
+        "sida": 31
+      },
+      "beskrivning": "Larver äter offret inifrån: 1 KP per SR och effektgrad. Bryts bara av Antimagi eller Hela.",
+      "grupp": "underjord",
+      "villkor": {
+        "yrken": [
+          "cestodit"
+        ]
+      }
+    },
+    {
+      "id": "maskarnas-herre",
+      "namn": "Maskarnas herre",
+      "skola": "animism",
+      "sv": 17,
+      "typ": "",
+      "rackvidd": "FV×100 rutor",
+      "varaktighet": "FV×1 timmar",
+      "sida": 32,
+      "kalla": {
+        "bok": "magi",
+        "sida": 32
+      },
+      "beskrivning": "Kallar på och styr maskar, larver och kryp inom räckvidden.",
+      "grupp": "underjord",
+      "villkor": {
+        "yrken": [
+          "cestodit"
+        ]
+      }
+    },
+    {
+      "id": "animera-best",
+      "namn": "Animera best",
+      "skola": "animism",
+      "sv": 18,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×1 timmar",
+      "sida": 32,
+      "kalla": {
+        "bok": "magi",
+        "sida": 32
+      },
+      "beskrivning": "Väcker kloakens avfall till en best med 5 i STO, STY, FYS, SMI och INT, +5 per effektgrad över den första. Bett 1T8 eller två klor 1T6.",
+      "grupp": "underjord",
+      "villkor": {
+        "yrken": [
+          "cestodit"
+        ]
+      }
+    },
+    {
+      "id": "elddopt",
+      "namn": "Elddöpt",
+      "skola": "elementarmagi",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 SR",
+      "sida": 32,
+      "kalla": {
+        "bok": "magi",
+        "sida": 32
+      },
+      "beskrivning": "Skyddar mot naturlig eld och, med ett lyckat motståndsslag, magisk eld."
+    },
+    {
+      "id": "forma-sten",
+      "namn": "Forma sten",
+      "skola": "elementarmagi",
+      "sv": 7,
+      "typ": "F",
+      "rackvidd": "FV×5 rutor",
+      "varaktighet": "Permanent",
+      "sida": 32,
+      "kalla": {
+        "bok": "magi",
+        "sida": 32
+      },
+      "beskrivning": "Formar sten fritt; volym och massa är desamma."
+    },
+    {
+      "id": "morkerblixt",
+      "namn": "Mörkerblixt",
+      "skola": "elementarmagi",
+      "sv": 8,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 32,
+      "kalla": {
+        "bok": "magi",
+        "sida": 32
+      },
+      "beskrivning": "En blixt av mörker: 1T6 skada per effektgrad."
+    },
+    {
+      "id": "islans",
+      "namn": "Islans",
+      "skola": "elementarmagi",
+      "sv": 8,
+      "typ": "F",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 32,
+      "kalla": {
+        "bok": "magi",
+        "sida": 32
+      },
+      "beskrivning": "Islansar som gör 1T6 per effektgrad och kan delas mellan flera mål."
+    },
+    {
+      "id": "eldsklinga",
+      "namn": "Eldsklinga",
+      "skola": "elementarmagi",
+      "sv": 8,
+      "typ": "F",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV SR",
+      "sida": 32,
+      "kalla": {
+        "bok": "magi",
+        "sida": 32
+      },
+      "beskrivning": "Ett flammande svärd, 1T8+2 per effektgrad, som inte väger något och inte kan pareras med vanliga vapen (BV 11)."
+    },
+    {
+      "id": "magisk-bro",
+      "namn": "Magisk bro",
+      "skola": "elementarmagi",
+      "sv": 10,
+      "typ": "",
+      "rackvidd": "FV×2 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 32,
+      "kalla": {
+        "bok": "magi",
+        "sida": 32
+      },
+      "beskrivning": "En bro 4×1 m som bär 50 kg per effektgrad; varje effektgrad förlänger den 2 m."
+    },
+    {
+      "id": "eldklot",
+      "namn": "Eldklot",
+      "skola": "elementarmagi",
+      "sv": 11,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 33,
+      "kalla": {
+        "bok": "magi",
+        "sida": 33
+      },
+      "beskrivning": "1T8 per effektgrad och målet fattar eld (1T3 per effektgrad i 1T6 SR). Rustning skyddar och sköld kan parera."
+    },
+    {
+      "id": "luftens-vingar",
+      "namn": "Luftens vingar",
+      "skola": "elementarmagi",
+      "sv": 11,
+      "typ": "",
+      "rackvidd": "FV×3 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 33,
+      "kalla": {
+        "bok": "magi",
+        "sida": 33
+      },
+      "beskrivning": "Vindar bär personer eller föremål, 6 STO per effektgrad."
+    },
+    {
+      "id": "morkerklo",
+      "namn": "Mörkerklo",
+      "skola": "elementarmagi",
+      "sv": 11,
+      "typ": "",
+      "rackvidd": "FV×4 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 33,
+      "kalla": {
+        "bok": "magi",
+        "sida": 33
+      },
+      "beskrivning": "En klo av mörker som gör 1T8 (+2 per effektgrad), har 8 KP (+1 per effektgrad) och inte skadas av vanliga vapen."
+    },
+    {
+      "id": "erosion",
+      "namn": "Erosion",
+      "skola": "elementarmagi",
+      "sv": 12,
+      "typ": "",
+      "rackvidd": "FV×4 rutor",
+      "varaktighet": "Permanent",
+      "sida": 33,
+      "kalla": {
+        "bok": "magi",
+        "sida": 33
+      },
+      "beskrivning": "Sten blir porös sand, 1 m³ per effektgrad."
+    },
+    {
+      "id": "elementarhamn",
+      "namn": "Elementarhamn",
+      "skola": "elementarmagi",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 SR",
+      "sida": 33,
+      "kalla": {
+        "bok": "magi",
+        "sida": 33
+      },
+      "beskrivning": "Magikern blir ett elementarväsen (jord, vatten, luft, eld, mörker, ljus, köld eller värme) med hamnens förmågor och +2 i STY, STO och FYS per effektgrad, men kan inte lägga besvärjelser."
+    },
+    {
+      "id": "drakens-andedrakt",
+      "namn": "Drakens andedräkt",
+      "skola": "elementarmagi",
+      "sv": 18,
+      "typ": "F",
+      "rackvidd": "FV×3 rutor",
+      "varaktighet": "FV SR",
+      "sida": 34,
+      "kalla": {
+        "bok": "magi",
+        "sida": 34
+      },
+      "beskrivning": "Varje SR en eldkvast som gör 4T6 i skada, ungefär tre meter bred."
+    },
+    {
+      "id": "sinnesskarpa",
+      "namn": "Sinnesskärpa",
+      "skola": "mentalism",
+      "sv": 5,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 SR",
+      "sida": 34,
+      "kalla": {
+        "bok": "magi",
+        "sida": 34
+      },
+      "beskrivning": "+3 CL per effektgrad i Lyssna, Finna dolda ting och Upptäcka fara."
+    },
+    {
+      "id": "kraftsamling",
+      "namn": "Kraftsamling",
+      "skola": "mentalism",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "Personlig/Beröring",
+      "varaktighet": "FV/2 SR",
+      "sida": 34,
+      "kalla": {
+        "bok": "magi",
+        "sida": 34
+      },
+      "beskrivning": "+3 CL per effektgrad på en valfri handling, även övermänskliga."
+    },
+    {
+      "id": "stalsattning-magi",
+      "namn": "Stålsättning",
+      "skola": "mentalism",
+      "sv": 7,
+      "typ": "",
+      "rackvidd": "Personlig/Beröring",
+      "varaktighet": "FV×1 SR",
+      "sida": 34,
+      "kalla": {
+        "bok": "magi",
+        "sida": 34
+      },
+      "beskrivning": "Ignorerar alla effekter av skador, utom en kroppsdel som blir kritiskt skadad. Efteråt ett FYS-slag för att inte svimma."
+    },
+    {
+      "id": "minnesforlust",
+      "namn": "Minnesförlust",
+      "skola": "mentalism",
+      "sv": 8,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Speciell",
+      "sida": 34,
+      "kalla": {
+        "bok": "magi",
+        "sida": 34
+      },
+      "beskrivning": "Offret glömmer: E1 de senaste 10 minuterna i 1 timme … E6 allt, för alltid."
+    },
+    {
+      "id": "kraftmatning",
+      "namn": "Kraftmätning",
+      "skola": "mentalism",
+      "sv": 11,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 34,
+      "kalla": {
+        "bok": "magi",
+        "sida": 34
+      },
+      "beskrivning": "PSY mot PSY: 1T4 skada per effektgrad på totala KP."
+    },
+    {
+      "id": "spokkropp",
+      "namn": "Spökkropp",
+      "skola": "mentalism",
+      "sv": 13,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 SR",
+      "sida": 34,
+      "kalla": {
+        "bok": "magi",
+        "sida": 34
+      },
+      "beskrivning": "Kroppen blir genomskinlig och kan gå genom väggar; skadas bara av eld (halv skada) och magiska vapen."
+    },
+    {
+      "id": "varldens-sjal",
+      "namn": "Världens själ",
+      "skola": "mentalism",
+      "sv": 19,
+      "typ": "",
+      "rackvidd": "FV×1 kilometer",
+      "varaktighet": "FV×1 timmar",
+      "sida": 34,
+      "kalla": {
+        "bok": "magi",
+        "sida": 34
+      },
+      "beskrivning": "Läser alla varelsers sinnen inom räckvidden. Ett PSY-slag varje timme, annars snedtändning."
+    },
+    {
+      "id": "det-forflutnas-marke",
+      "namn": "Det förflutnas märke",
+      "skola": "tidsmagi",
+      "sv": 6,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "FV SR",
+      "sida": 35,
+      "kalla": {
+        "bok": "magi",
+        "sida": 35
+      },
+      "beskrivning": "Läser ett föremåls eller en persons förflutna. E1 1 dag, E2 10 dagar, E3 1 månad, E4 1 år, E5 10 år, E6 100 år.",
+      "grupp": "forutskickelse"
+    },
+    {
+      "id": "spadom",
+      "namn": "Spådom",
+      "skola": "tidsmagi",
+      "sv": 10,
+      "typ": "",
+      "rackvidd": "Speciell",
+      "varaktighet": "Speciell",
+      "sida": 35,
+      "kalla": {
+        "bok": "magi",
+        "sida": 35
+      },
+      "beskrivning": "En suddig och kryptisk bild av sannolika framtider. E1 1 dag, E2 10 dagar, E3 1 månad, E4 1 år, E5 10 år, E6 100 år.",
+      "grupp": "forutskickelse"
+    },
+    {
+      "id": "sondering",
+      "namn": "Sondering",
+      "skola": "tidsmagi",
+      "sv": 11,
+      "typ": "",
+      "rackvidd": "FV×100 meter",
+      "varaktighet": "FV SR",
+      "sida": 35,
+      "kalla": {
+        "bok": "magi",
+        "sida": 35
+      },
+      "beskrivning": "Ett klart besked om vart framtidens vägar leder, men bara en dag framåt per effektgrad.",
+      "grupp": "forutskickelse"
+    },
+    {
+      "id": "insikt",
+      "namn": "Insikt",
+      "skola": "tidsmagi",
+      "sv": 13,
+      "typ": "",
+      "rackvidd": "FV×10 meter",
+      "varaktighet": "FV SR",
+      "sida": 36,
+      "kalla": {
+        "bok": "magi",
+        "sida": 36
+      },
+      "beskrivning": "Ser några sekunder in i framtiden: +5 CL på allt och på initiativet. En person till per effektgrad.",
+      "grupp": "forutskickelse"
+    },
+    {
+      "id": "tidssyn",
+      "namn": "Tidssyn",
+      "skola": "tidsmagi",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "FV×100 meter",
+      "varaktighet": "FV/2 SR",
+      "sida": 36,
+      "kalla": {
+        "bok": "magi",
+        "sida": 36
+      },
+      "beskrivning": "Ser hur platsen ser ut i forntiden eller framtiden. E1 1 dag, E2 10 dagar, E3 1 månad, E4 1 år, E5 10 år, E6 100 år.",
+      "grupp": "forutskickelse"
+    },
+    {
+      "id": "lokalisering",
+      "namn": "Lokalisering",
+      "skola": "tidsmagi",
+      "sv": 19,
+      "typ": "",
+      "rackvidd": "FV×100 meter",
+      "varaktighet": "FV/2 SR",
+      "sida": 36,
+      "kalla": {
+        "bok": "magi",
+        "sida": 36
+      },
+      "beskrivning": "Hittar den minsta förändring i det förflutna som ger den önskade förändringen i nuet.",
+      "grupp": "forutskickelse"
+    },
+    {
+      "id": "slohet",
+      "namn": "Slöhet",
+      "skola": "tidsmagi",
+      "sv": 8,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "FV/5 SR",
+      "sida": 37,
+      "kalla": {
+        "bok": "magi",
+        "sida": 37
+      },
+      "beskrivning": "Bromsar tiden: handlingar och förflyttning halveras för alla i området. Området: E1 1×1 ruta, E2 3×3, E3 10×10, E4 25×25, E5 100×100.",
+      "grupp": "contortism"
+    },
+    {
+      "id": "stoppa-tidsflode",
+      "namn": "Stoppa tidsflöde",
+      "skola": "tidsmagi",
+      "sv": 11,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "FV/10 SR",
+      "sida": 37,
+      "kalla": {
+        "bok": "magi",
+        "sida": 37
+      },
+      "beskrivning": "Tiden står still i området; de som är där upplever ingenting. Området: E1 1×1 ruta, E2 3×3, E3 10×10, E4 25×25, E5 100×100.",
+      "grupp": "contortism"
+    },
+    {
+      "id": "tidsteleportation",
+      "namn": "Tidsteleportation",
+      "skola": "tidsmagi",
+      "sv": 14,
+      "typ": "",
+      "rackvidd": "Beröring/Personlig",
+      "varaktighet": "Omedelbar",
+      "sida": 37,
+      "kalla": {
+        "bok": "magi",
+        "sida": 37
+      },
+      "beskrivning": "En oprecis resa i tiden: E1 inom 1 000 år … E6 inom 10 dagar.",
+      "grupp": "contortism"
+    },
+    {
+      "id": "skapa-tidsficka",
+      "namn": "Skapa tidsficka",
+      "skola": "tidsmagi",
+      "sv": 16,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "FV/5 SR",
+      "sida": 37,
+      "kalla": {
+        "bok": "magi",
+        "sida": 37
+      },
+      "beskrivning": "De förhäxade (en person per effektgrad) rör sig som om tiden stod still.",
+      "grupp": "contortism"
+    },
+    {
+      "id": "forvrida-tid",
+      "namn": "Förvrida tid",
+      "skola": "tidsmagi",
+      "sv": 17,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "Koncentration",
+      "sida": 37,
+      "kalla": {
+        "bok": "magi",
+        "sida": 37
+      },
+      "beskrivning": "Offret blir på en gång ofött, nyfött, gammalt och dött: 1 KP skada per SR, och blir troligen sinnessjukt.",
+      "grupp": "contortism"
+    },
+    {
+      "id": "oka-tidsflode",
+      "namn": "Öka tidsflöde",
+      "skola": "tidsmagi",
+      "sv": 21,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "Speciell",
+      "sida": 37,
+      "kalla": {
+        "bok": "magi",
+        "sida": 37
+      },
+      "beskrivning": "Åldrar ett föremål eller en varelse per effektgrad. E1 1 år, E2 5 år, E3 10 år, E4 20 år, E5 50 år, E6 100 år. Tar 20−CL stridsrundor (minst 1) per effektgrad.",
+      "grupp": "contortism"
+    },
+    {
+      "id": "vanda-tidsflode",
+      "namn": "Vända tidsflöde",
+      "skola": "tidsmagi",
+      "sv": 23,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "Speciell",
+      "sida": 37,
+      "kalla": {
+        "bok": "magi",
+        "sida": 37
+      },
+      "beskrivning": "Gör gammalt nytt; varelser förlorar minnen och erfarenheter. E1 1 år, E2 5 år, E3 10 år, E4 20 år, E5 50 år, E6 100 år. Tar 20−CL stridsrundor (minst 1) per effektgrad.",
+      "grupp": "contortism"
+    },
+    {
+      "id": "oppna-tidsreva",
+      "namn": "Öppna tidsreva",
+      "skola": "tidsmagi",
+      "sv": 26,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "FV SR",
+      "sida": 38,
+      "kalla": {
+        "bok": "magi",
+        "sida": 38
+      },
+      "beskrivning": "En reva (1×1 m per effektgrad) till framtiden eller forntiden. E1 1 dag, E2 10 dagar, E3 1 månad, E4 1 år, E5 10 år, E6 100 år.",
+      "grupp": "contortism"
+    },
+    {
+      "id": "tidsdod",
+      "namn": "Tidsdöd",
+      "skola": "tidsmagi",
+      "sv": 27,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "FV SR",
+      "sida": 38,
+      "kalla": {
+        "bok": "magi",
+        "sida": 38
+      },
+      "beskrivning": "Ett tidsdött område som förintar allt det rör vid, 1 m³ per effektgrad.",
+      "grupp": "contortism"
     }
   ],
   "varelsegrupper": [
@@ -813,5 +1561,196 @@
     127,
     128,
     129
-  ]
+  ],
+  "grupper": {
+    "underjord": {
+      "namn": "Underjordens magi",
+      "skola": "animism",
+      "kalla": {
+        "bok": "magi",
+        "sida": 30
+      },
+      "text": "Cestoditernas animism, som bara cestoditer kan lära sig (Magi i Chronopia s. 30)."
+    },
+    "forutskickelse": {
+      "namn": "Förutskickelsens magi",
+      "skola": "tidsmagi",
+      "kalla": {
+        "bok": "magi",
+        "sida": 35
+      },
+      "text": "Divinatorernas gren av tidsmagin. En chronomag får lära sig en besvärjelse härifrån för var tredje besvärjelse i contortismen som den har lärt sig till FV 10 (s. 35)."
+    },
+    "contortism": {
+      "namn": "Contortismens magi",
+      "skola": "tidsmagi",
+      "kalla": {
+        "bok": "magi",
+        "sida": 37
+      },
+      "text": "Chronomagernas gren av tidsmagin. En divinator får lära sig en besvärjelse härifrån för varannan besvärjelse i förutskickelsen som den har lärt sig till FV 10 (s. 35)."
+    }
+  },
+  "tidsgrenar": {
+    "kalla": {
+      "bok": "magi",
+      "sida": 35
+    },
+    "chronomag": {
+      "egen": "contortism",
+      "annan": "forutskickelse",
+      "per": 3
+    },
+    "divinator": {
+      "egen": "forutskickelse",
+      "annan": "contortism",
+      "per": 2
+    },
+    "fv": 10
+  },
+  "minimagi": {
+    "kalla": {
+      "bok": "magi",
+      "sida": 28
+    },
+    "perFV": 2,
+    "text": "Minimagi kostar ingen PSY och inga EP. För varje FV i Minimagi kan rollpersonen två valfria minimagiska besvärjelser, som läggs med FV i Minimagi (Magi i Chronopia s. 28–29).",
+    "lista": [
+      {
+        "id": "mini-bevara",
+        "namn": "Bevara",
+        "beskrivning": "Håller 5 kg mat färsk."
+      },
+      {
+        "id": "mini-bladdra",
+        "namn": "Bläddra",
+        "beskrivning": "Vänder blad i en bok i en timme."
+      },
+      {
+        "id": "mini-doda",
+        "namn": "Döda",
+        "beskrivning": "Dödar insekter och andra småkryp med mindre än 1 KP."
+      },
+      {
+        "id": "mini-eld",
+        "namn": "Eld",
+        "beskrivning": "En gnista som tänder, men inte skadar."
+      },
+      {
+        "id": "mini-gro",
+        "namn": "Gro",
+        "beskrivning": "Får frön och krukväxter att växa tio gånger snabbare."
+      },
+      {
+        "id": "mini-hamta",
+        "namn": "Hämta",
+        "beskrivning": "Hämtar ett föremål på högst 0,5 kg inom 10 m."
+      },
+      {
+        "id": "mini-kasta",
+        "namn": "Kasta",
+        "beskrivning": "Kastar ett föremål på högst 1 kg upp till 10 m."
+      },
+      {
+        "id": "mini-koka",
+        "namn": "Koka",
+        "beskrivning": "Kokar mat på mindre än en minut."
+      },
+      {
+        "id": "mini-kyla-varma",
+        "namn": "Kyla/Värma",
+        "beskrivning": "Kyler eller värmer 10 m³ luft eller 1 liter vätska 10 grader i en timme."
+      },
+      {
+        "id": "mini-laga",
+        "namn": "Laga",
+        "beskrivning": "Lagar mindre revor och sprickor i vanliga föremål."
+      },
+      {
+        "id": "mini-ljusskken",
+        "namn": "Ljussken",
+        "beskrivning": "Svagt ljus eller ljusspel i en timme."
+      },
+      {
+        "id": "mini-lyfta",
+        "namn": "Lyfta",
+        "beskrivning": "Ett föremål på högst 50 kg svävar en minut."
+      },
+      {
+        "id": "mini-laka",
+        "namn": "Läka",
+        "beskrivning": "Läker mindre skärsår helt."
+      },
+      {
+        "id": "mini-lasa",
+        "namn": "Läsa",
+        "beskrivning": "En spökröst läser högt i en timme."
+      },
+      {
+        "id": "mini-musik",
+        "namn": "Musik",
+        "beskrivning": "Musik i tio minuter."
+      },
+      {
+        "id": "mini-regnskydd",
+        "namn": "Regnskydd",
+        "beskrivning": "Skydd mot regn i en timme."
+      },
+      {
+        "id": "mini-rena",
+        "namn": "Rena",
+        "beskrivning": "Renar 1 liter vätska från naturlig smuts, men inte gift."
+      },
+      {
+        "id": "mini-rent",
+        "namn": "Rent",
+        "beskrivning": "Städar 10 m²."
+      },
+      {
+        "id": "mini-skriva",
+        "namn": "Skriva",
+        "beskrivning": "En penna antecknar i en timme."
+      },
+      {
+        "id": "mini-slacka",
+        "namn": "Släcka",
+        "beskrivning": "Släcker en liten låga inom 5 m."
+      },
+      {
+        "id": "mini-smak",
+        "namn": "Smak",
+        "beskrivning": "Mat smakar och doftar som något annat."
+      },
+      {
+        "id": "mini-sudda",
+        "namn": "Sudda",
+        "beskrivning": "Gör ett vanligt dokument blankt."
+      },
+      {
+        "id": "mini-torrt",
+        "namn": "Torrt",
+        "beskrivning": "Torkar 1 dl vätska."
+      },
+      {
+        "id": "mini-vind",
+        "namn": "Vind",
+        "beskrivning": "En vind som följer magikern i en timme."
+      },
+      {
+        "id": "mini-vindskydd",
+        "namn": "Vindskydd",
+        "beskrivning": "Skydd mot vind i en timme."
+      },
+      {
+        "id": "mini-oppna-stanga",
+        "namn": "Öppna/Stänga",
+        "beskrivning": "Öppnar eller stänger en olåst dörr eller lucka."
+      },
+      {
+        "id": "mini-orfil",
+        "namn": "Örfil",
+        "beskrivning": "En örfil som svider men inte skadar."
+      }
+    ]
+  }
 }

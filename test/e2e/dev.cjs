@@ -62,7 +62,7 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   ok('rollformuläret med erf', await p.locator('#rf-vy').isVisible() && Object.keys(erf).length > 0);
   const filer = []; p.on('download', d => filer.push(d.suggestedFilename()));
   await p.click('#menyknapp'); await p.click('#dev-ladda-ner'); await p.waitForTimeout(1000);
-  ok('ladda ner alla', filer.length === 6, filer.join(', '));
+  ok('ladda ner alla', filer.length === 8, filer.join(', '));
   await p.goto(URL); await p.waitForSelector('.utvecklarlage', { state: 'attached' });
   ok('valet sparas i webbläsaren', true);
   await p.goto(URL + '?dev=av'); await tillRas(p); await p.waitForTimeout(300);

@@ -67,7 +67,7 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
   }
 
   if (steg === "kon") {
-    if (!rp.kon) rp.kon = valj(["Man", "Kvinna"]);
+    if (!rp.kon) rp.kon = yrkeAv(R, rp.yrke)?.villkor?.kon ?? valj(["Man", "Kvinna"]);
     if (!rp.namn.trim()) rp.namn = valj(NAMN[rp.kon] ?? NAMN.Man);
     if (!rp.spelare.trim()) rp.spelare = "Test";
   }

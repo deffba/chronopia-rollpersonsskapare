@@ -1358,6 +1358,357 @@
           "sida": 15
         }
       ]
+    },
+    {
+      "id": "magi",
+      "namn": "Magi i Chronopia",
+      "tarning": "1T20",
+      "sida": "16–18",
+      "maxBP": 20,
+      "kraver": {
+        "bok": "magi"
+      },
+      "kalla": {
+        "bok": "magi",
+        "sida": 16
+      },
+      "rader": [
+        {
+          "slag": [
+            1,
+            2
+          ],
+          "namn": "Empati",
+          "effekt": "Känner av andras sinnesstämning, till exempel glädje, sorg eller ilska, men inte vad de tänker.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            3,
+            4
+          ],
+          "namn": "Magikänsla",
+          "effekt": "+5 FV i en valfri magiskola. CL i Känna magi är aldrig lägre än 10.",
+          "sida": 17,
+          "regel": [
+            {
+              "typ": "fv",
+              "fv": 5,
+              "valj": 1,
+              "bland": [
+                "animism",
+                "elementarmagi",
+                "mentalism",
+                "tidsmagi"
+              ]
+            }
+          ]
+        },
+        {
+          "slag": [
+            5,
+            6
+          ],
+          "namn": "Onda ögat",
+          "effekt": "PSY mot offrets PSY: offret avstår från fientliga handlingar och får −3 CL på allt resten av dagen.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            7,
+            8
+          ],
+          "namn": "Hängiven student",
+          "effekt": "FV 10 gratis i en valfri lärdomsfärdighet, som också räknas som primär.",
+          "sida": 17,
+          "regel": [
+            {
+              "typ": "fv",
+              "fv": 10,
+              "valj": 1,
+              "bland": "lardom",
+              "minst": true,
+              "status": "primar"
+            }
+          ]
+        },
+        {
+          "slag": [
+            9,
+            10
+          ],
+          "namn": "Arvinge",
+          "effekt": "Har ärvt ett bibliotek, ett laboratorium, ett litet hus och 75 000 sm.",
+          "sida": 17,
+          "regel": [
+            {
+              "typ": "kapital",
+              "varde": 75000
+            }
+          ],
+          "beslut": "RB-004"
+        },
+        {
+          "slag": [
+            11,
+            12
+          ],
+          "namn": "Efterlyst",
+          "effekt": "Det finns ett pris på rollpersonens huvud, kanske för ett brott den inte har begått.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            13,
+            14
+          ],
+          "namn": "Ormöga",
+          "effekt": "FV 10 gratis i Hypnotisera, som också räknas som primär.",
+          "sida": 17,
+          "regel": [
+            {
+              "typ": "fv",
+              "fv": 10,
+              "fasta": [
+                "hypnotisera"
+              ],
+              "minst": true,
+              "status": "primar"
+            }
+          ]
+        },
+        {
+          "slag": [
+            15,
+            16
+          ],
+          "namn": "Beryktad",
+          "effekt": "Allmänt känd i Chronopia, på gott och ont.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            17,
+            18
+          ],
+          "namn": "Turgubbe",
+          "effekt": "Har vansinnig tur. SL avgör hur det märks.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            19,
+            19
+          ],
+          "namn": "Demonöga",
+          "effekt": "Ser magiska auror runt levande och döda ting.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            20,
+            20
+          ],
+          "namn": "Kontakter",
+          "effekt": "Goda kontakter. Vilka det är beror på yrket.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            21,
+            21
+          ],
+          "namn": "Spiritus familiarius",
+          "effekt": "Får en valfri familjar gratis (Magi i Chronopia s. 40–43).",
+          "sida": 17,
+          "regel": [
+            {
+              "typ": "familjar"
+            }
+          ]
+        },
+        {
+          "slag": [
+            22,
+            22
+          ],
+          "namn": "Dvärgvän",
+          "effekt": "Har vunnit en dvärgfamiljs eller en dvärgklans vänskap.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            23,
+            23
+          ],
+          "namn": "Baneman",
+          "effekt": "Har svurit att bekämpa en ras eller ett folkslag: +5 CL på alla handlingar i strid mot dem.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            24,
+            24
+          ],
+          "namn": "Telepati",
+          "effekt": "Kan tala med andra genom tanken, och läsa tankar med PSY mot PSY.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            25,
+            25
+          ],
+          "namn": "Magislukare",
+          "effekt": "Lever av magisk energi (kara) i stället för vanlig föda.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            26,
+            26
+          ],
+          "namn": "Utsatt för experiment",
+          "effekt": "Har varit försökskanin åt en magiker och har biverkningar som SL bestämmer.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            27,
+            27
+          ],
+          "namn": "Respektingivande skepnad",
+          "effekt": "Ser så respektingivande ut att ingen anfaller rollpersonen oprovocerat.",
+          "sida": 17
+        },
+        {
+          "slag": [
+            28,
+            28
+          ],
+          "namn": "Orädd",
+          "effekt": "Slår aldrig på Skräcktabellen.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            29,
+            29
+          ],
+          "namn": "Ärkefiende",
+          "effekt": "Har en ärkefiende vars hantlangare dyker upp när man minst anar det.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            30,
+            30
+          ],
+          "namn": "Kraftkälla",
+          "effekt": "Kan lagra kara i kroppen, upp till PSY. Mer kräver ett PSY-slag, annars blir det en snedtändning.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            31,
+            31
+          ],
+          "namn": "Eldfödd",
+          "effekt": "Född under den sjunde månen: immun mot eld, även magisk eld.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            32,
+            32
+          ],
+          "namn": "Förbannelse",
+          "effekt": "Bär på en förbannelse som SL bestämmer.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            33,
+            33
+          ],
+          "namn": "Mäktiga vänner",
+          "effekt": "Har mäktiga vänner som kan ge tillflykt, pengar och beskydd.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            34,
+            34
+          ],
+          "namn": "Gåva",
+          "effekt": "Äger ett sällsynt föremål, till exempel en formelsamling, en stav, ett bibliotek eller ett laboratorium. SL avgör.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            35,
+            35
+          ],
+          "namn": "Besudlad",
+          "effekt": "Har kommit i kontakt med något orent som har satt sina spår. SL avgör hur det märks.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            36,
+            36
+          ],
+          "namn": "God mental kontroll",
+          "effekt": "Återfår PSY dubbelt så snabbt.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            37,
+            37
+          ],
+          "namn": "Kraftfull magiker",
+          "effekt": "Har en och en halv gång så många PSY-poäng att lägga besvärjelser med (avrundat uppåt).",
+          "sida": 18,
+          "beslut": "RB-018"
+        },
+        {
+          "slag": [
+            38,
+            38
+          ],
+          "namn": "Ohelig allians",
+          "effekt": "Har fått en gåva av de Hängivna, till exempel en höjd grundegenskap. SL avgör gåvan.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            39,
+            39
+          ],
+          "namn": "Magisk immunitet",
+          "effekt": "Immun mot all direkt magi, även den som skulle hjälpa.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            40,
+            40
+          ],
+          "namn": "Kejsarens gunstling",
+          "effekt": "Mannen i Evighetspalatset har ett gott öga till rollpersonen.",
+          "sida": 18
+        },
+        {
+          "slag": [
+            41,
+            null
+          ],
+          "namn": "Utvald",
+          "effekt": "Bunden till en eller flera gudar. SL avgör vilka och hur.",
+          "sida": 18
+        }
+      ]
     }
   ]
 }
