@@ -4,7 +4,8 @@
     "animism": "Animism",
     "elementarmagi": "Elementarmagi",
     "mentalism": "Mentalism",
-    "tidsmagi": "Tidsmagi"
+    "tidsmagi": "Tidsmagi",
+    "atums-vag": "Atums väg"
   },
   "lista": [
     {
@@ -1483,6 +1484,156 @@
       },
       "beskrivning": "Ett tidsdött område som förintar allt det rör vid, 1 m³ per effektgrad.",
       "grupp": "contortism"
+    },
+    {
+      "id": "atums-valsignelse",
+      "namn": "Atums välsignelse",
+      "skola": "atums-vag",
+      "sv": 5,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "En starkare variant av prästens yrkesförmåga: +3 per effektgrad på allt den förhäxade gör under varaktigheten."
+    },
+    {
+      "id": "atums-forbannelse",
+      "namn": "Atums förbannelse",
+      "skola": "atums-vag",
+      "sv": 5,
+      "typ": "",
+      "rackvidd": "FV rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "Som Atums välsignelse, men −3 per effektgrad."
+    },
+    {
+      "id": "himmelsk-eld",
+      "namn": "Himmelsk eld",
+      "skola": "atums-vag",
+      "sv": 7,
+      "typ": "",
+      "rackvidd": "FV×5 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "1T6 i skada per effektgrad. Rustning skyddar som vanligt, men kan fatta eld."
+    },
+    {
+      "id": "atums-yxa",
+      "namn": "Atums yxa",
+      "skola": "atums-vag",
+      "sv": 11,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "Beröring",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "Skapar en tvåeggad stridsyxa av svart sten. Den väger 2 kg och gör 1T10+1 per effektgrad."
+    },
+    {
+      "id": "bergets-vrede",
+      "namn": "Bergets vrede",
+      "skola": "atums-vag",
+      "sv": 13,
+      "typ": "",
+      "rackvidd": "FV×7 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "Stenar gör 1T8 per effektgrad. Går att undvika med ett svårt SMI-slag; extra effektgrader kan ge fler stenar mot olika mål. Rustning skyddar."
+    },
+    {
+      "id": "lugnets-vindar",
+      "namn": "Lugnets vindar",
+      "skola": "atums-vag",
+      "sv": 14,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×3 minuter",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "Upp till 10 personer per effektgrad slår motståndsslag mot prästens PSY eller glömmer alla fientliga känslor. Bryts av en fientlig handling."
+    },
+    {
+      "id": "atums-vederkvickelse",
+      "namn": "Atums vederkvickelse",
+      "skola": "atums-vag",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "FV×15 rutor",
+      "varaktighet": "FV×1 timmar",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "Minst tre präster, med samma effektgrad. 25 dvärgkrigare får +1 i CL per effektgrad på allt under varaktigheten."
+    },
+    {
+      "id": "bergets-styrka",
+      "namn": "Bergets styrka",
+      "skola": "atums-vag",
+      "sv": 17,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV/5 timmar",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "Minst tre magiker, med samma effektgrad. 25 dvärgkrigare får skadebonus i närstrid: E1 +1, E2 +1T2, E3 +1T4, E4 +1T6, E5 +1T10, E6 +2T6, E7 +3T6 och så vidare."
+    },
+    {
+      "id": "atums-anlete",
+      "namn": "Atums anlete",
+      "skola": "atums-vag",
+      "sv": 19,
+      "typ": "",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "Minst två präster. Offren (25 per effektgrad) måste lyckas med ett normalt PSY-slag eller slå på Skräcktabellen."
+    },
+    {
+      "id": "klippans-hunger",
+      "namn": "Klippans hunger",
+      "skola": "atums-vag",
+      "sv": 21,
+      "typ": "",
+      "rackvidd": "FV×15 rutor",
+      "varaktighet": "FV/2 SR",
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "beskrivning": "Minst fyra magiker. Öppnar en ravin, 5 m lång och 1 m bred per effektgrad, som sluter sig när varaktigheten är slut."
     }
   ],
   "varelsegrupper": [

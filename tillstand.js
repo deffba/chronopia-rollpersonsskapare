@@ -1,12 +1,12 @@
 // Rollpersonen och appens delade tillstånd, och kopplingen till regelmotorn.
 // Delat tillstånd som flera moduler ändrar ligger i S (till exempel S.rp, rollpersonen).
-import { raknaRollperson, rasAv, yrkeAv, fardighetAv, sarskildFormaga as sfFor, paborjad, paketNycklar } from "./regelmotor.js";
+import { raknaRollperson, rasAv, yrkeAv, fardighetAv, sarskildFormaga as sfFor, paborjad, paketNycklar, klanAv, klanTillganglig } from "./regelmotor.js";
 import { TOMT_SPEL, TOM_UTVECKLING } from "./sparformat.js";
 import { utvecklad } from "./utveckling.js";
 import { STEG } from "./texter.js";
 import { rita, visaNotis } from "./app.js";
 
-export const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning", "erfarenhet", "bocker", "foljeslagare"];
+export const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning", "erfarenhet", "bocker", "foljeslagare", "klaner"];
 export const LAGRING = "chronopia-rollperson-v2";
 
 export const TOM = () => ({
@@ -16,6 +16,8 @@ export const TOM = () => ({
   niva: 0, // erfarenhetsnivån (steg 0) när en vald bok har nivåer, t.ex. V&R:s krigare, veteran och hjälte (RB-001)
   hjaltepoangKop: {}, // grundegenskaper som höjs med hjältepoäng från särskilda förmågor (RB-003), 5 HP per poäng
   namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",
+  klan: { id: "", slag: null, formagaSlag: null, val: [] }, // dvärgens klan och klanförmåga (Dvärgar i Chronopia s. 4), steget Klan
+  tatueringar: [], // bärsärkens levande tatueringar från yrket (Dvärgar i Chronopia s. 6–7, 27–28)
   extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false, fler: [] }, svardshand: { bp: 0, slag: null },
   socialtStand: { bp: 0, slag: null }, startkapital: { bp: 0, slag: null }, sekundara: [], fardigheter: {},
@@ -108,6 +110,8 @@ export function yrkesNycklar() {
       const f = fardighetAv(S.R, val.id);
       if (!delval(f)) nycklar.push(val.id);
       else if (val.sub) nycklar.push(`${val.id}:${val.sub}`);
+    } else if (!post.antal && !fardighetAv(S.R, post.fardighet)?.perVal) {
+      nycklar.push(post.fardighet); // fast färdighet, t.ex. Prästens Atums väg
     } else {
       const valda = [].concat(val ?? []);
       post.maste?.forEach((m, j) => { valda[j] = m; });
@@ -134,6 +138,7 @@ function allaNycklar(yrkesfardigheter) {
   for (const f of S.R.fardigheter.lista) if (f.typ === "primar" && !ras.sekundara.includes(f.id)) mangd.add(f.id);
   for (const p of ras.primara) if (typeof p === "string") mangd.add(p);
   for (const k of S.rp.rasval) mangd.add(k);
+  if (klanTillganglig(S.R, { ...S.rp, ras: rasId() })) for (const k of klanAv(S.R, S.rp.klan?.id)?.primara ?? []) mangd.add(k); // Mindir
   for (const k of yrke.primara ?? []) mangd.add(k); // V&R: gratis FV 10 som primär (t.ex. Hypnotisera)
   for (const s of m.tala) mangd.add(`tala:${s}`);
   for (const s of m.lasaSkriva) mangd.add(`lasa-skriva:${s}`);
@@ -141,7 +146,7 @@ function allaNycklar(yrkesfardigheter) {
   for (const k of S.rp.extraYrkesfardigheter) mangd.add(k);
   for (const k of S.rp.sekundara) mangd.add(k);
   const sf = sfFor(S.R, { ...S.rp, ras: rasId(), yrkesfardigheter, extraYrkesfardigheter: S.rp.extraYrkesfardigheter }).tillagg.sarskildaFormagor;
-  for (const b of [...(sf?.fvBonus ?? []), ...(sf?.fvMinst ?? [])]) mangd.add(b.fardighet);
+  for (const b of [...(sf?.fvBonus ?? []), ...(sf?.fvMinst ?? [])]) if (!b.omHar) mangd.add(b.fardighet);
   if (yrke.magiker) {
     mangd.add("lardom:Kunskap om magi");
     if (yrke.automatiska?.includes("minimagi")) mangd.add("minimagi"); // Magi i Chronopia s. 8–9

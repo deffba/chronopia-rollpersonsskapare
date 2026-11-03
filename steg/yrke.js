@@ -1,5 +1,5 @@
 // Steg 3: yrke.
-import { yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, villkorText, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar, svardsskolaFor } from "../regelmotor.js";
+import { yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, villkorText, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar, paketIndex, svardsskolaFor } from "../regelmotor.js";
 import { visaNotis } from "../app.js";
 import { S, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -9,7 +9,7 @@ import { stridskonstInfo } from "./fardigheter.js";
 
 // Det som är särskilt med en yrkesfärdighetspost (V&R): gratis FV, tak vid start
 const extraFor = (post) => [post.startFV ? `FV ${post.startFV} gratis, som primär${post.antal > 1 ? "a" : ""}` : null,
-  post.takStart ? `högst FV ${post.takStart} vid start, inget magiförmågeslag` : null].filter(Boolean).join(", ") || null;
+  post.takStart ? `högst FV ${post.takStart} vid start, inget magiförmågeslag` : !post.takStart && post.utanMagiformagaslag ? "inget magiförmågeslag" : null].filter(Boolean).join(", ") || null;
 const storBokstav = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 // Teknikerna i en svärdsskolas färdiga stridskonst (V&R s. 32–33), t.ex. Kejsarens hand
 const skolTekniker = (post) => (post.maste ?? []).map((m) => svardsskolaFor(S.R, `${post.fardighet}:${m}`))
@@ -54,6 +54,7 @@ export function stegYrke() {
       return punkt(text, null, val?.id ? [namn(val.id), val.sub].filter(Boolean).join(": ") : null, extraFor(post));
     }
     if (post.antal === null) return punkt(`${namn(post.fardighet)} (alla)`, post.fardighet);
+    if (!post.antal && !post.maste) return punkt(namn(post.fardighet), post.fardighet, null, extraFor(post)); // fast färdighet (Präst: Atums väg)
     const valda = [].concat(val ?? []);
     post.maste?.forEach((m, j) => { valda[j] = m; });
     const fasta = post.maste && post.antal === post.maste.length;
@@ -104,9 +105,10 @@ export function yrketsVal() {
     if (post.valPaket) {
       // Först paketet, sedan vad det innehåller (Krigarmunk, V&R s. 6–7, RB-016)
       const val = S.rp.yrkesval[i] ?? {};
-      const paket = post.valPaket[val.paket];
+      const ettPaket = post.valPaket.length === 1; // bara ett alternativ: inget att välja mellan (Värdshusvärd)
+      const paket = post.valPaket[paketIndex(post, val)];
       const valda = [].concat(val.val ?? []);
-      const sattVal = (j, v) => { const ny = [...valda]; ny[j] = v; satt({ ...val, val: ny }); };
+      const sattVal = (j, v) => { const ny = [...valda]; ny[j] = v; satt({ ...val, paket: paketIndex(post, val), val: ny }); };
       const innehall = !paket ? null
         : paket.fasta ? el("p", { class: "hjalp" }, `Yrkesfärdigheter: ${paket.fasta.map((x) => fardighetAv(S.R, x).namn).join(" och ")}.`)
         : paket.valfria ? el("div", { class: "rad paketval" }, Array.from({ length: paket.valfria }, (_, j) =>
@@ -114,11 +116,12 @@ export function yrketsVal() {
         : el("div", { class: "rad paketval" }, Array.from({ length: paket.antal }, (_, j) =>
           delvalKontroll(`${id}-${j}`, paket.fardighet, valda[j], (v) => sattVal(j, v), { yrke: true })));
       return el("li", {}, el("span", { class: "fnamn" }, post.valPaket.map((p) => paketNamn(S.R, p)).join(" eller ")),
-        valLista(id, val.paket === undefined ? "" : String(val.paket), post.valPaket.map((p, k) => [String(k), paketNamn(S.R, p)]),
+        ettPaket ? null : valLista(id, val.paket === undefined ? "" : String(val.paket), post.valPaket.map((p, k) => [String(k), paketNamn(S.R, p)]),
           (v) => satt(v === "" ? {} : { paket: Number(v), val: [] })),
         innehall,
         paket?.fardighet ? hjalpFor(paket.fardighet) : null,
-        el("p", { class: "hjalp" }, `Välj ett av alternativen och sedan vilka färdigheter det blir (${kallText(S.R, yrke, `s. ${yrke.sida}`)}).`));
+        extraFor(post) ? el("p", { class: "hjalp" }, `${storBokstav(extraFor(post))} (${kallText(S.R, yrke, `s. ${yrke.sida}`)}).`) : null,
+        ettPaket ? null : el("p", { class: "hjalp" }, `Välj ett av alternativen och sedan vilka färdigheter det blir (${kallText(S.R, yrke, `s. ${yrke.sida}`)}).`));
     }
     if (post.valEn) {
       const val = S.rp.yrkesval[i] ?? {};
@@ -133,6 +136,10 @@ export function yrketsVal() {
         extraFor(post) ? el("p", { class: "hjalp" }, `${storBokstav(extraFor(post))} (${kallText(S.R, yrke, `s. ${yrke.sida}`)}).`) : null);
     }
     const f = fardighetAv(S.R, post.fardighet);
+    if (!post.antal && post.antal !== null && !post.maste) {
+      return el("li", {}, el("span", { class: "fnamn" }, f.namn), kortBeskrivning(post.fardighet),
+        extraFor(post) ? el("p", { class: "hjalp" }, `${storBokstav(extraFor(post))} (${kallText(S.R, yrke, `s. ${yrke.sida}`)}).`) : null);
+    }
     if (post.antal === null) {
       return el("li", {}, el("span", { class: "fnamn" }, `${f.namn} (obegränsat)`), kortBeskrivning(post.fardighet),
         el("p", { class: "hjalp" }, "Alla lärdomsfärdigheter räknas som yrkesfärdigheter för en lärd man. Lägg till dem i steg 11, Färdigheter."));

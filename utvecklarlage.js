@@ -135,7 +135,7 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
     }
 
     // EP som knappen Fördela EP, med en del sparad till besvärjelser
-    const kanMagi = () => { const res = api.rakna(); return (res.yrke.magiker || res.magiformaga.lyckat) && skolFV(res.fardigheter).allman > 0; };
+    const kanMagi = () => { const res = api.rakna(); return res.kanMagi && skolFV(res.fardigheter).allman > 0; };
     api.epFordelning(kanMagi() ? recept.epTillBesvarjelser ?? 40 : 0);
     if (kanMagi()) kopBesvarjelser(api, nu(), onskat(recept.besvarjelser) ?? []);
     // Minimagiska besvärjelser (Magi i Chronopia s. 19), så många av de önskade som FV i Minimagi räcker till

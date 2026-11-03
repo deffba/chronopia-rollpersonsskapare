@@ -8,7 +8,7 @@ import { tal, valLista } from "../ui/kontroller.js";
 export function stegBesvarjelser(res) {
   const B = S.R.besvarjelser;
   const skola = skolFV(res.fardigheter);
-  const kanMagi = res.yrke.magiker || res.magiformaga.lyckat;
+  const kanMagi = res.kanMagi ?? (res.yrke.magiker || res.magiformaga.lyckat);
   const psy = res.grundegenskaper.PSY;
   if (!kanMagi || skola.allman === 0) {
     return [el("p", { class: "summering" }, "Rollpersonen har ingen magiskola och kan inte lära sig besvärjelser. Gå vidare till utrustningen."),

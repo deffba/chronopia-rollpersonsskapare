@@ -4,6 +4,7 @@
 export const STEG = [
   { id: "bocker", namn: "Böcker", sida: "–" },
   { id: "ras", namn: "Ras", sida: "14–16", bp: true },
+  { id: "klan", namn: "Klan", sida: "Dvärgar i Chronopia 4, 18–26" }, // bara för dvärgar med Dvärgar i Chronopia
   { id: "alder", namn: "Ålder", sida: "16–17" },
   { id: "yrke", namn: "Yrke", sida: "18–26" },
   { id: "extra", namn: "Yrkesfärdigheter", sida: "18–27", bp: true },

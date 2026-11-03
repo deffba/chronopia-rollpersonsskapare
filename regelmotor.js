@@ -106,7 +106,7 @@ export function nivaer(regler, rp) {
   return bok.nivaer.lista.map((n, i) => {
     const alla = bocker.map((b) => b.nivaer.lista[i]);
     const familjarer = alla.find((x) => x.familjarer !== undefined)?.familjarer;
-    return { ...n, namn: alla.map((x) => x.namn).join(" / "), bok: bok.id, sida: bok.nivaer.sida,
+    return { ...n, namn: [...new Set(alla.map((x) => x.namn))].join(" / "), bok: bok.id, sida: bok.nivaer.sida,
       ...(familjarer !== undefined ? { familjarer } : {}) };
   });
 }
@@ -123,13 +123,64 @@ export function yrkeVillkor(regler, rp, yrke) {
   if (!v) return null;
   const rasFel = v.ras && rp.ras && !v.ras.includes(rp.ras);
   const konFel = v.kon && rp.kon && rp.kon !== v.kon;
-  return rasFel || konFel ? villkorText(regler, v) : null;
+  // Klanen (Dvärgar i Chronopia s. 4, 11): Präst kräver klan Mindir
+  const klanFel = v.klan && !rasFel && !v.klan.includes(rp.klan?.id);
+  return rasFel || konFel || klanFel ? villkorText(regler, v) : null;
 }
 const ochLista = (namn) => (namn.length > 1 ? `${namn.slice(0, -1).join(", ")} och ${namn.at(-1)}` : namn[0]);
 export function villkorText(regler, v) {
   const delar = [v.ras ? ochLista(v.ras.map((id) => rasAv(regler, id)?.namn ?? id)) : null,
-    v.kon ? (v.kon === "Kvinna" ? "kvinnor" : "män") : null, v.fodd ? `födda ${v.fodd}` : null].filter(Boolean);
+    v.kon ? (v.kon === "Kvinna" ? "kvinnor" : "män") : null, v.fodd ? `födda ${v.fodd}` : null,
+    v.klan ? `i klan ${ochLista(v.klan.map((id) => klanAv(regler, id)?.namn ?? id))}` : null].filter(Boolean);
   return `Bara för ${delar.join(", ")}`;
+}
+
+// ------------------------------------------------------------ klaner (Dvärgar i Chronopia s. 4, 18–26)
+export const klanAv = (regler, id) => regler.klaner?.lista.find((k) => k.id === id);
+// Klaner finns för dvärgar när Dvärgar i Chronopia är vald
+export const klanTillganglig = (regler, rp) => Boolean(regler.klaner) && valdaBocker(rp).includes(regler.klaner.kalla.bok) && rp.ras === regler.klaner.ras;
+// Klanen för ett slag på 1T100 (s. 4). Durban saknas i tabellen och kan bara väljas.
+export const klanForSlag = (regler, slag) => regler.klaner?.tabell.find(([fran, till]) => slag >= fran && slag <= till)?.[2];
+// Klanen och klanförmågan (1T10 på klanens tabell). rp.klan = { id, slag, formagaSlag, val }.
+export function raknaKlan(regler, rp) {
+  const k = rp.klan ?? {};
+  const svar = { tillganglig: klanTillganglig(regler, rp), klan: null, formaga: null, fel: [], saknas: [] };
+  if (!svar.tillganglig) {
+    if (k.id && regler.klaner) svar.fel.push(`Klaner finns bara för dvärgar i ${bokNamn(regler, regler.klaner.kalla.bok)}`);
+    return svar;
+  }
+  if (!k.id) { svar.saknas.push("Klan"); return svar; }
+  svar.klan = klanAv(regler, k.id);
+  if (!svar.klan) { svar.fel.push(`Okänd klan: ${k.id}`); return svar; }
+  if (k.slag != null && klanForSlag(regler, k.slag) !== k.id) svar.fel.push(`Slaget ${k.slag} ger inte klan ${svar.klan.namn} (${kallText(regler, regler.klaner, "")})`);
+  if (!svar.klan.formagor.length) return svar;
+  if (k.formagaSlag == null) { svar.saknas.push("Slaget för klanförmåga"); return svar; }
+  svar.formaga = svar.klan.formagor.find(({ slag: [fran, till] }) => k.formagaSlag >= fran && k.formagaSlag <= till) ?? null;
+  if (!svar.formaga) svar.fel.push(`Klanförmågan slås med ${regler.klaner.formagaTarning}`);
+  return svar;
+}
+
+// Levande tatueringar (Dvärgar i Chronopia s. 27–28). Bärsärken får 1/2/3 efter erfarenhetsnivån (s. 6–7),
+// valda med SL (rp.tatueringar); den särskilda förmågan Bärsärk ger en med insikt högst 15 (s. 15).
+export const tatueringAv = (regler, id) => regler.fardigheter.tatueringar?.lista.find((t) => t.id === id);
+export function raknaTatueringar(regler, rp, franFormagor = []) {
+  const T = regler.fardigheter.tatueringar;
+  const svar = { lista: [], tak: 0, valda: rp.tatueringar ?? [], fel: [] };
+  if (!T) return svar;
+  const yrke = yrkeAv(regler, rp.yrke);
+  svar.tak = iBocker(yrke, rp) && yrke?.tatueringar ? yrke.tatueringar[Math.min(rp.niva ?? 0, yrke.tatueringar.length - 1)] : 0;
+  if (svar.valda.length > svar.tak) svar.fel.push(svar.tak ? `Högst ${svar.tak} levande tatuering${svar.tak === 1 ? "" : "ar"} från yrket på den här nivån (${kallText(regler, yrke, "")})` : "Bara bärsärkar får levande tatueringar från yrket");
+  for (const id of svar.valda) {
+    const t = tatueringAv(regler, id);
+    if (!t) svar.fel.push(`Okänd tatuering: ${id}`);
+    else svar.lista.push({ ...t, fran: yrke.namn });
+  }
+  for (const { id, fran } of franFormagor) {
+    const t = tatueringAv(regler, id);
+    if (t) svar.lista.push({ ...t, fran });
+  }
+  if (new Set(svar.lista.map((t) => t.id)).size !== svar.lista.length) svar.fel.push("Samma tatuering kan inte väljas två gånger");
+  return svar;
 }
 
 // ------------------------------------------------------------ familjarer (Magi i Chronopia s. 40–43)
@@ -194,8 +245,9 @@ export const yrkesformagaText = (yrke) => (yrke.initiativ ? `${yrke.yrkesformaga
 // Ett paketval (V&R s. 6–7, RB-016): spelaren väljer först ett av paketen och sedan vad det innehåller.
 // Paket: { fardighet, antal } (t.ex. två lärdomsfärdigheter), { fasta: [id, …] } eller { valfria: n } (valfria färdigheter).
 // val = { paket: index, val: [...] }. Ger färdighetsnycklarna.
+export const paketIndex = (post, val) => val?.paket ?? (post.valPaket?.length === 1 ? 0 : undefined);
 export function paketNycklar(regler, post, val) {
-  const paket = post.valPaket?.[val?.paket];
+  const paket = post.valPaket?.[paketIndex(post, val)];
   if (!paket) return [];
   const valda = [].concat(val.val ?? []);
   if (paket.fasta) return paket.fasta;
@@ -220,6 +272,8 @@ export function yrkesPoster(regler, rp) {
     else if (post.valPaket) nycklar = paketNycklar(regler, post, v);
     else if (post.valEn) {
       if (v?.id) nycklar = fardighetAv(regler, v.id)?.perVal ? (v.sub ? [`${v.id}:${v.sub}`] : []) : [v.id];
+    } else if (!post.antal && !fardighetAv(regler, post.fardighet)?.perVal) {
+      nycklar = [post.fardighet]; // en fast färdighet med egenskaper, t.ex. Prästens Atums väg utan magiförmågeslag
     } else {
       const valda = [].concat(v ?? []);
       post.maste?.forEach((m, j) => { valda[j] = m; });
@@ -242,7 +296,7 @@ export const teknikLista = (regler, f) => (f.id === "vapentekniker"
   : regler.fardigheter.stridskonstTekniker);
 export const harTekniker = (f) => f?.id === "stridskonster" || f?.id === "vapentekniker";
 // Stilens tekniker: svärdsskolans paket eller spelarens egna
-export const stilensTekniker = (regler, rp, nyckel) => svardsskolaFor(regler, nyckel)?.tekniker ?? rp.stridskonstTekniker?.[nyckel] ?? [];
+export const stilensTekniker = (regler, rp, nyckel) => svardsskolaFor(regler, nyckel)?.tekniker ?? rp.sarskildaFormagor?.tekniker?.[nyckel] ?? rp.stridskonstTekniker?.[nyckel] ?? [];
 
 export function rasAv(regler, id) {
   return regler.raser.find((r) => r.id === id);
@@ -350,9 +404,9 @@ export function raknaSlag(regler, rp, ras, yrke, alderEff) {
   const svardshand = rp.svardshand.overstyrd ?? slaUpp(t.svardshand.tabell, rp.svardshand.slag + rp.svardshand.bp);
   // Med SL:s tillåtelse kan ståndet väljas i stället för att slås; då räknas lägsta värdet för det ståndet
   const ssResultat = rp.socialtStand.valt ? standsvarde(t.socialtStand.tabell, rp.socialtStand.valt)
-    : rp.socialtStand.slag + rp.socialtStand.bp + (ras.slagbonus.socialtStand ?? 0);
+    : rp.socialtStand.slag + rp.socialtStand.bp + (ras.slagbonus.socialtStand ?? 0) + (rp.klanSlagbonus?.socialtStand ?? 0);
   const [stand, klass] = slaUpp(t.socialtStand.tabell, ssResultat);
-  const skBonus = (ras.slagbonus.startkapital ?? 0) + (yrke.slagbonus?.startkapital ?? 0);
+  const skBonus = (ras.slagbonus.startkapital ?? 0) + (yrke.slagbonus?.startkapital ?? 0) + (rp.klanSlagbonus?.startkapital ?? 0);
   const tak = ssResultat + (yrke.kapitaltak ?? t.startkapital.tak);
   const skResultat = Math.min(
     rp.startkapital.slag + rp.startkapital.bp + Math.ceil(rp.socialtStand.bp / 2) + skBonus, tak);
@@ -407,7 +461,7 @@ function kontrolleraVal(regler, rp, varden, fel) {
   if (rp.valfri && fardighetAv(regler, rp.valfri)?.typ === "primar") fel.push("Den valfria yrkesfärdigheten kan inte vara en primär färdighet (s. 18)");
   // Valfria färdigheter i ett paketval (Krigarmunk, RB-016) får inte heller vara primära
   for (const { post, nycklar } of yrkesPoster(regler, rp)) {
-    const paket = post.valPaket?.[rp.yrkesval?.[yrkesPoster(regler, rp).findIndex((p) => p.post === post)]?.paket];
+    const paket = post.valPaket?.[paketIndex(post, rp.yrkesval?.[yrkesPoster(regler, rp).findIndex((p) => p.post === post)])];
     if (paket?.valfria) for (const k of nycklar) if (fardighetAv(regler, k)?.typ === "primar") fel.push(`${fardighetAv(regler, k).namn} är en primär färdighet och kan inte väljas som valfri yrkesfärdighet (s. 18)`);
   }
 }
@@ -458,6 +512,7 @@ export function status(regler, rp, nyckel) {
   if (andrad === "yrke") return "yrke";
   const yrkeX = yrkeAv(regler, rp.yrke);
   if (yrkeX?.primara?.includes(nyckel) || postFor(regler, rp, nyckel, "primar")) return "primar"; // V&R: gratis FV 10 som primär
+  if (klanTillganglig(regler, rp) && klanAv(regler, rp.klan?.id)?.primara?.includes(nyckel)) return "primar"; // Mindir: Kunskap om religion (Atum) (Dvärgar s. 24)
   if (rp.yrkesfardigheter.includes(nyckel) || rp.extraYrkesfardigheter.includes(nyckel)) return "yrke";
   const id = f.id;
   const val = nyckel.split(":")[1];
@@ -584,6 +639,8 @@ export function raknaRollperson(regler, indata) {
   const sinnen = raknaSinnen(regler, rp);
   const familjarer = raknaFamiljarer(regler, rp);
   fel.push(...familjarer.fel);
+  const tatueringar = raknaTatueringar(regler, rp, sf.tatueringar);
+  fel.push(...tatueringar.fel);
   if ((rp.valfriaRegler ?? []).some((id) => !valfriaRegler(regler, rp).some((v) => v.id === id))) fel.push("En valfri regel hör till en bok som inte är vald (steg 0)");
   const bpUtgifter = {
     ras: rp.rasVald === false ? 0 : ras.bp, // ingen ras vald än: motorn räknar som för en människa, men inget kostar
@@ -649,7 +706,7 @@ export function raknaRollperson(regler, indata) {
 
   // Magiskolor utanför magikeryrkena kräver ett lyckat magiförmågeslag (s. 27, 106)
   // Sabransk ökenriddare: yrkets egen magiskola kräver inget slag, men andra skolor gör det (RB-011)
-  const friSkola = (k) => Boolean(postFor(regler, rp, k, "utanMagiformagaslag"));
+  const friSkola = (k) => Boolean(postFor(regler, rp, k, "utanMagiformagaslag")) || (rp.sarskildaFormagor?.friSkolor ?? []).includes(k);
   const arSkola = (k) => fardighetAv(regler, k)?.typ === "magiskola";
   const skolor = Object.keys(rp.fardigheter).filter((k) => arSkola(k) && !friSkola(k));
   const behoverSlag = !yrke.magiker && (skolor.length > 0 || rp.extraYrkesfardigheter.some((k) => arSkola(k) && !friSkola(k)));
@@ -663,8 +720,10 @@ export function raknaRollperson(regler, indata) {
     vantar.push(magiformaga.slag === null ? "Magiskolor kräver ett magiförmågeslag (s. 106)" : "Magiförmågeslaget misslyckades, så rollpersonen kan inte lära sig magi (s. 106)");
   }
 
-  const besvarjelser = raknaBesvarjelser(regler, rp, fardigheter, ge.varden, yrke.magiker || magiformaga.lyckat || harFriSkola, fel);
-  const minimagi = raknaMinimagi(regler, rp, fardigheter, fel, Boolean(yrke.magiker || magiformaga.lyckat || harFriSkola));
+  // Kan rollpersonen lära sig besvärjelser? Magikeryrken, ett lyckat magiförmågeslag eller en skola utan slag
+  const kanMagi = Boolean(yrke.magiker || magiformaga.lyckat || harFriSkola);
+  const besvarjelser = raknaBesvarjelser(regler, rp, fardigheter, ge.varden, kanMagi, fel);
+  const minimagi = raknaMinimagi(regler, rp, fardigheter, fel, kanMagi);
   epSpenderat += besvarjelser.reduce((a, b) => a + b.ep, 0);
   if (epSpenderat > epStart) fel.push(`${epSpenderat - epStart} EP för mycket har spenderats (s. 34)`);
   const utrustning = raknaUtrustning(regler, rp, ge.varden, slag.startkapital, fel);
@@ -673,6 +732,7 @@ export function raknaRollperson(regler, indata) {
   return {
     ras, yrke, alderskategori: ge.alderskategori, grundegenskaper: ge.varden, grundegenskaperSatta: ge.satta, harledda, slag, magiformaga,
     sarskildFormaga: sf.formaga, sarskildaFormagorna: sf.formagor, hjaltepoang: sf.hjaltepoang, niva, saknas: sf.saknas, vantar, forLagaEgenskaper: ge.forLaga,
+    klan: sf.klan, tatueringar, kanMagi,
     bp: { start: bpStart, utgifter: bpUtgifter, kvar: bpKvar },
     ep: { start: epStart, spenderat: epSpenderat, kvar: epStart - epSpenderat },
     fardigheter: fardigheter.map((f) => (sinnesMod(regler, sinnen, f.nyckel) ? { ...f, sinne: sinnesMod(regler, sinnen, f.nyckel) } : f))
@@ -940,6 +1000,7 @@ export function passarBland(regler, rp, nyckel, bland) {
   if (!f) return false;
   if (f.perVal && !nyckel.split(":")[1]) return false;
   if (Array.isArray(bland)) return bland.includes(f.id);
+  if (bland === "magiskola") return f.typ === "magiskola" && fardighetValbar(regler, rp, f);
   if (bland === "alla-ej-magi") return !arMagi(f);
   if (bland === "sekundar-ej-magi") return !arMagi(f) && status(regler, rp, nyckel) === "sekundar";
   if (bland === "sprak") return f.id === "tala";
@@ -990,18 +1051,41 @@ export function sarskildFormaga(regler, rp) {
   const s = rp.sarskildaFormagor ?? {};
   const slag = formageslag(regler, rp);
   const flera = slag.length > 1;
-  const svar = { formaga: null, formagor: [], perSlag: [], fel: [], saknas: [], magiformaga: 0, bp: 0, hjaltepoang: null, tillagg: {} };
+  const svar = { formaga: null, formagor: [], perSlag: [], fel: [], saknas: [], magiformaga: 0, bp: 0, hjaltepoang: null, tillagg: {}, klan: null, tatueringar: [] };
   const fvBonus = [];
   const fvMinst = [];
   const takBonus = {};
   const andrad = {};
   const egenskapsbonus = {};
   const harledda = { kpFaktor: 1, forflyttningBonus: 0 };
+  const slagbonus = {};
+  const friSkolor = [];
+  const tekniker = {};
   let arv = 0;
   let svardshand;
   let hp = 0;
   let hpSlagna = true;
   const gratisFamiljarer = [];
+  // Effekterna av en förmåga (särskild förmåga eller klanförmåga) läggs ihop med de andras
+  const lagTill = (r, namn) => {
+    svar.magiformaga += r.magiformaga;
+    const d = r.delar;
+    fvBonus.push(...d.fvBonus);
+    fvMinst.push(...d.fvMinst);
+    for (const [k, v] of Object.entries(d.takBonus)) takBonus[k] = (takBonus[k] ?? 0) + v;
+    Object.assign(andrad, d.andrad);
+    for (const [g, m] of Object.entries(d.egenskapsbonus)) egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + m;
+    for (const [k, v] of Object.entries(d.slagbonus)) slagbonus[k] = (slagbonus[k] ?? 0) + v;
+    friSkolor.push(...d.friSkolor);
+    Object.assign(tekniker, d.tekniker);
+    harledda.kpFaktor = Math.max(harledda.kpFaktor, d.kpFaktor);
+    harledda.forflyttningBonus += d.forflyttningBonus;
+    arv += d.arv;
+    if (d.svardshand !== undefined) svardshand = d.svardshand;
+    if (d.hp !== null) { hp += d.hp ?? 0; if (d.hp === undefined) hpSlagna = false; }
+    gratisFamiljarer.push(...d.familjarer.map((id) => ({ id, kalla: namn })));
+    svar.tatueringar.push(...d.tatueringar.map((id) => ({ id, fran: namn })));
+  };
   slag.forEach((sl, nr) => {
     const r = enFormaga(regler, rp, sl);
     const pre = flera ? `Förmåga ${nr + 1}: ` : "";
@@ -1014,20 +1098,18 @@ export function sarskildFormaga(regler, rp) {
     if (dubblett >= 0) { svar.fel.push(`${pre}samma förmåga som förmåga ${dubblett + 1} (${r.formaga.namn}); slå om`); return; }
     svar.fel.push(...r.fel.map((t) => pre + t));
     svar.saknas.push(...r.saknas.map((t) => pre + t));
-    svar.magiformaga += r.magiformaga;
-    const d = r.delar;
-    fvBonus.push(...d.fvBonus);
-    fvMinst.push(...d.fvMinst);
-    for (const [k, v] of Object.entries(d.takBonus)) takBonus[k] = (takBonus[k] ?? 0) + v;
-    Object.assign(andrad, d.andrad);
-    for (const [g, m] of Object.entries(d.egenskapsbonus)) egenskapsbonus[g] = (egenskapsbonus[g] ?? 0) + m;
-    harledda.kpFaktor = Math.max(harledda.kpFaktor, d.kpFaktor);
-    harledda.forflyttningBonus += d.forflyttningBonus;
-    arv += d.arv;
-    if (d.svardshand !== undefined) svardshand = d.svardshand;
-    if (d.hp !== null) { hp += d.hp ?? 0; if (d.hp === undefined) hpSlagna = false; }
-    gratisFamiljarer.push(...d.familjarer.map((id) => ({ id, kalla: r.formaga.namn })));
+    lagTill(r, r.formaga?.namn);
   });
+  // Klanförmågan (Dvärgar i Chronopia s. 4): en extra förmåga för medlemmar i en namngiven klan, utan BP
+  const klan = raknaKlan(regler, rp);
+  svar.klan = klan;
+  svar.fel.push(...klan.fel);
+  if (klan.formaga) {
+    const r = formagansRegler(regler, rp, klan.formaga, rp.klan?.val ?? []);
+    svar.fel.push(...r.fel.map((t) => `Klanförmåga: ${t}`));
+    klan.saknas.push(...r.saknas);
+    lagTill(r, `${klan.formaga.namn} (klan ${klan.klan.namn})`);
+  }
   // Slag utöver nivåns antal får inte ha BP (t.ex. kvar från en högre nivå)
   (s.fler ?? []).slice(slag.length - 1).forEach((sl) => { if (sl?.bp) svar.fel.push("Rollpersonen har inte fler särskilda förmågor på den här nivån"); });
   svar.formaga = svar.formagor[0];
@@ -1043,17 +1125,18 @@ export function sarskildFormaga(regler, rp) {
     }
   }
   svar.tillagg = {
-    sarskildaFormagor: { ...s, fvBonus, fvMinst, takBonus, status: andrad },
-    egenskapsbonus, harleddaJustering: harledda, arv, gratisFamiljarer,
+    sarskildaFormagor: { ...s, fvBonus, fvMinst, takBonus, status: andrad, friSkolor, tekniker },
+    egenskapsbonus, harleddaJustering: harledda, arv, gratisFamiljarer, klanSlagbonus: slagbonus,
     svardshand: { ...rp.svardshand, overstyrd: svardshand },
   };
   return svar;
 }
 
 // Ett slag på en tabell för särskilda förmågor. s = { bp, slag, val, tabell, avstar }.
+const tommaDelar = () => ({ fvBonus: [], fvMinst: [], takBonus: {}, andrad: {}, egenskapsbonus: {}, kpFaktor: 1, forflyttningBonus: 0, arv: 0,
+  svardshand: undefined, hp: null, familjarer: [], slagbonus: {}, friSkolor: [], tekniker: {}, tatueringar: [] });
 export function enFormaga(regler, rp, s) {
-  const svar = { formaga: null, tabell: null, fel: [], saknas: [], magiformaga: 0,
-    delar: { fvBonus: [], fvMinst: [], takBonus: {}, andrad: {}, egenskapsbonus: {}, kpFaktor: 1, forflyttningBonus: 0, arv: 0, svardshand: undefined, hp: null, familjarer: [] } };
+  const svar = { formaga: null, tabell: null, fel: [], saknas: [], magiformaga: 0, delar: tommaDelar() };
   const tabell = formagetabell(regler, rp, s);
   svar.tabell = tabell;
   if (s.tabell && (!tabell || !tabellTillganglig(tabell, rp))) svar.fel.push(`Rollpersonen kan inte slå på tabellen ${tabell?.namn ?? s.tabell}`);
@@ -1062,10 +1145,17 @@ export function enFormaga(regler, rp, s) {
   const summa = s.slag + s.bp;
   const formaga = tabell.rader.find(({ slag: [fran, till] }) => summa >= fran && (till === null || summa <= till));
   if (!formaga) return svar;
-  svar.formaga = formaga;
+  const r = formagansRegler(regler, rp, formaga, s.val);
+  return { ...r, tabell, fel: [...svar.fel, ...r.fel] };
+}
+
+// Vad en förmåga ger: varje del i förmågans regel med spelarens val (val[i] hör till del i).
+// Används för särskilda förmågor och klanförmågor.
+export function formagansRegler(regler, rp, formaga, valLista = []) {
+  const svar = { formaga, tabell: null, fel: [], saknas: [], magiformaga: 0, delar: tommaDelar() };
   const d = svar.delar;
   (formaga.regel ?? []).forEach((del, i) => {
-    const val = s.val?.[i];
+    const val = valLista?.[i];
     if (del.typ === "fv") {
       let nycklar = [...(del.fasta ?? [])];
       if (del.valj) {
@@ -1085,9 +1175,12 @@ export function enFormaga(regler, rp, s) {
         });
       }
       for (const k of nycklar) {
-        if (del.fv) (del.minst ? d.fvMinst : d.fvBonus).push({ fardighet: k, fv: del.fv });
+        // omHar: bonusen gäller bara om rollpersonen har färdigheten ändå (Mindirs +3 i Atums väg)
+        if (del.fv) (del.minst ? d.fvMinst : d.fvBonus).push({ fardighet: k, fv: del.fv, ...(del.omHar ? { omHar: true } : {}) });
         if (del.tak) d.takBonus[k] = (d.takBonus[k] ?? 0) + del.fv;
         if (del.status) d.andrad[k] = del.status;
+        if (del.friSkola) d.friSkolor.push(k); // skolan kräver inget magiförmågeslag (Durban, RB-021)
+        if (del.tekniker) d.tekniker[k] = del.tekniker;
       }
     } else if (del.typ === "egenskap") {
       for (const [g, m] of Object.entries(del.mod)) d.egenskapsbonus[g] = (d.egenskapsbonus[g] ?? 0) + m;
@@ -1111,6 +1204,15 @@ export function enFormaga(regler, rp, s) {
       if (!Number.isInteger(val?.slag)) { svar.saknas.push(`Slå ${del.tarning} för hjältepoängen (${formaga.namn})`); d.hp = undefined; }
       else if (val.slag < n || val.slag > n * sidor) svar.fel.push(`${formaga.namn}: hjältepoängen är ${del.tarning}, ${n}–${n * sidor}`);
       else d.hp = val.slag;
+    } else if (del.typ === "slagbonus") {
+      for (const k of ["socialtStand", "startkapital"]) if (del[k]) d.slagbonus[k] = (d.slagbonus[k] ?? 0) + del[k];
+    } else if (del.typ === "tatuering") {
+      // Bärsärk (Dvärgar i Chronopia s. 15): en levande tatuering med insikt högst maxNr. val = tatueringens id
+      const t = val ? tatueringAv(regler, val) : null;
+      if (!val) svar.saknas.push(`Välj tatuering för ${formaga.namn}`);
+      else if (!t) svar.fel.push(`${formaga.namn}: okänd tatuering ${val}`);
+      else if (del.maxNr && t.nr > del.maxNr) svar.fel.push(`${formaga.namn}: insikten får vara högst ${del.maxNr}`);
+      else d.tatueringar.push(val);
     } else if (del.typ === "familjar") {
       // Spiritus familiarius: en valfri familjar gratis (Magi i Chronopia s. 17). val = familjarens id
       if (!val) svar.saknas.push(`Välj familjar för ${formaga.namn}`);

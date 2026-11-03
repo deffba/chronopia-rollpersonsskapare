@@ -1,5 +1,5 @@
 // Vad som saknas i varje steg, och vilka steg som syns.
-import { rasAv, yrkeAv, fardighetAv, paborjad, skolFV, namnFor, formageslag, paketNamn } from "../regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, paborjad, skolFV, namnFor, formageslag, paketNamn, paketIndex } from "../regelmotor.js";
 import { STEG } from "../texter.js";
 import { S, motorIndata, rasId, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { MAGISLAG } from "../ui/magimodal.js";
@@ -14,20 +14,21 @@ export function saknasPerSteg(res) {
   if (S.rp.alder == null) lista.alder.push("Ålder");
   const valfriRas = ras.primara.find((p) => p.valfri);
   if (valfriRas && !S.rp.rasval.some(klar)) lista.ras.push(`Rasens valfria ${valfriRas.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`);
+  lista.klan.push(...(res.klan?.saknas ?? []));
   if (!S.rp.yrke) lista.yrke.push("Yrke");
   else yrke.fardigheter.forEach((post, i) => {
     const val = S.rp.yrkesval[i];
     if (typeof post === "string") {
       if (fardighetAv(S.R, post)?.perVal && !klar(val)) lista.extra.push(`${fardighetAv(S.R, post).namn}: vad den gäller`);
     } else if (post.valPaket) {
-      const paket = post.valPaket[val?.paket];
+      const paket = post.valPaket[paketIndex(post, val)];
       const behov = !paket ? 1 : paket.fasta ? 0 : paket.valfria ?? paket.antal;
       const gjorda = [].concat(val?.val ?? []).slice(0, behov).filter(klar).length;
       if (!paket) lista.extra.push(post.valPaket.map((p) => paketNamn(S.R, p)).join(" eller "));
       else if (gjorda < behov) lista.extra.push(`${paketNamn(S.R, paket)}: ${behov - gjorda} val kvar`);
     } else if (post.valEn) {
       if (!val?.id || (fardighetAv(S.R, val.id).perVal && !klar(val.sub))) lista.extra.push(post.valEn.map((x) => fardighetAv(S.R, x.fardighet ?? x).namn).join(" eller "));
-    } else if (post.antal !== null) {
+    } else if (post.antal) {
       const gjorda = (post.maste?.length ?? 0) + [].concat(val ?? []).slice(post.maste?.length ?? 0).filter(klar).length;
       if (gjorda < post.antal) lista.extra.push(`${fardighetAv(S.R, post.fardighet).namn}: ${post.antal - gjorda} val kvar`);
     }
@@ -59,7 +60,7 @@ export function saknasPerSteg(res) {
   }
   for (const f of res.fardigheter.filter((x) => x.tekniker && !x.tekniker.length)) lista.fardigheter.push(`${f.namn}: välj stilens tekniker`);
   if (S.rp.startpaket.valt && !S.rp.startpaket.vapen && !yrkeAv(S.R, S.rp.yrke)?.startvapen) lista.utrustning.push("Startpaketets vapen");
-  if (S.rp.svardshand.slag === null && !(res.sarskildFormaga?.regel ?? []).some((d) => d.typ === "svardshand")) lista.svardshand.push("Slaget för svärdshand");
+  if (S.rp.svardshand.slag === null && !svardshandGiven(res)) lista.svardshand.push("Slaget för svärdshand");
   if (S.rp.socialtStand.slag === null && !S.rp.socialtStand.valt) lista.stand.push("Slaget för socialt stånd");
   if (S.rp.startkapital.slag === null) lista.kapital.push("Slaget för startkapital");
   return lista;
@@ -86,11 +87,17 @@ export function forstaOfardiga(res) {
   return i === -1 ? lista.length : i;
 }
 
-// Steget Besvärjelser visas bara för rollpersoner som kan lära sig magi, och steget Familjarer
-// bara när Magi i Chronopia är vald
+// En förmåga som bestämmer svärdshanden (Ambidextriös), så att rollpersonen inte slår: den särskilda förmågan
+// eller klanförmågan. Ger förmågan eller undefined.
+export const svardshandGiven = (res) => [...(res.sarskildaFormagorna ?? []), res.klan?.formaga]
+  .find((f) => (f?.regel ?? []).some((d) => d.typ === "svardshand"));
+
+// Steget Besvärjelser visas bara för rollpersoner som kan lära sig magi, steget Familjarer
+// bara när Magi i Chronopia är vald och steget Klan bara för dvärgar med Dvärgar i Chronopia
 export function synligaSteg(res) {
-  const kanMagi = (res.yrke.magiker || res.magiformaga.lyckat) && skolFV(res.fardigheter).allman > 0;
-  return STEG.filter((s) => (s.id !== "besvarjelser" || kanMagi) && (s.id !== "familjarer" || res.familjarer?.tillganglig));
+  const kanMagi = res.kanMagi && skolFV(res.fardigheter).allman > 0;
+  return STEG.filter((s) => (s.id !== "besvarjelser" || kanMagi) && (s.id !== "familjarer" || res.familjarer?.tillganglig)
+    && (s.id !== "klan" || res.klan?.tillganglig));
 }
 
 export function bpForSteg(id, res) {
