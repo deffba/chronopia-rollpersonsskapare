@@ -20,7 +20,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Beslut:** Syn och Hörsel är två egna värden, närmast i klass med grundegenskaperna men framtagna på annat sätt. Spelaren lägger bakgrundspoäng på Syn och Hörsel var för sig, slår 1T6 för vardera och lägger ihop tärningen med de spenderade BP. Summan ger nivån i tabellen (Dålig … Utmärkt), som i sin tur ger modifikationer på vissa färdigheter (Syn: avståndsvapen, Upptäcka fara, Finna dolda ting; Hörsel: Lyssna, Upptäcka fara).
 - **Motivering:** ”BP” i tabellhuvudet syftar på de bakgrundspoäng man väljer att lägga på respektive sinne. Det är samma mönster som tabellen för särskilda förmågor (1T20+BP), där spenderade BP läggs till slaget.
 - **Valfri regel:** Syn och hörsel är en valfri regel. Spelaren slår på den på samma skärm som expansionerna (senare kanske styrt av SL för hela kampanjen).
-- **I appen (2026-11-02):** Regeln slås på i steg 0 när V&R är vald. BP och 1T6 för syn och hörsel läggs i steg 6. Modifikationen ändrar inte FV eller EP-kostnaden utan står bredvid färdigheten i sammanfattningen och på rollformuläret (syn: Finna dolda ting, Upptäcka fara och alla avstånds- och kastvapen; hörsel: Lyssna och Upptäcka fara).
+- **I appen (2026-11-02):** Regeln slås på i steg 0 när V&R är vald. BP och 1T6 för syn och hörsel läggs i steg 6. Modifikationen ändrar inte FV eller EP-kostnaden utan står bredvid färdigheten i sammanfattningen och på rollformuläret (syn: Finna dolda ting, Upptäcka fara och alla avstånds- och kastvapen; hörsel: Lyssna och Upptäcka fara). Bekräftat av Deffba 2026-11-03: syn och hörsel är bara en modifikation och ändrar aldrig FV.
 - **Påverkar:** Grundegenskapssteget, färdighetsvärden, rollformuläret.
 - **Beslutat:** 2026-10-30, Deffba.
 
@@ -51,8 +51,8 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 ## RB-006 Nya rasers övriga värden
 - **Fråga:** Rasbeskrivningarna säger ”som i grundreglerna” för ålder m.m. Vilka värden gäller?
 - **Källor:** *Vapen & rustningar* s. 3 (Latracier, Mulvak, Sabran).
-- **Beslut:** Använd människans standardvärden från grundreglerna (åldersband m.m.) för alla tre raserna. Modersmål: **Latracier högländska**, **Mulvak och Sabran chronos** (chronopiska).
-- **Motivering:** Det är den gängse tolkningen bland spelare: ”som i grundreglerna” avser människans värden. Latracierna kommer från de nordliga vidderna nära högländerna.
+- **Beslut:** Använd människans standardvärden från grundreglerna (åldersband m.m.) för alla tre raserna. Modersmål: **chronos** (chronopiska) för alla tre raserna. Boken anger inga språk; först valdes högländska för latracierna, men Deffba ändrade det till chronos 2026-11-03.
+- **Motivering:** Det är den gängse tolkningen bland spelare: ”som i grundreglerna” avser människans värden. Boken säger inget om latraciernas språk, så de får Chronopias vanliga språk som de andra.
 - **Påverkar:** Rasdata för de tre raserna.
 - **Beslutat:** 2026-10-31, Deffba.
 

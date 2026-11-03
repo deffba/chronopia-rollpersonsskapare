@@ -42,7 +42,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   await p.click('.raskort:has-text("Latracier")'); await p.waitForTimeout(100);
   const info = await p.locator('.valinfo').textContent();
   ok('Latracier: 30 BP, STO 10–20 och sidhänvisning till V&R', info.includes('30') && info.includes('STY +2 · FYS +3 · SMI +1') && info.includes('10–20 (normalt 15)') && info.includes('Vapen & rustningar i Chronopia s. 3'), info);
-  ok('Latracier talar högländska', (await p.locator('.rutor').first().textContent()).includes('Talar: Högländska'));
+  ok('Latracier talar chronos', /Talar: Chronos/i.test(await p.locator('.rutor').first().textContent()), await p.locator('.rutor').first().textContent());
   await p.click('.steg-knapp >> nth=0'); await p.waitForTimeout(80);
   ok('böcker och nivå låses när skapandet har börjat', await p.locator('[data-bok]:not([disabled])').count() === 0 && await p.locator('[data-niva]:not([disabled])').count() === 0);
   const sparad = await p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp);

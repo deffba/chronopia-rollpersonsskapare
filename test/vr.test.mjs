@@ -29,7 +29,7 @@ test("med V&R: tre nya raser, tre nivåer och V&R:s förmågetabell", () => {
 test("rasdata enligt RB-005 och RB-006", () => {
   const ras = (id) => regler.raser.find((r) => r.id === id);
   assert.deepEqual(ras("latracier").sto, { min: 10, max: 20, normal: 15 });
-  assert.deepEqual(ras("latracier").talaModersmal, [{ sprak: "hoglandska", fv: 16 }]);
+  assert.deepEqual(ras("latracier").talaModersmal, [{ sprak: "chronos", fv: 16 }]);
   assert.deepEqual([ras("mulvak").bp, ras("mulvak").sto.normal, ras("sabran").bp, ras("sabran").sto.normal], [0, 4, 20, 14]);
   assert.deepEqual(ras("sabran").alder, ras("manniska").alder);
 });
@@ -140,7 +140,7 @@ test("Sabransk ökenriddare: magiskola utan magiförmågeslag, högst FV 10, och
 });
 
 test("Vapentekniker: svärdsskolans pris, yrkesfärdighetens pris och egna stilar", () => {
-  const bas = { ...vr, ras: "latracier", rasval: [], modersmal: { tala: ["hoglandska"], lasaSkriva: ["hoglandska"] } };
+  const bas = { ...vr, ras: "latracier", rasval: [], modersmal: { tala: ["chronos"], lasaSkriva: ["chronos"] } };
   const rp = medYrke(bas, "svartgardist", {}, { "vapentekniker:Kejsarens hand": 2, "vapentekniker:Dubar": 1, "vapentekniker:Egen": 1 });
   rp.stridskonstTekniker = { "vapentekniker:Egen": ["Krafthugg", "Fint"] };
   const res = raknaRollperson(regler, rp);
