@@ -1,8 +1,8 @@
 // Steg 3: yrke.
 import { klanAv, yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, villkorText, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar, paketIndex, svardsskolaFor } from "../regelmotor.js";
 import { visaNotis } from "../app.js";
-import { S, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
-import { el } from "../ui/dom.js";
+import { S, rakna, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
+import { el, slaT } from "../ui/dom.js";
 import { delvalKontroll, fardighetsInfo, fardighetsVal, hjalpFor, kortBeskrivning, valLista } from "../ui/kontroller.js";
 import { magiInfo, magiMojlig } from "../ui/magimodal.js";
 import { stridskonstInfo } from "./fardigheter.js";
@@ -33,12 +33,14 @@ export function stegYrke() {
         if (villkor) { visaNotis(`${y.namn}: ${villkor.charAt(0).toLowerCase()}${villkor.slice(1)}.`); return; }
         if (nyKlan) {
           const fran = klanAv(S.R, S.rp.klan?.id)?.namn ?? "en annan klan";
+          // Nej: inget ändras och spelaren väljer ett annat yrke. Ja: klanen byts och klanförmågan slås om direkt.
           if (!window.confirm(`${y.namn} kräver klan ${nyKlan.namn}. Rollpersonen tillhör ${fran}. Byta klan till ${nyKlan.namn}? Klanförmågan slås då om.`)) return;
-          S.rp.klan = { id: nyKlan.id, slag: null, formagaSlag: null, val: [] };
+          S.rp.klan = { id: nyKlan.id, slag: null, formagaSlag: nyKlan.formagor.length ? slaT(1, 10) : null, val: [] };
           S.rp.yrke = y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = [];
-          S.aktivtSteg = "klan";
           uppdatera();
-          visaNotis(`Klanen är nu ${nyKlan.namn}. Slå klanförmågan och gå sedan vidare.`);
+          const f = rakna().klan?.formaga;
+          const val = (f?.regel ?? []).some((d) => d.valj);
+          visaNotis(`Klanen är nu ${nyKlan.namn}.${f ? ` Nya klanförmågan: ${f.namn}${val ? " (gör valet i steget Klan)" : ""}.` : ""}`);
           return;
         }
         // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1

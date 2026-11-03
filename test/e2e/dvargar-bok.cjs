@@ -72,12 +72,21 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   await p.click('.steg-innehall button:has-text("Enkel metod")'); await p.waitForTimeout(100);
   await p.click('#nasta-steg'); await p.waitForSelector('.yrkeskort');
   ok('Präst syns för en dvärg i Zodan, med klankravet', /Kräver klan Mindir/.test(await p.locator('[data-yrke=prast]').textContent()));
+  const rp = () => p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp);
+  // Nej på frågan: ingenting ändras och yrkeslistan står kvar
+  p.once('dialog', (d) => d.dismiss());
+  await p.click('[data-yrke=prast]'); await p.waitForTimeout(200);
+  const kvar = await rp();
+  ok('nej: klan och yrke oförändrade', kvar.klan.id === 'zodan' && kvar.yrke === '' && /Yrke/.test(await p.locator('h2').first().textContent()), `${kvar.klan.id} ${kvar.yrke}`);
+  // Ja: klanen byts till Mindir, klanförmågan slås om och appen stannar i yrkessteget
   let fraga = '';
   p.once('dialog', (d) => { fraga = d.message(); d.accept(); });
   await p.click('[data-yrke=prast]'); await p.waitForTimeout(200);
   ok('frågar innan klanen byts', /Präst kräver klan Mindir.*Zodan/.test(fraga), fraga);
-  ok('klanen är nu Mindir och steget Klan är öppet', /Klan/.test(await p.locator('h2').first().textContent()) && (await p.locator('#klan-namn').textContent()).includes('Mindir'));
-  ok('klanförmågan ska slås om', await p.locator('#klanformaga-sla').count() === 1);
+  ok('appen stannar i yrkessteget med Präst vald', /Yrke/.test(await p.locator('h2').first().textContent()) && await p.locator('[data-yrke=prast][aria-pressed=true]').count() === 1);
+  ok('notisen: klanen är Mindir med en ny klanförmåga', /Klanen är nu Mindir\. Nya klanförmågan:/.test(await notis(p)), await notis(p));
+  const ja = await rp();
+  ok('klanförmågan är omslagen', ja.klan.id === 'mindir' && ja.klan.formagaSlag >= 1 && ja.klan.formagaSlag <= 10 && ja.yrke === 'prast', JSON.stringify(ja.klan));
   ok('inga konsolfel (klanbyte)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
