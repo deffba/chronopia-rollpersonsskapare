@@ -218,7 +218,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
   - **Stridsfärdighet** = vapenfärdigheter, två vapen, stridskonster, vapentekniker, slagsmål, avväpna, dra vapen och strid i mörker. **Akademisk färdighet** = alkemi, astrologi, geografi, geologi, historia, läkekonst, lärdom, räkning, teknologi och zoologi.
   - **Zodan, Smärttålig:** stridskonsten Smärttålig (svärdsskolan Stålsättning) som yrkesfärdighet med FV 5.
   - **Mindir, +3 i Atums väg:** gäller bara om rollpersonen har färdigheten.
-  - **Durban, Magiker:** rollpersonen väljer en magiskola som slipper magiförmågeslaget. *Väntar på bekräftelse.*
+  - **Durban, Magiker:** rollpersonen väljer en magiskola som slipper magiförmågeslaget (bekräftat av Deffba 2026-11-03).
   - **Durban, Kunskap:** B4 tolkas som FV 11. **Fifflare** (pengar) står bara som text. **Arvinge** anger ingen summa, så SL avgör.
   - **Namn:** ”Överlevnad (i underjorden)” = Överlevnad, ”Navigering” = Navigera, ”Fiska” = Fiske, ”Kunskap om Atum” = Lärdom: Kunskap om religion (Atum).
   - **Argolisbrödernas svärdsskola** kostar 5 (4,5 avrundat uppåt).
