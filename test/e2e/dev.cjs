@@ -52,9 +52,12 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
   await slaKnapp.click(); await p.waitForTimeout(700);
   // Förmågans modal efter slaget: gör valen (om det finns några) och stäng den
   for (let i = 0; i < 40 && await p.locator('#sf-modal-fortsatt[disabled]').count(); i++) { // förmågor med val: välj något som går
+    // En rullgardin med val, annars knappar (t.ex. +1 på tre eller +2 på en) eller ett tärningsslag (hjältepoäng)
     const sel = p.locator('#sf-modal select').first();
-    const alt = await sel.locator('option').evaluateAll(o => o.filter(x => x.value && !x.disabled).map(x => x.value));
-    await sel.selectOption(alt[i % alt.length]); await p.waitForTimeout(50);
+    const alt = await sel.count() ? await sel.locator('option').evaluateAll(o => o.filter(x => x.value && !x.disabled).map(x => x.value)) : [];
+    if (alt.length) await sel.selectOption(alt[i % alt.length]);
+    else { const knapp = p.locator('#sf-modal li button:not([disabled]):not(.vald)').first(); if (await knapp.count()) await knapp.click(); }
+    await p.waitForTimeout(i % 5 === 4 ? 800 : 50);
   }
   if (await p.locator('#sf-modal-fortsatt').count()) await p.click('#sf-modal-fortsatt');
   ok('lås upp och slå om', upplast && await p.locator('#sf-slag').count() === 1);
