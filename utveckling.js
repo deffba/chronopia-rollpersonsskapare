@@ -144,7 +144,7 @@ export function utvecklad(regler, indata, res) {
 
   // Besvärjelser: högst PSY i FV (s. 36), och en ny besvärjelse kräver skolvärde högst FV i skolan (s. 106)
   const skola = skolFV(fardigheter);
-  const kanMagi = res.yrke.magiker || res.magiformaga.lyckat;
+  const kanMagi = res.kanMagi ?? (res.yrke.magiker || res.magiformaga.lyckat);
   const foreB = new Map(res.besvarjelser.map((b) => [b.nyckel, b]));
   const besvarjelser = [];
   for (const nyckel of new Set([...foreB.keys(), ...Object.keys(s.besvarjelser)])) {

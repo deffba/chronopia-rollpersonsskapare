@@ -34,6 +34,7 @@ const TESTER = [
   { namn: "vr-utrustning", ok: passFail },
   { namn: "vr-sinnen", ok: passFail },
   { namn: "magi-bok", ok: passFail },
+  { namn: "dvargar-bok", ok: passFail },
   { namn: "nyheter", ok: passFail },
   { namn: "dev", ok: passFail },
   { namn: "logg", ok: passFail },

@@ -72,7 +72,7 @@ export function grundvardesForslag() {
   const ras = res.ras;
   const vikt = Object.fromEntries(GRUNDEGENSKAPER.map((g) => [g, ras.mod[g] * 0.2]));
   const lagg = (id, v) => {
-    const f = fardighetAv(S.R, id);
+    const f = id && fardighetAv(S.R, id); // ett paket med bara valfria färdigheter har ingen
     if (!f) return;
     const delar = String(f.grundegenskap).split("/").filter((g) => GRUNDEGENSKAPER.includes(g));
     if (delar.length) for (const g of delar) vikt[g] += v / delar.length; // två grundegenskaper: snittet (RB-020)

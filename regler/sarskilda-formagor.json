@@ -1709,6 +1709,335 @@
           "sida": 18
         }
       ]
+    },
+    {
+      "id": "dvargar",
+      "namn": "Dvärgar i Chronopia",
+      "tarning": "1T20",
+      "sida": "14–16",
+      "maxBP": 20,
+      "kraver": {
+        "bok": "dvargar",
+        "raser": [
+          "dvarg"
+        ]
+      },
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 14
+      },
+      "rader": [
+        {
+          "slag": [
+            1,
+            2
+          ],
+          "namn": "Empati",
+          "effekt": "Känner andras känslor och allmänna sinnesstämning, men läser inte tankar.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            3,
+            4
+          ],
+          "namn": "Kraftslag",
+          "effekt": "Två gånger per dygn: 5 PSY för maximal skada, inklusive skadebonus, med en närstridsattack. Väljs efter att slaget har träffat.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            5,
+            6
+          ],
+          "namn": "Dåligt ölsinne",
+          "effekt": "Tål nästan ingen öl alls, vilket är pinsamt för en dvärg.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            7,
+            8
+          ],
+          "namn": "Arvinge",
+          "effekt": "Rikare föräldrar har lämnat ett hus i Stubbstan eller Riket och en summa pengar. Storleken beror på det sociala ståndet; boken anger ingen summa, så SL avgör (RB-021).",
+          "sida": 15,
+          "beslut": "RB-021"
+        },
+        {
+          "slag": [
+            9,
+            10
+          ],
+          "namn": "Hantverkare",
+          "effekt": "Har en egen verkstad och FV 7 gratis i ett valfritt hantverk.",
+          "sida": 15,
+          "regel": [
+            {
+              "typ": "fv",
+              "fv": 7,
+              "valj": 1,
+              "bland": "hantverk",
+              "minst": true
+            }
+          ]
+        },
+        {
+          "slag": [
+            11,
+            12
+          ],
+          "namn": "Onda ögat",
+          "effekt": "Spänner blicken i målet: övervinner rollpersonens PSY målets PSY på motståndstabellen får målet −3 CL på allt resten av dagen.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            13,
+            14
+          ],
+          "namn": "Alvvän",
+          "effekt": "Har en nära vän bland alverna.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            15,
+            16
+          ],
+          "namn": "Ölhävare",
+          "effekt": "Tål hur mycket öl som helst.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            17,
+            18
+          ],
+          "namn": "Bankirkontakter",
+          "effekt": "Har kontakter i klan Cador eller Dord som kan ordna pengar och upplysningar.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            19,
+            19
+          ],
+          "namn": "Skuldsatt",
+          "effekt": "Står i skuld till någon. SL avgör till vem och hur mycket.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            20,
+            20
+          ],
+          "namn": "Beryktad",
+          "effekt": "Känd i Stubbstan och Riket, på gott och ont.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            21,
+            21
+          ],
+          "namn": "Klanfejd",
+          "effekt": "Är indragen i en väpnad fejd mellan klaner.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            22,
+            22
+          ],
+          "namn": "Advokatkontakter",
+          "effekt": "En framgångsrik advokat är rollpersonens bästa vän.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            23,
+            23
+          ],
+          "namn": "Efterlyst",
+          "effekt": "Någon vill åt rollpersonen.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            24,
+            24
+          ],
+          "namn": "Förbannelse",
+          "effekt": "En förbannelse vilar över rollpersonen och hela släkten.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            25,
+            25
+          ],
+          "namn": "Skumraskkontakter",
+          "effekt": "Kontakter i undre världen och FV 15 gratis i Undre världen.",
+          "sida": 15,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "undre-varlden"
+              ],
+              "fv": 15,
+              "minst": true
+            }
+          ]
+        },
+        {
+          "slag": [
+            26,
+            26
+          ],
+          "namn": "Gott läkekött",
+          "effekt": "Sår läker dubbelt så fort.",
+          "sida": 15
+        },
+        {
+          "slag": [
+            27,
+            27
+          ],
+          "namn": "Bärsärk",
+          "effekt": "Klan Zodan har gett rollpersonen en levande tatuering med insikt högst 15, vald med SL (s. 27–28).",
+          "sida": 15,
+          "regel": [
+            {
+              "typ": "tatuering",
+              "maxNr": 15
+            }
+          ]
+        },
+        {
+          "slag": [
+            28,
+            28
+          ],
+          "namn": "Stålsättning",
+          "effekt": "Upp till tre gånger om dagen: ignorera skador för 2 PSY per KP.",
+          "sida": 16
+        },
+        {
+          "slag": [
+            29,
+            29
+          ],
+          "namn": "Snabbslående",
+          "effekt": "Anfaller alltid först i stridsrundan. Två med förmågan slår om initiativet som vanligt.",
+          "sida": 16
+        },
+        {
+          "slag": [
+            30,
+            30
+          ],
+          "namn": "Räddaren i nöden",
+          "effekt": "Har räddat Riket eller Stubbstan och har nationens eviga tacksamhet: 1T10 hjältepoäng.",
+          "sida": 16,
+          "regel": [
+            {
+              "typ": "hjaltepoang",
+              "tarning": "1T10"
+            }
+          ],
+          "beslut": "RB-003"
+        },
+        {
+          "slag": [
+            31,
+            31
+          ],
+          "namn": "Stålskalle",
+          "effekt": "Ingen rallarsving får rollpersonen att tappa sansen. Skallbenet är 5 poängs naturligt skydd på huvudet.",
+          "sida": 16
+        },
+        {
+          "slag": [
+            32,
+            32
+          ],
+          "namn": "Orädd",
+          "effekt": "Behöver aldrig slå på Skräcktabellen, utom under påverkan av magi.",
+          "sida": 16
+        },
+        {
+          "slag": [
+            33,
+            33
+          ],
+          "namn": "Vapenbärare",
+          "effekt": "Äger ett mäktigt arvsvapen. SL avgör dess krafter.",
+          "sida": 16
+        },
+        {
+          "slag": [
+            34,
+            34
+          ],
+          "namn": "Stryktålig",
+          "effekt": "Total KP och kroppsdelarnas KP gånger 1,5.",
+          "sida": 16,
+          "regel": [
+            {
+              "typ": "kpFaktor",
+              "varde": 1.5
+            }
+          ],
+          "beslut": "RB-021"
+        },
+        {
+          "slag": [
+            35,
+            35
+          ],
+          "namn": "Besatt",
+          "effekt": "En förfaders själ bryter ibland in och ger kunskaper. SL skapar förfadern.",
+          "sida": 16
+        },
+        {
+          "slag": [
+            36,
+            36
+          ],
+          "namn": "Hovman",
+          "effekt": "Hör till kretsen kring kung Budin III.",
+          "sida": 16
+        },
+        {
+          "slag": [
+            37,
+            37
+          ],
+          "namn": "Hängiven",
+          "effekt": "Har förrått sitt folk och fått pengar, ett magiskt föremål eller en nekrologisk förbättring som tack. SL avgör.",
+          "sida": 16
+        },
+        {
+          "slag": [
+            38,
+            38
+          ],
+          "namn": "Kejsarens gunstling",
+          "effekt": "Kejsaren visar rollpersonen sin uppskattning, och rollpersonen går hans ärenden.",
+          "sida": 16
+        },
+        {
+          "slag": [
+            39,
+            null
+          ],
+          "namn": "Utvald",
+          "effekt": "Utvald av Atum, Lothan eller Umbard att bli sitt folks hjälte.",
+          "sida": 16
+        }
+      ]
     }
   ]
 }

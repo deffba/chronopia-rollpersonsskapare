@@ -14,8 +14,9 @@ export function stegRas() {
     onclick: () => {
       // Ett tryck på den valda rasen avmarkerar den
       S.rp.ras = r.id === S.rp.ras ? "" : r.id; S.rp.rasval = []; S.rp.stoSteg = 0;
+      if (r.id !== "dvarg") S.rp.klan = { id: "", slag: null, formagaSlag: null, val: [] }; // klaner finns bara för dvärgar
       // Ett yrke som inte är öppet för den nya rasen väljs bort (t.ex. Hedersvakt, bara dvärgar)
-      if (S.rp.yrke && yrkeVillkor(S.R, S.rp, yrkeAv(S.R, S.rp.yrke))) { S.rp.yrke = ""; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; }
+      if (S.rp.yrke && yrkeVillkor(S.R, S.rp, yrkeAv(S.R, S.rp.yrke))) { S.rp.yrke = ""; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = []; }
       uppdatera();
     },
   },

@@ -244,9 +244,98 @@
       "id": "dvargar",
       "namn": "Dvärgar i Chronopia",
       "grupp": "Rasböcker",
-      "status": "kommerSnart",
+      "status": "inlagd",
       "kraver": [
         "vr"
+      ],
+      "nivaer": {
+        "sida": 3,
+        "lista": [
+          {
+            "namn": "Dvärg",
+            "bp": 125,
+            "formagor": 1,
+            "beskrivning": "En vanlig dvärg från Stubbstans gator som nyligen har gett sig ut på äventyr."
+          },
+          {
+            "namn": "Veteran",
+            "bp": 150,
+            "formagor": 2,
+            "beskrivning": "En av de bästa inom sitt gebit, som har gjort hela Chronopia till sin tummelplats."
+          },
+          {
+            "namn": "Hjälte",
+            "bp": 175,
+            "formagor": 3,
+            "beslut": "RB-001",
+            "beskrivning": "Utvald av Atum, Lothan eller Umbard att bli sitt folks hjälte."
+          }
+        ]
+      },
+      "valfriaRegler": [
+        {
+          "id": "syn-och-horsel",
+          "namn": "Syn och hörsel",
+          "sida": "3–4",
+          "beskrivning": "Syn och hörsel blir egna värden. Lägg BP på vart och ett i steg 6 och slå 1T6; summan ger en modifikation på vissa färdigheter.",
+          "tarning": "1T6",
+          "tabell": [
+            [
+              1,
+              "Dålig",
+              -2
+            ],
+            [
+              2,
+              "Nedsatt",
+              -1
+            ],
+            [
+              4,
+              "Normal",
+              0
+            ],
+            [
+              6,
+              "God",
+              1
+            ],
+            [
+              9,
+              "Mycket god",
+              2
+            ],
+            [
+              null,
+              "Utmärkt",
+              3
+            ]
+          ],
+          "sinnen": [
+            {
+              "id": "syn",
+              "namn": "Syn",
+              "galler": "CL",
+              "fardigheter": [
+                "finna-dolda-ting",
+                "upptacka-fara"
+              ],
+              "avstandsvapen": true,
+              "text": "CL i avståndsvapen, Finna dolda ting och Upptäcka fara"
+            },
+            {
+              "id": "horsel",
+              "namn": "Hörsel",
+              "galler": "FV",
+              "fardigheter": [
+                "lyssna",
+                "upptacka-fara"
+              ],
+              "text": "FV i Lyssna och Upptäcka fara"
+            }
+          ],
+          "not": "Modifikationerna läggs ihop: god syn och god hörsel ger +2 i Upptäcka fara. Dålig syn kan rättas med ögonglas."
+        }
       ]
     },
     {

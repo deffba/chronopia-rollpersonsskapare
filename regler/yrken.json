@@ -2081,6 +2081,774 @@
       "startvapen": true,
       "stamning": "Svärdet i ena handen, besvärjelsen i den andra, och båda lika snabba.",
       "beskrivning": "Stridsmagiker som slåss mitt i striden och kastar besvärjelser lika snabbt som de hugger."
+    },
+    {
+      "id": "advokat",
+      "namn": "Advokat",
+      "sida": 4,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 4
+      },
+      "yrkesformaga": "Har alltid svar på tal när det legala i hans eller vännernas handlingar ifrågasätts: +5 på CL i Bluffa och Övertala i sådana lägen.",
+      "fardigheter": [
+        "administration",
+        "historia",
+        "kulturkannedom",
+        "lapplasning",
+        {
+          "fardighet": "lardom",
+          "antal": 2
+        },
+        "rakning",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ett otal lagböcker, burna av en mulvak",
+        "Ett mindre kontor med papper, pennor, bläck och sigill"
+      ],
+      "stamning": "Lagen är en gruva, och den som kan gångarna hittar alltid en väg ut.",
+      "beskrivning": "Stubbstans lagkunniga, som försvarar och åtalar i klanernas och kungens domstolar.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      }
+    },
+    {
+      "id": "agent",
+      "namn": "Agent",
+      "sida": 5,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 5
+      },
+      "yrkesformaga": "+5 på CL i Bluffa, Muta och Övertala. Dessutom gladiatorns yrkesförmåga: +5 på initiativet i dueller man mot man (grundreglerna s. 20).",
+      "fardigheter": [
+        "akrobatik",
+        "dra-vapen",
+        "giftkunskap",
+        "lasdyrkning",
+        "muta",
+        "undre-varlden",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ett par dvärgiska kastknivar",
+        "Diskreta mörka kläder",
+        "Ett dyrkset",
+        "Några doser gift, bland annat Svart lotus",
+        "Ett valfritt handvapen"
+      ],
+      "stamning": "Kungens hand är lång, och dess fingrar heter svartskägg.",
+      "beskrivning": "Kungens hemliga agenter, svartskäggen, som spionerar, smugglar och ibland dödar för Budin III.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Ett par dvärgiska kastknivar",
+          "namn": "Kastkniv (dvärgisk)",
+          "antal": 2
+        }
+      ],
+      "startvapen": true
+    },
+    {
+      "id": "argolisbroder",
+      "namn": "Argolisbroder",
+      "sida": 6,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 6
+      },
+      "yrkesformaga": "Krigarens yrkesförmåga (grundreglerna s. 22). Upp till fem gånger per dag kan han kalla på Atums kraft i ett extremt kraftfullt slag: 3 PSY, och skadan ökar med 1T10.",
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om religion (Atum)"
+          ]
+        },
+        "spela-instrument",
+        {
+          "fardighet": "vapentekniker",
+          "antal": 1,
+          "maste": [
+            "Atums väg"
+          ]
+        },
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Skinande rustning",
+        "Valfritt handvapen och avståndsvapen",
+        "Tabard",
+        "Pergamentrulle med Ordet",
+        "Instrument"
+      ],
+      "stamning": "Atums ord på pergamentet, Atums kraft i yxan.",
+      "beskrivning": "Atums heliga krigare, som går i strid med skinande rustningar, tabarder och stridssånger.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Tabard",
+          "namn": "Tabard"
+        }
+      ],
+      "initiativ": 3,
+      "startvapen": true
+    },
+    {
+      "id": "barsark",
+      "namn": "Bärsärk",
+      "sida": 6,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 6
+      },
+      "yrkesformaga": "Krigarens yrkesförmåga (grundreglerna s. 22). Bär levande tatueringar från klan Zodan: en, två eller tre beroende på erfarenhetsnivån, valda med SL.",
+      "fardigheter": [
+        "barsarkagang",
+        "dra-vapen",
+        "drogkunskap",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 4
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Favoritvapen",
+        "Ett hopplock av rustningsdelar",
+        "Tre doser valfria svampar"
+      ],
+      "stamning": "Lothans märke brinner på axeln, och då finns ingen återvändo.",
+      "beskrivning": "Vildmännen från klan Zodan, som kastar sig in i striden i raseri med levande tatueringar över hela kroppen.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "initiativ": 3,
+      "startvapen": true,
+      "tatueringar": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "fiskare",
+      "namn": "Fiskare",
+      "sida": 7,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 7
+      },
+      "yrkesformaga": "Blir aldrig sjösjuk och får inga avdrag på färdigheter vid strid på eller under vatten. Kan hålla andan i upp till fem minuter.",
+      "fardigheter": [
+        "fiske",
+        {
+          "fardighet": "hantverk",
+          "antal": 1
+        },
+        "knopar",
+        "navigera",
+        "simma",
+        "sjokunnighet",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Mindre dvärgisk fiskebåt med sänkhåv",
+        "Fiskenät",
+        "Ryssjor och skaldjursburar",
+        "Krokar och metspön",
+        "Rep",
+        "En stor fiskekniv"
+      ],
+      "stamning": "Havet ger och havet tar, men en dolin tar alltid mer.",
+      "beskrivning": "Klan Dolins fiskare, som tar sina båtar ut på de underjordiska sjöarna och havet.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Mindre dvärgisk fiskebåt med sänkhåv",
+          "namn": "Fiskebåt"
+        },
+        {
+          "text": "Mindre dvärgisk fiskebåt med sänkhåv",
+          "namn": "Sänkhåv"
+        },
+        {
+          "text": "Fiskenät",
+          "namn": "Fiskenät (5 × 5 m)"
+        },
+        {
+          "text": "Krokar och metspön",
+          "namn": "Metspö"
+        }
+      ]
+    },
+    {
+      "id": "gravare",
+      "namn": "Grävare",
+      "sida": 8,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 8
+      },
+      "yrkesformaga": "Slåss obehindrat i mörker, även i kolmörker. Hittar ofelbart närmaste gruvort, mineralåder eller lufthål och går aldrig vilse under jord. Ovan jord är han en vanlig dvärg.",
+      "fardigheter": [
+        "drogkunskap",
+        "hantera-fallor",
+        "knopar",
+        "schack",
+        "spela-instrument",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        },
+        "overlevnad"
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Grävarhjälm",
+        "Kraftiga grävarkängor (+1T2 i närstrid)",
+        "Hacka",
+        "Tjutare",
+        "Handvapen",
+        "Lätt läderrustning"
+      ],
+      "stamning": "Berget sjunger för den som lyssnar, och grävaren hör varje ton.",
+      "beskrivning": "Gruvarbetare och tunnelbyggare som känner berget bättre än någon annan. Överlevnaden gäller i underjorden.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Grävarhjälm",
+          "namn": "Gruvhjälm"
+        },
+        {
+          "text": "Kraftiga grävarkängor (+1T2 i närstrid)",
+          "namn": "Grävarkängor"
+        },
+        {
+          "text": "Hacka",
+          "namn": "Hacka"
+        },
+        {
+          "text": "Tjutare",
+          "namn": "Tjutare"
+        }
+      ],
+      "startvapen": true
+    },
+    {
+      "id": "ingenjor",
+      "namn": "Ingenjör",
+      "sida": 8,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 8
+      },
+      "yrkesformaga": "Kan laga i stort sett allt som går sönder, även det som verkar krossat, så länge det inte är magiskt.",
+      "fardigheter": [
+        "dra-vapen",
+        {
+          "fardighet": "hantverk",
+          "antal": 2
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 1
+        },
+        "rakning",
+        "teknologi",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        },
+        "vardera"
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Blå tunika (Kungliga ingenjörsgillet)",
+        "Stor verktygslåda",
+        "Sitt vapen"
+      ],
+      "stamning": "Det finns ingen maskin som inte går att laga, bara ingenjörer som ger upp för tidigt.",
+      "beskrivning": "Medlemmar av Kungliga ingenjörsgillet, som bygger hissar, gasledningar och undervattensbåtar.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Blå tunika (Kungliga ingenjörsgillet)",
+          "namn": "Tunika"
+        }
+      ],
+      "startvapen": true
+    },
+    {
+      "id": "klankrigare",
+      "namn": "Klankrigare",
+      "sida": 9,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 9
+      },
+      "yrkesformaga": "Krigarens yrkesförmåga (grundreglerna s. 22). Har enormt stöd av sina krigarbröder.",
+      "fardigheter": [
+        "dra-vapen",
+        "hantera-fallor",
+        {
+          "valEn": [
+            "hasardspel",
+            "schack"
+          ]
+        },
+        "stridskonster",
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 4
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Handvapen",
+        "Sköld",
+        "Avståndsvapen",
+        "Rustning värdig hans rang och klan",
+        "Klanens högtidsdräkt"
+      ],
+      "stamning": "Klanen först, kungen sedan, och sig själv sist.",
+      "beskrivning": "Klanernas egna krigare, som vaktar klanens hallar och följer klanens fanor i krig.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Klanens högtidsdräkt",
+          "namn": "Klandräkt"
+        }
+      ],
+      "initiativ": 3,
+      "startvapen": true
+    },
+    {
+      "id": "medicus",
+      "namn": "Medicus",
+      "sida": 9,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 9
+      },
+      "yrkesformaga": "Kan med ett lyckat slag i Läkekonst avgöra hur en skada har uppstått (vapen, hand, längd, vikt, skicklighet, till och med hårfärg) och när döden inträffade, ±10 %.",
+      "fardigheter": [
+        "administration",
+        {
+          "valEn": [
+            "drogkunskap",
+            "giftkunskap",
+            "ortkunskap"
+          ]
+        },
+        "lakekonst",
+        {
+          "fardighet": "lardom",
+          "antal": 2
+        },
+        "rakning",
+        "schack",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Vapen",
+        "Medicusväska: sprutor, elixir, skalpeller, bensågar, kraniumborrar, skalltvingar och bitpinnar"
+      ],
+      "stamning": "Varje sår berättar en historia för den som kan läsa det.",
+      "beskrivning": "Dvärgiska läkare och fältskärer, med skalpell och bensåg alltid till hands.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Medicusväska: sprutor, elixir, skalpeller, bensågar, kraniumborrar, skalltvingar och bitpinnar",
+          "namn": "Skalpell"
+        },
+        {
+          "text": "Medicusväska: sprutor, elixir, skalpeller, bensågar, kraniumborrar, skalltvingar och bitpinnar",
+          "namn": "Bensåg"
+        },
+        {
+          "text": "Medicusväska: sprutor, elixir, skalpeller, bensågar, kraniumborrar, skalltvingar och bitpinnar",
+          "namn": "Kraniumborr"
+        },
+        {
+          "text": "Medicusväska: sprutor, elixir, skalpeller, bensågar, kraniumborrar, skalltvingar och bitpinnar",
+          "namn": "Skalltving"
+        },
+        {
+          "text": "Medicusväska: sprutor, elixir, skalpeller, bensågar, kraniumborrar, skalltvingar och bitpinnar",
+          "namn": "Bitpinne"
+        }
+      ],
+      "startvapen": true
+    },
+    {
+      "id": "portvaktare",
+      "namn": "Portväktare",
+      "sida": 10,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 10
+      },
+      "yrkesformaga": "Krigarens yrkesförmåga (grundreglerna s. 22). Totalt orädd: behöver aldrig slå på Skräcktabellen, inte ens under påverkan av magi.",
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        "hantera-fallor",
+        "heraldik",
+        "schack",
+        {
+          "fardighet": "vapen",
+          "antal": 4
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Portväktarnas traditionella rustning",
+        "Förnämliga vapen (donerade)",
+        "Heraldiska vimplar och emblem",
+        "Dambräde med pjäser"
+      ],
+      "stamning": "Ingen passerar porten utan att portväktaren vill det.",
+      "beskrivning": "Vakterna vid Stubbstans portar, med traditionella rustningar och förnämliga vapen.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Heraldiska vimplar och emblem",
+          "namn": "Heraldisk vimpel"
+        }
+      ],
+      "initiativ": 3,
+      "startvapen": true
+    },
+    {
+      "id": "prast",
+      "namn": "Präst",
+      "sida": 11,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 11
+      },
+      "yrkesformaga": "Kan när omständigheterna är gynnsamma (SL avgör) ge någon Atums välsignelse eller förbannelse: ±1 på CL på allt under så många stridsrundor som prästens PSY. Behöver inget magiförmågeslag för Atums väg.",
+      "fardigheter": [
+        "administration",
+        "historia",
+        {
+          "fardighet": "lardom",
+          "antal": 1,
+          "maste": [
+            "Kunskap om religion (Atum)"
+          ]
+        },
+        {
+          "fardighet": "atums-vag",
+          "utanMagiformagaslag": true
+        },
+        {
+          "fardighet": "lardom",
+          "antal": 2
+        },
+        "rakning",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Atumsstav",
+        "Prästkåpa",
+        "Mirella",
+        "Titra",
+        "Ordet fäst i en tjock kedja",
+        "Vanligen en yxa i bältet"
+      ],
+      "stamning": "Atums ord är berget, och berget viker aldrig.",
+      "beskrivning": "Klan Mindirs präster, som leder gudstjänsterna i katedralen och bär Ordet i en tjock kedja.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ],
+        "klan": [
+          "mindir"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Prästkåpa",
+          "namn": "Prästkåpa"
+        },
+        {
+          "text": "Mirella",
+          "namn": "Mirella"
+        },
+        {
+          "text": "Titra",
+          "namn": "Titra"
+        }
+      ],
+      "beslut": "RB-014",
+      "startvapen": true
+    },
+    {
+      "id": "stubbgardist",
+      "namn": "Stubbgardist",
+      "sida": 11,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 11
+      },
+      "yrkesformaga": "Krigarens yrkesförmåga (grundreglerna s. 22). Har en bred bekantskapskrets och kontakter vid det kungliga hovet.",
+      "fardigheter": [
+        "avvapna",
+        "dra-vapen",
+        "schack",
+        "stridskonster",
+        "tva-vapen",
+        {
+          "fardighet": "vapen",
+          "antal": 4
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Rustning och vapen",
+        "Ett par heraldiska vimplar",
+        "Personlig passersedel till de nedre delarna av Bergkonungens palats"
+      ],
+      "stamning": "Kungens sköld och Stubbstans stolthet.",
+      "beskrivning": "Bergkonungens livgarde, som vaktar palatset och syns vid varje fest vid hovet.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Ett par heraldiska vimplar",
+          "namn": "Heraldisk vimpel",
+          "antal": 2
+        }
+      ],
+      "initiativ": 3,
+      "startvapen": true
+    },
+    {
+      "id": "svinryttare",
+      "namn": "Svinryttare",
+      "sida": 12,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 12
+      },
+      "yrkesformaga": "Krigarens yrkesförmåga (grundreglerna s. 22). Kan ge sitt tunnelsvin enkla telepatiska kommandon och ramlar bara av om han slås ur sadeln eller blir medvetslös. Kontrollerar smärtan och påverkas inte av skador i armar och ben eller av tortyr (en kroppsdel med 0 KP blir ändå obrukbar).",
+      "fardigheter": [
+        "avvapna",
+        "djurhelning",
+        "djurtraning",
+        "dra-vapen",
+        "muta",
+        {
+          "fardighet": "vapen",
+          "antal": 4
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ett tunnelsvin",
+        "Rustning med heraldiska vimplar",
+        "Sporrar",
+        "Vapnen han behärskar"
+      ],
+      "stamning": "Ett tunnelsvin i full galopp stannar för ingenting.",
+      "beskrivning": "Klan Tymars ryttare, som rider tunnelsvin i de fria kompanierna.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "startvaror": [
+        {
+          "text": "Sporrar",
+          "namn": "Svinryttarsporrar"
+        }
+      ],
+      "initiativ": 3,
+      "startvapen": true
+    },
+    {
+      "id": "vardshusvard",
+      "namn": "Värdshusvärd",
+      "sida": 13,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 13
+      },
+      "yrkesformaga": "Känner till allt och alla i området kring krogen. Får också en extra valfri yrkesfärdighet med FV 10 gratis, från en tidigare sysselsättning.",
+      "fardigheter": [
+        {
+          "fardighet": "hantverk",
+          "antal": 2,
+          "maste": [
+            "Bryggning",
+            "Matlagning"
+          ]
+        },
+        "dra-vapen",
+        "muta",
+        "rakning",
+        "schack",
+        {
+          "fardighet": "vapen",
+          "antal": 3
+        },
+        {
+          "valPaket": [
+            {
+              "valfria": 1,
+              "namn": "En extra valfri färdighet (tidigare sysselsättning)"
+            }
+          ],
+          "startFV": 10
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "Ett mindre värdshus med allt som hör till",
+        "En fin gammal yxa"
+      ],
+      "stamning": "Det som sägs över ölet stannar på värdshuset, nästan alltid.",
+      "beskrivning": "Krögare som driver ett av Stubbstans många värdshus och vet allt som händer i kvarteret.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "beslut": "RB-021",
+      "startvapen": true
+    },
+    {
+      "id": "alderman",
+      "namn": "Ålderman",
+      "sida": 13,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 13
+      },
+      "yrkesformaga": "Har ett enormt kunskapsområde och framstår som expert i allt som diskuteras. Dessutom den lärde mannens yrkesförmåga: alla lärdomsfärdigheter är yrkesfärdigheter (grundreglerna s. 23).",
+      "fardigheter": [
+        "geografi",
+        "historia",
+        "kulturkannedom",
+        {
+          "fardighet": "lardom",
+          "antal": 2
+        },
+        "rakning",
+        "schack",
+        {
+          "fardighet": "vapen",
+          "antal": 2
+        }
+      ],
+      "valfri": true,
+      "automatiska": [],
+      "startutrustning": [
+        "En trave böcker",
+        "Sitt goda humör",
+        "Sin välslipade yxa"
+      ],
+      "stamning": "Den som har levt i tre hundra år har hört de flesta argument förut.",
+      "beskrivning": "Klanernas åldermän och rådgivare, med ett gott humör och en välslipad yxa.",
+      "villkor": {
+        "ras": [
+          "dvarg"
+        ]
+      },
+      "yrkesgrupper": [
+        "lardom"
+      ],
+      "startvapen": true
     }
   ],
   "extraYrkesfardigheter": {

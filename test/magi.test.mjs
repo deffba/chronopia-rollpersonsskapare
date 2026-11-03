@@ -104,3 +104,13 @@ test("underjordens magi är bara för cestoditer", () => {
   const r = raknaRollperson(regler, { ...chronomag, besvarjelser: { [id]: 1 } });
   assert.ok(r.fel.some((t) => /[Cc]estodit/.test(t)), r.fel.join());
 });
+
+test("bara den som kan magi får köpa familjarer; gratis familjarer får alla ha (RB-023)", () => {
+  const krigare = { ...magi, familjarer: ["gonk"] };
+  const r = raknaRollperson(regler, krigare);
+  assert.equal(r.kanMagi, false);
+  assert.equal(r.familjarer.kanKopa, false);
+  assert.ok(r.familjarer.tillganglig, "steget syns så att köpta familjarer kan tas bort");
+  assert.equal(raknaRollperson(regler, magi).familjarer.tillganglig, false, "utan magi och utan familjarer syns inte steget");
+  assert.equal(raknaRollperson(regler, { ...chronomag, familjarer: ["gargoyl"] }).familjarer.kanKopa, true);
+});

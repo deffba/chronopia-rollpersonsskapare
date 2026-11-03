@@ -1680,6 +1680,87 @@
         "bok": "magi",
         "sida": 51
       }
+    },
+    {
+      "namn": "Drakdödare",
+      "skada": "3T8+2",
+      "styKrav": 34,
+      "langd": 0,
+      "vikt": 10,
+      "bv": 13,
+      "pris": 2975,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 74
+      },
+      "beslut": "RB-022"
+    },
+    {
+      "namn": "Stridsyxa (dvärgisk)",
+      "skada": "2T6+2",
+      "styKrav": 17,
+      "langd": 0,
+      "vikt": 5.5,
+      "bv": 13,
+      "pris": 1750,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 74
+      },
+      "beslut": "RB-022"
+    },
+    {
+      "namn": "Huggare (dvärgisk)",
+      "skada": "1T6+3",
+      "styKrav": 9,
+      "langd": 0,
+      "vikt": 3,
+      "bv": 13,
+      "pris": 400,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 74
+      },
+      "beslut": "RB-022",
+      "not": "Handskyddet räknas som knogjärn med spikar."
+    },
+    {
+      "namn": "Sprättare",
+      "skada": "1T6+2",
+      "styKrav": 7,
+      "langd": 0,
+      "vikt": 2,
+      "bv": 15,
+      "pris": 750,
+      "grupp": "dolkar",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 74
+      },
+      "beslut": "RB-022"
+    },
+    {
+      "namn": "Trolldräpare",
+      "skada": "2T8+3",
+      "styKrav": 29,
+      "langd": 0,
+      "vikt": 9,
+      "bv": 13,
+      "pris": 2450,
+      "grupp": "yxor",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 74
+      },
+      "beslut": "RB-022"
     }
   ],
   "projektil": [
@@ -2110,6 +2191,20 @@
         "bok": "vr",
         "sida": 67
       }
+    },
+    {
+      "namn": "Kastkniv (dvärgisk)",
+      "skada": "1T6+1",
+      "styKrav": 8,
+      "vikt": 1.5,
+      "pris": 300,
+      "rackvidd": "STY rutor",
+      "grupp": "kastvapen",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 74
+      },
+      "beslut": "RB-022"
     }
   ],
   "skoldar": [

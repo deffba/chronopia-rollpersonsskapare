@@ -8,6 +8,7 @@ import { spelInnehall, spelDelar, aktivDel, valjDel, nollstallSpel, spelPotter }
 import { stegAlder } from "./steg/alder.js";
 import { stegBesvarjelser } from "./steg/besvarjelser.js";
 import { stegFamiljarer } from "./steg/familjarer.js";
+import { stegKlan } from "./steg/klan.js";
 import { stegBocker } from "./steg/bocker.js";
 import { grundvardesForslag, stegEgenskaper } from "./steg/egenskaper.js";
 import { filnamn, laddaNer, stegExport } from "./steg/export.js";
@@ -125,7 +126,7 @@ function ritaVy() {
   const steg = STEG.find((s) => s.id === S.aktivtSteg);
   const index = STEG.indexOf(steg);
   const innehall = {
-    bocker: stegBocker, ras: stegRas, alder: stegAlder, yrke: stegYrke, extra: stegExtra, kon: stegKon, egenskaper: stegEgenskaper,
+    bocker: stegBocker, ras: stegRas, klan: stegKlan, alder: stegAlder, yrke: stegYrke, extra: stegExtra, kon: stegKon, egenskaper: stegEgenskaper,
     formagor: stegFormagor, familjarer: stegFamiljarer, svardshand: stegSvardshand, stand: stegStand, kapital: stegKapital, fardigheter: stegFardigheter,
     besvarjelser: stegBesvarjelser, utrustning: stegUtrustning, export: stegExport,
   }[steg.id](res);

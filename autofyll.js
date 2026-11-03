@@ -2,7 +2,7 @@
 // listor och textfält som är tomma, åldern (enkel metod), särskilda förmågans val, startpaketets vapen och alla tärningsslag.
 // Ras och yrke väljer spelaren själv, och knapparna Föreslå värden och Fördela EP används aldrig.
 // Bara tomma val fylls i, så det som spelaren själv har valt ändras inte. Byts yrket fylls det nya yrkets val i.
-import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, vapenVillkor, varukatalog, formagetabell, formageslag, tarningAv, iBocker, sarskildFormaga as sfFor } from "./regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, paborjad, passarBland, kanAnvandaVapen, vapenVillkor, varukatalog, formagetabell, formageslag, tarningAv, iBocker, sarskildFormaga as sfFor, klanForSlag, magiskolor } from "./regelmotor.js";
 
 const LAGRING = "chronopia-dev-autofyll";
 const slaT = (antal, sidor) => Array.from({ length: antal }, () => 1 + Math.floor(Math.random() * sidor)).reduce((a, b) => a + b, 0);
@@ -26,6 +26,24 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
   if (steg === "ras" && rp.ras) {
     const valfriRas = rasAv(R, rp.ras).primara.find((p) => p.valfri)?.valfri;
     if (valfriRas && !rp.rasval.some(klar)) rp.rasval = [`${valfriRas}:${delval(valfriRas)}`];
+  }
+
+  // Klanen (Dvärgar i Chronopia s. 4): 1T100 på klantabellen, sedan 1T10 för klanförmågan och dess val
+  if (steg === "klan") {
+    if (slag && !rp.klan?.id) { const t = slaT(1, 100); rp.klan = { id: klanForSlag(R, t), slag: t, formagaSlag: null, val: [] }; }
+    if (slag && rp.klan?.id && rp.klan.formagaSlag == null && api.rakna().klan?.klan?.formagor?.length) rp.klan = { ...rp.klan, formagaSlag: slaT(1, 10), val: [] };
+    const f = api.rakna().klan?.formaga;
+    (f?.regel ?? []).forEach((del, i) => {
+      if (del.typ !== "fv" || !del.valj || [].concat(rp.klan.val?.[i] ?? []).length) return;
+      const satt = (v) => { const ny = [...(rp.klan.val ?? [])]; ny[i] = v; rp.klan = { ...rp.klan, val: ny }; };
+      const lista = del.bland === "magiskola" ? magiskolor(R, api.motorIndata()).map((x) => x.id) : kandidater(api, autoDelval, del.bland, anvanda);
+      for (const nyckel of lista) {
+        if (!passarBland(R, api.motorIndata(), nyckel, del.bland)) continue;
+        satt([nyckel]);
+        if (!api.rakna().fel.length) { anvanda.add(nyckel); break; }
+        satt(undefined);
+      }
+    });
   }
 
   // Åldern sätts med enkel metod: rasens lägsta vuxna ålder (s. 16)
@@ -60,6 +78,12 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
       const har = new Set(api.yrkesNycklar().map((n) => n.split(":")[0]));
       const kan = (f) => f.typ === "sekundar" && !f.perVal && !har.has(f.id) && !MAGI.includes(f.id);
       rp.valfri = R.fardigheter.lista.find((f) => iBocker(f, rp) && kan(f))?.id ?? "";
+    }
+    // Bärsärkens levande tatueringar (Dvärgar i Chronopia s. 6–7): de första som går
+    const tak = res.tatueringar?.tak ?? 0;
+    for (const t of R.fardigheter.tatueringar?.lista ?? []) {
+      if ((rp.tatueringar ?? []).length >= tak) break;
+      if (!(rp.tatueringar ?? []).includes(t.id)) rp.tatueringar = [...(rp.tatueringar ?? []), t.id];
     }
     if (yrke.startbonus?.some((b) => b.valEttAv) && !api.yrkesNycklar().includes(rp.hantverkBonus)) {
       rp.hantverkBonus = api.yrkesNycklar().find((n) => n.startsWith("hantverk:")) ?? "";
@@ -164,6 +188,11 @@ function fyllFormaga(api, autoDelval, anvanda, slag) {
         const forsok = [{ lage: "tre", egenskaper: ["STY", "FYS", "SMI"] }, { lage: "tre", egenskaper: ["INT", "PSY", "KAR"] },
           ...GRUNDEGENSKAPER.map((g) => ({ lage: "en", egenskaper: [g] }))];
         for (const v of forsok) { sattVal(v); if (gar()) break; }
+      }
+      if (del.typ === "tatuering" && !val[i]) {
+        // Bärsärk: en slumpad tatuering med tillåten insikt (Dvärgar i Chronopia s. 15)
+        const lista = (R.fardigheter.tatueringar?.lista ?? []).filter((t) => !del.maxNr || t.nr <= del.maxNr).sort(() => Math.random() - 0.5);
+        for (const t of lista) { sattVal(t.id); if (gar()) break; }
       }
       if (del.typ === "familjar" && !val[i]) {
         // Spiritus familiarius: en slumpad familjar som rollpersonen får ha (Magi i Chronopia s. 17)

@@ -11,7 +11,9 @@
     "Gjutning": "Att gjuta föremål av metall, till exempel klockor, kittlar och statyer.",
     "Träsnideri": "Att snida i trä, till exempel pilar, bågar, skålar och utsmyckningar.",
     "Tygfärgning": "Att färga tyg och garn med växtfärger och andra färgämnen.",
-    "Läderarbete": "Att tillverka skor, sadlar, bälten och läderrustningar."
+    "Läderarbete": "Att tillverka skor, sadlar, bälten och läderrustningar.",
+    "Bryggning": "Att brygga öl och mjöd (Dvärgar i Chronopia s. 13, RB-014).",
+    "Matlagning": "Att laga mat, från värdshusgryta till festmåltid (Dvärgar i Chronopia s. 13, RB-014)."
   },
   "lista": [
     {
@@ -845,6 +847,96 @@
         "sida": 19
       },
       "beskrivning": "Små vardagsbesvärjelser som inte kostar någon PSY. För varje FV kan magikern två valfria minimagiska besvärjelser, som läggs med FV i Minimagi. Magiker i Magi i Chronopia har den automatiskt med samma FV som i sin bästa magiskola."
+    },
+    {
+      "id": "fiske",
+      "namn": "Fiske",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 16,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 16
+      },
+      "beskrivning": "Att fånga fisk och skaldjur med nät, krok och burar, veta var stimmen går och undvika havsodjuren. Ju större differensvärde, desto större fångst."
+    },
+    {
+      "id": "kora-undervattensbat",
+      "namn": "Köra undervattensbåt",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 16,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 16
+      },
+      "beskrivning": "Att hantera en dvärgisk undervattensbåt: starta den, laga fel och föra den utan att gå på grund."
+    },
+    {
+      "id": "tatuering",
+      "namn": "Tatuering",
+      "grundegenskap": "SMI/INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 16,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 16
+      },
+      "villkor": {
+        "yrken": [
+          "barsark"
+        ]
+      },
+      "beslut": "RB-021",
+      "beskrivning": "Att göra klan Zodans levande tatueringar. FV avgör hur många tatueringar man behärskar (FV 4–6: 2, 7–9: 3, 10–13: 4, 14–17: 5, 18–20: 6, 21–25: 7 och så vidare). Ett misslyckat slag ger en död, vanlig tatuering. Bara för bärsärkar. Grundegenskapen är snittet av SMI och INT, avrundat nedåt."
+    },
+    {
+      "id": "teknologi",
+      "namn": "Teknologi",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 16,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 16
+      },
+      "beskrivning": "Kunskap om maskiner, verktyg och mekanik, och att bygga egna mackapärer. Kallas också Mekanik (RB-014)."
+    },
+    {
+      "id": "undervattensnavigering",
+      "namn": "Undervattensnavigering",
+      "grundegenskap": "INT",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 16,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 16
+      },
+      "beskrivning": "Att hitta rätt under vatten, även i kolmörker, och lägga rutter för undervattensbåtar."
+    },
+    {
+      "id": "atums-vag",
+      "namn": "Atums väg (prästmagi)",
+      "grundegenskap": "INT",
+      "typ": "magiskola",
+      "kategoriB": false,
+      "sida": 51,
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 51
+      },
+      "villkor": {
+        "yrken": [
+          "prast"
+        ]
+      },
+      "beslut": "RB-014",
+      "beskrivning": "Atumprästernas ceremoniella magi. Många besvärjelser kräver flera präster. Bara dvärgiska präster lär sig den, och de behöver inget magiförmågeslag."
     }
   ],
   "kostnad": {
@@ -1062,6 +1154,22 @@
     [
       "Läderarbete",
       "SMI"
+    ],
+    [
+      "Bryggning",
+      "INT",
+      {
+        "bok": "dvargar",
+        "sida": 13
+      }
+    ],
+    [
+      "Matlagning",
+      "INT",
+      {
+        "bok": "dvargar",
+        "sida": 13
+      }
     ]
   ],
   "stridskonstTekniker": [
@@ -1642,6 +1750,150 @@
         "bok": "vr",
         "sida": 32
       }
+    },
+    {
+      "id": "atums-vag",
+      "skola": "Argolisbröderna",
+      "namn": "Atums väg",
+      "tekniker": [
+        "Boridushugg",
+        "Krafthugg",
+        "Stormanfall",
+        "Stålsättning"
+      ],
+      "kostnad": 5,
+      "vem": "Argolisbröder (Dvärgar i Chronopia s. 6). Kostnaden är teknikernas summa, 4,5, avrundad uppåt (RB-021).",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 6
+      }
     }
-  ]
+  ],
+  "tatueringar": {
+    "kalla": {
+      "bok": "dvargar",
+      "sida": 27
+    },
+    "beslut": "RB-021",
+    "text": "Klan Zodans bärsärkar bär levande tatueringar. Talet före namnet är den insikt (FV i Tatuering) som tatueraren behöver; modifikationen gäller tatuerarens slag när tatueringen görs. Kostnaden betalas när tatueringen används.",
+    "lista": [
+      {
+        "id": "lothans-marke",
+        "nr": 2,
+        "namn": "Lothans märke",
+        "mod": "+5",
+        "kostnad": "–",
+        "antal": "3 ggr/dag",
+        "effekt": "Automatiskt bärsärkaraseri, som fungerar som vanligt. Den vanligaste tatueringen, på högra axeln."
+      },
+      {
+        "id": "vandraren",
+        "nr": 4,
+        "namn": "Vandraren",
+        "mod": "+4",
+        "kostnad": "–",
+        "antal": "permanent",
+        "effekt": "Rör sig i huden. Ingen annan effekt."
+      },
+      {
+        "id": "fjallhud",
+        "nr": 6,
+        "namn": "Fjällhud",
+        "mod": "+1",
+        "kostnad": "3 PSY per ABS",
+        "antal": "2 ggr/dag",
+        "effekt": "Täcker kroppen och absorberar under 1T6 SR en KP per tre spenderade PSY."
+      },
+      {
+        "id": "hjalpare",
+        "nr": 8,
+        "namn": "Hjälpare",
+        "mod": "±0",
+        "kostnad": "2 PSY per CL",
+        "antal": "2 ggr/dag",
+        "effekt": "Höjer CL på allt under en stridsrunda."
+      },
+      {
+        "id": "demonens-ansikte",
+        "nr": 9,
+        "namn": "Demonens ansikte",
+        "mod": "−3",
+        "kostnad": "3 PSY",
+        "antal": "3 ggr/dag",
+        "effekt": "Motståndaren måste lyckas med ett normalt PSY-slag eller slå på Skräcktabellen."
+      },
+      {
+        "id": "hammarnavar",
+        "nr": 11,
+        "namn": "Hammarnävar",
+        "mod": "±0",
+        "kostnad": "2 PSY",
+        "antal": "3 ggr/dag",
+        "effekt": "Under en stridsrunda: +1T6 i skada i närstrid per två PSY."
+      },
+      {
+        "id": "lothans-bila",
+        "nr": 13,
+        "namn": "Lothans bila",
+        "mod": "−2",
+        "kostnad": "6 PSY",
+        "antal": "2 ggr/dag",
+        "effekt": "Ett slag som automatiskt träffar och gör maximal skada, med skadebonus och bonus från andra tatueringar. Kan bara pareras med ett perfekt slag."
+      },
+      {
+        "id": "vaktare",
+        "nr": 16,
+        "namn": "Väktare",
+        "mod": "−4",
+        "kostnad": "–",
+        "antal": "obegränsat",
+        "effekt": "Varnar: Upptäcka fara lyckas alltid."
+      },
+      {
+        "id": "bergets-son",
+        "nr": 17,
+        "namn": "Bergets son",
+        "mod": "−5",
+        "kostnad": "3 PSY",
+        "antal": "3 ggr/dag",
+        "effekt": "Kamouflage i 1T10 SR: CL för att hitta bärsärken med Finna dolda ting halveras, och CL i Gömma sig fördubblas."
+      },
+      {
+        "id": "zodans-valsignelse",
+        "nr": 18,
+        "namn": "Zodans välsignelse",
+        "mod": "−5",
+        "kostnad": "2 PSY per KP",
+        "antal": "3 ggr/dag",
+        "effekt": "Helar bärsärken själv, en SR per KP."
+      },
+      {
+        "id": "rus",
+        "nr": 19,
+        "namn": "Rus",
+        "mod": "−3",
+        "kostnad": "1 PSY per KP",
+        "antal": "3 ggr/dag",
+        "effekt": "Stålsätter bärsärken, som Stålsättning i grundreglerna."
+      },
+      {
+        "id": "vredens-kaftar",
+        "nr": 21,
+        "namn": "Vredens käftar",
+        "mod": "−10",
+        "kostnad": "4 PSY",
+        "antal": "2 ggr/dag",
+        "effekt": "Ett monsteransikte anfaller (FV 10, skada 1T10) i 1T10 SR, samtidigt som bärsärken."
+      },
+      {
+        "id": "zodans-forbannelse",
+        "nr": 23,
+        "namn": "Zodans förbannelse",
+        "mod": "−12",
+        "kostnad": "5 PSY",
+        "antal": "1 gång/dag",
+        "effekt": "Smittar ett offer i obeväpnad strid (blodvite krävs). Offret dör efter tre månader om inte HELA E5 stoppar det."
+      }
+    ]
+  }
 }

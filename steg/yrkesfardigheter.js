@@ -1,5 +1,5 @@
 // Steg 4: yrkesfärdigheter och extra yrkesfärdigheter.
-import { fardighetAv, paborjad, namnFor } from "../regelmotor.js";
+import { fardighetAv, paborjad, namnFor, kallText } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { S, uppdatera, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -49,6 +49,7 @@ export function stegExtra(res) {
   return [
     utanMagiInfo(),
     ...yrketsVal(),
+    tatueringsVal(res),
     el("h3", {}, "Fler yrkesfärdigheter"),
     el("p", {}, `Den första extra yrkesfärdigheten kostar ${k.forsta} BP, den andra ${k.andra} BP och varje därefter ${k.darefter} BP. En magiskola kostar ${k.magiskola} BP och kräver ett lyckat magiförmågeslag (1T100 högst (INT+PSY)/2, s. 106). Slaget görs när du går vidare från steg 6, när INT och PSY är bestämda.`),
     el("h4", {}, "Dina yrkesfärdigheter"),
@@ -81,4 +82,28 @@ export function stegExtra(res) {
       `Nästa extra yrkesfärdighet kostar ${nasta} BP. Du har ${res.bp.kvar} BP kvar.`,
       res.bp.kvar < nasta ? " Du har inte råd med den." : " Välj färdighet, fyll i vad den gäller och tryck Lägg till."),
   ];
+}
+
+// Bärsärkens levande tatueringar (Dvärgar i Chronopia s. 6–7, 27–28): en, två eller tre efter erfarenhetsnivån,
+// valda i samråd med SL
+function tatueringsVal(res) {
+  const T = S.R.fardigheter.tatueringar;
+  const t = res.tatueringar;
+  if (!T || !t?.tak) return null;
+  const valda = S.rp.tatueringar ?? [];
+  const andra = (id, med) => { S.rp.tatueringar = med ? [...valda, id] : valda.filter((x) => x !== id); uppdatera(); };
+  return el("div", { class: "rutor", id: "tatueringar" }, el("div", {},
+    el("h3", {}, "Levande tatueringar"),
+    el("p", {}, `Bärsärken får ${t.tak} levande tatuering${t.tak === 1 ? "" : "ar"} på den här erfarenhetsnivån, valda i samråd med SL. Valda: ${valda.length}. ${T.text} (${kallText(S.R, T, "")})`),
+    el("div", { class: "tabellram" }, el("table", { class: "tabell varutabell" },
+      el("thead", {}, el("tr", {}, el("th", {}, ""), el("th", {}, "Insikt"), el("th", {}, "Tatuering"), el("th", {}, "Mod."), el("th", {}, "Kostnad"), el("th", {}, "Antal"))),
+      el("tbody", {}, T.lista.map((x) => {
+        const vald = valda.includes(x.id);
+        return el("tr", { "data-tatuering": x.id },
+          el("td", {}, el("input", { type: "checkbox", id: `tatuering-${x.id}`, checked: vald, disabled: !vald && valda.length >= t.tak,
+            "aria-label": `${x.namn}`, onchange: (e) => andra(x.id, e.target.checked) })),
+          el("td", {}, String(x.nr)),
+          el("td", {}, el("strong", {}, x.namn), el("div", { class: "hjalp" }, x.effekt)),
+          el("td", {}, x.mod), el("td", {}, x.kostnad), el("td", {}, x.antal));
+      }))))));
 }

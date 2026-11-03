@@ -1,0 +1,1295 @@
+{
+  "kalla": {
+    "bok": "dvargar",
+    "sida": 4
+  },
+  "ras": "dvarg",
+  "tarning": "1T100",
+  "formagaTarning": "1T10",
+  "beslut": "RB-021",
+  "text": "Slå 1T100 eller välj klan; valet kan begränsa yrket (Präst kräver klan Mindir). Medlemmar i en namngiven klan slår 1T10 på klanens tabell och får en klanförmåga utöver de särskilda förmågorna. Durban saknas i tabellen och kan bara väljas.",
+  "tabell": [
+    [
+      1,
+      9,
+      "bodrin"
+    ],
+    [
+      10,
+      15,
+      "bord"
+    ],
+    [
+      16,
+      17,
+      "cador"
+    ],
+    [
+      18,
+      21,
+      "dolin"
+    ],
+    [
+      22,
+      22,
+      "dord"
+    ],
+    [
+      23,
+      27,
+      "dorgan"
+    ],
+    [
+      28,
+      35,
+      "dulin"
+    ],
+    [
+      36,
+      40,
+      "dunsir"
+    ],
+    [
+      41,
+      44,
+      "fodrun"
+    ],
+    [
+      45,
+      48,
+      "morgrim"
+    ],
+    [
+      49,
+      56,
+      "mindir"
+    ],
+    [
+      57,
+      61,
+      "tymar"
+    ],
+    [
+      62,
+      66,
+      "vandor"
+    ],
+    [
+      67,
+      69,
+      "zodan"
+    ],
+    [
+      70,
+      100,
+      "annan"
+    ]
+  ],
+  "lista": [
+    {
+      "id": "bodrin",
+      "namn": "Bodrin",
+      "sida": 19,
+      "beskrivning": "Den manstarkaste klanen: kockar och krögare som driver Stubbstans värdshus, tavernor och restauranger.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 19
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Flink kock",
+          "effekt": "+5 på FV i Matlagning.",
+          "sida": 19,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "hantverk:Matlagning"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Religiös",
+          "effekt": "+5 på FV i Kunskap om religion (Atum).",
+          "sida": 19,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "lardom:Kunskap om religion (Atum)"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            8,
+            9
+          ],
+          "namn": "Alvvän",
+          "effekt": "Har arbetat på en av klanens restauranger och fått en alv som vän.",
+          "sida": 19
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Fursteson",
+          "effekt": "Tillhör klanens överklass: +10 på slaget för socialt stånd.",
+          "sida": 19,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "socialtStand": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bord",
+      "namn": "Bord",
+      "sida": 19,
+      "beskrivning": "Hyr ut droskor, ballonger, sekudor och bärstolar och driver Stubbstans kedjetåg och hissar.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 19
+        },
+        {
+          "slag": [
+            4,
+            6
+          ],
+          "namn": "Affärsmannabakgrund",
+          "effekt": "+3 på FV i Köpslå och Värdera.",
+          "sida": 20,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "kopsla",
+                "vardera"
+              ],
+              "fv": 3
+            }
+          ]
+        },
+        {
+          "slag": [
+            7,
+            8
+          ],
+          "namn": "Arvinge",
+          "effekt": "Har ärvt en sekudauthyrning med 1T4+2 sekudor och två gasballonger.",
+          "sida": 20
+        },
+        {
+          "slag": [
+            9,
+            9
+          ],
+          "namn": "Bokmal",
+          "effekt": "FV 10 i en valfri lärdomsfärdighet.",
+          "sida": 20,
+          "regel": [
+            {
+              "typ": "fv",
+              "valj": 1,
+              "bland": "lardom",
+              "fv": 10,
+              "minst": true
+            }
+          ],
+          "beslut": "RB-021"
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Blått blod",
+          "effekt": "+5 på slaget för socialt stånd.",
+          "sida": 20,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "socialtStand": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cador",
+      "namn": "Cador",
+      "sida": 20,
+      "beskrivning": "Bankklanen som driver Dvärgiska Enhetsbanken.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 20
+        },
+        {
+          "slag": [
+            4,
+            6
+          ],
+          "namn": "Bankmannabakgrund",
+          "effekt": "+5 på FV i Räkning och Administration.",
+          "sida": 20,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "rakning",
+                "administration"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            7,
+            8
+          ],
+          "namn": "Rik",
+          "effekt": "+5 på slaget för startkapital.",
+          "sida": 20,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "startkapital": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            9,
+            9
+          ],
+          "namn": "Mycket rik",
+          "effekt": "+15 på slaget för startkapital.",
+          "sida": 20,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "startkapital": 15
+            }
+          ]
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Fifflare",
+          "effekt": "Har smusslat undan 2T20 × 1 000 dvärgiska gulden för egen räkning. Risken att bli upptäckt är (gulden / 1 000) %; vad som händer då avgör SL. Pengarna ingår inte i startkapitalet (RB-021).",
+          "sida": 20,
+          "beslut": "RB-021"
+        }
+      ]
+    },
+    {
+      "id": "dolin",
+      "namn": "Dolin",
+      "sida": 20,
+      "beskrivning": "Fiskarklanen, vars högkvarter ligger under vattnet.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 20
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Sann fiskare",
+          "effekt": "+5 på FV i Fiske, Simma och Sjökunnighet.",
+          "sida": 21,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "fiske",
+                "simma",
+                "sjokunnighet"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Navigatör",
+          "effekt": "+5 på FV i Navigera.",
+          "sida": 21,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "navigera"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            8,
+            8
+          ],
+          "namn": "Kraftiga lungor",
+          "effekt": "Kan hålla andan i upp till fem minuter under vatten, även i strid.",
+          "sida": 21
+        },
+        {
+          "slag": [
+            9,
+            9
+          ],
+          "namn": "Arvinge",
+          "effekt": "Fadern lämnade en stor fiskebåt, som nu är rollpersonens.",
+          "sida": 21
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Fursteson",
+          "effekt": "+10 på slaget för socialt stånd.",
+          "sida": 21,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "socialtStand": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dord",
+      "namn": "Dord",
+      "sida": 21,
+      "beskrivning": "Bröt sig ur Cador och driver Dordiska affärsbanken. Står utanför klanförbundet.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 21
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Rik",
+          "effekt": "Rikare än de flesta adelsmän: +15 på slaget för startkapital.",
+          "sida": 21,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "startkapital": 15
+            }
+          ]
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Kontakter",
+          "effekt": "Har arbetat på banken och känner en rik handelsfurste, en alvfurste, en gardeskapten eller en huvudjägare.",
+          "sida": 21
+        },
+        {
+          "slag": [
+            8,
+            9
+          ],
+          "namn": "Dödsmärkt",
+          "effekt": "Vet mer än rollpersonen borde och är i yttersta livsfara.",
+          "sida": 21
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Hängiven",
+          "effekt": "Har lovat sin själ åt de Hängivna: en nekrologisk förbättring (SL avgör) och 15 000 sm. Kungens hand är efter rollpersonen.",
+          "sida": 21,
+          "regel": [
+            {
+              "typ": "kapital",
+              "varde": 15000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dorgan",
+      "namn": "Dorgan",
+      "sida": 21,
+      "beskrivning": "De främsta smederna, i Järnpalatset och Noatun. Har tagit upp klan Indur och driver tryckerier.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 21
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Smedbakgrund",
+          "effekt": "+5 på FV i Smide.",
+          "sida": 22,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "hantverk:Smide"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Litterär",
+          "effekt": "FV 10 i en valfri lärdomsfärdighet.",
+          "sida": 22,
+          "regel": [
+            {
+              "typ": "fv",
+              "valj": 1,
+              "bland": "lardom",
+              "fv": 10,
+              "minst": true
+            }
+          ],
+          "beslut": "RB-021"
+        },
+        {
+          "slag": [
+            8,
+            9
+          ],
+          "namn": "Konstnär",
+          "effekt": "+5 på FV i Målning.",
+          "sida": 22,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "malning"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Vapenbärare",
+          "effekt": "Äger ett mästersmide av klanen: ett vapen med +2 i skada och +7 i BV, eller en rustning med +2 i ABS och halva vikten.",
+          "sida": 22
+        }
+      ]
+    },
+    {
+      "id": "dulin",
+      "namn": "Dulin",
+      "sida": 22,
+      "beskrivning": "Advokater och lönnmördare, som också är agenter åt Kungens hand.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 22
+        },
+        {
+          "slag": [
+            4,
+            6
+          ],
+          "namn": "Advokatämne",
+          "effekt": "+5 på FV i Administration och Övertala.",
+          "sida": 22,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "administration",
+                "overtala"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            7,
+            8
+          ],
+          "namn": "Kontakter",
+          "effekt": "Välodlade kontakter i Chronopia genom advokat- eller lönnmördaryrket.",
+          "sida": 22
+        },
+        {
+          "slag": [
+            9,
+            9
+          ],
+          "namn": "Delägare",
+          "effekt": "Äger en del av, eller en hel, advokatbyrå.",
+          "sida": 22
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Lönnmördarbakgrund",
+          "effekt": "+5 på FV i en valfri vapenfärdighet och lönnmördarens yrkesförmåga (grundreglerna s. 23).",
+          "sida": 22,
+          "regel": [
+            {
+              "typ": "fv",
+              "valj": 1,
+              "bland": "vapen",
+              "fv": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dunsir",
+      "namn": "Dunsir",
+      "sida": 22,
+      "beskrivning": "En ung klan som bröt sig ur Dolin. Sköter transporter på underjordiska vatten, undervattensbåtar och handel över haven.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 22
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Sjövan",
+          "effekt": "+5 på FV i Sjökunnighet.",
+          "sida": 23,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "sjokunnighet"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Världsvan",
+          "effekt": "Har rest utanför Chronopia med handelsfartyg: +5 på FV i en valfri Kulturkännedom.",
+          "sida": 23,
+          "regel": [
+            {
+              "typ": "fv",
+              "valj": 1,
+              "bland": "kulturkannedom",
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            8,
+            9
+          ],
+          "namn": "Fursteson",
+          "effekt": "+10 på slaget för socialt stånd och +10 på slaget för startkapital.",
+          "sida": 23,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "socialtStand": 10,
+              "startkapital": 10
+            }
+          ]
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Arvtagare",
+          "effekt": "Har ärvt ett mindre handelsfartyg, värt sin vikt i guld.",
+          "sida": 23
+        }
+      ]
+    },
+    {
+      "id": "durban",
+      "namn": "Durban",
+      "sida": 23,
+      "beskrivning": "Grävarklanen som känner liriumets hemlighet. Saknas i klantabellen och kan bara väljas.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 23
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Smedbakgrund",
+          "effekt": "+5 på FV i Smide.",
+          "sida": 23,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "hantverk:Smide"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Överlevande",
+          "effekt": "Enda överlevande efter en attack från Sids kreatur: +5 på CL på allt i strid mot dem.",
+          "sida": 23
+        },
+        {
+          "slag": [
+            8,
+            8
+          ],
+          "namn": "Hedersomnämnande",
+          "effekt": "Har gjort något heroiskt och fått en av klanens högre utmärkelser, kanske Durbankorset.",
+          "sida": 23
+        },
+        {
+          "slag": [
+            9,
+            9
+          ],
+          "namn": "Kunskap",
+          "effekt": "Känner liriumets hemlighet. För att använda den krävs minst FV 11 (B4) i Smide.",
+          "sida": 23,
+          "beslut": "RB-021"
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Magiker",
+          "effekt": "Ett ovanligt dvärgiskt magikerämne: +5 på FV i en valfri magiskola och i Magisk kanalisering. Skolan kräver inget magiförmågeslag (RB-021).",
+          "sida": 23,
+          "regel": [
+            {
+              "typ": "fv",
+              "valj": 1,
+              "bland": "magiskola",
+              "fv": 5,
+              "friSkola": true
+            },
+            {
+              "typ": "fv",
+              "fasta": [
+                "magisk-kanalisering"
+              ],
+              "fv": 5
+            }
+          ],
+          "beslut": "RB-021"
+        }
+      ]
+    },
+    {
+      "id": "fodrun",
+      "namn": "Fodrun",
+      "sida": 24,
+      "beskrivning": "En ung och rotlös klan som driver Chronopias hotell, bland annat Fodruns palats.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 24
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Kontakter",
+          "effekt": "Känner genom klanens hotell någon mäktig invånare i Chronopia.",
+          "sida": 24
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Skådespelare",
+          "effekt": "+5 på FV i Skådespeleri.",
+          "sida": 24,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "skadespeleri"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            8,
+            9
+          ],
+          "namn": "Informatör",
+          "effekt": "Förser Kungens svartskägg med information om klanen, mot 1 000 sm i månaden.",
+          "sida": 24
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Hängiven",
+          "effekt": "En av de Hängivnas hantlangare, med en nekrologisk förbättring (SL avgör).",
+          "sida": 24
+        }
+      ]
+    },
+    {
+      "id": "mindir",
+      "namn": "Mindir",
+      "sida": 24,
+      "beskrivning": "Prästklanen, som har monopol på religionsutövandet och brygger Atumbrygd. Bara Mindir kan bli präster. Kunskap om religion (Atum) är primär färdighet för alla i klanen.",
+      "primara": [
+        "lardom:Kunskap om religion (Atum)"
+      ],
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 24
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Prästbakgrund",
+          "effekt": "+5 på FV i Kunskap om religion (Atum).",
+          "sida": 24,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "lardom:Kunskap om religion (Atum)"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Krigarbakgrund",
+          "effekt": "+4 på FV i en valfri stridsfärdighet.",
+          "sida": 24,
+          "regel": [
+            {
+              "typ": "fv",
+              "valj": 1,
+              "bland": [
+                "vapen",
+                "tva-vapen",
+                "stridskonster",
+                "vapentekniker",
+                "slagsmal",
+                "avvapna",
+                "dra-vapen",
+                "strid-i-morker"
+              ],
+              "fv": 4
+            }
+          ],
+          "beslut": "RB-021"
+        },
+        {
+          "slag": [
+            8,
+            9
+          ],
+          "namn": "Fanatiker",
+          "effekt": "Sätter religionen främst: +10 på FV i Kunskap om religion (Atum).",
+          "sida": 24,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "lardom:Kunskap om religion (Atum)"
+              ],
+              "fv": 10
+            }
+          ]
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Magikerbakgrund",
+          "effekt": "+3 på FV i Atums väg (prästmagi), om rollpersonen lär sig den.",
+          "sida": 24,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "atums-vag"
+              ],
+              "fv": 3,
+              "omHar": true
+            }
+          ],
+          "beslut": "RB-014"
+        }
+      ]
+    },
+    {
+      "id": "morgrim",
+      "namn": "Morgrim",
+      "sida": 25,
+      "beskrivning": "Kungaklanen, Morgrim Lodbrokes ätt, som sköter rikets administration.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 25
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Byråkratbakgrund",
+          "effekt": "+5 på FV i Administration.",
+          "sida": 25,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "administration"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Beläst",
+          "effekt": "+10 på FV i en valfri lärdomsfärdighet.",
+          "sida": 25,
+          "regel": [
+            {
+              "typ": "fv",
+              "valj": 1,
+              "bland": "lardom",
+              "fv": 10
+            }
+          ]
+        },
+        {
+          "slag": [
+            8,
+            8
+          ],
+          "namn": "Kontakter",
+          "effekt": "Många betydelsefulla kontakter utanför Stubbstans murar.",
+          "sida": 25
+        },
+        {
+          "slag": [
+            9,
+            9
+          ],
+          "namn": "Förmögen",
+          "effekt": "+15 på slaget för socialt stånd och +15 på slaget för startkapital.",
+          "sida": 25,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "socialtStand": 15,
+              "startkapital": 15
+            }
+          ]
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Kungens gunstling",
+          "effekt": "En av kung Budin III:s absoluta favoriter.",
+          "sida": 25
+        }
+      ]
+    },
+    {
+      "id": "tymar",
+      "namn": "Tymar",
+      "sida": 25,
+      "beskrivning": "Svinryttarnas klan, med Chronopias största fria kompanier och Svinborgen.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 25
+        },
+        {
+          "slag": [
+            4,
+            6
+          ],
+          "namn": "Krigarbakgrund",
+          "effekt": "+3 på FV i en valfri stridsfärdighet.",
+          "sida": 26,
+          "regel": [
+            {
+              "typ": "fv",
+              "valj": 1,
+              "bland": [
+                "vapen",
+                "tva-vapen",
+                "stridskonster",
+                "vapentekniker",
+                "slagsmal",
+                "avvapna",
+                "dra-vapen",
+                "strid-i-morker"
+              ],
+              "fv": 3
+            }
+          ],
+          "beslut": "RB-021"
+        },
+        {
+          "slag": [
+            7,
+            8
+          ],
+          "namn": "Defensiv",
+          "effekt": "Alltid +3 på CL vid pareringar.",
+          "sida": 26
+        },
+        {
+          "slag": [
+            9,
+            9
+          ],
+          "namn": "Ambidextriös",
+          "effekt": "Använder båda händerna lika bra. Rollpersonen slår inte för svärdshand.",
+          "sida": 26,
+          "regel": [
+            {
+              "typ": "svardshand",
+              "varde": "Ambidextriös"
+            }
+          ]
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Officer",
+          "effekt": "Officer i ett av klanens förband, med vissa privilegier. Graden beror på det sociala ståndet.",
+          "sida": 26
+        }
+      ]
+    },
+    {
+      "id": "vandor",
+      "namn": "Vandor",
+      "sida": 25,
+      "beskrivning": "Tekniker, ingenjörer och uppfinnare bakom gasbelysningen och Högre vetenskapsakademin.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 25
+        },
+        {
+          "slag": [
+            4,
+            5
+          ],
+          "namn": "Ingenjörsbakgrund",
+          "effekt": "+5 på FV i Teknologi (bokens Mekanik, RB-014).",
+          "sida": 25,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "teknologi"
+              ],
+              "fv": 5
+            }
+          ],
+          "beslut": "RB-014"
+        },
+        {
+          "slag": [
+            6,
+            7
+          ],
+          "namn": "Akademikerbakgrund",
+          "effekt": "+5 på FV i en valfri färdighet som Högre vetenskapsakademin undervisar i.",
+          "sida": 25,
+          "regel": [
+            {
+              "typ": "fv",
+              "valj": 1,
+              "bland": [
+                "alkemi",
+                "astrologi",
+                "geografi",
+                "geologi",
+                "historia",
+                "lakekonst",
+                "lardom",
+                "rakning",
+                "teknologi",
+                "zoologi"
+              ],
+              "fv": 5
+            }
+          ],
+          "beslut": "RB-021"
+        },
+        {
+          "slag": [
+            8,
+            9
+          ],
+          "namn": "Gillrare",
+          "effekt": "+5 på FV i Hantera fällor och Låsdyrkning.",
+          "sida": 25,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "hantera-fallor",
+                "lasdyrkning"
+              ],
+              "fv": 5
+            }
+          ]
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Uppfinnare",
+          "effekt": "Rollpersonen eller någon i släkten har gjort en revolutionerande uppfinning: +10 på slaget för startkapital.",
+          "sida": 25,
+          "regel": [
+            {
+              "typ": "slagbonus",
+              "startkapital": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zodan",
+      "namn": "Zodan",
+      "sida": 26,
+      "beskrivning": "Vildmännen och bärsärkarna, som bär Lothans märke och levande tatueringar.",
+      "formagor": [
+        {
+          "slag": [
+            1,
+            3
+          ],
+          "namn": "Ingenting särskilt",
+          "effekt": "Ingen klanförmåga.",
+          "sida": 26
+        },
+        {
+          "slag": [
+            4,
+            6
+          ],
+          "namn": "Blodtörst",
+          "effekt": "Älskar att äta köttet av fallna fiender och måste lyckas med ett PSY-slag för att låta bli i stridens hetta.",
+          "sida": 26
+        },
+        {
+          "slag": [
+            7,
+            8
+          ],
+          "namn": "Kraftslag",
+          "effekt": "Högst två gånger per dag: 3 PSY för maximal skada med ett anfall, valt efter att slaget har träffat.",
+          "sida": 26
+        },
+        {
+          "slag": [
+            9,
+            9
+          ],
+          "namn": "Smärttålig",
+          "effekt": "Ignorerar smärta som med Stålsättning: stridskonsten Smärttålig (tekniken Stålsättning) som yrkesfärdighet med FV 5 gratis.",
+          "sida": 26,
+          "regel": [
+            {
+              "typ": "fv",
+              "fasta": [
+                "stridskonster:Smärttålig"
+              ],
+              "fv": 5,
+              "minst": true,
+              "status": "yrke",
+              "tekniker": [
+                "Stålsättning"
+              ]
+            }
+          ],
+          "beslut": "RB-021"
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Lothans blod",
+          "effekt": "I rakt nedstigande led från Zodan: i varje strid 25 % chans att fyllas av Lothans kraft, så att grundegenskaper och FV höjs med 5 under hela striden.",
+          "sida": 26
+        }
+      ]
+    },
+    {
+      "id": "annan",
+      "namn": "Annan klan",
+      "sida": 4,
+      "beskrivning": "En av de mindre klanerna, eller en dvärg utan klan. Ingen klanförmåga.",
+      "formagor": []
+    }
+  ]
+}

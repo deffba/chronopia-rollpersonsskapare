@@ -206,3 +206,42 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Motivering:** Båda grundegenskaperna räknas lika, och samma regel gäller alla sådana färdigheter.
 - **Påverkar:** Färdighetssteget, yrkesfärdigheterna, rollformuläret, utvecklingen efter skapandet.
 - **Beslutat:** 2026-11-03, Deffba.
+
+## RB-021 Dvärgar i Chronopia i appen
+- **Fråga:** Hur läggs klaner, klanförmågor, dvärgyrken, levande tatueringar och Atums väg in, där boken är kortfattad eller inte passar grundreglernas system?
+- **Källor:** *Dvärgar i Chronopia* s. 3–4 (nivåer, klantabellen), 6–17 (yrken, förmågetabellen), 18–26 (klanerna), 27–28 (tatueringar), 51 (Atums väg); grundreglerna s. 34–35 (färdigheter vid start).
+- **Beslut:**
+  - **Nivåer:** Dvärg 125 BP och 1 särskild förmåga, Veteran 150/2, Hjälte 175/3 (RB-001).
+  - **Klan:** eget steg direkt efter Ras, bara för dvärgar. Spelaren slår 1T100 eller väljer. **Durban** finns inte i tabellen och kan bara väljas. Slag 70–00 ger *Annan klan*, som saknar förmågetabell och därför ingen klanförmåga. Klanförmågan slås med 1T10, kostar inga BP och räknas inte mot taket för särskilda förmågor. Klanen går att byta tills klanförmågan är slagen.
+  - **Dvärgyrkena** (15 st.) är bara för dvärgar (RB-007). Bara **Präst** är låst till en klan (Mindir); väljer en dvärg i en annan klan Präst får spelaren frågan om klanen ska bytas till Mindir. Ja byter klan och slår om klanförmågan; nej lämnar allt som det var. Övriga yrken som boken knyter till en klan (Svinryttare: Tymar, Bärsärk: Zodan, Fiskare: Dolin, Grävare) är öppna för alla klaner (bekräftat 2026-11-03).
+  - **”10 på FV”** (t.ex. Bokmal, Litterär) betyder att FV blir minst 10; **”+10”** är en bonus.
+  - **Stridsfärdighet** = vapenfärdigheter, två vapen, stridskonster, vapentekniker, slagsmål, avväpna, dra vapen och strid i mörker. **Akademisk färdighet** = alkemi, astrologi, geografi, geologi, historia, läkekonst, lärdom, räkning, teknologi och zoologi.
+  - **Zodan, Smärttålig:** stridskonsten Smärttålig (svärdsskolan Stålsättning) som yrkesfärdighet med FV 5.
+  - **Mindir, +3 i Atums väg:** gäller bara om rollpersonen har färdigheten.
+  - **Durban, Magiker:** rollpersonen väljer en magiskola som slipper magiförmågeslaget (bekräftat av Deffba 2026-11-03).
+  - **Durban, Kunskap:** B4 tolkas som FV 11. **Fifflare** (pengar) står bara som text. **Arvinge** anger ingen summa, så SL avgör.
+  - **Namn:** ”Överlevnad (i underjorden)” = Överlevnad, ”Navigering” = Navigera, ”Fiska” = Fiske, ”Kunskap om Atum” = Lärdom: Kunskap om religion (Atum).
+  - **Argolisbrödernas svärdsskola** kostar 5 (4,5 avrundat uppåt).
+  - **Levande tatueringar:** numret är tatueringens insikt, och modifikationen gäller tatuerarens slag. Bärsärken får 1/2/3 tatueringar efter nivå, valda med SL. Den särskilda förmågan Bärsärk ger en tatuering med nummer högst 15.
+  - **Präst:** Atums väg är en fast yrkesfärdighet utan magiförmågeslag.
+  - **Värdshusvärd:** Bryggning och Matlagning är givna hantverk; den extra valfria färdigheten börjar på FV 10.
+  - **Stryktålig:** KP ×1,5, som i V&R.
+- **Motivering:** Så nära boken som möjligt, med grundreglernas system där boken inte säger något.
+- **Påverkar:** Bokvalet, steget Klan, yrkessteget, yrkesfärdigheterna, särskilda förmågor, besvärjelsesteget, rollformuläret.
+- **Beslutat:** 2026-11-03 (tolkning vid importen).
+
+## RB-022 Dvärgarnas vapen och utrustning
+- **Fråga:** Dvärgvapnen saknar vapengrupp, några varor heter som i grundreglerna och flera priser anges som intervall.
+- **Källor:** *Dvärgar i Chronopia* s. 70–74; grundreglerna s. 89; *Vapen & rustningar* (vapengrupper, RB-017).
+- **Beslut:** Drakdödare, Stridsyxa, Huggare och Trolldräpare räknas till **yxor**, Sprättare till **dolkar**. Vapen och varor med samma namn som i grundreglerna eller V&R får tillägget *(dvärgisk)*. Pris som intervall: det lägsta priset gäller. Undervattensbåt och tjänster säljs inte vid skapandet.
+- **Motivering:** Vapnen hanteras som de närmaste vapnen i grundreglerna.
+- **Påverkar:** Vapenlistan, utrustningssteget.
+- **Beslutat:** 2026-11-03 (tolkning vid importen).
+
+## RB-023 Vem får köpa familjarer
+- **Fråga:** Får alla rollpersoner köpa familjarer, eller bara magiker?
+- **Källor:** *Magi i Chronopia* s. 8 (nivåtabellen Magus/Magus regis/Häxmästare med Familiari 1/3/5, i kapitlet om hur man skapar en magiker), s. 40–43 (familjarerna).
+- **Beslut:** Bara rollpersoner som **kan magi** får köpa familjarer: magikeryrken, de som klarat magiförmågeslaget och de som har en magiskola utan slag. Familjarer som yrket ger (Fågelbroderns lystat, Häxjägarens spårare) och familjaren från Spiritus familiarius är gratis och får alla ha (RB-010). Om rollpersonen tappar magin (byter yrke eller misslyckas med slaget) måste köpta familjarer tas bort innan man går vidare.
+- **Motivering:** Familjartaket hör till magikernivåerna, och familjarer är magikernas följeslagare.
+- **Påverkar:** Steget Familjarer.
+- **Beslutat:** 2026-11-03, Deffba.

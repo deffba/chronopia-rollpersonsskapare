@@ -345,7 +345,7 @@ function traningVy(ctx) {
 function nyBesvarjelse(ctx, onval) {
   const { el, R, res } = ctx;
   const B = R.besvarjelser;
-  if (!B || !(res.yrke.magiker || res.magiformaga.lyckat)) return null;
+  if (!B || !(res.kanMagi ?? (res.yrke.magiker || res.magiformaga.lyckat))) return null;
   const skola = skolFV(res.fardigheter);
   const har = new Set(res.besvarjelser.map((b) => b.nyckel));
   const alt = (b) => {

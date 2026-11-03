@@ -3589,6 +3589,867 @@
         "bok": "magi",
         "sida": 54
       }
+    },
+    {
+      "namn": "Dvärgiska löpskor",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 285,
+      "atkomlighet": "D, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Gilleskläder",
+      "kategori": "Kläder",
+      "vikt": 1.5,
+      "pris": 270,
+      "atkomlighet": "C, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Gruvhjälm",
+      "kategori": "Kläder",
+      "vikt": 2,
+      "pris": 340,
+      "atkomlighet": "C, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Grävarkängor",
+      "kategori": "Kläder",
+      "vikt": 2.5,
+      "pris": 350,
+      "atkomlighet": "C, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      },
+      "not": "+1T2 i skada med sparkar i närstrid (Grävare, s. 8)."
+    },
+    {
+      "namn": "Heraldisk vimpel",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 5,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      },
+      "not": "Pris 5–15 sm."
+    },
+    {
+      "namn": "Klandräkt",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 120,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      },
+      "not": "Pris 120–1 850 sm, vikten varierar."
+    },
+    {
+      "namn": "Kockhätta",
+      "kategori": "Kläder",
+      "vikt": null,
+      "pris": 25,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Livré",
+      "kategori": "Kläder",
+      "vikt": 2,
+      "pris": 475,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Mirella",
+      "kategori": "Kläder",
+      "vikt": 0.25,
+      "pris": 135,
+      "atkomlighet": "C, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Prästkåpa",
+      "kategori": "Kläder",
+      "vikt": 1.5,
+      "pris": 170,
+      "atkomlighet": "D, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Smedförkläde",
+      "kategori": "Kläder",
+      "vikt": 1.2,
+      "pris": 45,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Tabard",
+      "kategori": "Kläder",
+      "vikt": 0.5,
+      "pris": 60,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      },
+      "not": "Från 60 sm."
+    },
+    {
+      "namn": "Titra",
+      "kategori": "Kläder",
+      "vikt": 1.25,
+      "pris": 155,
+      "atkomlighet": "D, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 70
+      }
+    },
+    {
+      "namn": "Atumsmedaljong",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 45,
+      "atkomlighet": "A, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Balja",
+      "kategori": "Diverse",
+      "vikt": 2,
+      "pris": 40,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Banjo",
+      "kategori": "Diverse",
+      "vikt": 1.5,
+      "pris": 420,
+      "atkomlighet": "C, S",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Blodiglar (10 st)",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 50,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Båtshake",
+      "kategori": "Diverse",
+      "vikt": 3,
+      "pris": 45,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Dvärgiskt gasur",
+      "kategori": "Diverse",
+      "vikt": 50,
+      "pris": 3140,
+      "atkomlighet": "D, R, S, F",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Fasatsten",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 40,
+      "atkomlighet": "C, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Fiskedrag",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 2,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Flytväst av korkticka",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 125,
+      "atkomlighet": "D, R, H",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Förgylld skäggkam",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 550,
+      "atkomlighet": "D, R, F",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Gastermometer",
+      "kategori": "Diverse",
+      "vikt": 1,
+      "pris": 650,
+      "atkomlighet": "D, R, S, F",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Gruvstöttor (10 st)",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 325,
+      "atkomlighet": "B, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      },
+      "not": "Vikten varierar."
+    },
+    {
+      "namn": "Kugghjul (15 st blandade)",
+      "kategori": "Diverse",
+      "vikt": 5,
+      "pris": 185,
+      "atkomlighet": "C, R, S",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Ok",
+      "kategori": "Diverse",
+      "vikt": 3,
+      "pris": 55,
+      "atkomlighet": "B, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Pipa (fiskare)",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 65,
+      "atkomlighet": "D, R, H",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Pipa (grävare)",
+      "kategori": "Diverse",
+      "vikt": 0.3,
+      "pris": 130,
+      "atkomlighet": "C, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Pipa (ingenjör)",
+      "kategori": "Diverse",
+      "vikt": 0.75,
+      "pris": 150,
+      "atkomlighet": "D, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Pipa (klankrigare)",
+      "kategori": "Diverse",
+      "vikt": 0.4,
+      "pris": 70,
+      "atkomlighet": "C, R, S",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Pipa (magiker)",
+      "kategori": "Diverse",
+      "vikt": 0.2,
+      "pris": 125,
+      "atkomlighet": "D, S",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Pipa (präst)",
+      "kategori": "Diverse",
+      "vikt": 0.3,
+      "pris": 100,
+      "atkomlighet": "D, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Rakkniv",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 45,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Skäggband",
+      "kategori": "Diverse",
+      "vikt": null,
+      "pris": 5,
+      "atkomlighet": "A, R, S",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      },
+      "not": "Pris 5–25 sm."
+    },
+    {
+      "namn": "Spinnrock",
+      "kategori": "Diverse",
+      "vikt": 6,
+      "pris": 355,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Svinryttarsporrar",
+      "kategori": "Diverse",
+      "vikt": 0.5,
+      "pris": 35,
+      "atkomlighet": "C, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      },
+      "not": "Pris 35–150 sm hos Tymars smeder. Materialet (järn, stål, rött guld, svart stål) visar ryttarens rang."
+    },
+    {
+      "namn": "Sänkhåv",
+      "kategori": "Diverse",
+      "vikt": 20,
+      "pris": 275,
+      "atkomlighet": "C, H",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Tobak: Bodrins riff (100 stopp)",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 45,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Tobak: Dolinsk öltobak (100 stopp)",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 55,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Tobak: Furst Reofrids blandning (100 stopp)",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 47,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      },
+      "not": "+1 på CL på allt den närmaste timmen och mindre sömnbehov."
+    },
+    {
+      "namn": "Tobak: Lidemans blå (100 stopp)",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 25,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Tobak: Lätt tunnelsvinstobak (100 stopp)",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 38,
+      "atkomlighet": "C, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      },
+      "not": "+5 på motståndsslag mot Skräcktabellen och liknande."
+    },
+    {
+      "namn": "Tobak: Vit gravtobak (100 stopp)",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 85,
+      "atkomlighet": "C, R, S",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Tobak: Zodisk blodsblandning (100 stopp)",
+      "kategori": "Diverse",
+      "vikt": 0.25,
+      "pris": 125,
+      "atkomlighet": "D, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      },
+      "not": "+3 på CL på allt, men extremt lättretlig i 1T4 timmar."
+    },
+    {
+      "namn": "Tron",
+      "kategori": "Möbler",
+      "vikt": null,
+      "pris": 250,
+      "atkomlighet": "VAR",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      },
+      "not": "Pris 250–10 000 sm, vikten varierar."
+    },
+    {
+      "namn": "Vävstol",
+      "kategori": "Möbler",
+      "vikt": 35,
+      "pris": 1325,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Atumsbrygd (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 20,
+      "pris": 235,
+      "atkomlighet": "C",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      },
+      "not": "Säljs i Katedralen. +2 på CL på magiska och andliga aktiviteter vid gudstjänst."
+    },
+    {
+      "namn": "Öl: Bataljbrygd (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 20,
+      "pris": 80,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Fodruns skivling (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 20,
+      "pris": 65,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Klippöl (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 20,
+      "pris": 75,
+      "atkomlighet": "B, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Prästtumme (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 25,
+      "pris": 155,
+      "atkomlighet": "C, S",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Skäggpilsner (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 21,
+      "pris": 80,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Starkt svin (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 20,
+      "pris": 55,
+      "atkomlighet": "B, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Stubbstans pilsner (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 20,
+      "pris": 40,
+      "atkomlighet": "A, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Svartmjöd (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 20,
+      "pris": 125,
+      "atkomlighet": "C, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Vishetens källa (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 20,
+      "pris": 660,
+      "atkomlighet": "C, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      }
+    },
+    {
+      "namn": "Öl: Ålderbrygd (20 l)",
+      "kategori": "Mat & dryck",
+      "vikt": 23,
+      "pris": 180,
+      "atkomlighet": "VAR",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 71
+      },
+      "not": "Säljs på Lodbroketorget."
+    },
+    {
+      "namn": "Bensåg",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 175,
+      "atkomlighet": "D, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Bitpinne",
+      "kategori": "Diverse verktyg",
+      "vikt": 0.2,
+      "pris": 10,
+      "atkomlighet": "D, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Gasdriven stenfräsare",
+      "kategori": "Diverse verktyg",
+      "vikt": 25,
+      "pris": 1525,
+      "atkomlighet": "D, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Kokill",
+      "kategori": "Diverse verktyg",
+      "vikt": 2,
+      "pris": 45,
+      "atkomlighet": "D, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Kraniumborr",
+      "kategori": "Diverse verktyg",
+      "vikt": 3.25,
+      "pris": 535,
+      "atkomlighet": "D, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Mejsel",
+      "kategori": "Diverse verktyg",
+      "vikt": 0.5,
+      "pris": 40,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Rasp",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 55,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Skalltving",
+      "kategori": "Diverse verktyg",
+      "vikt": 5,
+      "pris": 450,
+      "atkomlighet": "D, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Skalpell",
+      "kategori": "Diverse verktyg",
+      "vikt": 3,
+      "pris": 75,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Slipsten",
+      "kategori": "Diverse verktyg",
+      "vikt": 15,
+      "pris": 125,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Träplugg (50 st)",
+      "kategori": "Diverse verktyg",
+      "vikt": 1,
+      "pris": 38,
+      "atkomlighet": "A, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Tving",
+      "kategori": "Diverse verktyg",
+      "vikt": 2,
+      "pris": 80,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Vinkelhake",
+      "kategori": "Diverse verktyg",
+      "vikt": 0.5,
+      "pris": 125,
+      "atkomlighet": "C, CH",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 72
+      }
+    },
+    {
+      "namn": "Fiskebåt",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 2250,
+      "atkomlighet": "C, H",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Gasballong",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 8500,
+      "atkomlighet": "D, S",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Gasballong med propeller",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 12500,
+      "atkomlighet": "D, S",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Kullerstenskälke",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 1750,
+      "atkomlighet": "C, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 73
+      }
+    },
+    {
+      "namn": "Rikshaw",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 2500,
+      "atkomlighet": "C, S, R",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 73
+      },
+      "not": "Från 2 500 sm."
+    },
+    {
+      "namn": "Taxibåt",
+      "kategori": "Transportmedel",
+      "vikt": null,
+      "pris": 2500,
+      "atkomlighet": "C, H",
+      "kalla": {
+        "bok": "dvargar",
+        "sida": 73
+      }
     }
   ],
   "rustningar": [
@@ -4828,7 +5689,8 @@
       "U": "undre världen",
       "CH": "hela Chronopia",
       "L": "lufthamnarna",
-      "MA": "Magikerstaden"
+      "MA": "Magikerstaden",
+      "R": "Riket"
     },
     "sallsynthet": {
       "A": "extremt vanlig",
