@@ -15,6 +15,7 @@ export function saknasPerSteg(res) {
   const valfriRas = ras.primara.find((p) => p.valfri);
   if (valfriRas && !S.rp.rasval.some(klar)) lista.ras.push(`Rasens valfria ${valfriRas.valfri === "vapen" ? "vapenfärdighet" : "hantverk"}`);
   lista.klan.push(...(res.klan?.saknas ?? []));
+  if (res.familjarer && !res.familjarer.kanKopa && (S.rp.familjarer ?? []).length) lista.familjarer.push("Köpta familjarer: bara rollpersoner som kan magi får köpa familjarer (ta bort dem)");
   if (!S.rp.yrke) lista.yrke.push("Yrke");
   else yrke.fardigheter.forEach((post, i) => {
     const val = S.rp.yrkesval[i];

@@ -19,10 +19,12 @@ export function stegFamiljarer(res) {
     uppdatera();
   };
   const gratis = fam.lista.filter((f) => f.gratis);
+  const kanKopa = fam.kanKopa !== false;
   const varden = (f) => ["STO", "STY", "FYS", "SMI", "INT", "PSY", "KP"].map((g) => `${g} ${f[g]}`).join(", ");
   return [el("div", { class: "rutor", id: "familjarer" }, el("div", {},
     el("p", {}, `Rollpersonen får ha högst ${fam.tak} köpt${fam.tak === 1 ? "" : "a"} familjar${fam.tak === 1 ? "" : "er"} och har köpt ${fam.antal}. De kostar ${fam.bp} BP.`),
     el("p", { class: "hjalp" }, `${F.text} (${kallText(S.R, F, "")}).`),
+    kanKopa ? null : el("p", { class: "hjalp", id: "familjarer-ej-magi" }, "Bara rollpersoner som kan magi får köpa familjarer (RB-023). Familjarer som yrket eller en särskild förmåga ger är gratis och får alla ha."),
     gratis.length ? el("p", { id: "familjarer-gratis" }, `Gratis: ${gratis.map((f) => `${f.namn} (${f.kallaGratis})`).join(", ")}.`) : null,
     el("div", { class: "tabellram" }, el("table", { class: "tabell varutabell" },
       el("thead", {}, el("tr", {}, el("th", {}, "Familjar"), el("th", {}, "BP"), el("th", {}, "Värden"), el("th", {}, "Antal"))),
@@ -36,6 +38,6 @@ export function stegFamiljarer(res) {
           el("td", { class: "antal" },
             el("button", { type: "button", class: "knapp liten", "aria-label": `Ta bort ${f.namn}`, disabled: !n, onclick: () => andra(f.id, -1) }, "−"),
             el("span", { id: `familjar-${f.id}` }, String(n)),
-            el("button", { type: "button", class: "knapp liten", "aria-label": `Köp ${f.namn}`, disabled: sparrad || fam.antal >= fam.tak, onclick: () => andra(f.id, 1) }, "+")));
+            el("button", { type: "button", class: "knapp liten", "aria-label": `Köp ${f.namn}`, disabled: !kanKopa || sparrad || fam.antal >= fam.tak, onclick: () => andra(f.id, 1) }, "+")));
       }))))))];
 }

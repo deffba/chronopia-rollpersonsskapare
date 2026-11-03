@@ -1,5 +1,5 @@
 // Steg 3: yrke.
-import { yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, villkorText, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar, paketIndex, svardsskolaFor } from "../regelmotor.js";
+import { klanAv, yrkeAv, fardighetAv, paborjad, valbaraYrken, yrkeVillkor, villkorText, yrkesformagaText, kallText, namnFor, paketNamn, paketNycklar, paketIndex, svardsskolaFor } from "../regelmotor.js";
 import { visaNotis } from "../app.js";
 import { S, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -20,14 +20,27 @@ export function stegYrke() {
   const yrke = yrkeAv(S.R, yrkeId());
   // Yrken som rasen inte får välja (t.ex. Hedersvakt, bara dvärgar) visas inte. Yrken som bara vissa raser
   // får välja, och som den valda rasen får, har en röd ram.
-  const kort = valbaraYrken(S.R, S.rp).filter((y) => !S.rp.ras || !yrkeVillkor(S.R, S.rp, y)).sort((a, b) => a.namn.localeCompare(b.namn, "sv")).map((y) => {
-    const villkor = yrkeVillkor(S.R, S.rp, y);
+  // Ett yrke som bara kräver en annan klan (Präst: Mindir) visas ändå; väljs det byts klanen (RB-021)
+  const klanBehov = (y) => (y.villkor?.klan && yrkeVillkor(S.R, S.rp, y) && !yrkeVillkor(S.R, { ...S.rp, klan: { id: y.villkor.klan[0] } }, y) ? klanAv(S.R, y.villkor.klan[0]) : null);
+  const kort = valbaraYrken(S.R, S.rp).filter((y) => !S.rp.ras || !yrkeVillkor(S.R, S.rp, y) || klanBehov(y)).sort((a, b) => a.namn.localeCompare(b.namn, "sv")).map((y) => {
+    const nyKlan = klanBehov(y);
+    const villkor = nyKlan ? null : yrkeVillkor(S.R, S.rp, y);
     const rasyrke = Boolean(S.rp.ras && y.villkor?.ras?.includes(S.rp.ras));
     return el("button", {
       type: "button", class: "valkort yrkeskort" + (y.id === S.rp.yrke ? " valt" : "") + (villkor ? " ej-valbar" : "") + (rasyrke ? " rasyrke" : ""), "aria-pressed": y.id === S.rp.yrke ? "true" : "false", "data-yrke": y.id,
       "aria-disabled": villkor ? "true" : null, title: villkor ?? (rasyrke ? villkorText(S.R, y.villkor) : null),
       onclick: () => {
         if (villkor) { visaNotis(`${y.namn}: ${villkor.charAt(0).toLowerCase()}${villkor.slice(1)}.`); return; }
+        if (nyKlan) {
+          const fran = klanAv(S.R, S.rp.klan?.id)?.namn ?? "en annan klan";
+          if (!window.confirm(`${y.namn} kräver klan ${nyKlan.namn}. Rollpersonen tillhör ${fran}. Byta klan till ${nyKlan.namn}? Klanförmågan slås då om.`)) return;
+          S.rp.klan = { id: nyKlan.id, slag: null, formagaSlag: null, val: [] };
+          S.rp.yrke = y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = [];
+          S.aktivtSteg = "klan";
+          uppdatera();
+          visaNotis(`Klanen är nu ${nyKlan.namn}. Slå klanförmågan och gå sedan vidare.`);
+          return;
+        }
         // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1
         S.rp.yrke = y.id === S.rp.yrke ? "" : y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = "";
         // Yrken med vapen i startutrustningen får inget vapen i startpaketet
@@ -36,7 +49,7 @@ export function stegYrke() {
         uppdatera();
       },
     }, el("span", { class: "valkort-namn" }, y.namn.replace(/^(.{5,})(magiker)$/, "$1\u00ad$2")), // Elementar-magiker avstavas om namnet inte får plats
-    villkor ? el("span", { class: "valkort-villkor" }, villkor) : null);
+    villkor ? el("span", { class: "valkort-villkor" }, villkor) : nyKlan ? el("span", { class: "valkort-villkor" }, `Kräver klan ${nyKlan.namn}`) : null);
   });
   if (!S.rp.yrke) return [el("div", { class: "valkort-rutnat liten fyra" }, kort), el("p", { class: "hjalp" }, "Välj rollpersonens yrke genom att klicka på ett av korten.")];
   const namn = (x) => fardighetAv(S.R, x)?.namn ?? x;

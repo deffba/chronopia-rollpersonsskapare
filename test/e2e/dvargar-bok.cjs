@@ -60,6 +60,27 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('inga konsolfel (manuellt flöde)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
+  // ---- En dvärg i en annan klan som väljer Präst byter till Mindir och slår klanförmågan på nytt
+  p = await ny();
+  await p.check('[data-bok=dvargar]'); await p.click('#nasta-steg'); await p.waitForSelector('.raskort');
+  await p.click('.raskort:has-text("Dvärg")'); await p.selectOption('#rasval-hantverk', 'Smide'); await p.waitForTimeout(80);
+  await p.click('#nasta-steg'); await p.waitForTimeout(150);
+  await p.selectOption('#klan-val', 'zodan'); await p.waitForTimeout(100);
+  await p.click('#klanformaga-sla'); await p.waitForTimeout(700);
+  if (await p.locator('#klan-0-f').count()) { await p.selectOption('#klan-0-f', 'avvapna'); await p.waitForTimeout(100); }
+  await p.click('#nasta-steg'); await p.waitForSelector('#alder');
+  await p.click('.steg-innehall button:has-text("Enkel metod")'); await p.waitForTimeout(100);
+  await p.click('#nasta-steg'); await p.waitForSelector('.yrkeskort');
+  ok('Präst syns för en dvärg i Zodan, med klankravet', /Kräver klan Mindir/.test(await p.locator('[data-yrke=prast]').textContent()));
+  let fraga = '';
+  p.once('dialog', (d) => { fraga = d.message(); d.accept(); });
+  await p.click('[data-yrke=prast]'); await p.waitForTimeout(200);
+  ok('frågar innan klanen byts', /Präst kräver klan Mindir.*Zodan/.test(fraga), fraga);
+  ok('klanen är nu Mindir och steget Klan är öppet', /Klan/.test(await p.locator('h2').first().textContent()) && (await p.locator('#klan-namn').textContent()).includes('Mindir'));
+  ok('klanförmågan ska slås om', await p.locator('#klanformaga-sla').count() === 1);
+  ok('inga konsolfel (klanbyte)', !p.errs.length, p.errs.join(' | '));
+  await p.close();
+
   // ---- En människa får varken klan eller dvärgyrken
   p = await ny();
   await p.check('[data-bok=dvargar]'); await p.click('#nasta-steg'); await p.waitForSelector('.raskort');

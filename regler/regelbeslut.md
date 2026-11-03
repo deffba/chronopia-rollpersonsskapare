@@ -213,7 +213,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Beslut:**
   - **Nivåer:** Dvärg 125 BP och 1 särskild förmåga, Veteran 150/2, Hjälte 175/3 (RB-001).
   - **Klan:** eget steg direkt efter Ras, bara för dvärgar. Spelaren slår 1T100 eller väljer. **Durban** finns inte i tabellen och kan bara väljas. Slag 70–00 ger *Annan klan*, som saknar förmågetabell och därför ingen klanförmåga. Klanförmågan slås med 1T10, kostar inga BP och räknas inte mot taket för särskilda förmågor. Klanen går att byta tills klanförmågan är slagen.
-  - **Dvärgyrkena** (15 st.) är bara för dvärgar (RB-007). Bara **Präst** är låst till en klan (Mindir). Svinryttare och Bärsärk är inte låsta.
+  - **Dvärgyrkena** (15 st.) är bara för dvärgar (RB-007). Bara **Präst** är låst till en klan (Mindir); väljer en dvärg i en annan klan Präst byts klanen till Mindir efter en fråga, och klanförmågan slås om. Övriga yrken som boken knyter till en klan (Svinryttare: Tymar, Bärsärk: Zodan, Fiskare: Dolin, Grävare) är öppna för alla klaner (bekräftat 2026-11-03).
   - **”10 på FV”** (t.ex. Bokmal, Litterär) betyder att FV blir minst 10; **”+10”** är en bonus.
   - **Stridsfärdighet** = vapenfärdigheter, två vapen, stridskonster, vapentekniker, slagsmål, avväpna, dra vapen och strid i mörker. **Akademisk färdighet** = alkemi, astrologi, geografi, geologi, historia, läkekonst, lärdom, räkning, teknologi och zoologi.
   - **Zodan, Smärttålig:** stridskonsten Smärttålig (svärdsskolan Stålsättning) som yrkesfärdighet med FV 5.
@@ -237,3 +237,11 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Motivering:** Vapnen hanteras som de närmaste vapnen i grundreglerna.
 - **Påverkar:** Vapenlistan, utrustningssteget.
 - **Beslutat:** 2026-11-03 (tolkning vid importen).
+
+## RB-023 Vem får köpa familjarer
+- **Fråga:** Får alla rollpersoner köpa familjarer, eller bara magiker?
+- **Källor:** *Magi i Chronopia* s. 8 (nivåtabellen Magus/Magus regis/Häxmästare med Familiari 1/3/5, i kapitlet om hur man skapar en magiker), s. 40–43 (familjarerna).
+- **Beslut:** Bara rollpersoner som **kan magi** får köpa familjarer: magikeryrken, de som klarat magiförmågeslaget och de som har en magiskola utan slag. Familjarer som yrket ger (Fågelbroderns lystat, Häxjägarens spårare) och familjaren från Spiritus familiarius är gratis och får alla ha (RB-010). Om rollpersonen tappar magin (byter yrke eller misslyckas med slaget) måste köpta familjarer tas bort innan man går vidare.
+- **Motivering:** Familjartaket hör till magikernivåerna, och familjarer är magikernas följeslagare.
+- **Påverkar:** Steget Familjarer.
+- **Beslutat:** 2026-11-03, Deffba.

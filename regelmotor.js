@@ -722,6 +722,11 @@ export function raknaRollperson(regler, indata) {
 
   // Kan rollpersonen lära sig besvärjelser? Magikeryrken, ett lyckat magiförmågeslag eller en skola utan slag
   const kanMagi = Boolean(yrke.magiker || magiformaga.lyckat || harFriSkola);
+  // Bara den som kan magi får köpa familjarer (RB-023). Gratis familjarer från yrket eller Spiritus familiarius
+  // får alla ha. Köpta familjarer utan magi är något som återstår att ta bort, inte ett regelbrott, så att
+  // ett byte av yrke eller ett misslyckat magiförmågeslag inte spärras.
+  familjarer.kanKopa = kanMagi;
+  if (familjarer.tillganglig && !kanMagi) familjarer.tillganglig = familjarer.lista.length > 0;
   const besvarjelser = raknaBesvarjelser(regler, rp, fardigheter, ge.varden, kanMagi, fel);
   const minimagi = raknaMinimagi(regler, rp, fardigheter, fel, kanMagi);
   epSpenderat += besvarjelser.reduce((a, b) => a + b.ep, 0);
