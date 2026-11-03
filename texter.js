@@ -21,7 +21,7 @@ export const STEG = [
 
 // Förklaringar till förkortningar, visas i små info-cirklar.
 export const FORKLARINGAR = {
-  BP: "BP (bakgrundspoäng) är poängen du bygger rollpersonen med i steg 1–10: 125 från start (fler på en högre erfarenhetsnivå, steg 0) plus åldersbonus. Det som blir över ger 5 EP per BP till färdigheterna (husregel).",
+  BP: "BP (bakgrundspoäng) är poängen du bygger rollpersonen med i steg 1–10: 125 från start (fler på en högre erfarenhetsnivå, steg 0) plus åldersbonus. Det som blir över växlas till 5 EP per BP när du kommer till steg 11 (s. 34); BP kan inte sparas.",
   EP: "EP (erfarenhetspoäng) köper FV i färdigheter: 2 EP per FV för primära, 3 för yrkesfärdigheter och 5 för sekundära (20 för en magiskola som sekundär).",
   FV: "FV (färdighetsvärde) visar hur bra rollpersonen är på något. Man slår 1T20, och ett resultat lika med eller under värdet lyckas. Vid start får FV inte vara högre än grundegenskapen.",
   BC: "BC (baschans) är gratis FV vid start i alla primära färdigheter och yrkesfärdigheter. Den beror på grundegenskapen. Sekundära färdigheter har ingen BC.",

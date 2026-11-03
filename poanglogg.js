@@ -126,9 +126,9 @@ export function poster(api) {
   lagg("kapital", "Guld", "sk", `Startkapital: ${oslaget ? "inte slaget än, räknas som slag 0 tills vidare" : `resultat ${res.slag.skResultat}`}, ålder ×${String(alder.kapital).replace(".", ",")}`, kapital);
   if (res.slag.startkapital !== kapital) lagg("kapital", "Guld", "arv", `Särskild förmåga: ${res.sarskildFormaga?.namn ?? "arv"}`, res.slag.startkapital - kapital);
 
-  // 11. Färdigheter: oanvända BP blir EP (husregel), och varje köpt FV
+  // 11. Färdigheter: oanvända BP blir EP (s. 34), och varje köpt FV
   const bpKvar = Math.max(0, res.bp.kvar);
-  lagg("fardigheter", "EP", "vaxling", `Oanvända BP: ${bpKvar} × 5 EP (husregel, följer BP kvar)`, bpKvar * 5);
+  lagg("fardigheter", "EP", "vaxling", `Oanvända BP: ${bpKvar} × 5 EP (s. 34, följer BP kvar)`, bpKvar * 5);
   for (const f of res.fardigheter.filter((x) => x.ep > 0)) {
     lagg("fardigheter", "EP", `f-${f.nyckel}`, `${f.namn}: FV ${f.start} → ${f.fv} (${f.fv - f.start} × ${f.epPerFV} EP)`, -f.ep);
   }

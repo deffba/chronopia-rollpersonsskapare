@@ -3,6 +3,7 @@
 import { raknaRollperson, rasAv, yrkeAv, fardighetAv, sarskildFormaga as sfFor, paborjad, paketNycklar } from "./regelmotor.js";
 import { TOMT_SPEL, TOM_UTVECKLING } from "./sparformat.js";
 import { utvecklad } from "./utveckling.js";
+import { STEG } from "./texter.js";
 import { rita, visaNotis } from "./app.js";
 
 export const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken", "slag", "vapen", "sarskilda-formagor", "husregler", "besvarjelser", "utrustning", "erfarenhet", "bocker"];
@@ -161,3 +162,11 @@ export function motorIndata() {
 }
 
 export const sarskildFormaga = () => sfFor(S.R, { ...S.rp, ras: rasId(), alder: alderNu(), yrke: yrkeId(), yrkesfardigheter: yrkesNycklar() }).formaga;
+
+// BP som blir över växlas till 5 EP per BP när rollpersonen når steg 11 (s. 34): BP kan inte sparas.
+// Från steg 11 visas BP kvar därför som 0 och de växlade BP som EP. Går spelaren tillbaka till
+// steg 1–10 visas de som BP igen, eftersom de fortfarande kan spenderas där.
+export function vaxladeBp(res) {
+  const nu = STEG.findIndex((s) => s.id === S.aktivtSteg);
+  return S.vy === "steg" && nu >= STEG.findIndex((s) => s.id === "fardigheter") ? Math.max(0, res.bp.kvar) : 0;
+}
