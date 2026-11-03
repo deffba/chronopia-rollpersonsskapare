@@ -41,7 +41,7 @@ export function stegFardigheter(res) {
       el("td", { class: "num" }, f.ep || ""))))));
   const harRedan = new Set([...yrkesNycklar(), ...S.rp.extraYrkesfardigheter, ...S.rp.sekundara]);
   return [
-    el("p", {}, `Du har ${res.ep.start} EP: ${S.R.alder.efterAr.find((r) => r.max === null || S.rp.alder <= r.max).ep} för åldern och 5 per överblivet BP. Primära och yrkesfärdigheter har gratis baschans (BC). FV får inte vara högre än grundegenskapen vid start.`),
+    el("p", {}, `Du har ${res.ep.start} EP: ${S.R.alder.efterAr.find((r) => r.max === null || S.rp.alder <= r.max).ep} för åldern och 5 per överblivet BP (BP som blir över växlas alltid till EP, s. 34). Primära och yrkesfärdigheter har gratis baschans (BC). FV får inte vara högre än grundegenskapen vid start.`),
     el("div", { class: "rad" },
       el("button", { type: "button", class: "knapp", onclick: fordelaEP }, `Fördela EP automatiskt för ${res.yrke.namn.toLowerCase()}`),
       S.autoAnvand.fardigheter ? el("button", { type: "button", class: "knapp", onclick: () => { S.rp.fardigheter = {}; S.rp.besvarjelser = {}; S.autoAnvand.fardigheter = false; uppdatera(); } }, "Nollställ FV") : null,
