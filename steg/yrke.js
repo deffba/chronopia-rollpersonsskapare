@@ -5,6 +5,7 @@ import { S, rakna, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el, slaT } from "../ui/dom.js";
 import { delvalKontroll, fardighetsInfo, fardighetsVal, hjalpFor, kortBeskrivning, valLista } from "../ui/kontroller.js";
 import { magiInfo, magiMojlig } from "../ui/magimodal.js";
+import { valjFardighet } from "../ui/tarningar.js";
 import { stridskonstInfo } from "./fardigheter.js";
 
 // Det som är särskilt med en yrkesfärdighetspost (V&R): gratis FV, tak vid start
@@ -33,14 +34,15 @@ export function stegYrke() {
         if (villkor) { visaNotis(`${y.namn}: ${villkor.charAt(0).toLowerCase()}${villkor.slice(1)}.`); return; }
         if (nyKlan) {
           const fran = klanAv(S.R, S.rp.klan?.id)?.namn ?? "en annan klan";
+          // En egen dialog (förhandsvisningar och vissa webbläsare blockerar window.confirm).
           // Nej: inget ändras och spelaren väljer ett annat yrke. Ja: klanen byts och klanförmågan slås om direkt.
-          if (!window.confirm(`${y.namn} kräver klan ${nyKlan.namn}. Rollpersonen tillhör ${fran}. Byta klan till ${nyKlan.namn}? Klanförmågan slås då om.`)) return;
-          S.rp.klan = { id: nyKlan.id, slag: null, formagaSlag: nyKlan.formagor.length ? slaT(1, 10) : null, val: [] };
-          S.rp.yrke = y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = [];
-          uppdatera();
-          const f = rakna().klan?.formaga;
-          const val = (f?.regel ?? []).some((d) => d.valj);
-          visaNotis(`Klanen är nu ${nyKlan.namn}.${f ? ` Nya klanförmågan: ${f.namn}${val ? " (gör valet i steget Klan)" : ""}.` : ""}`);
+          fragaKlanbyte(y, nyKlan, (formagaSlag, val) => {
+            S.rp.klan = { id: nyKlan.id, slag: null, formagaSlag, val };
+            S.rp.yrke = y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = [];
+            uppdatera();
+            const f = rakna().klan?.formaga;
+            visaNotis(`Klanen är nu ${nyKlan.namn}.${f ? ` Nya klanförmågan: ${f.namn}.` : ""}`);
+          });
           return;
         }
         // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1
@@ -193,4 +195,42 @@ export function yrketsVal() {
         S.rp.valfri ? null : el("p", { class: "hjalp" }, "Vilken sekundär färdighet som helst, som blir en yrkesfärdighet. Primära färdigheter har rollpersonen redan. En magiskola kräver ett lyckat magiförmågeslag. Det slås när du går vidare från steg 6, när INT och PSY är bestämda.")) : null),
     yrke.automatiska.length ? el("p", { class: "hjalp" }, "Får automatiskt Känna magi och Kunskap om magi med samma FV som i sin magiskola (s. 62, 64).") : null,
   ];
+}
+
+// Frågan innan ett yrke byter rollpersonens klan (Präst kräver Mindir, Dvärgar i Chronopia s. 11). Ja slår
+// om klanförmågan direkt; kräver den ett val (t.ex. Krigarbakgrund) görs valet i dialogen, så att spelaren
+// stannar i yrkessteget. Inget ändras förrän spelaren är klar, och Nej lämnar allt som det var.
+function fragaKlanbyte(yrke, klan, klar) {
+  const fran = klanAv(S.R, S.rp.klan?.id)?.namn ?? "en annan klan";
+  const ruta = el("div", { class: "dialog", role: "dialog", "aria-modal": "true", "aria-labelledby": "klanbyte-rubrik" });
+  const modal = el("div", { class: "dialog-bakgrund", id: "klanbyte-modal" }, ruta);
+  const stang = () => { modal.remove(); document.body.classList.remove("dialog-oppen"); };
+  const visa = (...delar) => { ruta.replaceChildren(...delar.filter(Boolean)); };
+  const forsta = () => visa(
+    el("h2", { id: "klanbyte-rubrik" }, `${yrke.namn} kräver klan ${klan.namn}`),
+    el("p", {}, `Rollpersonen tillhör ${fran}. Vill du byta klan till ${klan.namn}? Klanförmågan slås då om.`),
+    el("div", { class: "rad" },
+      el("button", { type: "button", class: "knapp primar", id: "klanbyte-ja", onclick: ja }, `Byt till ${klan.namn}`),
+      el("button", { type: "button", class: "knapp", id: "klanbyte-nej", onclick: stang }, "Nej, välj ett annat yrke")));
+  function ja() {
+    const slag = klan.formagor.length ? slaT(1, 10) : null;
+    const f = klan.formagor.find(({ slag: [fran, till] }) => slag >= fran && slag <= till);
+    const delar = (f?.regel ?? []).map((d, i) => (d.typ === "fv" && d.valj ? i : null)).filter((i) => i !== null);
+    if (!delar.length) { stang(); klar(slag, []); return; }
+    const val = [];
+    const valt = () => delar.every((i) => val[i]?.[0] && !paborjad(val[i][0]));
+    const andra = () => visa(
+      el("h2", { id: "klanbyte-rubrik" }, `Klanförmåga: ${f.namn}`),
+      el("p", {}, `Slag (1T10): ${slag}. ${f.effekt}`),
+      ...delar.map((i) => el("div", {}, el("span", { class: "fnamn" }, "Välj färdighet "),
+        valjFardighet(`klanbyte-${i}`, f.regel[i].bland, val[i]?.[0], (v) => { val[i] = v ? [v] : []; andra(); }))),
+      el("div", { class: "rad" },
+        el("button", { type: "button", class: "knapp primar", id: "klanbyte-klar", disabled: !valt(), onclick: () => { stang(); klar(slag, val); } }, "Fortsätt"),
+        el("button", { type: "button", class: "knapp", id: "klanbyte-avbryt", onclick: stang }, "Avbryt")));
+    andra();
+  }
+  forsta();
+  document.body.append(modal);
+  document.body.classList.add("dialog-oppen");
+  modal.querySelector("#klanbyte-ja").focus();
 }

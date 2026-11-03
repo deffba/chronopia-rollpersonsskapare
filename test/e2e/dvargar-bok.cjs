@@ -74,16 +74,23 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('Präst syns för en dvärg i Zodan, med klankravet', /Kräver klan Mindir/.test(await p.locator('[data-yrke=prast]').textContent()));
   const rp = () => p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp);
   // Nej på frågan: ingenting ändras och yrkeslistan står kvar
-  p.once('dialog', (d) => d.dismiss());
-  await p.click('[data-yrke=prast]'); await p.waitForTimeout(200);
+  await p.click('[data-yrke=prast]'); await p.waitForTimeout(150);
+  ok('frågan visas i en dialog', await p.locator('#klanbyte-modal').isVisible());
+  await p.click('#klanbyte-nej'); await p.waitForTimeout(150);
+  ok('nej stänger dialogen', await p.locator('#klanbyte-modal').count() === 0);
   const kvar = await rp();
   ok('nej: klan och yrke oförändrade', kvar.klan.id === 'zodan' && kvar.yrke === '' && /Yrke/.test(await p.locator('h2').first().textContent()), `${kvar.klan.id} ${kvar.yrke}`);
   // Ja: klanen byts till Mindir, klanförmågan slås om och appen stannar i yrkessteget
-  let fraga = '';
-  p.once('dialog', (d) => { fraga = d.message(); d.accept(); });
-  await p.click('[data-yrke=prast]'); await p.waitForTimeout(200);
-  ok('frågar innan klanen byts', /Präst kräver klan Mindir.*Zodan/.test(fraga), fraga);
-  ok('appen stannar i yrkessteget med Präst vald', /Yrke/.test(await p.locator('h2').first().textContent()) && await p.locator('[data-yrke=prast][aria-pressed=true]').count() === 1);
+  await p.click('[data-yrke=prast]'); await p.waitForTimeout(150);
+  const fraga = await p.locator('#klanbyte-modal').textContent();
+  await p.click('#klanbyte-ja'); await p.waitForTimeout(200);
+  if (await p.locator('#klanbyte-klar').count()) { // Krigarbakgrund: valet görs i dialogen
+    ok('Fortsätt är spärrad innan valet', await p.locator('#klanbyte-klar').isDisabled());
+    await p.selectOption('#klanbyte-0-f', 'avvapna'); await p.waitForTimeout(100);
+    await p.click('#klanbyte-klar'); await p.waitForTimeout(200);
+  }
+  ok('frågar innan klanen byts', /Präst kräver klan Mindir.*Zodan.*Byt till Mindir/.test(fraga), fraga);
+  ok('appen stannar i yrkessteget med Präst vald', /Yrke/.test(await p.locator('h2').first().textContent()) && await p.locator('[data-yrke=prast][aria-pressed=true]').count() === 1, (await p.locator('h2').first().textContent()) + ' ' + await notis(p));
   ok('notisen: klanen är Mindir med en ny klanförmåga', /Klanen är nu Mindir\. Nya klanförmågan:/.test(await notis(p)), await notis(p));
   const ja = await rp();
   ok('klanförmågan är omslagen', ja.klan.id === 'mindir' && ja.klan.formagaSlag >= 1 && ja.klan.formagaSlag <= 10 && ja.yrke === 'prast', JSON.stringify(ja.klan));
