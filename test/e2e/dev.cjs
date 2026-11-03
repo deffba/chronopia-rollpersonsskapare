@@ -36,10 +36,10 @@ const URL = (process.env.E2E_BAS || 'http://localhost:8766') + '/index.html';
     await p.click('#menyknapp'); await p.click('#dev-' + id); await p.waitForTimeout(200);
     ok(`${id} inläst i sista steget`, (await p.locator('.steg-huvud h2').textContent()) === 'Spara och exportera' && await p.locator('.steg-knapp[disabled]').count() === 0);
   }
-  const steg = await p.locator('#dev-lage optgroup[label="Steg"] option').evaluateAll(o => o.map(x => [x.value, x.textContent.replace(/^\d+\. | \(bara magiker\)$/g, '')]));
+  const steg = await p.locator('#dev-lage optgroup[label="Steg"] option').evaluateAll(o => o.map(x => [x.value, x.textContent.replace(/^\d+\. | \(bara (magiker|med Magi)\)$/g, '')]));
   let fel_steg = [];
   for (const [id, namn] of steg) {
-    await p.click('#menyknapp'); await p.selectOption('#dev-lage', id); await p.click('#dev-magiker'); await p.waitForTimeout(150);
+    await p.click('#menyknapp'); await p.selectOption('#dev-lage', id); await p.click(id === 'familjarer' ? '#dev-magi-chronomag' : '#dev-magiker'); await p.waitForTimeout(150);
     const h2 = await p.locator('.steg-huvud h2').textContent();
     if (h2 !== namn) fel_steg.push(`${id}: ${h2}`);
   }

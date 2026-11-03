@@ -86,15 +86,16 @@ export function forstaOfardiga(res) {
   return i === -1 ? lista.length : i;
 }
 
-// Steget Besvärjelser visas bara för rollpersoner som kan lära sig magi
+// Steget Besvärjelser visas bara för rollpersoner som kan lära sig magi, och steget Familjarer
+// bara när Magi i Chronopia är vald
 export function synligaSteg(res) {
   const kanMagi = (res.yrke.magiker || res.magiformaga.lyckat) && skolFV(res.fardigheter).allman > 0;
-  return kanMagi ? STEG : STEG.filter((s) => s.id !== "besvarjelser");
+  return STEG.filter((s) => (s.id !== "besvarjelser" || kanMagi) && (s.id !== "familjarer" || res.familjarer?.tillganglig));
 }
 
 export function bpForSteg(id, res) {
   const u = res.bp.utgifter;
   const v = { ras: u.ras, extra: u.extraYrkesfardigheter, egenskaper: u.grundegenskaper + (u.sinnen ?? 0), formagor: u.sarskildaFormagor,
-    svardshand: u.svardshand, stand: u.socialtStand, kapital: u.startkapital }[id];
+    svardshand: u.svardshand, stand: u.socialtStand, kapital: u.startkapital, familjarer: u.familjarer }[id];
   return v ? `${v} BP` : "";
 }

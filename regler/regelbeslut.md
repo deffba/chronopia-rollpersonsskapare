@@ -86,7 +86,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Fråga:** Betyder Familiari 1/3/5 att familjarerna är gratis, eller är det ett tak?
 - **Källor:** *Magi i Chronopia* s. 8 (Familiari), s. 40–43 (familjarerna, 1–15 BP).
 - **Beslut:** Siffran är det **högsta antal** familjarer rollpersonen får ha. Familjarerna kostar BP som vanligt.
-- **Gratis familjarer (2026-11-03, Deffba):** familjarer som yrket ger (Fågelbroderns lystat, Häxjägarens spårare) och familjaren från den särskilda förmågan Spiritus familiarius är gratis och räknas **inte** mot taket. Familjarerna köps i steg 7 och står i en egen ruta på rollformuläret.
+- **Gratis familjarer (2026-11-03, Deffba):** familjarer som yrket ger (Fågelbroderns lystat, Häxjägarens spårare) och familjaren från den särskilda förmågan Spiritus familiarius är gratis och räknas **inte** mot taket. Familjarerna köps i ett eget steg, Familjarer, direkt efter särskilda förmågor (före växlingen av BP till EP), och står i en egen ruta på rollformuläret.
 - **Motivering:** Deffbas läsning av texten.
 - **Påverkar:** Familjarvalet (följeslagare) för Magi.
 - **Beslutat:** 2026-11-01, Deffba.
@@ -187,7 +187,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
   - **Lubriticus:** B-nivån i Meditation räknas ett steg högre; det gäller under spel och står som yrkesförmåga.
   - **Magiska vapen och droger:** hunger-, lirium- och miniatyrvapen är prismultiplikatorer och säljs inte vid skapandet. Varor med samma namn som i grundreglerna eller V&R får ett tillägg i namnet, till exempel *Pendel (magisk)*.
 - **Motivering:** Så nära boken som möjligt, utan nya system för sådant grundreglerna saknar.
-- **Påverkar:** Bokvalet, yrkessteget, färdigheterna, besvärjelsesteget, steg 7 (familjarer), utrustningen, rollformuläret.
+- **Påverkar:** Bokvalet, yrkessteget, färdigheterna, besvärjelsesteget, steget Familjarer, utrustningen, rollformuläret.
 - **Beslutat:** 2026-11-03 (tolkning vid importen; familjartaket bekräftat av Deffba, se RB-010).
 
 ## RB-019 Frälsningsklingan

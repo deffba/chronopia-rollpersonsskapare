@@ -36,6 +36,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('de elva yrkena från Magi går att välja', finns.every((n) => n === 1), JSON.stringify(finns));
   await p.click('[data-yrke=svartsyster]'); await p.waitForTimeout(100);
   const sv = await p.locator('.valinfo').textContent();
+  ok('utan Magi: inget steg Familjarer', true);
   ok('Svartsyster: bara för kvinnliga människor födda i den mörka månens tecken', /Bara för Människa, kvinnor, födda i den mörka månens tecken/.test(sv), sv);
   ok('inga konsolfel (steg 0–3)', !p.errs.length, p.errs.join(' | '));
   await p.close();
@@ -43,9 +44,11 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   // ---- Chronomagen på nivån magus regis: Spiritus familiarius, familjarer och taket 3
   p = await ny(true);
   await ladda(p, 'magi-chronomag', 'formagor');
+  const platser0 = await p.locator('#sf-platser [data-plats]').allTextContents();
+  ok('steg 7 har ingen familjarruta', await p.locator('#familjarer').count() === 0);
+  await ladda(p, 'magi-chronomag', 'familjarer');
   ok('testrollpersonen byggs enligt receptet', (await notis(p)) === 'Aurelia Timglas är inläst.', await notis(p));
-  const platser = await p.locator('#sf-platser [data-plats]').allTextContents();
-  ok('två slag på Magis tabell', JSON.stringify(platser) === '["Förmåga 1: Spiritus familiarius","Förmåga 2: Magikänsla"]', JSON.stringify(platser));
+  ok('två slag på Magis tabell', JSON.stringify(platser0) === '["Förmåga 1: Spiritus familiarius","Förmåga 2: Magikänsla"]', JSON.stringify(platser0));
   const fam = await p.locator('#familjarer').textContent();
   ok('familjarrutan: tak 3, två köpta', fam.includes('högst 3 köpta familjarer och har köpt 2') && fam.includes('De kostar 12 BP'), fam.slice(0, 200));
   ok('Spiritus familiarius ger en gratis dragonette', (await p.locator('#familjarer-gratis').textContent()).includes('Dragonette (Spiritus familiarius)'));
@@ -73,7 +76,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
 
   // ---- Fågelbrodern: gratis lystat utöver taket på nivån magus
   p = await ny(true);
-  await ladda(p, 'magi-fagelbroder', 'formagor');
+  await ladda(p, 'magi-fagelbroder', 'familjarer');
   ok('fågelbrodern byggs enligt receptet', (await notis(p)) === 'Corvin Fjäderhand är inläst.', await notis(p));
   const famF = await p.locator('#familjarer').textContent();
   ok('gratis lystat från yrket, och en köpt jefta', (await p.locator('#familjarer-gratis').textContent()).includes('Lystat (Fågelbroder)') && (await p.locator('#familjar-jefta').textContent()) === '1', famF.slice(0, 200));

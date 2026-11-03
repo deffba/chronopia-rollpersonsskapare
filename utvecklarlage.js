@@ -331,7 +331,7 @@ export function starta(api) {
     el("label", {}, el("span", { class: "hjalp" }, "Öppna i"),
       el("select", { id: "dev-lage", onchange: (e) => { lage = e.target.value; } },
         el("optgroup", { label: "Steg" }, api.STEG.map((st, i) => el("option", { value: st.id, selected: st.id === lage },
-          `${i}. ${st.namn}${st.id === "besvarjelser" ? " (bara magiker)" : ""}`))),
+          `${i}. ${st.namn}${st.id === "besvarjelser" ? " (bara magiker)" : st.id === "familjarer" ? " (bara med Magi)" : ""}`))),
         el("optgroup", { label: "Annat" }, VYER.filter(([v]) => v !== "spel" || document.querySelector("#visa-spel"))
           .map(([v, t]) => el("option", { value: v, selected: v === lage }, t))))),
     el("label", { class: "vaxel" }, el("input", { type: "checkbox", id: "dev-autofyll", checked: autofyll.pa(),

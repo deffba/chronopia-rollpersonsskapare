@@ -165,6 +165,11 @@ function fyllFormaga(api, autoDelval, anvanda, slag) {
           ...GRUNDEGENSKAPER.map((g) => ({ lage: "en", egenskaper: [g] }))];
         for (const v of forsok) { sattVal(v); if (gar()) break; }
       }
+      if (del.typ === "familjar" && !val[i]) {
+        // Spiritus familiarius: en slumpad familjar som rollpersonen får ha (Magi i Chronopia s. 17)
+        const lista = [...(R.foljeslagare?.familjarer?.lista ?? [])].sort(() => Math.random() - 0.5);
+        for (const f of lista) { sattVal(f.id); if (gar()) break; }
+      }
       if (del.typ === "hjaltepoang" && slag && !Number.isInteger(val[i]?.slag)) {
         const { n, sidor } = tarningAv(del.tarning);
         const tarningar = Array.from({ length: n }, () => slaT(1, sidor));
