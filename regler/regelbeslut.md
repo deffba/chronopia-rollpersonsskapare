@@ -252,7 +252,7 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Beslut:**
   - **Nivåer:** Alv 125 BP och 1 särskild förmåga, Veteran 150/2, Upphöjd 175/3 (RB-001).
   - **Husalverna** (Aramas, Belisarius, Cerias, Degas, Kothal, Lysander, Ventura) är stadsalver med husets ändringar. Belisarius +20 på socialt stånd och startkapital **ersätter** stadsalvens +15. Belisarius väljer en av Målning, Skådespeleri eller Spela instrument som primär färdighet; Cerias en vapenfärdighet eller Hantverk: Smide.
-  - **Rassteget:** de sju husen visas bakom ett enda kort, *Alv*. Ett tryck fäller ut husen under rubriken *Alv: de Stora husen* och döljer de andra raserna; knappen *Alla raser* tar tillbaka den vanliga vyn. Husen är fortfarande egna raser (boken s. 15), inte ett separat steg som dvärgarnas klan.
+  - **Rassteget:** de sju husen visas bakom ett enda kort, *De stora alvhusen*. Ett tryck fäller ut husen under rubriken *Alv: de Stora husen* och döljer de andra raserna; knappen *Alla raser* tar tillbaka den vanliga vyn. Husen är fortfarande egna raser (boken s. 15), inte ett separat steg som dvärgarnas klan.
   - **Drakalven** går inte att välja direkt, bara genom Lysanders förmåga **Drakblod**. Drakalvens värden (grundegenskaper, STO 13–21, +10 på stånd och kapital) **ersätter** lysanderalvens helt. Den valda rasen (lysanderalv) gäller för BP och för vilka yrken som får väljas (RB-012). Defekterna slås med 1T20; 19 ger två slag till där 1–8 och 19 slås om.
   - **Husens rader** i alvernas förmågetabell ersätter tabellens rader med samma slag för alver ur det huset.
   - **Utstött:** bara +10 på startkapitalet, **i stället för** rasens bonus.

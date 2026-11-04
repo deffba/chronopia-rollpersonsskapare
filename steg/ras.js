@@ -8,7 +8,7 @@ import { rita } from "../app.js";
 import { delvalKontroll, falt, fardighetsInfo, infoKnapp, valLista } from "../ui/kontroller.js";
 
 // ------------------------------------------------------------ stegen
-// De Stora husens alver (Alver i Chronopia) visas som ett enda kort, Alv. Ett tryck fäller ut dem: då döljs
+// De Stora husens alver (Alver i Chronopia) visas som ett enda kort, De stora alvhusen. Ett tryck fäller ut dem: då döljs
 // de andra raserna och husen visas under en rubrik med knappen Alla raser, som tar tillbaka den vanliga vyn.
 // Valet av hus fungerar sedan som för vilken ras som helst.
 let husenUppe = false;
@@ -44,10 +44,10 @@ export function stegRas() {
     const poster = alla.filter((r) => !r.hus).map((r) => [r.namn, rasKort(r)]);
     if (hus.length) {
       const gruppvald = Boolean(valt?.hus);
-      poster.push(["Alv", el("button", {
+      poster.push(["De stora alvhusen", el("button", {
         type: "button", class: "valkort rasgruppkort" + (gruppvald ? " valt" : ""), id: "rasgrupp-alv", "aria-pressed": gruppvald ? "true" : "false",
-        "aria-label": "Alv: visa de Stora husen", onclick: () => { husenUppe = true; rita(); },
-      }, el("span", { class: "valkort-namn" }, "Alv"), el("span", { class: "valkort-villkor" }, gruppvald ? valt.namn : "De Stora husen"))]);
+        onclick: () => { husenUppe = true; rita(); },
+      }, el("span", { class: "valkort-namn" }, "De stora alvhusen"))]);
     }
     const kort = poster.sort((a, b) => a[0].localeCompare(b[0], "sv")).map(([, k]) => k);
     huvud = el("div", { class: "valkort-rutnat liten" }, kort);

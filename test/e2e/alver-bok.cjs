@@ -32,7 +32,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   await p.click('#nasta-steg'); await p.waitForSelector('.raskort');
   // De sju husen ligger bakom ett enda kort, Alv; ett tryck fäller ut dem och döljer de andra raserna
   const forst = await p.locator('.raskort').allTextContents();
-  ok('ett kort, Alv, i stället för sju husalver', await p.locator('#rasgrupp-alv').count() === 1 && !forst.some((r) => /Belisarius|Degas|Lysander/.test(r)) && forst.includes('Människa'), forst.join(','));
+  ok('ett kort, De stora alvhusen, i stället för sju husalver', await p.locator('#rasgrupp-alv').count() === 1 && !forst.some((r) => /Belisarius|Degas|Lysander/.test(r)) && forst.includes('Människa'), forst.join(','));
   await p.click('#rasgrupp-alv'); await p.waitForTimeout(100);
   const raser = await p.locator('.raskort').allTextContents();
   ok('sju husalver att välja, de andra raserna dolda', raser.length === 7 && ['Aramas', 'Belisarius', 'Cerias', 'Degas', 'Kothal', 'Lysander', 'Ventura'].every((h) => raser.some((r) => r.includes(h))), raser.join(','));
@@ -46,7 +46,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   await p.click('#rasval-alt [data-varde=skadespeleri]'); await p.waitForTimeout(80);
   ok('valet räcker för att gå vidare', !/sparrad/.test(await p.locator('#nasta-steg').getAttribute('class')));
   await p.click('#rasgrupp-alla'); await p.waitForTimeout(100);
-  ok('alla raser: Alv-kortet visar valt hus', /valt/.test(await p.locator('#rasgrupp-alv').getAttribute('class')) && (await p.locator('#rasgrupp-alv').textContent()).includes('Belisarius'));
+  ok('alla raser: kortet är markerat när ett hus är valt', /valt/.test(await p.locator('#rasgrupp-alv').getAttribute('class')) && (await p.locator('#rasgrupp-alv').textContent()) === 'De stora alvhusen');
   ok('inga konsolfel (rassteget)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
