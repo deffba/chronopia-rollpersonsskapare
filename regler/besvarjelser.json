@@ -5,7 +5,8 @@
     "elementarmagi": "Elementarmagi",
     "mentalism": "Mentalism",
     "tidsmagi": "Tidsmagi",
-    "atums-vag": "Atums väg"
+    "atums-vag": "Atums väg",
+    "ritualmagi": "Ritualmagi"
   },
   "lista": [
     {
@@ -1634,6 +1635,211 @@
         "sida": 51
       },
       "beskrivning": "Minst fyra magiker. Öppnar en ravin, 5 m lång och 1 m bred per effektgrad, som sluter sig när varaktigheten är slut."
+    },
+    {
+      "id": "ingjuta-mod",
+      "namn": "Ingjuta mod",
+      "skola": "elementarmagi",
+      "sv": 8,
+      "typ": "",
+      "rackvidd": "FV×1 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 59,
+      "kalla": {
+        "bok": "alver",
+        "sida": 59
+      },
+      "beskrivning": "+10 CL på moralslag och mot Skräckslå för vänligt sinnade inom räckvidden.",
+      "grupp": "stridsmagi",
+      "villkor": {
+        "yrken": [
+          "eldsfurste"
+        ]
+      }
+    },
+    {
+      "id": "cerias-bila",
+      "namn": "Cerias bila",
+      "skola": "mentalism",
+      "sv": 10,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV×1 SR",
+      "sida": 59,
+      "kalla": {
+        "bok": "alver",
+        "sida": 59
+      },
+      "beskrivning": "Skadebonusen ökar ett steg per effektgrad.",
+      "grupp": "stridsmagi-mentalism",
+      "villkor": {
+        "yrken": [
+          "eldsfurste"
+        ]
+      }
+    },
+    {
+      "id": "luftstot",
+      "namn": "Luftstöt",
+      "skola": "elementarmagi",
+      "sv": 12,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "Omedelbar",
+      "sida": 60,
+      "kalla": {
+        "bok": "alver",
+        "sida": 60
+      },
+      "beskrivning": "En luftstöt som flyttar upp till 20 STO tio meter per effektgrad.",
+      "grupp": "stridsmagi",
+      "villkor": {
+        "yrken": [
+          "eldsfurste"
+        ]
+      }
+    },
+    {
+      "id": "krigets-herre",
+      "namn": "Krigets herre",
+      "skola": "mentalism",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "Beröring/personlig",
+      "varaktighet": "FV×1 SR",
+      "sida": 60,
+      "kalla": {
+        "bok": "alver",
+        "sida": 60
+      },
+      "beskrivning": "Automatiskt maximal skada, och +2 CL och +1 naturligt skydd per effektgrad.",
+      "grupp": "stridsmagi-mentalism",
+      "villkor": {
+        "yrken": [
+          "eldsfurste"
+        ]
+      }
+    },
+    {
+      "id": "eldhav",
+      "namn": "Eldhav",
+      "skola": "elementarmagi",
+      "sv": 16,
+      "typ": "F",
+      "rackvidd": "FV×10 rutor",
+      "varaktighet": "FV×1 SR",
+      "sida": 60,
+      "kalla": {
+        "bok": "alver",
+        "sida": 60
+      },
+      "beskrivning": "Ett eldhav på 10×10 meter, och 5 meter till per extra effektgrad.",
+      "grupp": "stridsmagi",
+      "villkor": {
+        "yrken": [
+          "eldsfurste"
+        ]
+      }
+    },
+    {
+      "id": "galenskapens-marke",
+      "namn": "Galenskapens märke",
+      "skola": "ritualmagi",
+      "sv": 8,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "Permanent",
+      "sida": 65,
+      "kalla": {
+        "bok": "alver",
+        "sida": 65
+      },
+      "beskrivning": "Binder offret till huset; spindelmästaren kan kontrollera det med PSY mot PSY.",
+      "villkor": {
+        "yrken": [
+          "spindelmastare"
+        ]
+      }
+    },
+    {
+      "id": "spindelbarare",
+      "namn": "Spindelbärare",
+      "skola": "ritualmagi",
+      "sv": 14,
+      "typ": "",
+      "rackvidd": "Beröring",
+      "varaktighet": "Permanent",
+      "sida": 65,
+      "kalla": {
+        "bok": "alver",
+        "sida": 65
+      },
+      "beskrivning": "En slav fylls med giftspindlar och exploderar vid målet: 6T6, −1T6 per 3 meter, gift med STY 13.",
+      "villkor": {
+        "yrken": [
+          "spindelmastare"
+        ]
+      }
+    },
+    {
+      "id": "portal",
+      "namn": "Portal",
+      "skola": "ritualmagi",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "FV/4 km",
+      "varaktighet": "FV×1 minuter",
+      "sida": 65,
+      "kalla": {
+        "bok": "alver",
+        "sida": 65
+      },
+      "beskrivning": "En portal genom de Grå hallarna, målad i guld och aska kring ett symboliskt likbål. Kräver ett offer. Färden tar tre stridsrundor; stängs portalen under färden fastnar man i de Grå hallarna.",
+      "villkor": {
+        "yrken": [
+          "spindelmastare"
+        ]
+      }
+    },
+    {
+      "id": "attfotingarnas-dag",
+      "namn": "Åttfotingarnas dag",
+      "skola": "ritualmagi",
+      "sv": 15,
+      "typ": "",
+      "rackvidd": "FV/4 km",
+      "varaktighet": "FV×1 timmar",
+      "sida": 66,
+      "kalla": {
+        "bok": "alver",
+        "sida": 66
+      },
+      "beskrivning": "En ritual med svart ljus i ett oktagram och åtta offer. Gatorna inom räckvidden fylls av håriga spindlar, som försvinner när varaktigheten har löpt ut.",
+      "villkor": {
+        "yrken": [
+          "spindelmastare"
+        ]
+      }
+    },
+    {
+      "id": "wartha",
+      "namn": "Wartha – den hårbenta fursten",
+      "skola": "ritualmagi",
+      "sv": 17,
+      "typ": "",
+      "rackvidd": "Personlig",
+      "varaktighet": "FV/4 dygn",
+      "sida": 66,
+      "kalla": {
+        "bok": "alver",
+        "sida": 66
+      },
+      "beskrivning": "Kräver flätat människohår, ben från en jättespindel och två goblinoffer. Fyra jättespindelben växer ut: två extra attacker (1T10), STY 25 i benen (+2 per effektgrad) och ett ludet pansar med ABS 2 per effektgrad.",
+      "villkor": {
+        "yrken": [
+          "spindelmastare"
+        ]
+      }
     }
   ],
   "varelsegrupper": [
@@ -1740,6 +1946,24 @@
         "sida": 37
       },
       "text": "Chronomagernas gren av tidsmagin. En divinator får lära sig en besvärjelse härifrån för varannan besvärjelse i förutskickelsen som den har lärt sig till FV 10 (s. 35)."
+    },
+    "stridsmagi": {
+      "namn": "Cerias stridsmagi",
+      "skola": "elementarmagi",
+      "kalla": {
+        "bok": "alver",
+        "sida": 59
+      },
+      "text": "Stridsbesvärjelser som bara eldsfurstar kan lära sig (Alver i Chronopia s. 59–60)."
+    },
+    "stridsmagi-mentalism": {
+      "namn": "Cerias stridsmagi",
+      "skola": "mentalism",
+      "kalla": {
+        "bok": "alver",
+        "sida": 59
+      },
+      "text": "Stridsbesvärjelser som bara eldsfurstar kan lära sig (Alver i Chronopia s. 59–60)."
     }
   },
   "tidsgrenar": {

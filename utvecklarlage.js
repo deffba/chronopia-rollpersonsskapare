@@ -5,7 +5,7 @@
 // grundvärden, automatisk EP-fördelning) utifrån önskemålen i testrollpersoner.js, och kontrolleras sedan
 // av regelmotorn precis som en inläst fil. Går ett önskemål inte längre efter en regeländring väljs något
 // annat tillåtet i stället, och det sägs till i en notis.
-import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, vapenVillkor, varukatalog, tvahandsvapen, besvarjelsePris, iBocker, harTekniker, svardsskolaFor, teknikLista, klanAv, klanTillganglig } from "./regelmotor.js";
+import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, vapenVillkor, varukatalog, tvahandsvapen, besvarjelsePris, iBocker, harTekniker, svardsskolaFor, teknikLista, klanAv, klanTillganglig, formageslag, valbaraYrken, tackyrketsFardigheter } from "./regelmotor.js";
 import { TESTROLLPERSONER } from "./testrollpersoner.js";
 import { startaPoanglogg } from "./poanglogg.js";
 import { startaAutofyll } from "./autofyll.js";
@@ -55,7 +55,13 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
 
     // Rasens valfria primära färdighet (vapen eller hantverk)
     const valfriRas = ras.primara.find((p) => p.valfri)?.valfri;
-    if (valfriRas) {
+    if (Array.isArray(valfriRas)) {
+      // Ett av flera alternativ (Belisarius: Målning, Skådespeleri eller Spela instrument)
+      const onskad = onskat(recept.rasval);
+      const alt = valfriRas.find((a) => onskad && onskad.split(":")[0] === a.split(":")[0]) ?? valfriRas[0];
+      r.rasval = [onskad && onskad.startsWith(alt.split(":")[0]) && !alt.includes(":") ? onskad
+        : alt.includes(":") || !fardighetAv(R, alt)?.perVal ? alt : `${alt}:${ta(alt, autoDelval(api, r, alt, anvanda))}`];
+    } else if (valfriRas) {
       const [fid, val] = (onskat(recept.rasval) ?? "").split(":");
       r.rasval = [`${valfriRas}:${ta(valfriRas, fid === valfriRas && val ? val : autoDelval(api, r, valfriRas, anvanda))}`];
     }
@@ -101,11 +107,35 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
       r.valfri = onskad && kan(onskad) ? onskad : R.fardigheter.lista.find((f) => iBocker(f, r) && kan(f.id))?.id ?? "";
     }
 
-    // Stridskonsternas tekniker
+    // Pierrotens täckyrke (Alver i Chronopia s. 44): receptets yrke och färdigheter, annars de första som går
+    if (yrke.tackyrke) {
+      const T = yrke.tackyrke;
+      const onskatT = onskat(recept.tackyrke);
+      const yrken = [yrkeAv(R, onskatT?.yrke), ...valbaraYrken(R, r)].filter((y) => y && y.id !== yrke.id);
+      for (const y of yrken) {
+        const bland = tackyrketsFardigheter(R, y);
+        const forslag = [...(onskatT?.yrke === y.id ? onskatT.fardigheter ?? [] : []),
+          ...bland.filter((id) => !MAGI.includes(id) && fardighetAv(R, id) && fardighetAv(R, id).typ !== "magiskola")
+            .map((id) => (fardighetAv(R, id).perVal ? `${id}:${autoDelval(api, r, id, anvanda)}` : id))];
+        const valda = [];
+        for (const k of forslag) {
+          if (valda.length >= T.antal || valda.includes(k) || api.yrkesNycklar().includes(k)) continue;
+          r.tackyrke = { yrke: y.id, fardigheter: [...valda, k] };
+          if (!api.rakna().fel.length) { valda.push(k); anvanda.add(k); }
+        }
+        r.tackyrke = { yrke: y.id, fardigheter: valda };
+        if (valda.length === T.antal && !api.rakna().fel.length) break;
+        r.tackyrke = { yrke: "", fardigheter: [] };
+      }
+    }
+
+    // Stridskonsternas tekniker (Påfågelsdansen: bara dansens komponenter)
     for (const nyckel of [...api.yrkesNycklar(), r.valfri].filter((k) => harTekniker(fardighetAv(R, k ?? "")) && !svardsskolaFor(R, k))) {
-      const finns = new Set(teknikLista(R, fardighetAv(R, nyckel)).map(([t]) => t));
+      const lista = teknikLista(R, fardighetAv(R, nyckel), nyckel);
+      const finns = new Set(lista.map(([t]) => t));
       const valda = (onskat(recept.tekniker) ?? []).filter((t) => finns.has(t));
-      r.stridskonstTekniker[nyckel] = valda.length ? valda : [R.fardigheter.stridskonstTekniker[0][0]];
+      const forsta = finns.has(R.fardigheter.stridskonstTekniker[0][0]) ? R.fardigheter.stridskonstTekniker[0][0] : lista[0][0];
+      r.stridskonstTekniker[nyckel] = valda.length ? valda : [forsta];
       r.stridskonstFardig[nyckel] = true;
     }
 
@@ -115,12 +145,19 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
 
     // Särskilda förmågor, en per slag som erfarenhetsnivån ger. Kräver förmågan val som receptet inte har
     // (val: förmågans val, t.ex. hjältepoängens slag), prövas andra slag tills en förmåga utan val kommer upp.
+    // Yrkets gratisslag (Spindelmästare, Alver i Chronopia s. 69) ligger sist och slås utan BP.
     const sfLista = [].concat(recept.sarskildFormaga ?? { bp: 5, slag: 10 });
     r.sarskildaFormagor = { bp: 0, slag: null, val: [], avstar: true, fler: [] };
+    const platser = formageslag(R, api.motorIndata());
+    if (platser.at(-1)?.gratis && sfLista.length < platser.length) {
+      while (sfLista.length < platser.length - 1) sfLista.push({ bp: 0, slag: null });
+      sfLista.push({ bp: 0, slag: 10, gratis: true });
+    }
     sfLista.forEach((sf, i) => {
       const satt = (o) => { if (i === 0) r.sarskildaFormagor = { ...o, fler: r.sarskildaFormagor.fler }; else r.sarskildaFormagor.fler[i - 1] = o; };
+      const gratis = platser[i]?.gratis;
       const provaSlag = (slag, val = []) => {
-        satt({ bp: sf.bp, slag, val, avstar: !sf.bp, ...(sf.tabell ? { tabell: sf.tabell } : {}) });
+        satt({ bp: gratis ? 0 : sf.bp, slag: !sf.bp && !gratis ? null : slag, val, avstar: !sf.bp && !gratis, ...(sf.tabell ? { tabell: sf.tabell } : {}) });
         const res = api.rakna();
         const o = i === 0 ? r.sarskildaFormagor : r.sarskildaFormagor.fler[i - 1];
         o.formaga = res.sarskildaFormagorna?.[i]?.namn;
@@ -143,6 +180,13 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
     r.svardshand = { bp: 0, slag: sfSvardshand ? null : slag.svardshand };
     r.socialtStand = { bp: 0, slag: slag.socialtStand };
     r.startkapital = { bp: 0, slag: slag.startkapital };
+
+    // Masker (huset Degas) och dockor (Dockmästare), Alver i Chronopia s. 25–27, 41–42
+    for (const falt of ["masker", "dockor"]) for (const x of onskat(recept[falt]) ?? []) {
+      const fore = r[falt] ?? [];
+      r[falt] = [...fore, x];
+      if (api.rakna().fel.length) r[falt] = fore;
+    }
 
     // Familjarer köps för BP i steg 7 (Magi i Chronopia s. 40–43), innan BP som blir över växlas till EP
     for (const id of onskat(recept.familjarer) ?? []) {

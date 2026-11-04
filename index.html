@@ -161,6 +161,10 @@ input.tal.bred { width: 6rem; }
 @media (max-width: 560px) { .valkort-rutnat.liten.fyra .valkort-namn { font-size: min(1.24rem, 6.2cqi); } }
 @media (max-width: 560px) { .valkort-rutnat.liten.fyra { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 /* Yrken som rasen inte får välja (V&R: t.ex. Hedersvakt bara för dvärgar) */
+.rasgrupp-huvud { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0 0 10px; }
+.rasgrupp-huvud .valrubrik { margin: 0; }
+.rasgrupp { display: grid; gap: 4px; width: min(100%, 468px); }
+.valkort-rutnat.liten .rasgruppkort { gap: 2px; }
 .valkort.ej-valbar { opacity: .5; cursor: not-allowed; border-style: dashed; }
 .valkort.ej-valbar:hover { border-color: var(--linje); }
 /* Yrken som bara vissa raser får välja (samma röda färg som poängloggens ram) */

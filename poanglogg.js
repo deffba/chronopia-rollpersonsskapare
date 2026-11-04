@@ -97,11 +97,26 @@ export function poster(api) {
     const namn = res.sarskildaFormagorna?.[i]?.namn ?? "ingen förmåga";
     const tarning = formagetabell(R, api.motorIndata(), sf)?.tarning ?? "2T20";
     if (sf.bp) lagg("formagor", "BP", id, `BP på slaget, ${slagText(sf, namn)}`, -sf.bp);
+    if (gjort(sf) && sf.gratis) lagg("formagor", "Slag", id, `Särskild förmåga ${i + 1} (gratis från yrket): ${tarning} ${sf.slag} + ${sf.bonus} = ${sf.slag + sf.bonus}: ${namn}`, null, { visa: `${sf.slag}` });
     if (gjort(sf) && sf.bp) lagg("formagor", "Slag", id, `Särskild förmåga${i ? ` ${i + 1}` : ""}: ${tarning} ${sf.slag} + ${sf.bp} BP = ${sf.slag + sf.bp}: ${namn}`, null, { visa: `${sf.slag}` });
   });
   // Familjarer köpta för BP (Magi i Chronopia s. 40–43)
   (res.familjarer?.lista ?? []).filter((f) => !f.gratis).forEach((f, i) => lagg("familjarer", "BP", `familjar${i}`, `Familjar: ${f.namn}`, -f.bp));
   for (const g of [...GRUNDEGENSKAPER, "STO"]) ge("formagor", g, "sf", `särskild förmåga (${res.sarskildFormaga?.namn ?? "?"})`, egenskapsbonus[g]);
+  // Drakblod (Alver i Chronopia s. 31–33): drakalvens värden i stället för den valda rasens
+  if (rp.ras && res.ras.id !== ras.id) {
+    for (const g of GRUNDEGENSKAPER) ge("formagor", g, "rasbyte", `${res.ras.namn.toLowerCase()} i stället för ${ras.namn.toLowerCase()}`, res.ras.mod[g] - ras.mod[g]);
+    ge("formagor", "STO", "rasbyte", `normalvärde för ${res.ras.namn.toLowerCase()}`, res.ras.sto.normal - ras.sto.normal);
+  }
+  // Förmågor som sätter en egenskap till ett värde (drakalvens defekter): skillnaden mot det som räknats hittills
+  const satt = sarskildFormaga(R, api.motorIndata()).tillagg.egenskapSatt ?? {};
+  if (rp.grundvarden) for (const g of Object.keys(satt)) {
+    const hittills = lista.filter((p) => p.saldo === `GE-${g}`).reduce((a, p) => a + p.andring, 0);
+    ge("formagor", g, "satt", `sätts till ${satt[g]} (särskild förmåga)`, Math.min(0, satt[g] - hittills));
+  }
+  // Alver i Chronopia: pierrotens masker och dockmästarens dockor ges av yrket och kostar inga egna BP (RB-024)
+  if (res.masker?.varde) lagg("masker", "BP", "masker", `Masker från yrket (gratis): ${res.masker.lista.map((m) => m.egenskaper.map((e) => e.namn).join(" + ")).join("; ")}, värda ${res.masker.varde} av ${res.masker.gratis} BP`, 0);
+  if (res.dockor?.varde) lagg("masker", "BP", "dockor", `Dockor från yrket (gratis): ${res.dockor.lista.map((d) => `${d.namn} (gnista ${d.gnista})`).join(", ")}, värda ${res.dockor.varde} av ${res.dockor.gratis} BP`, 0);
   if (rp.svardshand.bp) lagg("svardshand", "BP", "sh", `BP på slaget, ${slagText(rp.svardshand, res.slag.svardshand)}`, -rp.svardshand.bp);
   if (gjort(rp.svardshand)) {
     const sh = rp.svardshand;
@@ -109,7 +124,7 @@ export function poster(api) {
   }
   if (rp.socialtStand.bp) lagg("stand", "BP", "ss", `BP på slaget, ${slagText(rp.socialtStand, res.slag.socialtStand)} (halva BP läggs också på startkapitalet)`, -rp.socialtStand.bp);
   const ss = rp.socialtStand;
-  const rasbonus = ras.slagbonus.socialtStand ?? 0;
+  const rasbonus = (res.ras ?? ras).slagbonus.socialtStand ?? 0;
   if (ss.valt) lagg("stand", "Slag", "ss", `Socialt stånd valt utan slag: ${ss.valt} (räknas som ${res.slag.ssResultat})`, null, { visa: "valt" });
   else if (gjort(ss)) {
     lagg("stand", "Slag", "ss", `Socialt stånd: 2T6 ${ss.slag}${ss.bp ? ` + ${ss.bp} BP` : ""}${rasbonus ? ` ${fmt(rasbonus)} (ras)` : ""} = ${res.slag.ssResultat}: ${res.slag.socialtStand}`, null, { visa: `${ss.slag}` });
@@ -117,7 +132,7 @@ export function poster(api) {
   if (rp.startkapital.bp) lagg("kapital", "BP", "sk", `BP på slaget, ${slagText(rp.startkapital, `resultat ${res.slag.skResultat}`)}`, -rp.startkapital.bp);
   if (gjort(rp.startkapital)) {
     const sk = rp.startkapital;
-    const bonusar = [[Math.ceil(ss.bp / 2), "halva BP från ståndet"], [ras.slagbonus.startkapital ?? 0, "ras"], [yrke.slagbonus?.startkapital ?? 0, "yrke"]].filter(([v]) => v);
+    const bonusar = [[Math.ceil(ss.bp / 2), "halva BP från ståndet"], [yrke.ersattRasbonus?.startkapital ?? (res.ras ?? ras).slagbonus.startkapital ?? 0, yrke.ersattRasbonus ? `${yrke.namn.toLowerCase()}, i stället för rasens bonus` : "ras"], [yrke.slagbonus?.startkapital ?? 0, "yrke"]].filter(([v]) => v);
     const summa = sk.slag + sk.bp + bonusar.reduce((a, [v]) => a + v, 0);
     lagg("kapital", "Slag", "sk", `Startkapital: 2T6 ${sk.slag}${sk.bp ? ` + ${sk.bp} BP` : ""}${bonusar.map(([v, t]) => ` ${fmt(v)} (${t})`).join("")} = ${summa}${summa > res.slag.skResultat ? `, taket ger ${res.slag.skResultat}` : ""}`, null, { visa: `${sk.slag}` });
   }
@@ -134,6 +149,9 @@ export function poster(api) {
   for (const f of res.fardigheter.filter((x) => x.ep > 0)) {
     lagg("fardigheter", "EP", `f-${f.nyckel}`, `${f.namn}: FV ${f.start} → ${f.fv} (${f.fv - f.start} × ${f.epPerFV} EP)`, -f.ep);
   }
+
+  // Påfågelsdansen (Alver i Chronopia s. 56): teknikerna över grundkostnaden kostar BP
+  if (res.bp.utgifter.stil) lagg("fardigheter", "BP", "stil", "Påfågelsdansens tekniker över grundkostnaden", -res.bp.utgifter.stil);
 
   // 12. Besvärjelser
   for (const b of res.besvarjelser) lagg("besvarjelser", "EP", `b-${b.nyckel}`, `${b.namn}: FV ${b.fv} (${b.fv} × ${b.epPerFV} EP)`, -b.ep);

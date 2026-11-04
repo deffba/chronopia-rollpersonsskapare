@@ -376,5 +376,215 @@
         }
       }
     ]
+  },
+  "dockor": {
+    "kalla": {
+      "bok": "alver",
+      "sida": 26
+    },
+    "beslut": "RB-024",
+    "text": "Dockmästarens magiska marionetter. Yrket ger dockor till ett värde av högst 15/20/25 BP efter erfarenhetsnivån, utan egna BP. Varje docka har en livsgnista av grad 1–4, som kostar 1/3/5/7 BP utöver dockan. Dockornas grundegenskaper och KP står i tabellen på s. 26.",
+    "livsgnista": [
+      1,
+      3,
+      5,
+      7
+    ],
+    "lista": [
+      {
+        "id": "burratini",
+        "namn": "Burratini",
+        "bp": 3,
+        "fardigheter": "",
+        "beskrivning": "En enkel marionett."
+      },
+      {
+        "id": "guignol",
+        "namn": "Guignol",
+        "bp": 4,
+        "fardigheter": "Köpslå 13, Låsdyrkning 10, Muta 15, Räkning 16, Stjäla föremål 13, Vapen #1 8, Övertala 15",
+        "beskrivning": "En listig docka som köpslår, mutar och stjäl åt sin mästare."
+      },
+      {
+        "id": "docka-hamnare",
+        "namn": "Hämnare (docka)",
+        "bp": 8,
+        "fardigheter": "Akrobatik 15, Hoppa 12, Klättra 14, Smyga 14, Vapen #1 13, Vapen #2 8, Undvika 15",
+        "beskrivning": "En mördardocka med 10 poängs naturligt skydd, som med ett lyckat vapenslag dödar ett sovande offer direkt."
+      },
+      {
+        "id": "puppazzi",
+        "namn": "Puppazzi",
+        "bp": 8,
+        "fardigheter": "Varierar med formen",
+        "beskrivning": "Ett monster i dockform, till exempel en drake (Eldkvast 1T10, FV 12), en griffon (Flyga 14), en mantikora (spikprojektiler 1T4, FV 9, nervgift STY 10), ett bergslejon eller en cyklop."
+      },
+      {
+        "id": "simulacra",
+        "namn": "Simulacra",
+        "bp": 5,
+        "fardigheter": "Geologi 15, Hantera fällor 14, Låsdyrkning 14, Vapen #1 10, Värdera 13",
+        "beskrivning": "Gräver en decimeter per stridsrunda genom sten."
+      },
+      {
+        "id": "spejare",
+        "namn": "Spejare",
+        "bp": 5,
+        "fardigheter": "Akrobatik 8, Finna dolda ting 13, Hoppa 10, Klättra 12, Lyssna 12, Smyga 12, Vapen #1 7, Pilbåge 10, Upptäcka fara 13",
+        "beskrivning": "Har en psykisk länk till dockmästaren, som ser genom dockans ögon."
+      },
+      {
+        "id": "titeri",
+        "namn": "Titeri",
+        "bp": 5,
+        "fardigheter": "Hoppa 12, Klättra 13, Rida 14, Vapen #1 13, Vapen #2 10, Avståndsvapen #1 10, Övertala 14",
+        "beskrivning": "En anförare som ger alla marionetter i sällskapet +5 CL på allt."
+      }
+    ]
+  },
+  "masker": {
+    "kalla": {
+      "bok": "alver",
+      "sida": 41
+    },
+    "beslut": "RB-024",
+    "villkor": {
+      "ras": [
+        "degasalv"
+      ]
+    },
+    "extraPerEgenskap": 2,
+    "text": "Huset Degas magiska masker. Bara pierroten får masker när rollpersonen skapas: masker till ett värde av högst 5/10/15 BP efter erfarenhetsnivån, utan egna BP. En mask kan ha flera egenskaper; varje egenskap utöver den första kostar 2 BP extra (Bestens ansikte och Riddaren i samma mask: 6 + 5 + 2 = 13 BP).",
+    "egenskaper": [
+      {
+        "id": "bedragaren",
+        "namn": "Bedragaren",
+        "bp": 5,
+        "effekt": "Bäraren tar formen av en person den har sett, med kropp och röst men utan minnen. 1 PSY per timme."
+      },
+      {
+        "id": "bestens-ansikte",
+        "namn": "Bestens ansikte",
+        "bp": 6,
+        "effekt": "Klor 1T6 och bett 1T8 (halv SB), med Slagsmål. 3 PSY, upp till 4 gånger per dag."
+      },
+      {
+        "id": "dodsmasken",
+        "namn": "Dödsmasken",
+        "bp": 5,
+        "effekt": "Dödar offret på 2 stridsrundor, och offrets minnen förs över till bäraren (1 SR, 5 PSY)."
+      },
+      {
+        "id": "forforaren",
+        "namn": "Förföraren",
+        "bp": 5,
+        "effekt": "KAR höjs till 25. 1 PSY per timme."
+      },
+      {
+        "id": "gycklaren",
+        "namn": "Gycklaren",
+        "bp": 8,
+        "effekt": "5 PSY, 3 gånger per dag: i 1T8 SR +10 på SMI, förflyttning och SMI-baserade färdigheter, och en extra handling per SR."
+      },
+      {
+        "id": "riddaren",
+        "namn": "Riddaren",
+        "bp": 5,
+        "effekt": "4 poängs naturligt skydd utöver rustningen i 1T10 SR. 2 PSY, upp till 4 gånger per dag."
+      },
+      {
+        "id": "trollnyllet",
+        "namn": "Trollnyllet",
+        "bp": 7,
+        "effekt": "STY, FYS och STO +6 i 2T6 SR. 4 PSY, upp till 3 gånger per dag."
+      }
+    ]
+  },
+  "bestar": {
+    "kalla": {
+      "bok": "alver",
+      "sida": 37
+    },
+    "text": "Vildmarkens bestar (Alver i Chronopia s. 37–38).",
+    "lista": [
+      {
+        "id": "eldsbjorn",
+        "namn": "Eldsbjörn",
+        "STO": 34,
+        "STY": 30,
+        "FYS": 20,
+        "SMI": 13,
+        "INT": 5,
+        "PSY": 11,
+        "KP": 32,
+        "SB": "+2T6",
+        "fardigheter": "Bett 8 (1T10, halv SB), Ramar 9 (1T8; björnkram 1T6 per SR om båda träffar), Smyga 8, Upptäcka fara 8"
+      },
+      {
+        "id": "frakiskt-bergslejon",
+        "namn": "Frakiskt bergslejon",
+        "STO": 28,
+        "STY": 32,
+        "FYS": 18,
+        "SMI": 15,
+        "INT": 5,
+        "PSY": 13,
+        "KP": 25,
+        "SB": "+1T10",
+        "fardigheter": "Bett 10, Klor 12 (2 st, 1T6), Smyga 13, Upptäcka fara 15"
+      },
+      {
+        "id": "parastruts",
+        "namn": "Parastruts",
+        "STO": 20,
+        "STY": 25,
+        "FYS": 16,
+        "SMI": 13,
+        "INT": 4,
+        "PSY": 11,
+        "KP": 21,
+        "SB": "+1T6",
+        "fardigheter": "Näbb 10 (1T8), Hoppa 10, Smyga 11"
+      },
+      {
+        "id": "svart-tiger",
+        "namn": "Svart tiger",
+        "STO": 24,
+        "STY": 28,
+        "FYS": 16,
+        "SMI": 16,
+        "INT": 8,
+        "PSY": 11,
+        "KP": 21,
+        "SB": "+1T10",
+        "fardigheter": "Bett 11, Klor 13, Smyga 13, Spåra 11, Upptäcka fara 15"
+      },
+      {
+        "id": "graulv",
+        "namn": "Gråulv",
+        "STO": 14,
+        "STY": 16,
+        "FYS": 16,
+        "SMI": 16,
+        "INT": 5,
+        "PSY": 9,
+        "KP": 15,
+        "SB": "+1T2",
+        "fardigheter": "Se s. 38"
+      },
+      {
+        "id": "vit-ispanter",
+        "namn": "Vit ispanter",
+        "STO": 12,
+        "STY": 14,
+        "FYS": 15,
+        "SMI": 22,
+        "INT": 5,
+        "PSY": 11,
+        "KP": 13,
+        "SB": "+1",
+        "fardigheter": "Se s. 38"
+      }
+    ]
   }
 }

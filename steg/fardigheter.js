@@ -1,5 +1,5 @@
 // Färdigheter, stridskonster och fördelning av EP.
-import { yrkeAv, egenskapsvarde, fardighetAv, paborjad, teknikLista, bNivaText } from "../regelmotor.js";
+import { yrkeAv, egenskapsvarde, fardighetAv, paborjad, teknikLista, stilFor, kallText, bNivaText } from "../regelmotor.js";
 import { rita, visaNotis } from "../app.js";
 import { S, rakna, uppdatera, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { el } from "../ui/dom.js";
@@ -83,21 +83,23 @@ export const stridskonstInfo = () => el("p", { class: "yrkesformaga stridskonst-
 function stridskonstTekniker(f, res) {
   const def = fardighetAv(S.R, f.nyckel);
   const vr = def.id === "vapentekniker";
-  const sidor = (namn) => (S.R.fardigheter.stridskonstTekniker.some(([n]) => n === namn) ? "s. 69–70" : "Vapen & rustningar s. 16");
+  const stilen = stilFor(S.R, f.nyckel); // en namngiven stil med egna tekniker (Påfågelsdansen, Alver i Chronopia s. 56)
+  const sidor = (namn) => (S.R.fardigheter.stridskonstTekniker.some(([n]) => n === namn) ? "s. 69–70"
+    : stilen?.tekniker.some(([n]) => n === namn) ? kallText(S.R, stilen, "") : "Vapen & rustningar s. 16");
   const tal = (x) => x.toLocaleString("sv-SE", { minimumFractionDigits: 1 });
   const beskrivningar = (lista) => el("ul", { class: "teknikbeskrivningar" }, lista.map((t) => el("li", {},
     el("strong", {}, t), el("p", { class: "hjalp" }, S.R.fardigheter.stridskonstBeskrivning?.[t] ?? ""))));
   if (f.skola) {
     return el("div", { class: "stridskonst fardig", "data-skola": f.skola.id },
       el("h3", {}, `${f.namn}: ${f.skola.skola}`),
-      el("p", { class: "hjalp" }, `Svärdsskolans färdiga stridskonst (Vapen & rustningar s. ${f.skola.kalla.sida}). ${f.skola.vem}`),
+      el("p", { class: "hjalp" }, `Svärdsskolans färdiga stridskonst (${kallText(S.R, f.skola, "")}). ${f.skola.vem}`),
       beskrivningar(f.skola.tekniker),
       el("p", { class: "summering" }, f.status === "yrke"
         ? `Som yrkesfärdighet kostar den ${f.epPerFV} EP per FV, som en vanlig yrkesfärdighet.`
         : `Skolans pris: ${f.epPerFV} EP per FV.`));
   }
   const valda = S.rp.stridskonstTekniker[f.nyckel] ?? [];
-  const lista = teknikLista(S.R, def);
+  const lista = teknikLista(S.R, def, f.nyckel);
   const kostnadFor = (t) => lista.find(([n]) => n === t)?.[1] ?? 0;
   const summa = valda.reduce((a, t) => a + kostnadFor(t), 0);
   const tillagg = !vr && f.status !== "yrke" ? 2 : 0;
@@ -112,9 +114,12 @@ function stridskonstTekniker(f, res) {
   const pris = (x) => Math.max(vr ? 1 : 0, Math.ceil(x)) + tillagg;
   const merEP = (kostnad) => Math.max(f.fv - f.start, 1) * pris(summa + kostnad) - f.ep;
   const stil = f.nyckel.split(":")[1] ?? "";
-  const summering = el("p", { class: "summering" }, valda.length
-    ? `Grundkostnad ${tal(summa)}, avrundat uppåt ${Math.ceil(summa)}${tillagg ? `, plus 2 = ${f.epPerFV}` : ""} EP per FV.`
-    : "Inga tekniker valda än. Välj minst en innan du höjer FV.");
+  // Flamboyantens Påfågelsdans: grundkostnaden över taket kostar BP (Alver i Chronopia s. 56)
+  const tak = yrkeAv(S.R, S.rp.yrke)?.stilTak;
+  const takText = tak?.fardighet === f.nyckel ? ` ${yrkeAv(S.R, S.rp.yrke).namn}: grundkostnad över ${tak.grundkostnad} kostar ${tak.bpPerPoang} BP per poäng${res.bp.utgifter.stil ? ` (nu ${res.bp.utgifter.stil} BP)` : ""}.` : "";
+  const summering = el("p", { class: "summering", id: `sk-summa-${idDel(f.nyckel)}` }, valda.length
+    ? `Grundkostnad ${tal(summa)}, avrundat uppåt ${Math.ceil(summa)}${tillagg ? `, plus 2 = ${f.epPerFV}` : ""} EP per FV.${takText}`
+    : `Inga tekniker valda än. Välj minst en innan du höjer FV.${takText}`);
   if (fardig) {
     return el("div", { class: "stridskonst fardig" },
       el("h3", {}, `${f.namn}: stilens tekniker`),
@@ -138,6 +143,7 @@ function stridskonstTekniker(f, res) {
       el("span", { class: "teknikpris" }, tal(kostnad)));
   }));
   const vapenLista = vr ? S.R.fardigheter.vapenTekniker : [];
+  const obevapnade = stilen ? S.R.fardigheter.stridskonstTekniker.filter(([n]) => stilen.grund.includes(n)) : S.R.fardigheter.stridskonstTekniker;
   return el("div", { class: "stridskonst" },
     el("h3", {}, `${f.namn}: stilens tekniker`),
     falt("Stilens namn", el("input", { type: "text", id: `sk-namn-${idDel(f.nyckel)}`, value: stil, maxlength: 125,
@@ -146,8 +152,10 @@ function stridskonstTekniker(f, res) {
       tillagg ? ", plus 2 eftersom stilen inte är en yrkesfärdighet. " : ". ",
       vr ? "Vapentekniker kan blandas med grundreglernas obeväpnade tekniker (Vapen & rustningar s. 15). " : "",
       "Tekniker som skulle göra stilen dyrare än du har EP till går inte att välja (minst ett köpt FV räknas). † fungerar bara mot människoliknande motståndare (s. 68–70)."),
+    stilen ? [el("p", { class: "hjalp" }, `${stilen.text} (${kallText(S.R, stilen, "")})`), el("h4", {}, `Dansens egna tekniker (${kallText(S.R, stilen, "")})`),
+      rutnat(stilen.tekniker, vapenLista.length + obevapnade.length)] : null,
     vr ? [el("h4", {}, "Vapentekniker (Vapen & rustningar s. 16)"), rutnat(vapenLista, 0), el("h4", {}, "Obeväpnade tekniker (s. 68–70)")] : null,
-    rutnat(S.R.fardigheter.stridskonstTekniker, vapenLista.length),
+    rutnat(obevapnade, vapenLista.length),
     summering,
     el("div", { class: "rad" }, el("button", { type: "button", class: "knapp primar", id: `sk-fardig-${idDel(f.nyckel)}`, disabled: !valda.length, onclick: () => {
       S.rp.stridskonstFardig = { ...S.rp.stridskonstFardig, [f.nyckel]: true }; uppdatera();

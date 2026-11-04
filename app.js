@@ -9,6 +9,7 @@ import { stegAlder } from "./steg/alder.js";
 import { stegBesvarjelser } from "./steg/besvarjelser.js";
 import { stegFamiljarer } from "./steg/familjarer.js";
 import { stegKlan } from "./steg/klan.js";
+import { stegMasker } from "./steg/masker.js";
 import { stegBocker } from "./steg/bocker.js";
 import { grundvardesForslag, stegEgenskaper } from "./steg/egenskaper.js";
 import { filnamn, laddaNer, stegExport } from "./steg/export.js";
@@ -127,7 +128,7 @@ function ritaVy() {
   const index = STEG.indexOf(steg);
   const innehall = {
     bocker: stegBocker, ras: stegRas, klan: stegKlan, alder: stegAlder, yrke: stegYrke, extra: stegExtra, kon: stegKon, egenskaper: stegEgenskaper,
-    formagor: stegFormagor, familjarer: stegFamiljarer, svardshand: stegSvardshand, stand: stegStand, kapital: stegKapital, fardigheter: stegFardigheter,
+    formagor: stegFormagor, familjarer: stegFamiljarer, masker: stegMasker, svardshand: stegSvardshand, stand: stegStand, kapital: stegKapital, fardigheter: stegFardigheter,
     besvarjelser: stegBesvarjelser, utrustning: stegUtrustning, export: stegExport,
   }[steg.id](res);
   // Ett steg kan lägga en del under knapparna (t.ex. förmågetabellen i steg 7)

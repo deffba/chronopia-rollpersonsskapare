@@ -1761,6 +1761,22 @@
         "sida": 74
       },
       "beslut": "RB-022"
+    },
+    {
+      "namn": "Belisarisk eldgaffel",
+      "skada": "1T8+2",
+      "styKrav": 13,
+      "langd": 0,
+      "vikt": 4.5,
+      "bv": 15,
+      "pris": 1500,
+      "grupp": "stickvapen",
+      "enHandOmStoOverKrav": false,
+      "kalla": {
+        "bok": "alver",
+        "sida": 28
+      },
+      "beslut": "RB-025"
     }
   ],
   "projektil": [

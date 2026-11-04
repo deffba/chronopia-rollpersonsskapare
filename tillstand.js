@@ -1,6 +1,6 @@
 // Rollpersonen och appens delade tillstånd, och kopplingen till regelmotorn.
 // Delat tillstånd som flera moduler ändrar ligger i S (till exempel S.rp, rollpersonen).
-import { raknaRollperson, rasAv, yrkeAv, fardighetAv, sarskildFormaga as sfFor, paborjad, paketNycklar, klanAv, klanTillganglig } from "./regelmotor.js";
+import { raknaRollperson, tillampaBocker, rasAv, yrkeAv, fardighetAv, sarskildFormaga as sfFor, paborjad, paketNycklar, klanAv, klanTillganglig } from "./regelmotor.js";
 import { TOMT_SPEL, TOM_UTVECKLING } from "./sparformat.js";
 import { utvecklad } from "./utveckling.js";
 import { STEG } from "./texter.js";
@@ -17,6 +17,8 @@ export const TOM = () => ({
   hjaltepoangKop: {}, // grundegenskaper som höjs med hjältepoäng från särskilda förmågor (RB-003), 5 HP per poäng
   namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",
   klan: { id: "", slag: null, formagaSlag: null, val: [] }, // dvärgens klan och klanförmåga (Dvärgar i Chronopia s. 4), steget Klan
+  masker: [], dockor: [], // degasalvens masker och dockmästarens dockor (Alver i Chronopia s. 25–27, 41–42), steget Masker och dockor
+  tackyrke: { yrke: "", fardigheter: [] }, // pierrotens täckyrke (Alver i Chronopia s. 44), steg 4
   tatueringar: [], // bärsärkens levande tatueringar från yrket (Dvärgar i Chronopia s. 6–7, 27–28)
   extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas
   stoSteg: 0, sarskildaFormagor: { bp: 0, slag: null, val: [], avstar: false, fler: [] }, svardshand: { bp: 0, slag: null },
@@ -95,6 +97,7 @@ function delval(f) {
 
 export function yrkesNycklar() {
   if (!S.rp.yrke) return [];
+  tillampaBocker(S.R, S.rp); // yrkesposter som beror på böckerna (Stormfågelns Mekanik)
   const yrke = yrkeAv(S.R, yrkeId());
   const nycklar = [];
   yrke.fardigheter.forEach((post, i) => {
@@ -119,6 +122,7 @@ export function yrkesNycklar() {
     }
   });
   if (S.rp.valfri && yrke.valfri) nycklar.push(S.rp.valfri);
+  if (yrke.tackyrke) nycklar.push(...(S.rp.tackyrke?.fardigheter ?? []).filter((k) => k && !nycklar.includes(k))); // Pierrot
   return nycklar.filter((k) => !paborjad(k));
 }
 

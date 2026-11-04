@@ -1016,5 +1016,805 @@
       "RB-006"
     ],
     "beskrivning": "Ett stolt ökenfolk från vidderna öster om Chronopia, med solbränd hy och färgglada svepningar av finaste siden. Sabraner säger vad de tänker, även när det inte är hälsosamt, och är kända för sina finurliga gasvapen."
+  },
+  {
+    "id": "aramasalv",
+    "namn": "Aramasalv",
+    "bp": 30,
+    "mod": {
+      "STY": 0,
+      "FYS": -1,
+      "SMI": 3,
+      "INT": 0,
+      "PSY": 1,
+      "KAR": 2
+    },
+    "sto": {
+      "min": 12,
+      "max": 18,
+      "normal": 15
+    },
+    "alder": {
+      "ung": [
+        16,
+        150
+      ],
+      "vuxen": [
+        151,
+        750
+      ],
+      "medelalders": [
+        751,
+        2500
+      ],
+      "gammal": [
+        2501,
+        5000
+      ],
+      "uraldrig": [
+        5001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder eller sjukdom, men kan bli sjuk"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 15,
+      "startkapital": 15
+    },
+    "sida": [
+      3,
+      4
+    ],
+    "beskrivning": "Påfågelns hus. Livsbejakande, snabba och viga alver som älskar fester, dueller och vackra kläder. Har stadsalvernas fördelar.",
+    "kalla": {
+      "bok": "alver",
+      "sida": 3
+    },
+    "bas": "stadsalv",
+    "hus": "aramas",
+    "kultur": "Stadsalv"
+  },
+  {
+    "id": "belisariusalv",
+    "namn": "Belisariusalv",
+    "bp": 25,
+    "mod": {
+      "STY": 0,
+      "FYS": -1,
+      "SMI": 0,
+      "INT": 1,
+      "PSY": 1,
+      "KAR": 2
+    },
+    "sto": {
+      "min": 12,
+      "max": 18,
+      "normal": 15
+    },
+    "alder": {
+      "ung": [
+        16,
+        150
+      ],
+      "vuxen": [
+        151,
+        750
+      ],
+      "medelalders": [
+        751,
+        2500
+      ],
+      "gammal": [
+        2501,
+        5000
+      ],
+      "uraldrig": [
+        5001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder eller sjukdom, men kan bli sjuk"
+    ],
+    "primara": [
+      {
+        "valfri": [
+          "malning",
+          "skadespeleri",
+          "spela-instrument"
+        ]
+      }
+    ],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 20,
+      "startkapital": 20
+    },
+    "sida": [
+      3,
+      4
+    ],
+    "beskrivning": "Rosens hus, konstnärernas och dockmästarnas. Får stadsalvernas fördelar, men husets bonus på +20 för socialt stånd och startkapital ersätter stadsalvernas +15 (RB-024). En konstnärlig färdighet blir primär.",
+    "kalla": {
+      "bok": "alver",
+      "sida": 3
+    },
+    "bas": "stadsalv",
+    "hus": "belisarius",
+    "kultur": "Stadsalv",
+    "beslut": [
+      "RB-024"
+    ]
+  },
+  {
+    "id": "ceriasalv",
+    "namn": "Ceriasalv",
+    "bp": 35,
+    "mod": {
+      "STY": 1,
+      "FYS": 1,
+      "SMI": 1,
+      "INT": 0,
+      "PSY": 1,
+      "KAR": 2
+    },
+    "sto": {
+      "min": 12,
+      "max": 20,
+      "normal": 16
+    },
+    "alder": {
+      "ung": [
+        16,
+        150
+      ],
+      "vuxen": [
+        151,
+        750
+      ],
+      "medelalders": [
+        751,
+        2500
+      ],
+      "gammal": [
+        2501,
+        5000
+      ],
+      "uraldrig": [
+        5001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder eller sjukdom, men kan bli sjuk"
+    ],
+    "primara": [
+      {
+        "valfri": [
+          "vapen",
+          "hantverk:Smide"
+        ]
+      }
+    ],
+    "sekundara": [
+      "bluffa"
+    ],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 15,
+      "startkapital": 15
+    },
+    "sida": [
+      3,
+      4
+    ],
+    "beskrivning": "Ulvens hus, krigarnas och smedernas. Har stadsalvernas fördelar. En vapenfärdighet eller Smide blir primär, men Bluffa är sekundär.",
+    "kalla": {
+      "bok": "alver",
+      "sida": 3
+    },
+    "bas": "stadsalv",
+    "hus": "cerias",
+    "kultur": "Stadsalv",
+    "beslut": [
+      "RB-013"
+    ]
+  },
+  {
+    "id": "degasalv",
+    "namn": "Degasalv",
+    "bp": 25,
+    "mod": {
+      "STY": 0,
+      "FYS": -2,
+      "SMI": 1,
+      "INT": 0,
+      "PSY": 1,
+      "KAR": 4
+    },
+    "sto": {
+      "min": 12,
+      "max": 18,
+      "normal": 15
+    },
+    "alder": {
+      "ung": [
+        16,
+        150
+      ],
+      "vuxen": [
+        151,
+        750
+      ],
+      "medelalders": [
+        751,
+        2500
+      ],
+      "gammal": [
+        2501,
+        5000
+      ],
+      "uraldrig": [
+        5001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder eller sjukdom, men kan bli sjuk"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 15,
+      "startkapital": 15
+    },
+    "sida": [
+      3,
+      4
+    ],
+    "beskrivning": "Maskernas hus. Dekadenta, vackra och farliga alver som handlar med droger och hemligheter. Har stadsalvernas fördelar och kan köpa magiska masker för BP.",
+    "kalla": {
+      "bok": "alver",
+      "sida": 3
+    },
+    "bas": "stadsalv",
+    "hus": "degas",
+    "kultur": "Stadsalv"
+  },
+  {
+    "id": "kothalv",
+    "namn": "Kothalv",
+    "bp": 25,
+    "mod": {
+      "STY": 0,
+      "FYS": -1,
+      "SMI": 0,
+      "INT": 0,
+      "PSY": 3,
+      "KAR": 1
+    },
+    "sto": {
+      "min": 12,
+      "max": 18,
+      "normal": 15
+    },
+    "alder": {
+      "ung": [
+        16,
+        150
+      ],
+      "vuxen": [
+        151,
+        750
+      ],
+      "medelalders": [
+        751,
+        2500
+      ],
+      "gammal": [
+        2501,
+        5000
+      ],
+      "uraldrig": [
+        5001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder eller sjukdom, men kan bli sjuk",
+      "Behöver inte lyckas med magiförmågeslaget för att lära sig mörkermagi (Mörkrets väktare, inte inlagd)"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 15,
+      "startkapital": 15
+    },
+    "sida": [
+      3,
+      4
+    ],
+    "beskrivning": "Spindelns hus i Spindeltornet. Har stadsalvernas fördelar.",
+    "kalla": {
+      "bok": "alver",
+      "sida": 3
+    },
+    "bas": "stadsalv",
+    "hus": "koth",
+    "kultur": "Stadsalv"
+  },
+  {
+    "id": "lysanderalv",
+    "namn": "Lysanderalv",
+    "bp": 25,
+    "mod": {
+      "STY": 0,
+      "FYS": -1,
+      "SMI": 1,
+      "INT": 0,
+      "PSY": 1,
+      "KAR": 2
+    },
+    "sto": {
+      "min": 12,
+      "max": 18,
+      "normal": 15
+    },
+    "alder": {
+      "ung": [
+        16,
+        150
+      ],
+      "vuxen": [
+        151,
+        750
+      ],
+      "medelalders": [
+        751,
+        2500
+      ],
+      "gammal": [
+        2501,
+        5000
+      ],
+      "uraldrig": [
+        5001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder eller sjukdom, men kan bli sjuk"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 15,
+      "startkapital": 15
+    },
+    "sida": [
+      3,
+      4
+    ],
+    "beskrivning": "Drakens hus, hasardspelarnas och drakryttarnas. Har stadsalvernas fördelar. Med förmågan Drakblod blir rollpersonen drakalv (RB-012).",
+    "kalla": {
+      "bok": "alver",
+      "sida": 3
+    },
+    "bas": "stadsalv",
+    "hus": "lysander",
+    "kultur": "Stadsalv"
+  },
+  {
+    "id": "venturaalv",
+    "namn": "Venturaalv",
+    "bp": 25,
+    "mod": {
+      "STY": 0,
+      "FYS": 0,
+      "SMI": 1,
+      "INT": 0,
+      "PSY": 1,
+      "KAR": 2
+    },
+    "sto": {
+      "min": 10,
+      "max": 18,
+      "normal": 14
+    },
+    "alder": {
+      "ung": [
+        16,
+        150
+      ],
+      "vuxen": [
+        151,
+        750
+      ],
+      "medelalders": [
+        751,
+        2500
+      ],
+      "gammal": [
+        2501,
+        5000
+      ],
+      "uraldrig": [
+        5001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör aldrig av ålder eller sjukdom, men kan bli sjuk"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 15,
+      "startkapital": 15
+    },
+    "sida": [
+      3,
+      4
+    ],
+    "beskrivning": "Hästens hus. Upptäckare och sjöfarare som älskar pengar. Har stadsalvernas fördelar.",
+    "kalla": {
+      "bok": "alver",
+      "sida": 3
+    },
+    "bas": "stadsalv",
+    "hus": "ventura",
+    "kultur": "Stadsalv"
+  },
+  {
+    "id": "drakalv",
+    "namn": "Drakalv",
+    "bp": 45,
+    "mod": {
+      "STY": 3,
+      "FYS": 3,
+      "SMI": 1,
+      "INT": 0,
+      "PSY": 1,
+      "KAR": 0
+    },
+    "sto": {
+      "min": 13,
+      "max": 21,
+      "normal": 17
+    },
+    "alder": {
+      "ung": [
+        16,
+        150
+      ],
+      "vuxen": [
+        151,
+        750
+      ],
+      "medelalders": [
+        751,
+        2500
+      ],
+      "gammal": [
+        2501,
+        5000
+      ],
+      "uraldrig": [
+        5001,
+        null
+      ]
+    },
+    "talaModersmal": [
+      {
+        "sprak": "alviska",
+        "fv": 16
+      },
+      {
+        "sprak": "chronos",
+        "fv": 16
+      }
+    ],
+    "lasaSkrivaModersmal": [
+      "alviska",
+      "chronos"
+    ],
+    "formagor": [
+      "Mörkersyn",
+      "Dör inte av ålder och blir inte sjuk",
+      "+5 på motståndsslag mot magi och gifter",
+      "1 poängs naturligt skydd"
+    ],
+    "primara": [],
+    "sekundara": [],
+    "startbonus": [],
+    "slagbonus": {
+      "socialtStand": 10,
+      "startkapital": 10
+    },
+    "sida": [
+      32,
+      33
+    ],
+    "beskrivning": "En lysanderalv med drakblod i ådrorna. Drakalvens värden ersätter lysanderalvens; rollpersonen betalar inget extra (RB-012, RB-024).",
+    "kalla": {
+      "bok": "alver",
+      "sida": 33
+    },
+    "bas": "stadsalv",
+    "hus": "lysander",
+    "kultur": "Stadsalv",
+    "endastGenom": "drakblod",
+    "beslut": [
+      "RB-012",
+      "RB-024"
+    ],
+    "defekter": {
+      "tarning": "1T20",
+      "sida": 33,
+      "kalla": {
+        "bok": "alver",
+        "sida": 33
+      },
+      "slaTva": 19,
+      "ignorera": [
+        [
+          1,
+          8
+        ],
+        [
+          19,
+          19
+        ]
+      ],
+      "text": "Drakalver slår 1T20 på tabellen över defekter (Alver i Chronopia s. 33).",
+      "rader": [
+        {
+          "slag": [
+            1,
+            8
+          ],
+          "namn": "Ingen defekt",
+          "effekt": "Drakalven har ingen defekt."
+        },
+        {
+          "slag": [
+            9,
+            9
+          ],
+          "namn": "Hudsprickor",
+          "effekt": "Huden spricker och fjällar sig."
+        },
+        {
+          "slag": [
+            10,
+            10
+          ],
+          "namn": "Steril",
+          "effekt": "Kan inte få barn."
+        },
+        {
+          "slag": [
+            11,
+            11
+          ],
+          "namn": "Aggressiv",
+          "effekt": "Bärsärkagång med FV 8, som primär färdighet, med samma regler som för troll.",
+          "regel": [
+            {
+              "typ": "fv",
+              "fv": 8,
+              "fasta": [
+                "barsarkagang"
+              ],
+              "minst": true,
+              "status": "primar"
+            }
+          ]
+        },
+        {
+          "slag": [
+            12,
+            12
+          ],
+          "namn": "Huvudvärk",
+          "effekt": "25 % chans i stressade lägen: lyckas inte ett FYS-slag kan drakalven inte agera alls, och lyckas det får den −5 CL på allt."
+        },
+        {
+          "slag": [
+            13,
+            13
+          ],
+          "namn": "Impotent",
+          "effekt": "Impotent."
+        },
+        {
+          "slag": [
+            14,
+            14
+          ],
+          "namn": "Färgblind",
+          "effekt": "Ser inga färger."
+        },
+        {
+          "slag": [
+            15,
+            15
+          ],
+          "namn": "Överkänslig",
+          "effekt": "Överkänslig mot något, slå 1T6 med SL: 1 solljus, 2 metall, 3 päls, 4 läder, 5 kött, 6 alkohol. 1–4 ger 1T6 skada per timme av kontakt, 5–6 1T6 per dos."
+        },
+        {
+          "slag": [
+            16,
+            16
+          ],
+          "namn": "Idiot",
+          "effekt": "INT sänks till 5.",
+          "regel": [
+            {
+              "typ": "egenskapSatt",
+              "varden": {
+                "INT": 5
+              }
+            }
+          ]
+        },
+        {
+          "slag": [
+            17,
+            17
+          ],
+          "namn": "Stympad",
+          "effekt": "Saknar en arm, ett ben, en hand eller en fot (SL avgör)."
+        },
+        {
+          "slag": [
+            18,
+            18
+          ],
+          "namn": "Beslöjad",
+          "effekt": "KAR sänks till 3. Bär en gyllene mask.",
+          "regel": [
+            {
+              "typ": "egenskapSatt",
+              "varden": {
+                "KAR": 3
+              }
+            }
+          ]
+        },
+        {
+          "slag": [
+            19,
+            19
+          ],
+          "namn": "Två defekter",
+          "effekt": "Slå två gånger till och ignorera 1–8 och 19."
+        },
+        {
+          "slag": [
+            20,
+            20
+          ],
+          "namn": "Specialdefekt",
+          "effekt": "SL hittar på en egen defekt."
+        }
+      ]
+    }
   }
 ]

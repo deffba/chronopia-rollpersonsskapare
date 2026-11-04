@@ -212,6 +212,18 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     mini.length ? dsRad(`Minimagi (FV ${res.minimagi.fv})`, mini.map((m) => m.namn).join(", ")) : null,
     el("div", { class: "rf-rad rf-detaljerad-not" }, el("span", { class: "rf-cell rf-namn" }, "Familjarerna: Magi i Chronopia s. 40–43. Minimagi: s. 19–20."))) : null;
 
+  // Alver i Chronopia: masker (s. 41–42), dockor (s. 25–27), bestar (s. 37–38), drakalvens defekter (s. 33)
+  // och pierrotens täckyrke (s. 44) i en egen ruta på sida 2, bara när rollpersonen har något av dem
+  const alv = [
+    ...(res.masker?.lista ?? []).map((m) => ["Mask", `${m.egenskaper.map((e) => e.namn).join(" + ")} (${m.bp} BP)`]),
+    ...(res.dockor?.lista ?? []).map((d) => ["Docka", `${d.namn}, livsgnista ${d.gnista}${d.fardigheter ? ` (${d.fardigheter})` : ""}`]),
+    ...(res.bestar ?? []).map((b) => ["Best", `${b.namn} (STO ${b.STO}, STY ${b.STY}, FYS ${b.FYS}, SMI ${b.SMI}, INT ${b.INT}, PSY ${b.PSY}, KP ${b.KP}, SB ${b.SB}; ${b.fardigheter})`]),
+    ...(res.defekter ?? []).map((d) => ["Defekt", `${d.namn}: ${d.effekt}`]),
+    res.tackyrke?.yrke ? ["Täckyrke", `${res.tackyrke.yrke.namn} (${res.tackyrke.fardigheter.map((k) => res.fardigheter.find((f) => f.nyckel === k)?.namn ?? k).join(", ")})`] : null,
+  ].filter(Boolean);
+  const alvRuta = alv.length ? el("div", { class: "rf-lista rf-detaljerad", id: "rf-alver" }, rubrik("Alver i Chronopia"),
+    alv.map(([etikett, varde]) => dsRad(etikett, varde))) : null;
+
   const sida2 = el("section", { class: "rf-sida", "aria-label": "Rollformulär sida 2" },
     el("div", { class: "rf-band" }, "Drakar & Demoner"),
     el("div", { class: "rf-ram" },
@@ -244,6 +256,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
               inmatning(pengar.juveler, (v) => { spel.pengar ??= structuredClone(pengar); spel.pengar.juveler = v; }, { "aria-label": "Juveler" })))),
           detaljeradStrid,
           magiRuta,
+          alvRuta,
           el("div", { class: "rf-block rf-utseende" }, rubrik("Utseende och bakgrund"),
             [h.langd, h.vikt].some(Boolean) ? el("p", { class: "rf-utseende-matt" }, [h.langd, h.vikt].filter(Boolean).join(", ")) : null,
             el("textarea", { class: "rf-in rf-textyta linjerad", "aria-label": "Utseende och bakgrund",

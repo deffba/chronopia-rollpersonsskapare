@@ -35,8 +35,9 @@ const TESTER = [
   { namn: "vr-sinnen", ok: passFail },
   { namn: "magi-bok", ok: passFail },
   { namn: "dvargar-bok", ok: passFail },
+  { namn: "alver-bok", ok: passFail },
   { namn: "nyheter", ok: passFail },
-  { namn: "dev", ok: passFail },
+  { namn: "dev", ok: passFail, minuter: 10 }, // bygger alla ras × yrke automatiskt (över 800 med Alver)
   { namn: "logg", ok: passFail },
   { namn: "info", ok: passFail },
   { namn: "formular", args: ["Dimalv-arkemagiker.json"], ok: passFail },
@@ -78,7 +79,7 @@ function kor(test) {
     const barn = spawn(process.execPath, [`${test.namn}.cjs`, ...args], { cwd: HAR, env: { ...process.env, E2E_BAS: BAS, LANG: "C.UTF-8" } });
     let ut = "";
     barn.stdout.on("data", (d) => (ut += d)); barn.stderr.on("data", (d) => (ut += d));
-    const tid = setTimeout(() => { ut += "\nTIDSGRÄNS"; barn.kill(); }, test.lang ? 40 * 60e3 : 5 * 60e3);
+    const tid = setTimeout(() => { ut += "\nTIDSGRÄNS"; barn.kill(); }, test.lang ? 40 * 60e3 : (test.minuter ?? 5) * 60e3);
     barn.on("close", (kod) => { clearTimeout(tid); klar({ kod, ut }); });
   });
 }

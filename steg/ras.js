@@ -4,24 +4,54 @@ import { nollstallSpel } from "../spelmote.js";
 import { RAS_SEKUNDAR_INFO, RASFORMAGOR } from "../texter.js";
 import { S, harLogg, uppdatera } from "../tillstand.js";
 import { el } from "../ui/dom.js";
-import { delvalKontroll, falt, fardighetsInfo, infoKnapp } from "../ui/kontroller.js";
+import { rita } from "../app.js";
+import { delvalKontroll, falt, fardighetsInfo, infoKnapp, valLista } from "../ui/kontroller.js";
 
 // ------------------------------------------------------------ stegen
+// De Stora husens alver (Alver i Chronopia) visas som ett enda kort, De stora alvhusen. Ett tryck fäller ut dem: då döljs
+// de andra raserna och husen visas under en rubrik med knappen Alla raser, som tar tillbaka den vanliga vyn.
+// Valet av hus fungerar sedan som för vilken ras som helst.
+let husenUppe = false;
+
 export function stegRas() {
   const valt = S.rp.ras ? rasAv(S.R, S.rp.ras) : null;
-  const kort = valbaraRaser(S.R, S.rp).sort((a, b) => a.namn.localeCompare(b.namn, "sv")).map((r) => el("button", {
+  const alla = valbaraRaser(S.R, S.rp).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
+  const hus = alla.filter((r) => r.hus);
+  // Har en annan ras valts sedan förra gången, eller steget öppnas på nytt, startar vyn där valet är
+  if (S.ritatSteg !== "ras") husenUppe = Boolean(valt?.hus);
+  if (!hus.length) husenUppe = false;
+  const valjRas = (r) => {
+    // Ett tryck på den valda rasen avmarkerar den
+    S.rp.ras = r.id === S.rp.ras ? "" : r.id; S.rp.rasval = []; S.rp.stoSteg = 0;
+    if (r.id !== "dvarg") S.rp.klan = { id: "", slag: null, formagaSlag: null, val: [] }; // klaner finns bara för dvärgar
+    S.rp.masker = []; // Degas masker (Alver i Chronopia s. 41) hör till rasen
+    // Ett yrke som inte är öppet för den nya rasen väljs bort (t.ex. Hedersvakt, bara dvärgar)
+    if (S.rp.yrke && yrkeVillkor(S.R, S.rp, yrkeAv(S.R, S.rp.yrke))) { S.rp.yrke = ""; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = []; }
+    uppdatera();
+  };
+  const rasKort = (r) => el("button", {
     type: "button", class: "valkort raskort" + (r.id === S.rp.ras ? " valt" : ""), "aria-pressed": r.id === S.rp.ras ? "true" : "false",
-    onclick: () => {
-      // Ett tryck på den valda rasen avmarkerar den
-      S.rp.ras = r.id === S.rp.ras ? "" : r.id; S.rp.rasval = []; S.rp.stoSteg = 0;
-      if (r.id !== "dvarg") S.rp.klan = { id: "", slag: null, formagaSlag: null, val: [] }; // klaner finns bara för dvärgar
-      // Ett yrke som inte är öppet för den nya rasen väljs bort (t.ex. Hedersvakt, bara dvärgar)
-      if (S.rp.yrke && yrkeVillkor(S.R, S.rp, yrkeAv(S.R, S.rp.yrke))) { S.rp.yrke = ""; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = []; }
-      uppdatera();
-    },
-  },
-  el("span", { class: "valkort-namn" }, r.namn)));
-  const huvud = el("div", { class: "valkort-rutnat liten" }, kort);
+    onclick: () => valjRas(r),
+  }, el("span", { class: "valkort-namn" }, r.namn));
+  let huvud;
+  if (husenUppe) {
+    huvud = el("div", { class: "rasgrupp", id: "rasgrupp" },
+      el("div", { class: "rasgrupp-huvud" },
+        el("h3", { class: "valrubrik" }, "Alv: de Stora husen"),
+        el("button", { type: "button", class: "knapp liten", id: "rasgrupp-alla", onclick: () => { husenUppe = false; rita(); } }, "Alla raser")),
+      el("div", { class: "valkort-rutnat liten" }, hus.map(rasKort)));
+  } else {
+    const poster = alla.filter((r) => !r.hus).map((r) => [r.namn, rasKort(r)]);
+    if (hus.length) {
+      const gruppvald = Boolean(valt?.hus);
+      poster.push(["De stora alvhusen", el("button", {
+        type: "button", class: "valkort rasgruppkort" + (gruppvald ? " valt" : ""), id: "rasgrupp-alv", "aria-pressed": gruppvald ? "true" : "false",
+        onclick: () => { husenUppe = true; rita(); },
+      }, el("span", { class: "valkort-namn" }, "De stora alvhusen"))]);
+    }
+    const kort = poster.sort((a, b) => a[0].localeCompare(b[0], "sv")).map(([, k]) => k);
+    huvud = el("div", { class: "valkort-rutnat liten" }, kort);
+  }
   if (!valt) return [huvud, el("p", { class: "hjalp" }, "Välj rollpersonens ras genom att klicka på ett av korten."), fortsattSparad()];
   const extra = [];
   if (valt.primara.some((p) => p.valfri === "vapen")) {
@@ -31,6 +61,17 @@ export function stegRas() {
   if (valt.primara.some((p) => p.valfri === "hantverk")) {
     extra.push(falt("Valfritt hantverk som primär (s. 59)",
       delvalKontroll("rasval-hantverk", "hantverk", S.rp.rasval[0]?.split(":")[1], (v) => { S.rp.rasval = v ? [`hantverk:${v}`] : []; uppdatera(); })));
+  }
+  // Ett val mellan några färdigheter (Belisariusalv: en konstnärlig färdighet; Ceriasalv: en vapenfärdighet
+  // eller Smide, Alver i Chronopia s. 3–4). Ett alternativ är en färdighet, eventuellt med delval, eller en hel nyckel.
+  const alt = valt.primara.find((p) => Array.isArray(p.valfri))?.valfri;
+  if (alt) {
+    const nu = S.rp.rasval[0] ?? "";
+    const valtAlt = alt.find((a) => nu === a) ?? alt.find((a) => !a.includes(":") && nu.startsWith(`${a}:`)) ?? "";
+    const perVal = valtAlt && !valtAlt.includes(":") && fardighetAv(S.R, valtAlt)?.perVal;
+    extra.push(falt(`Primär färdighet (${kallText(S.R, valt, "")})`, el("div", { class: "rad" },
+      valLista("rasval-alt", valtAlt, alt.map((a) => [a, rasvalNamn(a)]), (v) => { S.rp.rasval = v ? [fardighetAv(S.R, v)?.perVal && !v.includes(":") ? `${v}:` : v] : []; uppdatera(); }),
+      perVal ? delvalKontroll("rasval-delval", valtAlt, nu.split(":")[1] || undefined, (v) => { S.rp.rasval = [`${valtAlt}:${v ?? ""}`]; uppdatera(); }) : null)));
   }
   const sprak = (lista) => lista.map((x) => S.R.fardigheter.sprak.find((s) => s.id === (x.sprak ?? x))?.namn ?? x).join(", ") || "inget skriftspråk";
   return [
@@ -48,6 +89,7 @@ export function stegRas() {
           valt.formagor.map((t) => el("li", {}, t, RASFORMAGOR[t] ? infoKnapp(RASFORMAGOR[t], `Om ${t.toLowerCase()}`) : null)),
           valt.primara.length ? el("li", {}, "Extra primära färdigheter: ", valt.primara.map((p, i) => [i ? ", " : "",
             typeof p === "string" ? [p.split(":")[1] ?? fardighetAv(S.R, p).namn, fardighetsInfo(p.split(":")[0])]
+              : Array.isArray(p.valfri) ? `valfritt: ${p.valfri.map((a) => rasvalNamn(a).toLowerCase()).join(" eller ")}`
               : [p.valfri === "vapen" ? "valfri vapenfärdighet" : "valfritt hantverk", fardighetsInfo(p.valfri)]])) : null,
           valt.sekundara.length ? el("li", {}, "Sekundära för rasen: ", valt.sekundara.map((p) => fardighetAv(S.R, p).namn).join(", "),
             infoKnapp(RAS_SEKUNDAR_INFO, "Vad betyder sekundära för rasen?")) : null,
@@ -58,6 +100,13 @@ export function stegRas() {
           el("li", {}, "Läser och skriver: ", sprak(valt.lasaSkrivaModersmal)))),
       extra.length ? el("div", { class: "rasval-extra" }, extra) : null),
   ];
+}
+
+// Namnet på ett alternativ för rasens primära färdighet: "Målning", "En vapenfärdighet", "Smide (hantverk)"
+function rasvalNamn(a) {
+  const [id, val] = a.split(":");
+  if (val) return `${val} (${fardighetAv(S.R, id).namn.toLowerCase()})`;
+  return id === "vapen" ? "En vapenfärdighet" : fardighetAv(S.R, id).perVal ? `${fardighetAv(S.R, id).namn} (valfritt)` : fardighetAv(S.R, id).namn;
 }
 
 // Erbjuder rollpersonen från förra besöket tills spelaren har börjat på en ny

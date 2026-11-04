@@ -917,7 +917,15 @@
         "bok": "dvargar",
         "sida": 16
       },
-      "beskrivning": "Att hitta rätt under vatten, även i kolmörker, och lägga rutter för undervattensbåtar."
+      "beskrivning": "Att hitta rätt under vatten, även i kolmörker, och lägga rutter för undervattensbåtar.",
+      "medBok": {
+        "alver": {
+          "kalla": {
+            "bok": "alver",
+            "sida": 49
+          }
+        }
+      }
     },
     {
       "id": "atums-vag",
@@ -937,6 +945,38 @@
       },
       "beslut": "RB-014",
       "beskrivning": "Atumprästernas ceremoniella magi. Många besvärjelser kräver flera präster. Bara dvärgiska präster lär sig den, och de behöver inget magiförmågeslag."
+    },
+    {
+      "id": "flyga-luftskepp",
+      "namn": "Flyga luftskepp",
+      "grundegenskap": "SMI",
+      "typ": "sekundar",
+      "kategoriB": false,
+      "sida": 50,
+      "kalla": {
+        "bok": "alver",
+        "sida": 50
+      },
+      "beslut": "RB-014",
+      "beskrivning": "Att styra en liten flygande farkost, som Venturas stålfåglar. Gäller inte större luftskepp."
+    },
+    {
+      "id": "ritualmagi",
+      "namn": "Ritualmagi",
+      "grundegenskap": "INT",
+      "typ": "magiskola",
+      "kategoriB": false,
+      "sida": 65,
+      "kalla": {
+        "bok": "alver",
+        "sida": 65
+      },
+      "villkor": {
+        "yrken": [
+          "spindelmastare"
+        ]
+      },
+      "beskrivning": "Spindelmästarnas mörkermagiska skola, med ritualer som kräver offer. Risken för snedtändning är dubbelt så stor. Kan bara läras av spindelmästare."
     }
   ],
   "kostnad": {
@@ -1305,7 +1345,15 @@
     "Ulvskri": "FV mot motståndarens PSY; lyckas det förlorar motståndaren sin nästa handling. Kostar ingen handling.",
     "Undvika": "Angriparen får −3 CL nästa handlingstillfälle.",
     "Virvelvind": "Två anfall med stångvapnets båda ändar, gärna mot olika mål.",
-    "Vladisk parering": "Efter en lyckad parering: FV mot angriparens FV, och angriparen förlorar sin nästa handling. En gång per SR."
+    "Vladisk parering": "Efter en lyckad parering: FV mot angriparens FV, och angriparen förlorar sin nästa handling. En gång per SR.",
+    "Dubbelstöt": "Två utfall i samma stridsrunda, en gång per stridsrunda (Påfågelsdansen).",
+    "Flygande anfall": "−5 CL. Träffar automatiskt huvudet, och motståndaren får −5 CL att parera (Påfågelsdansen).",
+    "Markering": "Ett förödmjukande hugg som inte gör någon skada (Påfågelsdansen).",
+    "Nådastöt": "−6 CL. Kroppsdelens KP sänks till 0; träffas huvudet, bröstet eller magen är offret ur stånd att agera (Påfågelsdansen).",
+    "Quirnes blinda stöt": "Anfall bakåt eller åt sidan med normal skada, −4 CL (Påfågelsdansen).",
+    "Skamgrepp": "−3 CL. Ingen skada, men offret förlorar sina två nästa handlingar (Påfågelsdansen).",
+    "Trollgång": "Vältar saker mellan sig och fienden (Påfågelsdansen).",
+    "Två vapen": "Som färdigheten Två vapen, men för alla kombinationer av föremål (Påfågelsdansen)."
   },
   "sida": [
     34,
@@ -1767,6 +1815,25 @@
         "bok": "dvargar",
         "sida": 6
       }
+    },
+    {
+      "id": "salvatori",
+      "skola": "De vita apostlarna",
+      "namn": "Salvatori",
+      "tekniker": [
+        "Distrahera",
+        "Goblinsvep",
+        "Drakhugg",
+        "Stöt",
+        "Undvika",
+        "Molerisk undanmanöver"
+      ],
+      "kostnad": 8,
+      "vem": "Vita apostlar (Alver i Chronopia s. 7). Kostnaden är teknikernas summa (RB-024).",
+      "kalla": {
+        "bok": "alver",
+        "sida": 7
+      }
     }
   ],
   "tatueringar": {
@@ -1895,5 +1962,61 @@
         "effekt": "Smittar ett offer i obeväpnad strid (blodvite krävs). Offret dör efter tre månader om inte HELA E5 stoppar det."
       }
     ]
+  },
+  "stilar": {
+    "Påfågelsdansen": {
+      "kalla": {
+        "bok": "alver",
+        "sida": 56
+      },
+      "sida": "56–57",
+      "text": "Aramas stridskonst. Komponenterna är grundreglernas obeväpnade tekniker nedan, vapenteknikerna i Vapen & rustningar s. 15–16 och dansens egna tekniker.",
+      "grund": [
+        "Avväpning",
+        "Blind strid",
+        "Fallteknik/rullningar",
+        "Fint",
+        "Initiativbonus",
+        "Liggande/knästående strid",
+        "Låsning/nerdragning†",
+        "Obeväpnad parering av vapen",
+        "Uppresning",
+        "Vidvinkelsyn"
+      ],
+      "tekniker": [
+        [
+          "Dubbelstöt",
+          2.0
+        ],
+        [
+          "Flygande anfall",
+          1.5
+        ],
+        [
+          "Markering",
+          0.5
+        ],
+        [
+          "Nådastöt",
+          1.5
+        ],
+        [
+          "Quirnes blinda stöt",
+          1.0
+        ],
+        [
+          "Skamgrepp",
+          1.0
+        ],
+        [
+          "Trollgång",
+          0.5
+        ],
+        [
+          "Två vapen",
+          1.5
+        ]
+      ]
+    }
   }
 }

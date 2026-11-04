@@ -1,5 +1,5 @@
 // Steg 7: särskilda förmågor.
-import { GRUNDEGENSKAPER, familjarAv, tatueringAv, sarskildFormaga as sfFor, tillgangligaFormagetabeller, formagetabell, formageslag, nivaFor, slagIntervall, tarningAv } from "../regelmotor.js";
+import { GRUNDEGENSKAPER, rasAv, familjarAv, tatueringAv, sarskildFormaga as sfFor, tillgangligaFormagetabeller, formagetabell, formageslag, nivaFor, slagIntervall, tarningAv } from "../regelmotor.js";
 import { rita } from "../app.js";
 import { S, motorIndata, uppdatera } from "../tillstand.js";
 import { el, slaT } from "../ui/dom.js";
@@ -59,22 +59,27 @@ export function stegFormagor() {
   const pid = plats === 0 ? "sf" : `sf${plats + 1}`; // id:n för första slaget är desamma som med en förmåga
   const hamta = () => formagePlats(plats);
   const s = hamta();
+  // Yrkets gratisslag (Spindelmästare, Alver i Chronopia s. 69): ingen BP, en fast bonus och en fast tabell
+  const motorSlag = formageslag(S.R, motorIndata())[plats];
+  const gratis = !!motorSlag?.gratis;
+  const tillagg = gratis ? motorSlag.bonus : s.bp;
+  const tillaggText = gratis ? `${motorSlag.bonus} (yrket)` : `${s.bp} BP`;
   const alla = sfFor(S.R, motorIndata());
   const svar = alla.perSlag[plats];
   const sf = svar?.formaga;
   const oslaget = s.slag === null || s.slag === undefined;
   const tabeller = tillgangligaFormagetabeller(S.R, motorIndata());
-  const tabell = formagetabell(S.R, motorIndata(), s) ?? tabeller[0];
+  const tabell = formagetabell(S.R, motorIndata(), gratis ? motorSlag : s) ?? tabeller[0];
   const maxBP = tabell?.maxBP ?? S.R.slag.sarskildaFormagor.maxBP;
   const tolkning = s.avstar ? (antal > 1 ? `Rollpersonen får ingen särskild förmåga ${plats + 1}.` : "Rollpersonen får ingen särskild förmåga.") :
-    !s.bp ? `Lägg minst 1 BP för att få slå (högst ${maxBP}), eller kryssa i rutan om du inte vill lägga BP här.` :
+    !s.bp && !gratis ? `Lägg minst 1 BP för att få slå (högst ${maxBP}), eller kryssa i rutan om du inte vill lägga BP här.` :
     oslaget ? inteSlaget() :
-    svar?.dubblett !== undefined ? [`Resultat: ${s.slag + s.bp}.`, `${sf?.namn}, som rollpersonen redan har (förmåga ${svar.dubblett + 1}). Slå om.`] :
-    [`Resultat: ${s.slag + s.bp}.`, `${sf?.namn}: ${sf?.effekt} (${sf ? sidaFor(tabell, sf) : ""})`];
+    svar?.dubblett !== undefined ? [`Resultat: ${s.slag + tillagg}.`, `${sf?.namn}, som rollpersonen redan har (förmåga ${svar.dubblett + 1}). Slå om.`] :
+    [`Resultat: ${s.slag + tillagg}.`, `${sf?.namn}: ${sf?.effekt} (${sf ? sidaFor(tabell, sf) : ""})`];
   // Byts förmågan ut gäller inte de gamla valen längre. BP här betyder att spelaren inte längre avstår.
   const nollstall = () => {
     const nu = hamta();
-    if (nu.bp) nu.avstar = false;
+    if (nu.bp || (gratis && nu.slag != null)) nu.avstar = false;
     if (oslaget && nu.slag != null) formageModal = plats; // slaget har just landat
     if (nu.slag == null) formageModal = null;
     const ny = sfFor(S.R, motorIndata()).perSlag[plats]?.formaga;
@@ -129,6 +134,33 @@ export function stegFormagor() {
         valLista(`${pid}-${i}-tatuering`, val(i), lista.map((x) => [x.id, `${x.nr} ${x.namn}`]), (v) => sattVal(i, v || undefined), "Välj tatuering …"),
         t ? el("p", { class: "hjalp" }, `${t.effekt} Kostnad ${t.kostnad}, ${t.antal}.`) : null);
     }
+    if (del.typ === "defekt") {
+      // Drakalvens defekter (Alver i Chronopia s. 33): 1T20; 19 ger två slag till, där 1–8 och 19 slås om
+      const T = rasAv(S.R, del.ras)?.defekter;
+      const v = val(i) ?? {};
+      const slag = (v.slag ?? []).filter(Number.isInteger);
+      const behov = slag[0] === T.slaTva ? 3 : 1;
+      const ignoreras = (x) => T.ignorera.some(([fran, till]) => x >= fran && x <= till);
+      const rad = (x) => T.rader.find(({ slag: [fran, till] }) => x >= fran && x <= till);
+      const id = `${pid}-defekt-${i}`;
+      const slumpa = () => { let x; do x = slaT(1, 20); while (slag.length && ignoreras(x)); return x; };
+      const kontroll = slag.length < behov
+        ? (() => { const { slagfalt, knapp } = slagKontroll(`${id}-${slag.length}`, `Slag ${slag.length + 1} (${T.tarning})`, `Slå ${T.tarning}`, 1, 20,
+          (x) => sattVal(i, { slag: [...slag, x] }), slumpa, 20); return el("div", { class: "rad" }, slagfalt, knapp); })()
+        : null;
+      return el("li", { id }, el("span", { class: "fnamn" }, "Drakalvens defekt"),
+        el("p", { class: "hjalp" }, `${T.text}${behov === 3 ? " Två defekter: slå två gånger till; 1–8 och 19 slås om." : ""}`),
+        slag.length ? el("ul", { class: "punkter" }, slag.map((x) => el("li", {}, `${x}: ${rad(x)?.namn ?? "?"}. ${rad(x)?.effekt ?? ""}`))) : null,
+        kontroll);
+    }
+    if (del.typ === "best") {
+      // Bestarnas herre: ett vilt djur ur Vildmarkens bestar (Alver i Chronopia s. 31, 37–38)
+      const lista = S.R.foljeslagare?.bestar?.lista ?? [];
+      const b = lista.find((x) => x.id === val(i));
+      return el("li", {}, el("span", { class: "fnamn" }, "Välj best (med SL)"),
+        valLista(`${pid}-${i}-best`, val(i), lista.map((x) => [x.id, x.namn]), (v) => sattVal(i, v || undefined), "Välj best …"),
+        b ? el("p", { class: "hjalp" }, `STO ${b.STO}, STY ${b.STY}, FYS ${b.FYS}, SMI ${b.SMI}, INT ${b.INT}, PSY ${b.PSY}, KP ${b.KP}, SB ${b.SB}. ${b.fardigheter}`) : null);
+    }
     if (del.typ === "familjar") {
       // Spiritus familiarius: en valfri familjar gratis (Magi i Chronopia s. 17)
       const lista = S.R.foljeslagare?.familjarer?.lista ?? [];
@@ -142,7 +174,7 @@ export function stegFormagor() {
   // Har rollpersonen fler tabeller att välja på (expansioner) väljs tabellen i en rullgardin bredvid tärningsrutan.
   // Med bara grundreglernas tabell visas varken rullgardin eller flikar.
   const flera = tabeller.length > 1;
-  const tabellval = !flera ? null : oslaget && rullar !== pid
+  const tabellval = !flera ? null : oslaget && rullar !== pid && !gratis
     ? falt("Tabell", el("select", { id: `${pid}-tabell`, onchange: (e) => {
       hamta().tabell = e.target.value; formageFlik = e.target.value;
       // Fler BP än den nya tabellen tillåter sänks till det högsta tillåtna
@@ -153,7 +185,10 @@ export function stegFormagor() {
     : falt("Tabell", lastFalt(`${pid}-tabell`, tabell?.namn ?? ""));
   // Spelaren måste uttryckligen avstå för att gå vidare utan BP här
   // Med lagda BP går rutan inte att kryssa i, och texten är struken
-  const avsta = oslaget ? el("label", { class: "avsta" + (s.bp ? " inaktiv" : "") },
+  const avsta = oslaget && gratis ? el("label", { class: "avsta" },
+    el("input", { type: "checkbox", id: `${pid}-avsta`, checked: !!s.avstar, disabled: rullar === pid, onchange: (e) => { hamta().avstar = e.target.checked; uppdatera(); } }),
+    el("span", {}, el("strong", {}, `Jag vill inte slå det extra slaget (förmåga ${plats + 1}).`), ` ${motorSlag.yrke} får slå gratis med +${motorSlag.bonus} på tabellen ${tabell?.namn ?? ""}.`))
+    : oslaget ? el("label", { class: "avsta" + (s.bp ? " inaktiv" : "") },
     el("input", { type: "checkbox", id: `${pid}-avsta`, checked: !!s.avstar, disabled: rullar === pid || !!s.bp, onchange: (e) => {
       Object.assign(hamta(), { avstar: e.target.checked, ...(e.target.checked ? { bp: 0 } : {}) });
       uppdatera();
@@ -173,7 +208,7 @@ export function stegFormagor() {
       el("div", { class: "dialog formagedialog", role: "dialog", "aria-modal": "true", "aria-labelledby": "sf-modal-namn" },
         el("p", { class: "eyebrow" }, `Särskild förmåga ${plats + 1}${tabeller.length > 1 ? ` · ${tabell.namn}` : ""}`),
         el("h2", { id: "sf-modal-namn" }, sf.namn),
-        el("p", { class: "formagedialog-slag" }, `Slaget blev ${s.slag} + ${s.bp} BP = ${s.slag + s.bp}.`),
+        el("p", { class: "formagedialog-slag" }, `Slaget blev ${s.slag} + ${tillaggText} = ${s.slag + tillagg}.`),
         el("p", { class: "formagedialog-effekt", id: "sf-modal-dubblett" }, `Rollpersonen har redan ${sf.namn} (förmåga ${svar.dubblett + 1}). Slå om; de lagda BP står kvar.`),
         el("div", { class: "dialog-fot" }, slaOm)));
   } else if (visaModal) {
@@ -184,7 +219,7 @@ export function stegFormagor() {
       el("div", { class: "dialog formagedialog", role: "dialog", "aria-modal": "true", "aria-labelledby": "sf-modal-namn" },
         el("p", { class: "eyebrow" }, [antal > 1 ? `Särskild förmåga ${plats + 1}` : "Särskild förmåga", tabeller.length > 1 ? ` · ${tabell.namn}` : ""].join("")),
         el("h2", { id: "sf-modal-namn" }, sf.namn),
-        el("p", { class: "formagedialog-slag" }, `Slaget blev ${s.slag} + ${s.bp} BP = ${s.slag + s.bp}.`),
+        el("p", { class: "formagedialog-slag" }, `Slaget blev ${s.slag} + ${tillaggText} = ${s.slag + tillagg}.`),
         el("p", { class: "formagedialog-effekt" }, sf.effekt, el("span", { class: "formagekort-sida" }, ` (${sidaFor(tabell, sf)})`)),
         delar.length ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
         !sf.regel ? el("p", { class: "hjalp" }, ingaVarden) : null,
@@ -202,8 +237,9 @@ export function stegFormagor() {
   const platser = antal > 1 ? el("div", { class: "flikar sf-platser", role: "tablist", id: "sf-platser" }, Array.from({ length: antal }, (_, i) => {
     const p = i === 0 ? S.rp.sarskildaFormagor : S.rp.sarskildaFormagor.fler[i - 1];
     const namn = alla.perSlag[i]?.formaga?.namn ?? (p.avstar ? "avstår" : p.bp && p.slag == null ? "inte slaget" : "ingen än");
+    const fri = formageslag(S.R, motorIndata())[i]?.gratis;
     return el("button", { type: "button", class: "valknapp" + (i === plats ? " vald" : ""), role: "tab", "aria-selected": i === plats ? "true" : "false", "data-plats": i,
-      disabled: rullar !== null, onclick: () => { aktivPlats = i; rita(); } }, `Förmåga ${i + 1}: ${namn}`);
+      disabled: rullar !== null, onclick: () => { aktivPlats = i; rita(); } }, `Förmåga ${i + 1}${fri ? " (gratis)" : ""}: ${namn}`);
   })) : null;
 
   const hp = alla.hjaltepoang;
@@ -211,8 +247,10 @@ export function stegFormagor() {
     antal > 1 ? el("p", { class: "hjalp" }, `Erfarenhetsnivån ${(nivaFor(S.R, motorIndata()).namn ?? "").toLowerCase()} ger ${antal} slag för särskilda förmågor. Varje slag kostar sina egna BP, och du väljer tabell för varje slag.`) : null,
     platser,
     ...slagSteg(pid, plats === 0 ? "sarskildaFormagor" : hamta, "Särskilda förmågor", tabell?.tarning ?? "2T20", tolkning,
-      `Lägg 1–${maxBP} BP och slå ${tabell?.tarning ?? "2T20"}. Summan avgör förmågan. SL får justera resultatet.`, nollstall, [], [],
-      { fore: tabellval, kanSla: !!s.bp, under: avsta }),
+      gratis ? `${motorSlag.yrke}: ett extra slag på ${tabell?.namn ?? "tabellen"} utan BP, med +${motorSlag.bonus} (Alver i Chronopia s. 69).`
+        : `Lägg 1–${maxBP} BP och slå ${tabell?.tarning ?? "2T20"}. Summan avgör förmågan. SL får justera resultatet.`, nollstall,
+      gratis ? [[`${motorSlag.yrke} (gratis)`, motorSlag.bonus]] : [], [],
+      { fore: tabellval, kanSla: gratis ? !s.avstar : !!s.bp, under: avsta, bpLast: gratis }),
     // Valen står i modalen så länge den är öppen (samma id får inte finnas två gånger)
     delar.length && !visaModal ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
     sf && !sf.regel ? el("p", { class: "hjalp" }, ingaVarden) : null,
