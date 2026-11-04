@@ -30,13 +30,23 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   const nivaer = await p.locator('#nivaval .bokrad').allTextContents();
   ok('nivåerna alv, veteran och upphöjd', nivaer.length === 3 && /Alv.*125 BP/.test(nivaer[0]) && /Veteran.*150 BP/.test(nivaer[1]) && /Upphöjd.*175 BP/.test(nivaer[2]), nivaer.join(' | '));
   await p.click('#nasta-steg'); await p.waitForSelector('.raskort');
+  // De sju husen ligger bakom ett enda kort, Alv; ett tryck fäller ut dem och döljer de andra raserna
+  const forst = await p.locator('.raskort').allTextContents();
+  ok('ett kort, Alv, i stället för sju husalver', await p.locator('#rasgrupp-alv').count() === 1 && !forst.some((r) => /Belisarius|Degas|Lysander/.test(r)) && forst.includes('Människa'), forst.join(','));
+  await p.click('#rasgrupp-alv'); await p.waitForTimeout(100);
   const raser = await p.locator('.raskort').allTextContents();
-  ok('sju husalver att välja', ['Aramas', 'Belisarius', 'Cerias', 'Degas', 'Kothal', 'Lysander', 'Ventura'].every((h) => raser.some((r) => r.includes(h))), raser.join(','));
+  ok('sju husalver att välja, de andra raserna dolda', raser.length === 7 && ['Aramas', 'Belisarius', 'Cerias', 'Degas', 'Kothal', 'Lysander', 'Ventura'].every((h) => raser.some((r) => r.includes(h))), raser.join(','));
+  ok('rubriken Alv med knappen Alla raser', /Alv: de Stora husen/.test(await p.locator('#rasgrupp').textContent()) && await p.locator('#rasgrupp-alla').count() === 1);
   ok('drakalven går inte att välja direkt', !raser.some((r) => /Drakalv/.test(r)));
+  await p.click('#rasgrupp-alla'); await p.waitForTimeout(100);
+  ok('Alla raser tar tillbaka den vanliga vyn', await p.locator('#rasgrupp-alv').count() === 1 && (await p.locator('.raskort').count()) > 7);
+  await p.click('#rasgrupp-alv'); await p.waitForTimeout(100);
   await p.click('.raskort:has-text("Belisarius")'); await p.waitForTimeout(100);
   ok('Belisarius: en av tre färdigheter som primär', await p.locator('#rasval-alt').count() === 1);
   await p.click('#rasval-alt [data-varde=skadespeleri]'); await p.waitForTimeout(80);
   ok('valet räcker för att gå vidare', !/sparrad/.test(await p.locator('#nasta-steg').getAttribute('class')));
+  await p.click('#rasgrupp-alla'); await p.waitForTimeout(100);
+  ok('alla raser: Alv-kortet visar valt hus', /valt/.test(await p.locator('#rasgrupp-alv').getAttribute('class')) && (await p.locator('#rasgrupp-alv').textContent()).includes('Belisarius'));
   ok('inga konsolfel (rassteget)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 

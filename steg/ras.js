@@ -4,25 +4,54 @@ import { nollstallSpel } from "../spelmote.js";
 import { RAS_SEKUNDAR_INFO, RASFORMAGOR } from "../texter.js";
 import { S, harLogg, uppdatera } from "../tillstand.js";
 import { el } from "../ui/dom.js";
+import { rita } from "../app.js";
 import { delvalKontroll, falt, fardighetsInfo, infoKnapp, valLista } from "../ui/kontroller.js";
 
 // ------------------------------------------------------------ stegen
+// De Stora husens alver (Alver i Chronopia) visas som ett enda kort, Alv. Ett tryck fäller ut dem: då döljs
+// de andra raserna och husen visas under en rubrik med knappen Alla raser, som tar tillbaka den vanliga vyn.
+// Valet av hus fungerar sedan som för vilken ras som helst.
+let husenUppe = false;
+
 export function stegRas() {
   const valt = S.rp.ras ? rasAv(S.R, S.rp.ras) : null;
-  const kort = valbaraRaser(S.R, S.rp).sort((a, b) => a.namn.localeCompare(b.namn, "sv")).map((r) => el("button", {
+  const alla = valbaraRaser(S.R, S.rp).sort((a, b) => a.namn.localeCompare(b.namn, "sv"));
+  const hus = alla.filter((r) => r.hus);
+  // Har en annan ras valts sedan förra gången, eller steget öppnas på nytt, startar vyn där valet är
+  if (S.ritatSteg !== "ras") husenUppe = Boolean(valt?.hus);
+  if (!hus.length) husenUppe = false;
+  const valjRas = (r) => {
+    // Ett tryck på den valda rasen avmarkerar den
+    S.rp.ras = r.id === S.rp.ras ? "" : r.id; S.rp.rasval = []; S.rp.stoSteg = 0;
+    if (r.id !== "dvarg") S.rp.klan = { id: "", slag: null, formagaSlag: null, val: [] }; // klaner finns bara för dvärgar
+    S.rp.masker = []; // Degas masker (Alver i Chronopia s. 41) hör till rasen
+    // Ett yrke som inte är öppet för den nya rasen väljs bort (t.ex. Hedersvakt, bara dvärgar)
+    if (S.rp.yrke && yrkeVillkor(S.R, S.rp, yrkeAv(S.R, S.rp.yrke))) { S.rp.yrke = ""; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = []; }
+    uppdatera();
+  };
+  const rasKort = (r) => el("button", {
     type: "button", class: "valkort raskort" + (r.id === S.rp.ras ? " valt" : ""), "aria-pressed": r.id === S.rp.ras ? "true" : "false",
-    onclick: () => {
-      // Ett tryck på den valda rasen avmarkerar den
-      S.rp.ras = r.id === S.rp.ras ? "" : r.id; S.rp.rasval = []; S.rp.stoSteg = 0;
-      if (r.id !== "dvarg") S.rp.klan = { id: "", slag: null, formagaSlag: null, val: [] }; // klaner finns bara för dvärgar
-      S.rp.masker = []; // Degas masker (Alver i Chronopia s. 41) hör till rasen
-      // Ett yrke som inte är öppet för den nya rasen väljs bort (t.ex. Hedersvakt, bara dvärgar)
-      if (S.rp.yrke && yrkeVillkor(S.R, S.rp, yrkeAv(S.R, S.rp.yrke))) { S.rp.yrke = ""; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = []; }
-      uppdatera();
-    },
-  },
-  el("span", { class: "valkort-namn" }, r.namn)));
-  const huvud = el("div", { class: "valkort-rutnat liten" }, kort);
+    onclick: () => valjRas(r),
+  }, el("span", { class: "valkort-namn" }, r.namn));
+  let huvud;
+  if (husenUppe) {
+    huvud = el("div", { class: "rasgrupp", id: "rasgrupp" },
+      el("div", { class: "rasgrupp-huvud" },
+        el("h3", { class: "valrubrik" }, "Alv: de Stora husen"),
+        el("button", { type: "button", class: "knapp liten", id: "rasgrupp-alla", onclick: () => { husenUppe = false; rita(); } }, "Alla raser")),
+      el("div", { class: "valkort-rutnat liten" }, hus.map(rasKort)));
+  } else {
+    const poster = alla.filter((r) => !r.hus).map((r) => [r.namn, rasKort(r)]);
+    if (hus.length) {
+      const gruppvald = Boolean(valt?.hus);
+      poster.push(["Alv", el("button", {
+        type: "button", class: "valkort rasgruppkort" + (gruppvald ? " valt" : ""), id: "rasgrupp-alv", "aria-pressed": gruppvald ? "true" : "false",
+        "aria-label": "Alv: visa de Stora husen", onclick: () => { husenUppe = true; rita(); },
+      }, el("span", { class: "valkort-namn" }, "Alv"), el("span", { class: "valkort-villkor" }, gruppvald ? valt.namn : "De Stora husen"))]);
+    }
+    const kort = poster.sort((a, b) => a[0].localeCompare(b[0], "sv")).map(([, k]) => k);
+    huvud = el("div", { class: "valkort-rutnat liten" }, kort);
+  }
   if (!valt) return [huvud, el("p", { class: "hjalp" }, "Välj rollpersonens ras genom att klicka på ett av korten."), fortsattSparad()];
   const extra = [];
   if (valt.primara.some((p) => p.valfri === "vapen")) {
