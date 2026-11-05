@@ -364,8 +364,14 @@ export function fardighetVillkor(regler, rp, f) {
 }
 export const fardighetValbar = (regler, rp, f) => iBocker(f, rp) && !fardighetVillkor(regler, rp, f);
 
-// Yrkesförmågan med V&R:s initiativbonus (s. 4: alla krigaryrken i boken har +3 på initiativ)
-export const yrkesformagaText = (yrke) => (yrke.initiativ ? `${yrke.yrkesformaga} +${yrke.initiativ} på initiativet.` : yrke.yrkesformaga);
+// Yrkesförmågan, med en initiativbonus för yrken som har en (t.ex. Dvärgars krigaryrken med krigarens yrkesförmåga)
+// Ett yrke där spelaren väljer en av två yrkesförmågor (Drakgardist, Alver i Chronopia s. 35) visar det valda
+// i stället för valet: rp.yrkesformagaVal är alternativets id.
+export const yrkesformagaText = (yrke, rp = null) => {
+  const valt = yrke.yrkesformagaVal?.alternativ.find((a) => a.id === rp?.yrkesformagaVal);
+  const text = valt ? `${valt.text} ${yrke.yrkesformagaVal.rest}` : yrke.yrkesformaga;
+  return yrke.initiativ ? `${text} +${yrke.initiativ} på initiativet.` : text;
+};
 
 // Ett paketval (V&R s. 6–7, RB-016): spelaren väljer först ett av paketen och sedan vad det innehåller.
 // Paket: { fardighet, antal } (t.ex. två lärdomsfärdigheter), { fasta: [id, …] } eller { valfria: n } (valfria färdigheter).
@@ -374,7 +380,7 @@ export const paketIndex = (post, val) => val?.paket ?? (post.valPaket?.length ==
 export function paketNycklar(regler, post, val) {
   const paket = post.valPaket?.[paketIndex(post, val)];
   if (!paket) return [];
-  const valda = [].concat(val.val ?? []);
+  const valda = [].concat(val?.val ?? []);
   if (paket.fasta) return paket.fasta;
   if (paket.valfria) return valda.slice(0, paket.valfria).filter(Boolean);
   return valda.slice(0, paket.antal).filter(Boolean).map((x) => `${paket.fardighet}:${x}`);
@@ -655,17 +661,20 @@ function statusUtanFormaga(regler, rp, nyckel, f, ras) {
   const yrkeX = yrkeAv(regler, rp.yrke);
   if (yrkeX?.primara?.includes(nyckel) || postFor(regler, rp, nyckel, "primar")) return "primar"; // V&R: gratis FV 10 som primär
   if (klanTillganglig(regler, rp) && klanAv(regler, rp.klan?.id)?.primara?.includes(nyckel)) return "primar"; // Mindir: Kunskap om religion (Atum) (Dvärgar s. 24)
-  if (rp.yrkesfardigheter.includes(nyckel) || rp.extraYrkesfardigheter.includes(nyckel)) return "yrke";
+  // Extra primära färdigheter från rasen (t.ex. dvärgens valfria hantverk, s. 14–16) är primära även när
+  // yrket också har dem som yrkesfärdighet
+  if (rp.rasval?.includes(nyckel)) return "primar";
+  if (ras.primara.includes(f.id) || ras.primara.includes(nyckel)) return "primar";
+  if (f.id === "kanna-magi" && yrkeAv(regler, rp.yrke)?.magiker) return "primar";
   const id = f.id;
+  // Grundreglernas primära färdigheter (s. 40) förblir primära även om yrket listar dem (t.ex. Ingenjörens Värdera)
+  if (f.typ === "primar" && !ras.sekundara.includes(id)) return "primar";
+  if (rp.yrkesfardigheter.includes(nyckel) || rp.extraYrkesfardigheter.includes(nyckel)) return "yrke";
   const val = nyckel.split(":")[1];
   if (rp.yrkesfardigheter.some((k) => k.startsWith(id + ":")) && f.gruppYrke) return "yrke";
   if (yrkeAv(regler, rp.yrke)?.yrkesgrupper?.includes(id)) return "yrke"; // t.ex. all lärdom för lärd man
-  if (id === "kanna-magi" && yrkeAv(regler, rp.yrke)?.magiker) return "primar";
   if (nyckel === "lardom:Kunskap om magi" && yrkeAv(regler, rp.yrke)?.magiker) return "yrke";
   if (yrkeAv(regler, rp.yrke)?.automatiska?.includes(id)) return "yrke"; // Minimagi för Magis magiker (s. 8–9, 19)
-  if (rp.rasval?.includes(nyckel)) return "primar";
-  if (ras.primara.includes(id) || ras.primara.includes(nyckel)) return "primar";
-  if (f.typ === "primar" && !ras.sekundara.includes(id)) return "primar";
   return "sekundar";
 }
 

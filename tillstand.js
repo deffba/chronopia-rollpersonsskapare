@@ -18,6 +18,7 @@ export const TOM = () => ({
   namn: "", spelare: "", kon: "", ras: "", alder: null, yrke: "", yrkesval: {}, valfri: "",
   klan: { id: "", slag: null, formagaSlag: null, val: [] }, // dvärgens klan och klanförmåga (Dvärgar i Chronopia s. 4), steget Klan
   masker: [], dockor: [], // degasalvens masker och dockmästarens dockor (Alver i Chronopia s. 25–27, 41–42), steget Masker och dockor
+  yrkesformagaVal: "", // yrkesförmågan som valts när yrket ger ett val (Drakgardist, Alver i Chronopia s. 35), steg 4
   tackyrke: { yrke: "", fardigheter: [] }, // pierrotens täckyrke (Alver i Chronopia s. 44), steg 4
   tatueringar: [], // bärsärkens levande tatueringar från yrket (Dvärgar i Chronopia s. 6–7, 27–28)
   extraYrkesfardigheter: [], rasval: [], grundvarden: null, // alder: null tills den väljs i steg 2, grundvarden: null tills steg 6 öppnas

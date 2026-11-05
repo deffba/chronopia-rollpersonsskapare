@@ -1,7 +1,7 @@
 // Gränssnittet för Chronopia-rollpersonsskaparen: startar appen, ritar vyerna och kopplar ihop modulerna.
 // All regellogik finns i regelmotor.js. Stegen ligger i steg/, gemensamma kontroller i ui/.
 import { STANDARDVARDEN, fardighetAv, paborjad, namnFor } from "./regelmotor.js";
-import { rollformularSidor, delaRegelsidor } from "./formular.js";
+import { rollformularSidor, delaRegelsidor, utrustningsplats } from "./formular.js";
 import { tillFil, franFil } from "./sparformat.js";
 import { laggTill, angraSenaste, kontrolleraPost } from "./utveckling.js";
 import { spelInnehall, spelDelar, aktivDel, valjDel, nollstallSpel, spelPotter } from "./spelmote.js";
@@ -287,11 +287,16 @@ function ritaFormularVy(res) {
         harLogg() ? "Grundegenskaper, FV och KP ändras under Spelmöten (Förbättra). " : "Grundegenskaper, FV och KP ändras i stegen. ")),
     ...(kvar.length ? [el("div", { class: "saknaslista rf-ofardig" }, el("strong", {}, "Rollpersonen är inte klar än"), el("ul", {}, kvar.map((t) => el("li", {}, t))))] : []),
     el("div", { class: "rf-sidor" }, rollformularSidor({ R: S.R, rp: S.rp, res, el, sakNamn, andrat: sparaFormular, medRegler: S.medRegler })));
-  if (S.medRegler) {
-    delaRegelsidor(vyEl, el);
-    // Texternas höjd beror på typsnitten, så sidorna delas om när de har laddats
-    document.fonts?.ready.then(() => { if (S.vy === "formular" && S.medRegler) delaRegelsidor(vyEl, el); });
-  }
+  // Får inte all utrustning plats på sida 2 ritas sidorna om med färre rader där; resten hamnar på sida 3.
+  // Texternas höjd beror på typsnitten, så det görs om när de har laddats
+  const passa = () => {
+    const sidorEl = vyEl.querySelector(".rf-sidor");
+    const plats = sidorEl && utrustningsplats(vyEl);
+    if (plats) sidorEl.replaceChildren(...rollformularSidor({ R: S.R, rp: S.rp, res, el, sakNamn, andrat: sparaFormular, medRegler: S.medRegler, utrustningsrader: plats }));
+    if (S.medRegler) delaRegelsidor(vyEl, el);
+  };
+  passa();
+  document.fonts?.ready.then(() => { if (S.vy === "formular") passa(); });
 }
 
 // Utskriftsdialogen (Ctrl+P eller Cmd+P) föreslår sidans titel som filnamn, så titeln är rollpersonens namn medan den visas
@@ -313,7 +318,11 @@ async function skapaPdf(e, { rp, res, tom = false, medRegler, blacksnal, titel, 
     const { rollformularPdf } = await import("./formularpdf.js");
     const pdf = await rollformularPdf({
       sidor: rollformularSidor({ R: S.R, rp, res: res(), el, sakNamn, andrat, medRegler, tom }),
-      blacksnal, titel, efterTypsnitt: (rot) => { if (medRegler) delaRegelsidor(rot, el); },
+      blacksnal, titel, efterTypsnitt: (rot) => {
+        const plats = utrustningsplats(rot);
+        if (plats) rot.querySelector(".rf-sidor").replaceChildren(...rollformularSidor({ R: S.R, rp, res: res(), el, sakNamn, andrat, medRegler, tom, utrustningsrader: plats }));
+        if (medRegler) delaRegelsidor(rot, el);
+      },
     });
     const url = URL.createObjectURL(new Blob([pdf], { type: "application/pdf" }));
     const a = el("a", { href: url, download: namn });

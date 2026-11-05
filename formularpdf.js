@@ -354,13 +354,31 @@ class Ritare {
   }
 
   async ifyllbart(e, s, r) {
+    // En linjerad textyta (Utseende och bakgrund) blir ett enradigt fält per linje: ett flerradigt fält i en PDF
+    // har läsarens radavstånd, som inte följer linjerna
+    const radhojd = parseFloat(s.lineHeight);
+    if (e.tagName === "TEXTAREA" && e.classList.contains("linjerad") && radhojd > 0) {
+      const antal = Math.max(1, Math.floor((r.height + 0.5) / radhojd));
+      const rader = (e.value ?? "").split("\n");
+      const forsta = e.getAttribute("aria-label") || "Fält";
+      for (let i = 0; i < antal; i++) {
+        const rad = { left: r.left, right: r.right, width: r.width, top: r.top + i * radhojd, bottom: r.top + (i + 1) * radhojd, height: radhojd };
+        const sista = i === antal - 1 ? rader.slice(i).join(" ") : rader[i];
+        await this.ettFalt({ ...s, textAlign: s.textAlign }, rad, `${forsta} rad ${i + 1}`, false, sista ?? "");
+      }
+      return;
+    }
+    await this.ettFalt(s, r, e.getAttribute("aria-label") || "Fält", e.tagName === "TEXTAREA", e.value);
+  }
+
+  async ettFalt(s, r, etikett, flerradigt, varde) {
     const { TextAlignment } = this.L;
     const font = await this.font(s, true);
-    const bas = (e.getAttribute("aria-label") || "Fält").replace(/\./g, "");
+    const bas = etikett.replace(/\./g, "");
     const n = (this.faltnamn.get(bas) ?? 0) + 1;
     this.faltnamn.set(bas, n);
     const falt = this.form.createTextField(n > 1 ? `${bas} ${n}` : bas);
-    if (e.tagName === "TEXTAREA") falt.enableMultiline();
+    if (flerradigt) falt.enableMultiline();
     const f = fargAv(s.color) ?? { r: 0, g: 0, b: 0 };
     falt.addToPage(this.page, {
       x: this.X(r.left), y: this.Y(r.bottom), width: r.width * this.k, height: r.height * this.k,
@@ -368,7 +386,7 @@ class Ritare {
     });
     falt.setAlignment(s.textAlign === "center" ? TextAlignment.Center : TextAlignment.Left);
     falt.setFontSize(parseFloat(s.fontSize) * this.k);
-    if (e.value) falt.setText(e.value);
+    if (varde) falt.setText(varde);
     falt.updateAppearances(font);
   }
 }

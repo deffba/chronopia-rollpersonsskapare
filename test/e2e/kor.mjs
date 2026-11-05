@@ -36,6 +36,7 @@ const TESTER = [
   { namn: "magi-bok", ok: passFail },
   { namn: "dvargar-bok", ok: passFail },
   { namn: "alver-bok", ok: passFail },
+  { namn: "testplan", ok: passFail },
   { namn: "nyheter", ok: passFail },
   { namn: "dev", ok: passFail, minuter: 10 }, // bygger alla ras × yrke automatiskt (över 800 med Alver)
   { namn: "logg", ok: passFail },
