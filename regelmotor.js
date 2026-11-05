@@ -364,8 +364,14 @@ export function fardighetVillkor(regler, rp, f) {
 }
 export const fardighetValbar = (regler, rp, f) => iBocker(f, rp) && !fardighetVillkor(regler, rp, f);
 
-// Yrkesförmågan med V&R:s initiativbonus (s. 4: alla krigaryrken i boken har +3 på initiativ)
-export const yrkesformagaText = (yrke) => (yrke.initiativ ? `${yrke.yrkesformaga} +${yrke.initiativ} på initiativet.` : yrke.yrkesformaga);
+// Yrkesförmågan, med en initiativbonus för yrken som har en (t.ex. Dvärgars krigaryrken med krigarens yrkesförmåga)
+// Ett yrke där spelaren väljer en av två yrkesförmågor (Drakgardist, Alver i Chronopia s. 35) visar det valda
+// i stället för valet: rp.yrkesformagaVal är alternativets id.
+export const yrkesformagaText = (yrke, rp = null) => {
+  const valt = yrke.yrkesformagaVal?.alternativ.find((a) => a.id === rp?.yrkesformagaVal);
+  const text = valt ? `${valt.text} ${yrke.yrkesformagaVal.rest}` : yrke.yrkesformaga;
+  return yrke.initiativ ? `${text} +${yrke.initiativ} på initiativet.` : text;
+};
 
 // Ett paketval (V&R s. 6–7, RB-016): spelaren väljer först ett av paketen och sedan vad det innehåller.
 // Paket: { fardighet, antal } (t.ex. två lärdomsfärdigheter), { fasta: [id, …] } eller { valfria: n } (valfria färdigheter).
@@ -374,7 +380,7 @@ export const paketIndex = (post, val) => val?.paket ?? (post.valPaket?.length ==
 export function paketNycklar(regler, post, val) {
   const paket = post.valPaket?.[paketIndex(post, val)];
   if (!paket) return [];
-  const valda = [].concat(val.val ?? []);
+  const valda = [].concat(val?.val ?? []);
   if (paket.fasta) return paket.fasta;
   if (paket.valfria) return valda.slice(0, paket.valfria).filter(Boolean);
   return valda.slice(0, paket.antal).filter(Boolean).map((x) => `${paket.fardighet}:${x}`);

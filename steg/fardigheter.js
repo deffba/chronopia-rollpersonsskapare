@@ -28,7 +28,7 @@ function nySekundarInfo(res) {
 export function stegFardigheter(res) {
   const grupper = [["primar", "Primära färdigheter", "2 EP per FV"], ["yrke", "Yrkesfärdigheter", "3 EP per FV"], ["sekundar", "Sekundära färdigheter", "5 EP per FV"]];
   const tabell = (lista) => el("div", { class: "tabellram" }, el("table", { class: "tabell fardighetstabell" },
-    el("thead", {}, el("tr", {}, el("th", {}, "Färdighet"), el("th", {}, "Grundeg."), el("th", { class: "num" }, "Start", info("BC")), el("th", { class: "num" }, "FV", info("FV")), el("th", { class: "num" }, "EP", info("EP")))),
+    el("thead", {}, el("tr", {}, el("th", {}, "Färdighet"), el("th", {}, "Grundeg."), el("th", { class: "num" }, "BC", info("BC")), el("th", { class: "num fv-kol" }, "FV", info("FV")), el("th", { class: "num" }, "EP", info("EP")))),
     el("tbody", {}, lista.map((f) => el("tr", {},
       el("td", {}, f.namn, fardighetsInfo(f.nyckel), S.rp.sekundara.includes(f.nyckel) && f.status === "sekundar" ? el("button", {
         type: "button", class: "lank", "aria-label": `Ta bort ${f.namn}`,
@@ -36,7 +36,7 @@ export function stegFardigheter(res) {
       }, "ta bort") : null),
       el("td", {}, f.grundegenskap),
       el("td", { class: "num" }, f.start),
-      el("td", { class: "num" }, markera(tal(`fv-${f.nyckel}`, f.fv, (v) => { S.rp.fardigheter[f.nyckel] = v ?? 0; uppdatera(); }, { min: 0, max: 30 }), f.fv, f.start),
+      el("td", { class: "num fv-kol" }, markera(tal(`fv-${f.nyckel}`, f.fv, (v) => { S.rp.fardigheter[f.nyckel] = v ?? 0; uppdatera(); }, { min: 0, max: 30 }), f.fv, f.start),
         el("span", { class: "bniva" }, f.kategoriB ? bNivaText(S.R, f.fv, f.bNivaLagre) : "")),
       el("td", { class: "num" }, f.ep || ""))))));
   const harRedan = new Set([...yrkesNycklar(), ...S.rp.extraYrkesfardigheter, ...S.rp.sekundara]);
@@ -159,7 +159,7 @@ function stridskonstTekniker(f, res) {
     summering,
     el("div", { class: "rad" }, el("button", { type: "button", class: "knapp primar", id: `sk-fardig-${idDel(f.nyckel)}`, disabled: !valda.length, onclick: () => {
       S.rp.stridskonstFardig = { ...S.rp.stridskonstFardig, [f.nyckel]: true }; uppdatera();
-    } }, "Färdigställ stridskonst")));
+    } }, vr ? "Färdigställ vapenteknik" : "Färdigställ stridskonst")));
 }
 
 const idDel = (nyckel) => nyckel.replace(/[^a-z0-9]/gi, "-");

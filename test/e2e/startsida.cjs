@@ -33,9 +33,8 @@ const NAMN = new RegExp(Buffer.from('bmljbGFzfGRlIGZhaXJl', 'base64').toString()
     ok('Skapa rollperson öppnar steg 0 Böcker', (await rubrik()) === 'Böcker' && (await p.locator('.steg-huvud .eyebrow').textContent()).startsWith('Steg 0 av 13'), await p.locator('.steg-huvud .eyebrow').textContent());
     ok('sidomenyn börjar på 0', (await p.locator('.steg-knapp .steg-nr').first().textContent()) === '0' && (await p.locator('.steg-knapp .steg-nr').nth(1).textContent()) === '1');
     const bocker = await p.locator('[data-bok]').evaluateAll(i => i.map(x => ({ id: x.dataset.bok, pa: x.checked, av: x.disabled, text: x.closest('label').textContent })));
-    ok('åtta böcker', bocker.length === 8, bocker.map(x => x.id).join(','));
-    const grund = bocker.find(x => x.id === 'grund');
-    ok('grundreglerna är alltid med och går inte att välja bort', grund.pa && grund.av && /Alltid med/.test(grund.text));
+    ok('sju expansioner, grundreglerna visas inte i listan', bocker.length === 7 && !bocker.some(x => x.id === 'grund'), bocker.map(x => x.id).join(','));
+    ok('rubriken Generella expansioner', (await p.locator('.bokgrupp h3').first().textContent()) === 'Generella expansioner');
     const snart = bocker.filter(x => !['grund', 'vr', 'magi', 'dvargar', 'alver'].includes(x.id));
     const vr = bocker.find(x => x.id === 'vr');
     ok('Vapen & rustningar går att välja och är inte vald från början', vr && !vr.pa && !vr.av && !vr.text.includes('Kommer snart'));

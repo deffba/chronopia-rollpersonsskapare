@@ -103,13 +103,13 @@ const medYrke = (rp, yrke, yrkesval, fv = {}) => {
 };
 const fardighet = (res, nyckel) => res.fardigheter.find((f) => f.nyckel === nyckel);
 
-test("V&R:s 15 yrken finns bara med V&R, med +3 initiativ och startutrustning", () => {
+test("V&R:s 15 yrken finns bara med V&R, med startutrustning (och inget generellt initiativ)", () => {
   const nya = regler.yrken.lista.filter((y) => y.kalla?.bok === "vr");
   assert.equal(nya.length, 15);
-  assert.ok(nya.every((y) => y.initiativ === 3 && y.startutrustning.length && y.stamning && y.beskrivning));
+  assert.ok(nya.every((y) => !y.initiativ && y.startutrustning.length && y.stamning && y.beskrivning));
   assert.ok(!valbaraYrken(regler, brutus).some((y) => y.kalla));
   assert.match(fel({ ...brutus, yrke: "hyrsvard" }).join(), /Hyrsvärd finns i Vapen & rustningar/);
-  assert.match(yrkesformagaText(regler.yrken.lista.find((y) => y.id === "hyrsvard")), /\+3 på initiativet\.$/);
+  assert.doesNotMatch(yrkesformagaText(regler.yrken.lista.find((y) => y.id === "hyrsvard")), /initiativ/);
 });
 
 test("yrken med rasvillkor (Hedersvakt bara dvärgar)", () => {

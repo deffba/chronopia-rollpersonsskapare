@@ -8,7 +8,7 @@ const RADER = { formagor: 6, primar: 25, yrke: 12, sprak: 11, sekundar: 33, vape
 const NAMN = { STY: "Styrka", FYS: "Fysik", SMI: "Smidighet", INT: "Intelligens", PSY: "Psyke", KAR: "Karisma", STO: "Storlek" };
 const STATUSNAMN = { primar: "Primär", yrke: "Yrke", sekundar: "Sekundär" };
 
-export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, medRegler = false, tom = false }) {
+export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, medRegler = false, tom = false, utrustningsrader = RADER.utrustning }) {
   // Ett tomt formulär (tom: true) har samma layout men inga värden; rutorna för KP och PSY ritas i ett fast antal
   const res = tom ? tomtResultat(raknat) : raknat;
   const antalRutor = (n, tomt) => (tom ? tomt : n);
@@ -23,6 +23,8 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     type: "text", class: "rf-in", value: varde ?? "", autocomplete: "off", ...attr,
     onchange: (e) => { satt(e.target.value.trim()); andrat(); },
   });
+  // I ett tomt formulär blir varje ruta ett ifyllbart fält (också i PDF:en), annars visas värdet
+  const ifyll = (innehall, etikett) => (tom ? inmatning("", () => {}, { "aria-label": etikett }) : innehall);
   const heltal = (v) => (/^-?\d+$/.test(v) ? Number(v) : null);
   const falt = (etikett, nr, innehall, klass = "") => el("div", { class: `rf-falt ${klass}` },
     el("span", { class: "rf-etikett" }, etikett), nr ? el("span", { class: "rf-nr", "aria-hidden": "true" }, nr) : null, innehall);
@@ -53,10 +55,13 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     el("span", { class: "rf-cell rf-erf" + (f.kategoriB ? " b" : "") }, erfFalt(f.nyckel, f.namn)),
     el("span", { class: "rf-cell rf-tal" }, f.fv));
   // Tomma rader för det som lärs under spel; bockrutan bara där färdigheter kan få EP
-  const tomRad = (celler, bock) => el("div", { class: "rf-rad tom" }, Array.from({ length: celler }, (_, i) =>
-    el("span", { class: "rf-cell" + (i === 0 ? " rf-namn" : "") }, i === 0 && bock ? el("span", { class: "rf-bock" }) : null)));
-  const fyll = (rader, antal, celler, bock = false) => [...rader.slice(0, antal), ...Array.from({ length: Math.max(0, antal - rader.length) }, () => tomRad(celler, bock))];
-  const lista = (klass, rubrikEl, rader, antal, celler = 3, bock = true) => el("div", { class: `rf-lista ${klass}` }, rubrikEl, fyll(rader, antal, celler, bock));
+  // I ett tomt formulär går varje ruta att fylla i
+  const tomRad = (celler, bock, etikett = "Rad") => el("div", { class: "rf-rad tom" }, Array.from({ length: celler }, (_, i) =>
+    el("span", { class: "rf-cell" + (i === 0 ? " rf-namn" : tom ? " rf-tal" : "") }, i === 0 && bock ? el("span", { class: "rf-bock" }) : null,
+      tom ? inmatning("", () => {}, { "aria-label": i === 0 ? etikett : `${etikett} kolumn ${i + 1}` }) : null)));
+  const fyll = (rader, antal, celler, bock = false, etikett) => [...rader.slice(0, antal), ...Array.from({ length: Math.max(0, antal - rader.length) }, () => tomRad(celler, bock, etikett))];
+  const lista = (klass, rubrikEl, rader, antal, celler = 3, bock = true) => el("div", { class: `rf-lista ${klass}` }, rubrikEl,
+    fyll(rader, antal, celler, bock, rubrikEl.querySelector(".rf-rubrik-titel")?.textContent));
 
   // ------------------------------------------------------------ indelning
   const idFor = (f) => fardighetAv(R, f.nyckel)?.id;
@@ -64,7 +69,8 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   const synliga = res.fardigheter;
   const arVapen = (f) => idFor(f) === "vapen";
   const arSprak = (f) => ["tala", "lasa-skriva"].includes(idFor(f));
-  const grupp = (status) => synliga.filter((f) => f.status === status && !arVapen(f) && !arSprak(f));
+  // En vapenfärdighet som yrket ger som primär (Vapenmästare, V&R s. 12) står också bland de primära färdigheterna
+  const grupp = (status) => synliga.filter((f) => f.status === status && (!arVapen(f) || status === "primar") && !arSprak(f));
   const listor = { primar: grupp("primar"), yrke: grupp("yrke"), sekundar: grupp("sekundar") };
   const sprak = synliga.filter(arSprak);
   const overflode = [
@@ -80,7 +86,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     // Dvärgar i Chronopia: klanförmågan (s. 18–26) och levande tatueringar (s. 27–28)
     res.klan?.formaga ? { namn: `${res.klan.formaga.namn} (klan ${res.klan.klan.namn})`, text: res.klan.formaga.effekt } : null,
     ...(res.tatueringar?.lista ?? []).map((t) => ({ namn: `Tatuering: ${t.namn}`, text: `${t.effekt} Kostnad ${t.kostnad}, ${t.antal} (${t.fran}).` })),
-    rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: yrkesformagaText(res.yrke) } : null,
+    rp.yrke ? { namn: `Yrkesförmåga (${res.yrke.namn.toLowerCase()})`, text: yrkesformagaText(res.yrke, rp) } : null,
     ...(res.sinnen?.sinnen ?? []).filter((x) => x.niva).map((x) => ({ namn: `${x.namn}: ${x.niva.toLowerCase()}`, text: `${x.mod > 0 ? "+" : x.mod < 0 ? "−" : "±"}${Math.abs(x.mod)} på ${x.text}` })),
     ...res.fardigheter.filter((f) => f.tekniker?.length).map((f) => ({ namn: f.namn, text: `Tekniker: ${f.tekniker.join(", ")}` })),
   ].filter(Boolean);
@@ -95,25 +101,25 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
           falt("Spelare", 1, inmatning(rp.spelare, (v) => { rp.spelare = v; }, { "aria-label": "Spelare" }), "s3"),
           falt("Spelledare", 2, inmatning(spel.spelledare, (v) => { spel.spelledare = v; }, { "aria-label": "Spelledare" }), "s3"),
           falt("Namn", 3, inmatning(rp.namn, (v) => { rp.namn = v; }, { "aria-label": "Namn" }), "s6"),
-          falt("Ras", 4, text(rp.ras ? res.ras.namn + (res.klan?.klan ? ` (${res.klan.klan.namn})` : "") : ""), "s2"),
-          falt("Kön", 6, text(rp.kon), "s2"),
-          falt("Socialt stånd", 8, text(res.slag.socialtStand), "s2"),
-          falt("Yrke", 5, text(rp.yrke ? res.yrke.namn : ""), "s2"),
-          falt("Svärdshand", 7, text(res.slag.svardshand), "s2"),
-          falt("Ålder", 9, text(rp.alder == null ? "" : `${rp.alder} år`), "s2"))),
+          falt("Ras", 4, ifyll(text(rp.ras ? res.ras.namn + (res.klan?.klan ? ` (${res.klan.klan.namn})` : "") : ""), "Ras"), "s2"),
+          falt("Kön", 6, ifyll(text(rp.kon), "Kön"), "s2"),
+          falt("Socialt stånd", 8, ifyll(text(res.slag.socialtStand), "Socialt stånd"), "s2"),
+          falt("Yrke", 5, ifyll(text(rp.yrke ? res.yrke.namn : ""), "Yrke"), "s2"),
+          falt("Svärdshand", 7, ifyll(text(res.slag.svardshand), "Svärdshand"), "s2"),
+          falt("Ålder", 9, ifyll(text(rp.alder == null ? "" : `${rp.alder} år`), "Ålder"), "s2"))),
       el("div", { class: "rf-kropp1" },
         el("div", { class: "rf-vanster" },
           el("div", { class: "rf-lista rf-egenskaper" }, rubrik("Grundegenskap", ["Värde"]),
             [...GRUNDEGENSKAPER, "STO"].map((k, i) => el("div", { class: "rf-rad" },
               el("span", { class: "rf-cell rf-namn" }, `${NAMN[k]} (${k})`, i === 0 ? el("span", { class: "rf-nr" }, 11) : null),
-              el("span", { class: "rf-cell rf-tal stor" }, g[k])))),
+              el("span", { class: "rf-cell rf-tal stor" }, ifyll(g[k], NAMN[k]))))),
           lista("rf-fardigheter", rubrik("Primära färdigheter", ["erf", "FV"], 15), listor.primar.map(fardighetsrad), RADER.primar)),
         el("div", { class: "rf-hoger" },
           el("div", { class: "rf-hoger-kolumner" },
             el("div", { class: "rf-mitt" },
               el("div", { class: "rf-lista rf-formagor" }, rubrik("Särskilda förmågor", [], 14),
                 fyll(formagor.slice(0, RADER.formagor).map((f) => el("div", { class: "rf-rad" }, el("span", { class: "rf-cell rf-namn rf-formaga", title: f.text },
-                  el("strong", {}, f.namn), el("span", {}, f.text)))), RADER.formagor, 1)),
+                  el("strong", {}, f.namn), el("span", {}, f.text)))), RADER.formagor, 1, false, "Särskild förmåga")),
               el("div", { class: "rf-hjaltepoang" }, el("span", {}, "Hjältepoäng"),
                 // Hjältepoäng som blev över vid skapandet (RB-003) räknas in; spel.hjaltepoang är det som har ändrats sedan
                 inmatning((spel.hjaltepoang ?? 0) + hpStart || "", (v) => { spel.hjaltepoang = Math.max(0, heltal(v) ?? 0) - hpStart; }, { inputmode: "numeric", "aria-label": "Hjältepoäng" })),
@@ -154,10 +160,10 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     }
   }
   const kroppsdel = (d) => el("div", { class: `rf-kroppsdel del-${d.id}` },
-    el("div", { class: "rf-del-namn" }, d.namn.replace("Höger", "H.").replace("Vänster", "V."), el("span", {}, tom ? "(  )" : `(${d.kp})`)),
+    el("div", { class: "rf-del-namn" }, d.namn.replace("Höger", "H.").replace("Vänster", "V."), tom ? el("span", { class: "rf-del-kp" }, "(", inmatning("", () => {}, { "aria-label": `KP ${d.namn}` }), ")") : el("span", {}, `(${d.kp})`)),
     rutor(antalRutor(d.kp, 8), "kp"),
-    el("div", { class: "rf-del-rad" }, el("span", {}, "Rustning"), el("span", { class: "rf-linje" }, rustning[d.id]?.namn.join(", ") ?? "")),
-    el("div", { class: "rf-del-rad" }, el("span", {}, "Abs"), el("span", { class: "rf-linje" }, rustning[d.id]?.abs || "")));
+    el("div", { class: "rf-del-rad" }, el("span", {}, "Rustning"), el("span", { class: "rf-linje" }, ifyll(rustning[d.id]?.namn.join(", ") ?? "", `Rustning ${d.namn}`))),
+    el("div", { class: "rf-del-rad" }, el("span", {}, "Abs"), el("span", { class: "rf-linje" }, ifyll(rustning[d.id]?.abs || "", `Abs ${d.namn}`))));
   const delar = Object.fromEntries(h.kroppsdelar.map((d) => [d.id, d]));
 
   const maxGange = R.utrustning.barformaga.at(-1).gange;
@@ -170,7 +176,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
   // Utrustning: köpta saker först, sedan rader spelaren själv skriver i
   const kopta = [...(tom ? [] : res.startutrustning ?? []).map((t) => ({ namn: t, vikt: "", last: true })),
     ...res.utrustning.saker.map((x) => ({ namn: sakNamn(x), vikt: x.vikt ? x.vikt.toLocaleString("sv-SE") : "", last: true }))];
-  const egnaPlatser = Math.max(4, RADER.utrustning * 2 - kopta.length);
+  const egnaPlatser = Math.max(4, utrustningsrader * 2 - kopta.length);
   const egna = Array.from({ length: Math.max(egnaPlatser, spel.utrustning.length + 1) }, (_, i) => ({ ...(spel.utrustning[i] ?? { namn: "", vikt: "" }), i }));
   const sattEgen = (i, falt_, v) => {
     while (spel.utrustning.length <= i) spel.utrustning.push({ namn: "", vikt: "" });
@@ -183,9 +189,14 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
       el("span", { class: "rf-cell rf-namn" }, inmatning(x.namn, (v) => sattEgen(x.i, "namn", v), { "aria-label": "Utrustning" })),
       el("span", { class: "rf-cell rf-tal" }, inmatning(x.vikt, (v) => sattEgen(x.i, "vikt", v), { "aria-label": "Vikt", inputmode: "decimal" })))),
   ];
-  const sakPlatser = Math.max(RADER.utrustning * 2, sakrader.length + (sakrader.length % 2));
-  const sakkolumner = [0, 1].map((k) => el("div", { class: "rf-lista rf-sakkolumn" },
-    fyll(sakrader.slice(k * sakPlatser / 2, (k + 1) * sakPlatser / 2), sakPlatser / 2, 2)));
+  // Sida 2 har plats för utrustningsrader rader per kolumn; resten fortsätter på sida 3 (Mer utrustning).
+  // Tar rutorna ovanför (magi, alver, detaljerad strid) mer plats får sidan färre rader (utrustningsplats).
+  const sakPlatser = utrustningsrader * 2;
+  const kolumner = (rader, platser) => [0, 1].map((k) => el("div", { class: "rf-lista rf-sakkolumn" },
+    fyll(rader.slice(k * platser / 2, (k + 1) * platser / 2), platser / 2, 2)));
+  const sakkolumner = kolumner(sakrader.slice(0, sakPlatser), sakPlatser);
+  const merSaker = sakrader.slice(sakPlatser);
+  const merPlatser = merSaker.length + (merSaker.length % 2);
 
   // Detaljerad strid (V&R s. 18–19, 26–30, 69; RB-017): en egen ruta på sida 2, bara när regeln är på.
   // Axelskydd står på armarna i kroppsdelarna ovan, så formuläret behöver ingen egen variant.
@@ -235,13 +246,13 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
             el("div", { class: "rf-delar-h" }, ["brostkorg", "vanster-arm", "vanster-ben"].map((id) => kroppsdel(delar[id])))),
           el("div", { class: "rf-strid" },
             el("div", { class: "rf-strid-v" },
-              el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Skadebonus"), el("span", { class: "rf-ruta-stor" }, h.skadebonus, el("span", { class: "rf-nr" }, 19))),
+              el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Skadebonus"), el("span", { class: "rf-ruta-stor" }, ifyll(h.skadebonus, "Skadebonus"), el("span", { class: "rf-nr" }, 19))),
               el("div", { class: "rf-strid-rad rf-strid-etiketter" }, el("span"), el("span", {}, "Normal"), el("span", {}, "Maximal")),
-              el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Bärförmåga"), el("span", { class: "rf-ruta-stor" }, tom ? "" : `${res.utrustning.barformaga} kg`), el("span", { class: "rf-ruta-stor" }, tom ? "" : `${res.utrustning.barformaga * maxGange} kg`)),
-              el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Förflyttning"), el("span", { class: "rf-ruta-stor" }, h.forflyttning, el("span", { class: "rf-nr" }, 20)), el("span", { class: "rf-ruta-stor" }))),
+              el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Bärförmåga"), el("span", { class: "rf-ruta-stor" }, ifyll(`${res.utrustning.barformaga} kg`, "Bärförmåga normal")), el("span", { class: "rf-ruta-stor" }, ifyll(`${res.utrustning.barformaga * maxGange} kg`, "Bärförmåga maximal"))),
+              el("div", { class: "rf-strid-rad" }, el("span", { class: "rf-bar" }, "Förflyttning"), el("span", { class: "rf-ruta-stor" }, ifyll(h.forflyttning, "Förflyttning"), el("span", { class: "rf-nr" }, 20)), el("span", { class: "rf-ruta-stor" }))),
             el("div", { class: "rf-strid-h" },
-              el("div", { class: "rf-poang" }, el("span", { class: "rf-bar" }, "Tot. KP"), el("span", { class: "rf-ruta-stor" }, h.totalKP, el("span", { class: "rf-nr" }, 13)), rutor(antalRutor(h.totalKP, 20), "tio")),
-              el("div", { class: "rf-poang" }, el("span", { class: "rf-bar" }, "PSY"), el("span", { class: "rf-ruta-stor" }, g.PSY, el("span", { class: "rf-nr" }, 12)), rutor(antalRutor(g.PSY, 20), "tio")))),
+              el("div", { class: "rf-poang" }, el("span", { class: "rf-bar" }, "Tot. KP"), el("span", { class: "rf-ruta-stor" }, ifyll(h.totalKP, "Tot KP"), el("span", { class: "rf-nr" }, 13)), rutor(antalRutor(h.totalKP, 20), "tio")),
+              el("div", { class: "rf-poang" }, el("span", { class: "rf-bar" }, "PSY"), el("span", { class: "rf-ruta-stor" }, ifyll(g.PSY, "PSY"), el("span", { class: "rf-nr" }, 12)), rutor(antalRutor(g.PSY, 20), "tio")))),
           lista("rf-vapen", rubrik("Vapen/sköld", ["FV", "Skada", "BV", "Längd", "Räckv", "Erf", "Vikt"]), vapenrader, Math.max(RADER.vapen, vapenrader.length), 8)),
         el("div", { class: "rf-hoger2" },
           lista("rf-besvarjelser", rubrik("Besvärjelser", ["erf", "FV"]), res.besvarjelser.map((b) => el("div", { class: "rf-rad" },
@@ -272,7 +283,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
     el("span", { class: "rf-cell rf-erf" }, erfFalt(b.nyckel, b.namn)),
     el("span", { class: "rf-cell rf-tal" }, b.fv));
   const flerFormagor = formagor.slice(RADER.formagor);
-  const sida3 = overflode.length || flerBesvarjelser.length || flerFormagor.length ? el("section", { class: "rf-sida rf-sida3", "aria-label": "Rollformulär sida 3" },
+  const sida3 = overflode.length || flerBesvarjelser.length || flerFormagor.length || merSaker.length ? el("section", { class: "rf-sida rf-sida3", "aria-label": "Rollformulär sida 3" },
     el("div", { class: "rf-band" }, "Drakar & Demoner"),
     el("div", { class: "rf-ram" },
       flerFormagor.length ? el("div", { class: "rf-lista rf-formagor" }, rubrik("Fler särskilda förmågor"), flerFormagor.map((f) => el("div", { class: "rf-rad" },
@@ -281,7 +292,9 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
         el("span", { class: "rf-cell rf-namn" }, el("span", { class: "rf-bock" }), el("span", { class: "rf-namntext" }, f.namn), f.kategoriB ? el("small", {}, bNivaText(R, f.fv, f.bNivaLagre)) : null, sidhanvisning(sidaFor(f.nyckel))),
         el("span", { class: "rf-cell" }, arSprak(f) ? "Språk" : STATUSNAMN[f.status]),
         el("span", { class: "rf-cell rf-erf" + (f.kategoriB ? " b" : "") }, arSprak(f) ? null : erfFalt(f.nyckel, f.namn)),
-        el("span", { class: "rf-cell rf-tal" }, f.fv))), flerBesvarjelser.map(besvarjelsesrad)) : null),
+        el("span", { class: "rf-cell rf-tal" }, f.fv))), flerBesvarjelser.map(besvarjelsesrad)) : null,
+      merSaker.length ? el("div", { class: "rf-utrustning rf-mer-utrustning" }, rubrik("Mer utrustning", ["Vikt", "", "Vikt"]),
+        el("div", { class: "rf-sakkolumner" }, kolumner(merSaker, merPlatser))) : null),
     sidfot(el, 3)) : null;
   const sidor = [sida1, sida2, sida3].filter(Boolean);
 
@@ -338,6 +351,19 @@ function tomRegelsida(el, nr) {
 
 // Fördelar färdigheterna på regelsidorna efter hur mycket som får plats. Körs när sidorna finns
 // i dokumentet, eftersom texternas höjd beror på typsnitten.
+// Hur många utrustningsrader per kolumn som får plats på sida 2 när formuläret är ritat (i rot), eller null
+// om alla får plats. Raderna är minst --rf-rad höga; utan plats för dem skulle de hamna under sidfoten.
+export function utrustningsplats(rot) {
+  const kol = rot.querySelector(".rf-sida:not(.rf-sida3) .rf-sakkolumner");
+  const rad = kol?.querySelector(".rf-sakkolumn .rf-rad");
+  if (!rad) return null;
+  const ram = kol.closest(".rf-ram");
+  const per = kol.querySelector(".rf-sakkolumn").querySelectorAll(".rf-rad").length;
+  const minsta = parseFloat(getComputedStyle(rad).flexBasis) || rad.getBoundingClientRect().height;
+  const plats = Math.floor((ram.getBoundingClientRect().bottom - kol.getBoundingClientRect().top + 0.5) / minsta);
+  return plats < per ? Math.max(1, plats) : null;
+}
+
 export function delaRegelsidor(rot, el) {
   const forsta = rot.querySelector(".rf-regelsida");
   if (!forsta) return;

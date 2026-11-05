@@ -106,7 +106,8 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
     await p.waitForTimeout(150); await p.click('#nasta-steg'); await p.waitForTimeout(150);
   }
   await p.click('#pl-autofyll'); await p.waitForTimeout(80); // autofyll av, så att slagen görs här
-  ok('veteranen: två slag', JSON.stringify(await p.locator('#sf-platser [data-plats]').allTextContents()) === '["Förmåga 1: avstår","Förmåga 2: avstår"]',
+  // Autofyll kryssar aldrig i rutan för att avstå: spelaren lägger BP eller avstår själv
+  ok('veteranen: två slag, inget avstått', JSON.stringify(await p.locator('#sf-platser [data-plats]').allTextContents()) === '["Förmåga 1: ingen än","Förmåga 2: ingen än"]',
     JSON.stringify(await p.locator('#sf-platser [data-plats]').allTextContents()));
   await p.selectOption('#sf-tabell', 'vr'); await p.waitForTimeout(80);
   await p.fill('#sf-bp', '20'); await p.press('#sf-bp', 'Tab'); await p.waitForTimeout(80);
@@ -121,7 +122,9 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('45 hjältepoäng att använda', (await p.locator('#hjaltepoang').textContent()).includes('45 hjältepoäng. 45 är kvar'));
   await p.click('#hp-STY-upp'); await p.click('#hp-STY-upp'); await p.waitForTimeout(80);
   ok('10 HP: STY +2', (await p.locator('#hp-STY').textContent()) === '+2' && (await p.locator('#hjaltepoang').textContent()).includes('35 är kvar'));
-  ok('slag 2 avstått av autofyll: Nästa öppen', !(await nastaSparrad(p)) && (await p.locator('#sf-platser [data-plats="1"]').textContent()) === 'Förmåga 2: avstår');
+  ok('slag 2 inte avstått: Nästa spärrad', await nastaSparrad(p) && (await p.locator('#sf-platser [data-plats="1"]').textContent()) === 'Förmåga 2: ingen än');
+  await p.click('[data-plats="1"]'); await p.waitForTimeout(100); await p.check('#sf2-avsta'); await p.waitForTimeout(100);
+  ok('slag 2 avstått för hand: Nästa öppen', !(await nastaSparrad(p)) && (await p.locator('#sf-platser [data-plats="1"]').textContent()) === 'Förmåga 2: avstår');
   ok('inga konsolfel (veteranen)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 

@@ -617,7 +617,6 @@
         "sida": 4
       },
       "yrkesformaga": "+5 CL med alla avståndsvapen.",
-      "initiativ": 3,
       "fardigheter": [
         "avvapna",
         "dra-vapen",
@@ -671,8 +670,7 @@
         "bok": "vr",
         "sida": 4
       },
-      "yrkesformaga": "+7 på initiativet i dueller man mot man, +5 i andra strider. Har en skara supportrar (SL avgör).",
-      "initiativ": 3,
+      "yrkesformaga": "+7 på initiativet i dueller man mot man, +5 i andra strider. Har en skara supportrar som kan gå hans ärenden (SL avgör antal).",
       "fardigheter": [
         "avvapna",
         "dra-vapen",
@@ -692,7 +690,8 @@
       "automatiska": [],
       "startutrustning": [
         "Förstklassiga vapen och rustning efter eget val (SL avgör)",
-        "Nyckel till Dödsdansarnas sal"
+        "Nyckel till Dödsdansarnas sal",
+        "En liten svit i Arenan, om han är friköpt"
       ],
       "stamning": "Fyrtio dueller på arenans sand, och fortfarande vid liv.",
       "beskrivning": "Gladiatorer som överlevt minst fyrtio dueller och blivit arenans stjärnor. De kommer från alla raser och samhällsskikt.",
@@ -707,7 +706,6 @@
         "sida": 5
       },
       "yrkesformaga": "CL sänks aldrig av skador från den pågående striden. Ett lyckat FYS-slag gör att träffar på 2 eller mindre i skada (efter rustning) inte biter.",
-      "initiativ": 3,
       "fardigheter": [
         "avvapna",
         "dra-vapen",
@@ -765,7 +763,6 @@
         "sida": 5
       },
       "yrkesformaga": "Ett sjätte sinne för fara: CL i Upptäcka fara blir aldrig lägre än 15.",
-      "initiativ": 3,
       "fardigheter": [
         "avvapna",
         "dra-vapen",
@@ -803,7 +800,6 @@
         "sida": 6
       },
       "yrkesformaga": "1T6 mycket goda vänner bland legosoldaterna kring Klingornas allians (SL avgör).",
-      "initiativ": 3,
       "fardigheter": [
         "dra-vapen",
         {
@@ -827,7 +823,8 @@
       "startutrustning": [
         "Ett valfritt vapen",
         "Vapenfett",
-        "Medlemsbevis i Klingornas allians"
+        "Medlemsbevis i Klingornas allians",
+        "Heraldisk vimpel"
       ],
       "stamning": "Svärdet går till högstbjudande, men lojaliteten mot bröderna i alliansen är inte till salu.",
       "beskrivning": "Legosoldater som säljer sina tjänster genom Klingornas allians. De har kontakter i varje garnisonsstad.",
@@ -842,7 +839,6 @@
         "sida": 6
       },
       "yrkesformaga": "Drabbas aldrig av panik, −5 på slag på Skräcktabellen och +5 på motståndsslag mot besvärjelser.",
-      "initiativ": 3,
       "fardigheter": [
         {
           "valEn": [
@@ -880,7 +876,11 @@
             }
           ]
         },
-        "stridskonster",
+        {
+          "fardighet": "stridskonster",
+          "antal": 1,
+          "namn": "Stridskonst (1)"
+        },
         {
           "valPaket": [
             {
@@ -914,7 +914,6 @@
         "sida": 7
       },
       "yrkesformaga": "Slår aldrig färdighetsslag i Rida för rimliga manövrer; de lyckas alltid.",
-      "initiativ": 3,
       "fardigheter": [
         "dra-vapen",
         "hantera-fallor",
@@ -977,7 +976,6 @@
         "sida": 8
       },
       "yrkesformaga": "Väljer en magiskola som extra yrkesfärdighet, utan magiförmågeslag men med högst FV 10 vid start. Får FV 10 i Hypnotisera gratis, som primär färdighet.",
-      "initiativ": 3,
       "fardigheter": [
         "dra-vapen",
         "giftkunskap",
@@ -1050,7 +1048,6 @@
         "sida": 8
       },
       "yrkesformaga": "Går aldrig vilse i gängets område och har +5 på initiativet i gatustrid.",
-      "initiativ": 3,
       "fardigheter": [
         "akrobatik",
         "dra-vapen",
@@ -1084,7 +1081,7 @@
         }
       ],
       "stamning": "Hökarna äger gatorna, och varje gränd har ett namn.",
-      "beskrivning": "Medlemmar i gatugänget Hökarna. De kan varje genväg och varje tak i sitt kvarter.",
+      "beskrivning": "Medlemmar i gatugänget Hökarna, märkta med en höktatuering. De kan varje genväg och varje tak i sitt kvarter.",
       "startvapen": true
     },
     {
@@ -1095,25 +1092,18 @@
         "bok": "vr",
         "sida": 8
       },
-      "yrkesformaga": "Kontrollerat bärsärkaraseri (1 SR att väcka, varar tills han vill eller striden är över): kan ändå parera, motståndarna får −2 CL på attacker och parader och han +3 STY. Får FV 10 i Smide gratis, som primär färdighet.",
-      "initiativ": 3,
+      "yrkesformaga": "Kontrollerat bärsärkaraseri (1 SR att väcka, varar tills han vill eller striden är över): kan ändå parera, motståndarna får −2 CL på attacker och parader och han har +3 STY. Får FV 10 i Smide gratis, som primär färdighet.",
       "fardigheter": [
         {
           "fardighet": "hantverk",
-          "antal": 3,
-          "maste": [
-            "Smide"
-          ]
+          "antal": 2
         },
         "kulturkannedom",
         "lasdyrkning",
         "rakning",
         {
           "fardighet": "vapen",
-          "antal": 3,
-          "maste": [
-            "Stridshammare (dvärgisk)"
-          ]
+          "antal": 2
         }
       ],
       "valfri": true,
@@ -1157,7 +1147,6 @@
         "sida": 9
       },
       "yrkesformaga": "Blir aldrig sjösjuk och klarar halsbrytande akrobatik ombord (bonusar efter SL).",
-      "initiativ": 3,
       "fardigheter": [
         "dra-vapen",
         "knopar",
@@ -1175,7 +1164,7 @@
       "startutrustning": [
         "Liten snabb båt (till exempel en fryvisk kasell)",
         "Hamnkarta",
-        "Gömställe",
+        "Gömställe (i Hamnen eller kloakerna)",
         "Tre valfria tatueringar"
       ],
       "startvaror": [
@@ -1199,8 +1188,7 @@
         "bok": "vr",
         "sida": 10
       },
-      "yrkesformaga": "Börjar med ett nekrologiskt föremål (två som veteran, tre som hjälte; krafterna avgörs med SL). Anfaller aldrig oprovocerat. +5 CL på Övertala.",
-      "initiativ": 3,
+      "yrkesformaga": "Börjar med ett nekrologiskt föremål (två som veteran, tre som hjälte; krafterna avgörs med SL). Anfalls aldrig av chronopiska medborgare oprovocerat. +5 CL på Övertala.",
       "fardigheter": [
         "dra-vapen",
         {
@@ -1251,7 +1239,6 @@
         "sida": 11
       },
       "yrkesformaga": "CL i Orientering blir aldrig lägre än 15 under jord. +5 på initiativet i strid under jord, och strid i kloakerna ger inga avdrag.",
-      "initiativ": 3,
       "fardigheter": [
         "dra-vapen",
         "hantera-fallor",
@@ -1319,7 +1306,6 @@
         "sida": 12
       },
       "yrkesformaga": "Tre valfria vapenfärdigheter med FV 10 gratis, som primära färdigheter. Kan lägga 5 PSY på en extra handling i strid, högst två gånger om dagen. Påverkas inte av motståndarens svärdshand.",
-      "initiativ": 3,
       "fardigheter": [
         "avvapna",
         "dra-vapen",
@@ -1340,7 +1326,8 @@
           "fardighet": "vapen",
           "antal": 3,
           "startFV": 10,
-          "primar": true
+          "primar": true,
+          "namn": "Primära vapenfärdigheter (yrkesförmågan)"
         },
         {
           "fardighet": "vapen",
@@ -1365,8 +1352,7 @@
         "bok": "vr",
         "sida": 12
       },
-      "yrkesformaga": "Alltid lugn och samlad: fiender får −2 CL på allt som rör honom. Börjar med minst 100 000 sm.",
-      "initiativ": 3,
+      "yrkesformaga": "Alltid lugn och samlad: fiender får −2 CL på allt som rör honom.",
       "fardigheter": [
         "administration",
         "dans",
@@ -1385,8 +1371,10 @@
       "startutrustning": [
         "Utsökta kläder",
         "Hem i ett bättre kvarter",
+        "Väldoftande oljor och parfymer",
+        "Sidennäsdukar",
         "Minst 100 000 sm",
-        "En personlig tjänare"
+        "En personlig tjänare (SL kan ge honom fler mänskliga och alviska tjänare)"
       ],
       "stamning": "Ett leende, en bugning, och sedan klingans spets mot strupen.",
       "beskrivning": "Alviska adelsmän som lärt sig fäktning lika väl som etikett.",
@@ -3187,7 +3175,7 @@
         "bok": "alver",
         "sida": 35
       },
-      "yrkesformaga": "Krigarens eller gladiatorns yrkesförmåga, fritt val (krigaren: +3 på alla initiativslag; gladiatorn: +5 på initiativet i dueller man mot man. börjar med 0 dödspoäng.). Får inga avdrag för att strida i luften, men måste slå för Rida flygande djur. Drakflykt är extra yrkesfärdighet (Vapen & rustningar).",
+      "yrkesformaga": "Krigarens eller gladiatorns yrkesförmåga, fritt val (väljs i steg 4). Får inga avdrag för att strida i luften, men måste slå för Rida flygande djur. Drakflykt är extra yrkesfärdighet (Vapen & rustningar).",
       "fardigheter": [
         "avvapna",
         "dra-vapen",
@@ -3233,7 +3221,22 @@
         ]
       },
       "startvapen": true,
-      "beslut": "RB-024"
+      "beslut": "RB-024",
+      "yrkesformagaVal": {
+        "rest": "Får inga avdrag för att strida i luften, men måste slå för Rida flygande djur. Drakflykt är extra yrkesfärdighet (Vapen & rustningar).",
+        "alternativ": [
+          {
+            "id": "krigare",
+            "namn": "Krigarens yrkesförmåga",
+            "text": "Krigarens yrkesförmåga: +3 på alla initiativslag."
+          },
+          {
+            "id": "gladiator",
+            "namn": "Gladiatorns yrkesförmåga",
+            "text": "Gladiatorns yrkesförmåga: +5 på initiativet i dueller man mot man. Börjar med 0 dödspoäng."
+          }
+        ]
+      }
     },
     {
       "id": "distributor",

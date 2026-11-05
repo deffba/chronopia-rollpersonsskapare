@@ -51,13 +51,13 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('människa: Smidesmästare har röd ram (bara människor och dvärgar)', JSON.stringify(rasyrken) === '["smidesmastare"]', rasyrken.join(','));
   ok('den röda ramen är tjock', (await p.locator('[data-yrke=smidesmastare]').evaluate((x) => getComputedStyle(x).borderTopWidth)) === '3px');
 
-  // Vapenmästare: +3 initiativ, startutrustning, gratis FV 10 i tre vapen
+  // Vapenmästare: inget generellt initiativ, startutrustning, gratis FV 10 i tre vapen (bara i yrkesförmågan i steg 3)
   await p.click('[data-yrke=vapenmastare]'); await p.waitForTimeout(100);
   const info = await p.locator('.valinfo').textContent();
-  ok('Vapenmästare: yrkesförmåga med +3 på initiativet', info.includes('+3 på initiativet.'), info);
+  ok('Vapenmästare: inget +3 på initiativet', !info.includes('initiativet'), info);
   ok('Vapenmästare: startutrustning och sidhänvisning till V&R', info.includes('Startutrustning') && info.includes('Sina vapen') && info.includes('Vapen & rustningar i Chronopia s. 12'));
   const punkter = await p.locator('.rutor .punkter').textContent();
-  ok('Vapenmästare: tre vapen med FV 10 gratis', /Vapenfärdighet \(3\)i? – FV 10 gratis, som primära/.test(punkter) && punkter.includes('Vapentekniker (2)') && punkter.includes('Strid i mörker'), punkter);
+  ok('Vapenmästare: de tre primära vapnen står bara i yrkesförmågan', !/FV 10 gratis/.test(punkter) && info.includes('Tre valfria vapenfärdigheter med FV 10 gratis') && punkter.includes('Vapentekniker (2)') && punkter.includes('Strid i mörker'), punkter);
   await p.click('#nasta-steg'); await p.waitForTimeout(120);
   ok('steg 4 förklarar de gratis FV', (await p.locator('.yrkeslista').textContent()).includes('FV 10 gratis, som primära (Vapen & rustningar i Chronopia s. 12)'));
   const forslag = await p.locator('datalist[id$="-skolor"] option').first().getAttribute('value').catch(() => null);
@@ -112,7 +112,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   ok('steg 13: yrkets startutrustning', utr.includes('Metallring om fotleden') && utr.includes('Gratis'), utr);
   await p.click('#menyknapp'); await p.selectOption('#dev-lage', 'formular'); await p.click('#dev-vr-svartgardist'); await p.waitForTimeout(400);
   const rf = await p.locator('#rf-vy').textContent();
-  ok('rollformuläret: startutrustning och yrkesförmåga med initiativ', rf.includes('Metallring om fotleden') && rf.includes('+3 på initiativet'));
+  ok('rollformuläret: startutrustning och yrkesförmåga utan generellt initiativ', rf.includes('Metallring om fotleden') && rf.includes('Anfalls aldrig av chronopiska medborgare oprovocerat') && !rf.includes('+3 på initiativet'));
   ok('inga konsolfel (testrollpersonen)', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
@@ -157,7 +157,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   await tillYrke(p, 'Sabran');
   await p.click('[data-yrke=sabransk-okenriddare]'); await p.waitForTimeout(100);
   const okenPunkter = await p.locator('.rutor .punkter').textContent();
-  ok('ökenriddare: Hypnotisera FV 10 gratis', /Hypnotiserai? – FV 10 gratis, som primär/.test(okenPunkter), okenPunkter);
+  ok('ökenriddare: Hypnotisera FV 10 gratis står i yrkesförmågan, inte bland yrkesfärdigheterna', !okenPunkter.includes('Hypnotisera') && (await p.locator('.valinfo').textContent()).includes('Får FV 10 i Hypnotisera gratis'), okenPunkter);
   await p.click('#nasta-steg'); await p.waitForTimeout(120);
   ok('ökenriddare: skolan högst FV 10, inget magiförmågeslag', (await p.locator('.yrkeslista').textContent()).includes('Högst FV 10 vid start, inget magiförmågeslag'));
   const sista = p.locator('#yrke-7'); // valet mellan de tre magiskolorna

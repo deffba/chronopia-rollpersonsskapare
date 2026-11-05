@@ -87,6 +87,9 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
       if ((rp.tatueringar ?? []).length >= tak) break;
       if (!(rp.tatueringar ?? []).includes(t.id)) rp.tatueringar = [...(rp.tatueringar ?? []), t.id];
     }
+    // Ett val av yrkesförmåga (Drakgardist, Alver i Chronopia s. 35): ett slumpat alternativ
+    const V = yrke.yrkesformagaVal;
+    if (V && !V.alternativ.some((a) => a.id === rp.yrkesformagaVal)) rp.yrkesformagaVal = V.alternativ[Math.floor(Math.random() * V.alternativ.length)].id;
     // Pierrotens täckyrke (Alver i Chronopia s. 44): ett slumpat yrke och två av dess yrkesfärdigheter som går
     if (yrke.tackyrke && !(rp.tackyrke?.yrke && rp.tackyrke.fardigheter?.filter(klar).length >= yrke.tackyrke.antal)) {
       const yrken = valbaraYrken(R, rp).filter((y) => y.id !== yrke.id).sort(() => Math.random() - 0.5);
@@ -177,8 +180,7 @@ function fyllFormaga(api, autoDelval, anvanda, slag) {
     const s = hamta();
     // Yrkets gratisslag (Spindelmästare, Alver i Chronopia s. 69) slås alltid, utan BP
     const motor = formageslag(R, api.motorIndata())[nr];
-    // Utan lagda BP kryssas rutan i: rollpersonen avstår från förmågan
-    if (!motor.gratis && !s.bp && !s.avstar && (s.slag === null || s.slag === undefined)) satt({ ...s, avstar: true });
+    // Rutan för att avstå kryssas aldrig i automatiskt: spelaren lägger BP eller avstår själv
     if (slag && (s.bp || (motor.gratis && !s.avstar)) && (s.slag === null || s.slag === undefined)) {
       const { n, sidor } = tarningAv(formagetabell(R, api.motorIndata(), motor.gratis ? motor : s)?.tarning ?? "2T20");
       // Samma förmåga som ett tidigare slag slås om (högst 50 försök)

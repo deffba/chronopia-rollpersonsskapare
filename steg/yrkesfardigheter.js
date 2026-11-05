@@ -51,6 +51,7 @@ export function stegExtra(res) {
     ...yrketsVal(),
     tatueringsVal(res),
     tackyrkesVal(res),
+    yrkesformagaVal(),
     el("h3", {}, "Fler yrkesfärdigheter"),
     el("p", {}, `Den första extra yrkesfärdigheten kostar ${k.forsta} BP, den andra ${k.andra} BP och varje därefter ${k.darefter} BP. En magiskola kostar ${k.magiskola} BP och kräver ett lyckat magiförmågeslag (1T100 högst (INT+PSY)/2, s. 106). Slaget görs när du går vidare från steg 6, när INT och PSY är bestämda.`),
     el("h4", {}, "Dina yrkesfärdigheter"),
@@ -111,6 +112,19 @@ function tatueringsVal(res) {
 
 // Pierrotens täckyrke (Alver i Chronopia s. 44): ett annat yrke, två av dess yrkesfärdigheter med FV 5 och
 // det yrkets startutrustning. Färdigheterna blir pierrotens yrkesfärdigheter.
+// Yrken som får välja en av två yrkesförmågor (Drakgardist: krigarens eller gladiatorns, Alver i Chronopia s. 35)
+function yrkesformagaVal() {
+  const yrke = yrkeAv(S.R, yrkeId());
+  const V = yrke?.yrkesformagaVal;
+  if (!V) return null;
+  const valt = V.alternativ.find((a) => a.id === S.rp.yrkesformagaVal);
+  return el("div", { class: "rutor", id: "yrkesformaga-val" }, el("div", {},
+    el("h3", {}, "Yrkesförmåga"),
+    el("p", { class: "hjalp" }, `${yrke.namn} väljer fritt en av yrkesförmågorna nedan (${kallText(S.R, yrke, "")}).`),
+    falt("Yrkesförmåga", valLista("yrkesformaga", S.rp.yrkesformagaVal ?? "", V.alternativ.map((a) => [a.id, a.namn]), (v) => { S.rp.yrkesformagaVal = v; uppdatera(); })),
+    valt ? el("p", { class: "summering" }, valt.text) : null));
+}
+
 function tackyrkesVal(res) {
   const T = yrkeAv(S.R, yrkeId())?.tackyrke;
   if (!T || !res.tackyrke?.regel) return null;
