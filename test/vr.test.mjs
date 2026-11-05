@@ -348,3 +348,13 @@ test("startutrustning som kräver detaljerad strid byts mot en vara för grundre
   assert.ok(namn(ds).includes("Axelskydd (par): Dvärgiskt"), namn(ds).join());
   assert.ok(!raknaRollperson(regler, rp).startutrustning.includes("Axelplåt"));
 });
+
+test("grundreglernas och rasens primära färdigheter går före yrkesfärdighet", async () => {
+  const { status } = await import("../regelmotor.js");
+  const { regler: R, las } = await import("./brutus-data.mjs");
+  const RR = { ...R, raser: las("raser"), yrken: las("yrken") };
+  const rp = (ras, yrke, k, rasval = []) => ({ ras, yrke, bocker: ["grund", "vr"], rasval, yrkesfardigheter: [k], extraYrkesfardigheter: [], sarskildaFormagor: {} });
+  assert.equal(status(RR, rp("hoglandare", "krigare", "vapen:Slagsvärd", ["vapen:Slagsvärd"]), "vapen:Slagsvärd"), "primar");
+  assert.equal(status(RR, rp("ljusalv", "jagare", "vapen:Långbåge"), "vapen:Långbåge"), "primar");
+  assert.equal(status(RR, rp("troll", "krigare", "barsarkagang"), "barsarkagang"), "primar");
+});

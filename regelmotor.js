@@ -661,17 +661,20 @@ function statusUtanFormaga(regler, rp, nyckel, f, ras) {
   const yrkeX = yrkeAv(regler, rp.yrke);
   if (yrkeX?.primara?.includes(nyckel) || postFor(regler, rp, nyckel, "primar")) return "primar"; // V&R: gratis FV 10 som primär
   if (klanTillganglig(regler, rp) && klanAv(regler, rp.klan?.id)?.primara?.includes(nyckel)) return "primar"; // Mindir: Kunskap om religion (Atum) (Dvärgar s. 24)
-  if (rp.yrkesfardigheter.includes(nyckel) || rp.extraYrkesfardigheter.includes(nyckel)) return "yrke";
+  // Extra primära färdigheter från rasen (t.ex. dvärgens valfria hantverk, s. 14–16) är primära även när
+  // yrket också har dem som yrkesfärdighet
+  if (rp.rasval?.includes(nyckel)) return "primar";
+  if (ras.primara.includes(f.id) || ras.primara.includes(nyckel)) return "primar";
+  if (f.id === "kanna-magi" && yrkeAv(regler, rp.yrke)?.magiker) return "primar";
   const id = f.id;
+  // Grundreglernas primära färdigheter (s. 40) förblir primära även om yrket listar dem (t.ex. Ingenjörens Värdera)
+  if (f.typ === "primar" && !ras.sekundara.includes(id)) return "primar";
+  if (rp.yrkesfardigheter.includes(nyckel) || rp.extraYrkesfardigheter.includes(nyckel)) return "yrke";
   const val = nyckel.split(":")[1];
   if (rp.yrkesfardigheter.some((k) => k.startsWith(id + ":")) && f.gruppYrke) return "yrke";
   if (yrkeAv(regler, rp.yrke)?.yrkesgrupper?.includes(id)) return "yrke"; // t.ex. all lärdom för lärd man
-  if (id === "kanna-magi" && yrkeAv(regler, rp.yrke)?.magiker) return "primar";
   if (nyckel === "lardom:Kunskap om magi" && yrkeAv(regler, rp.yrke)?.magiker) return "yrke";
   if (yrkeAv(regler, rp.yrke)?.automatiska?.includes(id)) return "yrke"; // Minimagi för Magis magiker (s. 8–9, 19)
-  if (rp.rasval?.includes(nyckel)) return "primar";
-  if (ras.primara.includes(id) || ras.primara.includes(nyckel)) return "primar";
-  if (f.typ === "primar" && !ras.sekundara.includes(id)) return "primar";
   return "sekundar";
 }
 

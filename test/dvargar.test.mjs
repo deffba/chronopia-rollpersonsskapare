@@ -142,3 +142,11 @@ test("Argolisbroder: Atums väg som stridskonst, och vapnen från Dvärgar", () 
   assert.ok(!varukatalog(regler, { ...dvargar, bocker: ["grund", "vr"] }).some((x) => x.namn === "Drakdödare"));
   assert.match(vapenVillkor(regler, { ...brutus, bocker: ["grund"] }, "Sprättare"), /Dvärgar i Chronopia/);
 });
+
+test("rasens extra primära färdigheter förblir primära även när yrket listar dem", () => {
+  const smed = { ...prast, yrkesfardigheter: [...prast.yrkesfardigheter.filter((k) => k !== "rakning"), "hantverk:Smide"] };
+  const r = raknaRollperson(regler, smed);
+  assert.equal(fv(r, "hantverk:Smide").status, "primar");
+  assert.equal(fv(r, "geologi").status, "primar");
+  assert.equal(fv(r, ATUM).status, "primar"); // klan Mindir
+});
