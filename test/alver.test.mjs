@@ -191,3 +191,16 @@ test("Eldsfurste: stridsbesvärjelserna bara för eldsfurstar", () => {
   assert.deepEqual(fel({ ...ef, besvarjelser: { "ingjuta-mod": 3 } }), []);
   assert.match(fel({ ...ef, yrke: "elementarmagiker", besvarjelser: { "ingjuta-mod": 3 } }).join(), /eldsfurste/);
 });
+
+test("Bataljsmed: Ulvskolans Ceriansk svärdsdans med V&R, annars Stridskonster; Husar och Hämnare: Stridskonster", () => {
+  const smed = { ...alv, ras: "ceriasalv", yrke: "bataljsmed" };
+  const poster = (rp) => yrkesPoster(regler, rp).map((p) => p.post?.fardighet ?? p.post);
+  assert.ok(yrkesPoster(regler, smed).some((p) => p.post?.fardighet === "vapentekniker"));
+  const utanVR = poster({ ...smed, bocker: ["grund", "alver"] });
+  assert.ok(utanVR.includes("stridskonster") && !utanVR.includes("vapentekniker"));
+  for (const id of ["husar", "hamnare"]) assert.ok(y(id).fardigheter.includes("stridskonster") && !y(id).fardigheter.some((p) => p?.valEn));
+});
+
+test("Eldens och månens vapenskola (V&R s. 34): Eldens väg kostar 7", () => {
+  assert.equal(svardsskolaFor(regler, "vapentekniker:Eldens väg").kostnad, 7);
+});

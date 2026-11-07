@@ -2,7 +2,7 @@
 // Kör: node --test test/magi.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { raknaRollperson, nivaer, nivaFor, valbaraYrken, yrkeVillkor, tillgangligaFormagetabeller, magiskolor, raknaFamiljarer } from "../regelmotor.js";
+import { raknaRollperson, nivaer, nivaFor, valbaraYrken, yrkeVillkor, tillgangligaFormagetabeller, magiskolor, raknaFamiljarer, yrkesPoster } from "../regelmotor.js";
 import { regler as bas, brutus, las } from "./brutus-data.mjs";
 
 const regler = { ...bas, "sarskilda-formagor": las("sarskilda-formagor"), bocker: las("bocker"), erfarenhet: las("erfarenhet"), foljeslagare: las("foljeslagare") };
@@ -113,4 +113,11 @@ test("bara den som kan magi får köpa familjarer; gratis familjarer får alla h
   assert.ok(r.familjarer.tillganglig, "steget syns så att köpta familjarer kan tas bort");
   assert.equal(raknaRollperson(regler, magi).familjarer.tillganglig, false, "utan magi och utan familjarer syns inte steget");
   assert.equal(raknaRollperson(regler, { ...chronomag, familjarer: ["gargoyl"] }).familjarer.kanKopa, true);
+});
+
+test("svartsyster: stridskonsten Kejsarens hand med V&R (Magi s. 15), annars inte", () => {
+  const syster = { ...chronomag, kon: "Kvinna", yrke: "svartsyster" };
+  const harHand = (rp) => yrkesPoster(regler, rp).some((p) => p.post?.maste?.includes("Kejsarens hand"));
+  assert.ok(harHand({ ...syster, bocker: ["grund", "vr", "magi"] }));
+  assert.ok(!harHand(syster));
 });

@@ -1581,6 +1581,26 @@
       }
     },
     {
+      "id": "eldens-och-manens",
+      "skola": "Eldens och månens vapenskola",
+      "namn": "Eldens väg",
+      "tekniker": [
+        "Bryta vapen",
+        "Ceriskt utfall",
+        "Fint",
+        "Kast med vapen",
+        "Krafthugg",
+        "Låsning",
+        "Undvika"
+      ],
+      "kostnad": 7,
+      "vem": "Högländsk skola i Arenastaden; träningen kostar 1 500 sm.",
+      "kalla": {
+        "bok": "vr",
+        "sida": 34
+      }
+    },
+    {
       "id": "fyra-mastare",
       "skola": "Fyra mästare",
       "namn": "Klingans väg",
@@ -1631,7 +1651,7 @@
       "vem": "Ej troll, orcher eller gobliner.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {
@@ -1651,7 +1671,7 @@
       "vem": "Ej troll, orcher eller gobliner.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {
@@ -1669,7 +1689,7 @@
       "vem": "Endast människor.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {
@@ -1685,7 +1705,7 @@
       "vem": "Ej troll, orcher eller gobliner.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {
@@ -1704,7 +1724,7 @@
       "vem": "Människor, alver och dvärgar.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {
@@ -1722,7 +1742,7 @@
       "vem": "Människor, alver och dvärgar.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {
@@ -1740,7 +1760,7 @@
       "vem": "Alver som tjänat två år i Rosgardet.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {
@@ -1759,7 +1779,7 @@
       "vem": "Utvalda latracier.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {
@@ -1778,7 +1798,7 @@
       "vem": "Alla raser.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {
@@ -1796,7 +1816,7 @@
       "vem": "Utvalda alver.",
       "kalla": {
         "bok": "vr",
-        "sida": 32
+        "sida": 33
       }
     },
     {

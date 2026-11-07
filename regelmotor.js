@@ -40,11 +40,12 @@ export function tillampaBocker(regler, rp) {
     for (const [bok, andring] of Object.entries(f.medBok)) if (bocker.includes(bok)) Object.assign(f, andring);
   }
   // Yrkesfärdigheter som kräver en bok som inte är vald byts mot bokens reserv (annars), t.ex. Stormfågelns
-  // Mekanik (Teknologi i Dvärgar i Chronopia), som annars blir en vapenfärdighet till (Alver i Chronopia s. 50)
+  // Mekanik (Teknologi i Dvärgar i Chronopia), som annars blir en vapenfärdighet till (Alver i Chronopia s. 50).
+  // Utan reserv (annars: null) faller färdigheten bort, t.ex. Svartsysterns Kejsarens hand (Magi s. 15)
   for (const y of regler.yrken?.lista ?? []) {
     if (!y._fardigheter && !y.fardigheter.some((p) => p?.kraverBok)) continue;
     y._fardigheter ??= y.fardigheter;
-    y.fardigheter = y._fardigheter.map((p) => (p?.kraverBok && !bocker.includes(p.kraverBok) ? p.annars : p));
+    y.fardigheter = y._fardigheter.map((p) => (p?.kraverBok && !bocker.includes(p.kraverBok) ? p.annars : p)).filter((p) => p != null);
   }
   return regler;
 }

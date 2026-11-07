@@ -516,7 +516,7 @@
       "typ": "F, K",
       "rackvidd": "FV×10 rutor",
       "varaktighet": "Omedelbar",
-      "sida": 126,
+      "sida": 127,
       "beskrivning": "En eld- och ljusexplosion, 5 skada per grad inom E meter. Bländar alla som ser den."
     },
     {
@@ -527,7 +527,7 @@
       "typ": "K",
       "rackvidd": "Beröring",
       "varaktighet": "FV/4 SR",
-      "sida": 126,
+      "sida": 127,
       "beskrivning": "Ett jättesprång utan ansats, 4 meter långt och 2 meter högt per grad."
     },
     {
@@ -1059,10 +1059,10 @@
       "typ": "F",
       "rackvidd": "FV×10 rutor",
       "varaktighet": "Omedelbar",
-      "sida": 33,
+      "sida": 32,
       "kalla": {
         "bok": "magi",
-        "sida": 33
+        "sida": 32
       },
       "beskrivning": "1T8 per effektgrad och målet fattar eld (1T3 per effektgrad i 1T6 SR). Rustning skyddar och sköld kan parera."
     },
@@ -1074,10 +1074,10 @@
       "typ": "",
       "rackvidd": "FV×3 rutor",
       "varaktighet": "FV×1 SR",
-      "sida": 33,
+      "sida": 32,
       "kalla": {
         "bok": "magi",
-        "sida": 33
+        "sida": 32
       },
       "beskrivning": "Vindar bär personer eller föremål, 6 STO per effektgrad."
     },
@@ -1089,10 +1089,10 @@
       "typ": "",
       "rackvidd": "FV×4 rutor",
       "varaktighet": "FV×1 SR",
-      "sida": 33,
+      "sida": 32,
       "kalla": {
         "bok": "magi",
-        "sida": 33
+        "sida": 32
       },
       "beskrivning": "En klo av mörker som gör 1T8 (+2 per effektgrad), har 8 KP (+1 per effektgrad) och inte skadas av vanliga vapen."
     },
@@ -1131,7 +1131,7 @@
       "namn": "Drakens andedräkt",
       "skola": "elementarmagi",
       "sv": 18,
-      "typ": "F",
+      "typ": "",
       "rackvidd": "FV×3 rutor",
       "varaktighet": "FV SR",
       "sida": 34,
@@ -1644,10 +1644,10 @@
       "typ": "",
       "rackvidd": "FV×1 rutor",
       "varaktighet": "FV×1 SR",
-      "sida": 59,
+      "sida": 60,
       "kalla": {
         "bok": "alver",
-        "sida": 59
+        "sida": 60
       },
       "beskrivning": "+10 CL på moralslag och mot Skräckslå för vänligt sinnade inom räckvidden.",
       "grupp": "stridsmagi",
@@ -1665,10 +1665,10 @@
       "typ": "",
       "rackvidd": "Personlig",
       "varaktighet": "FV×1 SR",
-      "sida": 59,
+      "sida": 60,
       "kalla": {
         "bok": "alver",
-        "sida": 59
+        "sida": 60
       },
       "beskrivning": "Skadebonusen ökar ett steg per effektgrad.",
       "grupp": "stridsmagi-mentalism",
