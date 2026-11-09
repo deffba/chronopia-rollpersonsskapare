@@ -122,7 +122,18 @@ export function stegUtrustning(res) {
     sok,
     ingenTraff,
     tabell,
-    u.saker.length ? [el("h3", {}, "Packning"), el("ul", { class: "packning" }, u.saker.map((x) =>
-      el("li", {}, el("span", {}, sakNamn(x)), el("span", { class: "num hjalp" }, x.yrke ? "gratis (yrket)" : x.gratis ? "gratis" : sm(x.pris * x.antal)))))] : null,
+    u.saker.length ? [el("h3", {}, "Packning"), el("ul", { class: "packning" }, u.saker.map((x) => {
+      // Köpta varor kan ändras eller tas bort direkt här; gratis saker (yrket, startpaketet) styrs på annat håll
+      const kopt = !x.gratis && !x.yrke;
+      return el("li", kopt ? { "data-vara": x.namn } : {}, el("span", { class: "packnamn" }, sakNamn(x)),
+        kopt ? el("span", { class: "antal packantal" },
+          el("button", { type: "button", class: "knapp liten", "aria-label": `En ${x.namn} mindre`, onclick: () => andra(x.namn, -1) }, "−"),
+          el("span", {}, x.antal),
+          el("button", { type: "button", class: "knapp liten", disabled: x.pris > u.kvar, "aria-label": `En ${x.namn} till`, onclick: () => andra(x.namn, 1) }, "+"),
+          el("button", { type: "button", class: "knapp liten ta-bort", "aria-label": `Ta bort ${x.namn}`, title: "Ta bort ur packningen", onclick: () => andra(x.namn, -x.antal) }, "✕")) : null,
+        el("span", { class: "num hjalp packvikt", title: x.kategori === "Kläder" ? "Kläder räknas inte i bördan" : x.kategori === "Rustning" ? "En rustning man bär räknas som halva vikten i bördan" : null },
+          `${kg(x.vikt)} kg`),
+        el("span", { class: "num hjalp packpris" }, x.yrke ? "gratis (yrket)" : x.gratis ? "gratis" : sm(x.pris * x.antal)));
+    }))] : null,
   ];
 }

@@ -33,6 +33,7 @@ const TESTER = [
   { namn: "vr", ok: passFail },
   { namn: "vr-yrken", ok: passFail },
   { namn: "vr-utrustning", ok: passFail },
+  { namn: "packning", ok: passFail },
   { namn: "vr-sinnen", ok: passFail },
   { namn: "magi-bok", ok: passFail },
   { namn: "dvargar-bok", ok: passFail },
