@@ -95,8 +95,9 @@ const NAMN = new RegExp(Buffer.from('bmljbGFzfGRlIGZhaXJl', 'base64').toString()
     try { text = execSync(`pdftotext "${fil}" -`).toString(); } catch { /* pdftotext saknas */ }
     if (text) {
       const sidor = Number(execSync(`pdfinfo "${fil}"`).toString().match(/Pages:\s+(\d+)/)[1]);
-      ok('två sidor', sidor === 2, String(sidor));
-      ok('formulärets rubriker finns', /Grundegenskap/.test(text) && /Särskilda förmågor/.test(text) && /Utrustning/.test(text));
+      // Sida 3 har tomma rader för besvärjelser, som i ett ifyllt formulär står på en egen sida
+      ok('tre sidor', sidor === 3, String(sidor));
+      ok('formulärets rubriker finns', /Grundegenskap/.test(text) && /Särskilda förmågor/.test(text) && /Utrustning/.test(text) && /Besvärjelser/.test(text));
       // Motorn räknar en tom rollperson som människa och krigare; inget av det får synas, inte heller vikter eller färdigheter
       ok('inga värden ifyllda', !/Människa|Krigare|\bkg\b|Bluffa|Upptäcka fara|Rasförmåga/.test(text), (text.match(/Människa|Krigare|\bkg\b|Bluffa|Upptäcka fara|Rasförmåga/) || [''])[0]);
     }

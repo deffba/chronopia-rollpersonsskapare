@@ -131,7 +131,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   // ---- Rollformuläret: alla förmågor och de hjältepoäng som blev över
   p = await ny(true);
   await p.click('#menyknapp'); await p.selectOption('#dev-lage', 'formular'); await p.click('#dev-vr-hjalte'); await p.waitForTimeout(400);
-  const rf = await p.locator('.rf-formagor').textContent();
+  const rf = (await p.locator('.rf-formagor').allTextContents()).join(' '); // det som inte får plats på sida 1 står på sida 3
   ok('formuläret har alla tre förmågorna', ['Hjälte', 'Blodshämnd', 'Vapenvan'].every(n => rf.includes(n)), rf.slice(0, 200));
   ok('formuläret har 13 hjältepoäng', (await p.inputValue('[aria-label="Hjältepoäng"]')) === '13');
   ok('inga konsolfel (formuläret)', !p.errs.length, p.errs.join(' | '));
