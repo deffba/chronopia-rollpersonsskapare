@@ -4,6 +4,7 @@
 import { nivaer, valfriaRegler } from "../regelmotor.js";
 import { S, uppdatera } from "../tillstand.js";
 import { el } from "../ui/dom.js";
+import { wretlerRuta } from "../wretler.js";
 
 export const bokAv = (id) => S.R.bocker.lista.find((b) => b.id === id);
 export const lastaBocker = () => Boolean(S.rp.ras);
@@ -71,6 +72,7 @@ export function stegBocker() {
           el("span", { class: "bok-status niva-text" }, v.beskrivning)));
     }))) : null;
   return [
+    wretlerRuta(),
     el("p", { class: "hjalp" }, "Välj vilka böcker rollpersonen ska skapas med. Spelledaren bestämmer vilka böcker som gäller i kampanjen. ",
       "Grundreglerna är alltid med. Expansionerna läggs in i appen efter hand."),
     last ? el("p", { class: "hjalp bok-last" }, "Valet är låst eftersom skapandet har börjat. Börja om med Ny rollperson i menyn för att välja andra böcker.") : null,

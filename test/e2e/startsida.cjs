@@ -21,9 +21,10 @@ const NAMN = new RegExp(Buffer.from('bmljbGFzfGRlIGZhaXJl', 'base64').toString()
 
     // Startsidan
     const knappar = await p.locator('.startknapp').evaluateAll(k => k.map(x => ({ id: x.id, av: x.disabled, text: x.textContent })));
-    ok('startsidan har sex val', knappar.length === 6, knappar.map(k => k.id).join(','));
+    ok('startsidan har sju val', knappar.length === 7, knappar.map(k => k.id).join(','));
     ok('Redigera, Förbättra och Kampanj kommer snart och är spärrade', ['start-redigera', 'start-forbattra', 'start-kampanj'].every(id => { const k = knappar.find(x => x.id === id); return k?.av && /kommer snart!/.test(k.text); }));
-    ok('Skapa, Ladda ned rollformulär och Regelresonemang går att trycka på', ['start-skapa', 'start-formular', 'start-regler'].every(id => knappar.find(x => x.id === id)?.av === false));
+    ok('Skapa, Ladda ned rollformulär och Regelresonemang går att trycka på', ['start-skapa', 'start-wretler', 'start-formular', 'start-regler'].every(id => knappar.find(x => x.id === id)?.av === false));
+    ok('Wretler och Wålnader har ett eget kort', /^Wretler och Wålnader/.test(knappar.find(x => x.id === 'start-wretler')?.text ?? ''));
     ok('stegen syns inte på startsidan', await p.locator('.layout').isHidden());
     await p.waitForFunction(() => document.querySelector('#version').textContent);
     ok('versionen syns i sidfoten', /^v\d+\.\d+\.\d+ · lokal version$/.test(await p.locator('#version').textContent()), await p.locator('#version').textContent());
@@ -67,6 +68,25 @@ const NAMN = new RegExp(Buffer.from('bmljbGFzfGRlIGZhaXJl', 'base64').toString()
     ok('bakåtknappen går tillbaka till stegen', await p.locator('.layout').isVisible());
     await p.goForward(); await p.waitForTimeout(200);
     ok('framåtknappen går till startsidan igen', await p.locator('#start-skapa').isVisible());
+
+    // Wretler och Wålnader (wretler.js): läget följer rollpersonen och låses med böckerna
+    const wwSpar = () => p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp.wretler);
+    ok('påbörjad vanlig rollperson: Wretler och Wålnader är spärrat', await p.locator('#start-wretler').isDisabled() && /Ny rollperson/.test(await p.locator('#start-wretler').textContent()));
+    await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('#start-wretler');
+    await p.click('#start-wretler');
+    ok('Wretler och Wålnader öppnar steg 0 med läget på', (await rubrik()) === 'Böcker' && await p.locator('#wretler-ruta').isVisible());
+    await p.click('#nasta-steg'); await p.click('.raskort >> nth=0'); await p.waitForTimeout(200);
+    ok('läget sparas i rollpersonen', (await wwSpar()) === true);
+    await p.click('.steg-knapp >> nth=0');
+    ok('läget låses med böckerna', await p.locator('#wretler-ruta').isVisible() && await p.locator('#wretler-av').count() === 0);
+    await p.click('#hem');
+    ok('påbörjad rollperson i läget: Fortsätt via kortet', /Fortsätt med/.test(await p.locator('#start-wretler').textContent()) && await p.locator('#start-wretler').isEnabled());
+    await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForSelector('#start-wretler');
+    await p.click('#start-wretler'); await p.click('#wretler-av');
+    ok('Skapa utan husreglerna stänger av läget', await p.locator('#wretler-ruta').count() === 0);
+    await p.click('#hem'); await p.click('#start-wretler'); await p.click('#hem'); await p.click('#start-skapa');
+    ok('Skapa rollperson stänger av läget före start', await p.locator('#wretler-ruta').count() === 0);
+    await p.click('#hem');
 
     // Regelresonemang
     await p.click('#start-regler');

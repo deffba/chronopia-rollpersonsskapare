@@ -1,14 +1,23 @@
 // Startsidan med de stora valen, och sidan Regelresonemang (husreglerna och regelbesluten).
 import { S } from "../tillstand.js";
 import { $, el } from "./dom.js";
+import { WRETLER, valjWretler, wretlerAktiv } from "../wretler.js";
 
 // ------------------------------------------------------------ startsidan
 // Varje val: id, rubrik, kort förklaring och vad knappen gör. Utan gor visas valet som "Kommer snart!".
 export function startsida({ skapa, laddaNerTomt, regler }) {
   const igang = Boolean(S.rp.ras);
+  // Wretler och Wålnader (wretler.js): ett nytt val slår på eller av läget; en påbörjad rollperson behåller sitt läge
+  const ww = wretlerAktiv();
+  const skapaMed = (pa) => () => { if (!igang) valjWretler(pa); skapa(); };
   const val = [
     { id: "start-skapa", namn: igang ? "Fortsätt skapa rollperson" : "Skapa rollperson",
-      text: igang ? `Fortsätt med ${S.rp.namn.trim() || "rollpersonen"} där du slutade.` : "Välj böcker och bygg en ny rollperson steg för steg.", gor: skapa, primar: true },
+      text: igang ? `Fortsätt med ${S.rp.namn.trim() || "rollpersonen"} där du slutade.` : "Välj böcker och bygg en ny rollperson steg för steg.", gor: igang ? skapa : skapaMed(false), primar: true },
+    { id: "start-wretler", namn: WRETLER.namn,
+      text: igang && ww ? `Fortsätt med ${S.rp.namn.trim() || "rollpersonen"} med husreglerna för Wretler och Wålnader.`
+        : igang ? "En annan rollperson är påbörjad. Börja om med Ny rollperson i menyn för att skapa en med husreglerna för Wretler och Wålnader."
+          : "Skapa en rollperson med husreglerna för kampanjen Wretler och Wålnader.",
+      gor: igang && !ww ? null : skapaMed(true), las: igang && !ww },
     { id: "start-redigera", namn: "Redigera rollperson", text: "Ändra en befintlig rollperson friare än i stegen." },
     { id: "start-forbattra", namn: "Förbättra rollperson", text: "För in erfarenhet och låt rollpersonen växa efter spelmötena." },
     { id: "start-kampanj", namn: "Kampanj", text: "Spelledaren väljer böcker och husregler, bjuder in spelarna och ser deras rollformulär." },
@@ -20,7 +29,7 @@ export function startsida({ skapa, laddaNerTomt, regler }) {
     el("div", { class: "startval" }, val.map((v) => el("button", {
       type: "button", id: v.id, class: "startknapp" + (v.primar ? " primar" : "") + (v.gor ? "" : " kommer-snart"),
       disabled: !v.gor, onclick: v.gor ? (e) => v.gor(e) : null },
-    el("span", { class: "startknapp-namn" }, v.namn, v.gor ? null : el("em", { class: "kommer" }, " (kommer snart!)")),
+    el("span", { class: "startknapp-namn" }, v.namn, v.gor || v.las ? null : el("em", { class: "kommer" }, " (kommer snart!)")),
     el("span", { class: "startknapp-text" }, v.text)))));
 }
 
