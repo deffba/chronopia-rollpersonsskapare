@@ -10,6 +10,7 @@ export const FILER = ["raser", "alder", "grundegenskaper", "fardigheter", "yrken
 export const LAGRING = "chronopia-rollperson-v2";
 
 export const TOM = () => ({
+  wretler: false, // läget Widunder och Wretler med egna husregler (wretler.js); tillfälligt tills kampanjer med konton finns
   bocker: ["grund"], // böckerna rollpersonen skapas med (steg 0); grundreglerna är alltid med
   valfriaRegler: [], // valfria regler från de valda böckerna (steg 0), t.ex. "syn-och-horsel" (V&R s. 3, RB-002)
   sinnen: { syn: { bp: 0, slag: null }, horsel: { bp: 0, slag: null } }, // Syn och hörsel: BP + 1T6 i steg 6

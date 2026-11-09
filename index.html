@@ -702,6 +702,21 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] .startknapp, [data-stil="klassisk"] .bokrad label { border-radius: 2px; border-color: #8c7a74; }
 [data-stil="klassisk"] .startknapp-namn { font: 600 1.25rem/1.2 var(--rubrik); }
 @media print { .sidfot-app { display: none; } }
+/* Widunder och Wretler (wretler.js) */
+.wretler-knapp { display: flex; align-items: center; gap: 18px; width: 100%; min-height: 132px; padding: 10px 22px 10px 12px; margin-bottom: 14px; text-align: left;
+  border: 1px solid var(--linje); border-radius: 10px; background: var(--bg); cursor: pointer; transition: border-color .2s, background-color .2s, transform .15s; }
+.wretler-knapp:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-svag); transform: translateY(-1px); }
+.wretler-knapp.vald { border-color: var(--accent); background: var(--accent-svag); box-shadow: inset 0 0 0 1px var(--accent); }
+.wretler-knapp:disabled { cursor: default; }
+.wretler-knapp:disabled:not(.vald) { opacity: .62; }
+.wretler-bild { flex: none; height: 112px; width: auto; }
+.wretler-text { display: grid; gap: 6px; }
+.wretler-status { font-size: .88rem; color: var(--dampad); }
+.wretler-status:empty { display: none; }
+.wretler-knapp.vald .wretler-status { color: var(--accent-text); font-weight: 600; }
+[data-stil="klassisk"] .wretler-knapp { border-radius: 2px; border-color: #8c7a74; }
+.wretler-citat { font-style: italic; max-width: 70ch; }
+@media (max-width: 520px) { .wretler-bild { height: 80px; } .wretler-knapp { gap: 12px; } }
 </style>
 
 <header class="topp">

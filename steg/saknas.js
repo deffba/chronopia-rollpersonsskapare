@@ -3,6 +3,7 @@ import { rasAv, yrkeAv, fardighetAv, paborjad, skolFV, namnFor, formageslag, pak
 import { STEG } from "../texter.js";
 import { S, motorIndata, rasId, yrkeId, yrkesNycklar } from "../tillstand.js";
 import { MAGISLAG } from "../ui/magimodal.js";
+import { wretlerAktiv } from "../wretler.js";
 
 // Val som ännu inte är gjorda, per steg. Ett steg med obligatoriska val kvar går inte att lämna framåt.
 export function saknasPerSteg(res) {
@@ -70,8 +71,8 @@ export function saknasPerSteg(res) {
   for (const f of res.fardigheter.filter((x) => x.tekniker && !x.tekniker.length)) lista.fardigheter.push(`${f.namn}: välj stilens tekniker`);
   if (S.rp.startpaket.valt && !S.rp.startpaket.vapen && !yrkeAv(S.R, S.rp.yrke)?.startvapen) lista.utrustning.push("Startpaketets vapen");
   if (S.rp.svardshand.slag === null && !svardshandGiven(res)) lista.svardshand.push("Slaget för svärdshand");
-  if (S.rp.socialtStand.slag === null && !S.rp.socialtStand.valt) lista.stand.push("Slaget för socialt stånd");
-  if (S.rp.startkapital.slag === null) lista.kapital.push("Slaget för startkapital");
+  if (S.rp.socialtStand.slag === null && !S.rp.socialtStand.valt && !wretlerAktiv(S.rp)) lista.stand.push("Slaget för socialt stånd");
+  if (S.rp.startkapital.slag === null && !wretlerAktiv(S.rp)) lista.kapital.push("Slaget för startkapital");
   return lista;
 }
 

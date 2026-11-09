@@ -5,6 +5,7 @@ import { el, sm } from "../ui/dom.js";
 import { valLista } from "../ui/kontroller.js";
 import { inteSlaget, slagSteg } from "../ui/tarningar.js";
 import { svardshandGiven } from "./saknas.js";
+import { wretlerAktiv, wretlerKapital, wretlerStand } from "../wretler.js";
 
 // Klanförmågans bonus på slaget för socialt stånd eller startkapital (Dvärgar i Chronopia s. 19–25)
 const klanBonus = (res, falt) => {
@@ -23,6 +24,7 @@ export function stegSvardshand(res) {
 }
 
 export function stegStand(res) {
+  if (wretlerAktiv(S.rp)) return wretlerStand(); // Widunder och Wretler: Knapadel utan slag
   const ras = rasAv(S.R, rasId());
   const bonus = ras.slagbonus.socialtStand ?? 0;
   const tabell = S.R.slag.socialtStand.tabell;
@@ -42,6 +44,7 @@ export function stegStand(res) {
 }
 
 export function stegKapital(res) {
+  if (wretlerAktiv(S.rp)) return wretlerKapital(res); // Widunder och Wretler: ett lån utan slag
   const halva = Math.ceil(S.rp.socialtStand.bp / 2);
   const alderEff = S.R.alder.efterAr.find((r) => r.max === null || S.rp.alder <= r.max);
   const ras = rasAv(S.R, rasId());
