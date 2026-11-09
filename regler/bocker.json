@@ -1,6 +1,6 @@
 {
   "grupper": [
-    "Kärnböcker",
+    "Generella expansioner",
     "Rasböcker",
     "Mörkerböcker"
   ],
@@ -8,7 +8,7 @@
     {
       "id": "grund",
       "namn": "Chronopia (grundreglerna)",
-      "grupp": "Kärnböcker",
+      "grupp": "Generella expansioner",
       "status": "inlagd",
       "alltid": true,
       "kraver": []
@@ -16,7 +16,7 @@
     {
       "id": "vr",
       "namn": "Vapen & rustningar i Chronopia",
-      "grupp": "Kärnböcker",
+      "grupp": "Generella expansioner",
       "status": "inlagd",
       "kraver": [],
       "nivaer": {
@@ -144,7 +144,7 @@
     {
       "id": "magi",
       "namn": "Magi i Chronopia",
-      "grupp": "Kärnböcker",
+      "grupp": "Generella expansioner",
       "status": "inlagd",
       "kraver": [],
       "nivaer": {

@@ -56,7 +56,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   display: flex; flex-wrap: wrap; gap: 14px 16px; align-items: center;
   padding-block: 18px; border-bottom: 1px solid var(--linje); margin-bottom: 20px; max-width: 1480px; margin-inline: auto;
 }
-.topp h1 { flex: 1 1 auto; min-width: 0; font-size: 2.6rem; }
+.topp h1 { flex: 1 1 auto; min-width: 0; font: 700 2.6rem/1.1 "Cinzel Decorative", "Cinzel", Georgia, serif; letter-spacing: .03em; }
 /* Menyn: Ny rollperson, Läs in fil, manuella slag och utseende */
 .meny { position: relative; margin-left: auto; }
 .knapp.menyknapp { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; }
@@ -138,6 +138,18 @@ input[type="text"], input[type="number"], input[type="search"], select, textarea
 input[type="text"], select { min-width: 12rem; }
 textarea { width: 100%; resize: vertical; }
 input.tal { width: 4.5rem; text-align: right; font-variant-numeric: tabular-nums; }
+/* Sifferfält med eget minus och plus i stället för webbläsarens pilar */
+.stegare { display: inline-flex; align-items: stretch; vertical-align: middle; }
+.stegare input.tal { width: 3.6rem; text-align: center; border-radius: 0; -moz-appearance: textfield; appearance: textfield; margin: 0; }
+.stegare.bred input.tal { width: 5rem; }
+.stegare input.tal::-webkit-inner-spin-button, .stegare input.tal::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.stegknapp { flex: none; width: 2.1rem; min-height: 2.1rem; padding: 0; border: 2px solid var(--accent, #6a524c); background: var(--accent, #6a524c); color: #f4ead8;
+  font: 700 1.35rem/1 "Cinzel", Georgia, serif; cursor: pointer; display: inline-grid; place-items: center; box-shadow: inset 0 -3px 0 rgb(0 0 0 / .22); }
+.stegknapp:first-child { border-radius: 4px 0 0 4px; }
+.stegknapp:last-child { border-radius: 0 4px 4px 0; }
+.stegknapp:hover:not(:disabled) { filter: brightness(1.15); }
+.stegknapp:active:not(:disabled) { box-shadow: inset 0 2px 0 rgb(0 0 0 / .25); }
+.stegknapp:disabled { opacity: .35; cursor: default; }
 input.tal.bred { width: 6rem; }
 
 .valkort-rutnat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%;
@@ -198,6 +210,8 @@ input.tal.bred { width: 6rem; }
 .tabell .fel { color: var(--fel); }
 .tabell tr.markerad { background: var(--accent-svag); }
 .fardighetstabell td:first-child { min-width: 12rem; }
+.fardighetstabell .fv-kol { text-align: center; position: relative; white-space: nowrap; }
+.fardighetstabell td.fv-kol .bniva { position: absolute; top: 50%; transform: translateY(-50%); }
 /* Särskilda förmågor (steg 7): tabellen som kort. Ett uppfällt kort läggs över korten bredvid, så rutnätet behåller sin storlek */
 .formagekort { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 3.4rem; gap: 6px; width: min(100%, 900px); margin-top: 6px; }
 @media (max-width: 560px) { .formagekort { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -544,7 +558,7 @@ option.grupprubrik { font-weight: 700; }
 [data-stil="klassisk"] .steg-knapp.aktiv { box-shadow: var(--skugga); }
 /* Text som ligger direkt på den mörka stenen */
 [data-stil="klassisk"] .topp { border-bottom: 3px double #6b5a54; }
-[data-stil="klassisk"] .topp h1 { color: var(--sten-text); font: 700 2.7rem/1.1 var(--rubrik); letter-spacing: .04em; }
+[data-stil="klassisk"] .topp h1 { color: var(--sten-text); font: 700 2.7rem/1.1 "Cinzel Decorative", var(--rubrik); letter-spacing: .03em; }
 @media (max-width: 520px) { .topp h1, [data-stil="klassisk"] .topp h1 { font-size: 1.7rem; overflow-wrap: anywhere; } }
 [data-stil="klassisk"] .menypanel { background: var(--marmor), var(--ljuskorn), var(--yta); border: 3px double #6b5a54; border-radius: 2px; }
 [data-stil="klassisk"] .menyknapp { color: var(--text); }

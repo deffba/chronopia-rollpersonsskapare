@@ -38,7 +38,7 @@ export function stegYrke() {
           // Nej: inget ändras och spelaren väljer ett annat yrke. Ja: klanen byts och klanförmågan slås om direkt.
           fragaKlanbyte(y, nyKlan, (formagaSlag, val) => {
             S.rp.klan = { id: nyKlan.id, slag: null, formagaSlag, val };
-            S.rp.yrke = y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = []; S.rp.tackyrke = { yrke: "", fardigheter: [] }; S.rp.dockor = [];
+            S.rp.yrke = y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = ""; S.rp.tatueringar = []; S.rp.tackyrke = { yrke: "", fardigheter: [] }; S.rp.masker = []; S.rp.dockor = []; S.rp.yrkesformagaVal = "";
             uppdatera();
             const f = rakna().klan?.formaga;
             visaNotis(`Klanen är nu ${nyKlan.namn}.${f ? ` Nya klanförmågan: ${f.namn}.` : ""}`);
@@ -47,7 +47,8 @@ export function stegYrke() {
         }
         // Ett tryck på det valda yrket avmarkerar det, som för rasen i steg 1
         S.rp.yrke = y.id === S.rp.yrke ? "" : y.id; S.rp.yrkesval = {}; S.rp.valfri = ""; S.rp.hantverkBonus = "";
-        S.rp.tackyrke = { yrke: "", fardigheter: [] }; S.rp.dockor = []; // Pierrotens täckyrke, dockmästarens dockor
+        // Det som hör till det gamla yrket: bärsärkens tatueringar, pierrotens täckyrke och masker, dockmästarens dockor
+        S.rp.tatueringar = []; S.rp.tackyrke = { yrke: "", fardigheter: [] }; S.rp.masker = []; S.rp.dockor = []; S.rp.yrkesformagaVal = "";
         // Yrken med vapen i startutrustningen får inget vapen i startpaketet
         if (y.startvapen && S.rp.startpaket?.vapen) S.rp.startpaket = { ...S.rp.startpaket, vapen: "" };
         if (y.villkor?.kon && S.rp.yrke === y.id) S.rp.kon = y.villkor.kon; // Svartsyster: bara kvinnor (Magi s. 15)
@@ -59,7 +60,10 @@ export function stegYrke() {
   if (!S.rp.yrke) return [el("div", { class: "valkort-rutnat liten fyra" }, kort), el("p", { class: "hjalp" }, "Välj rollpersonens yrke genom att klicka på ett av korten.")];
   const namn = (x) => fardighetAv(S.R, x)?.namn ?? x;
   const punkt = (text, id, val, extra) => el("li", {}, text, id ? fardighetsInfo(id) : null, val ? el("span", { class: "sida" }, ` (${val})`) : null, extra ? el("span", { class: "hjalp" }, ` – ${extra}`) : null);
+  // Färdigheter som yrkesförmågan ger som primära (Vapenmästarens tre vapen, V&R s. 12) står redan i yrkesförmågan
+  // och visas inte igen bland yrkesfärdigheterna; de väljs i steg 4
   const punkter = yrke.fardigheter.map((post, i) => {
+    if (post.primar) return null;
     const val = S.rp.yrkesval[i];
     if (typeof post === "string") return punkt(namn(post), post, typeof val === "string" && !paborjad(val) ? val : null);
     if (post.valPaket) {
@@ -80,11 +84,7 @@ export function stegYrke() {
     return punkt(fasta ? `${namn(post.fardighet)}: ${post.maste.join(", ")}` : post.namn ? `${post.namn}${post.antal > 1 ? ` (${post.antal})` : ""}` : `${namn(post.fardighet)} (${post.antal})`, post.fardighet,
       fasta ? null : valda.filter((v) => v && !paborjad(v)).join(", ") || null, [extraFor(post), tekniker ? `tekniker ${tekniker}` : null].filter(Boolean).join("; ") || null);
   });
-  // Gratis FV i en färdighet som inte är yrkesfärdighet (Hypnotisera för sabransk ökenriddare)
-  for (const b of yrke.startFV ?? []) {
-    if (yrke.fardigheter.some((p) => (p.maste ?? []).some((m) => `${p.fardighet}:${m}` === b.fardighet))) continue;
-    punkter.push(punkt(namnFor(S.R, fardighetAv(S.R, b.fardighet), b.fardighet), b.fardighet.split(":")[0], null, `FV ${b.fv} gratis, som primär`));
-  }
+  // Gratis FV i en primär färdighet (Hypnotisera för sabransk ökenriddare) står i yrkesförmågan, inte här
   if (yrke.valfri) punkter.push(punkt("En valfri färdighet", null, S.rp.valfri && !paborjad(S.rp.valfri) ? namn(S.rp.valfri.split(":")[0]) + (S.rp.valfri.split(":")[1] ? `: ${S.rp.valfri.split(":")[1]}` : "") : null));
   if (yrke.automatiska.includes("minimagi")) punkter.push(punkt("Känna magi, Kunskap om magi och Minimagi, automatiskt med samma FV som den bästa magiskolan, och inget magiförmågeslag (Magi i Chronopia s. 8–9)", null));
   else if (yrke.automatiska.length) punkter.push(punkt("Känna magi och Kunskap om magi, automatiskt med samma FV som magiskolan (s. 62, 64)", null));
@@ -96,7 +96,7 @@ export function stegYrke() {
       yrke.stamning ? el("p", { class: "vallore" }, yrke.stamning) : null,
       yrke.beskrivning ? el("p", { class: "yrkestext" }, yrke.beskrivning, el("span", { class: "sida" }, ` (${kallText(S.R, yrke, `s. ${yrke.sida}`)})`)) : null,
       el("dl", { class: "valdata bred" },
-        el("div", {}, el("dt", {}, "Yrkesförmåga"), el("dd", {}, yrkesformagaText(yrke))),
+        el("div", {}, el("dt", {}, "Yrkesförmåga"), el("dd", {}, yrkesformagaText(yrke, S.rp))),
         yrke.villkor ? el("div", {}, el("dt", {}, "Vem"), el("dd", {}, villkorText(S.R, yrke.villkor))) : null,
         yrke.startutrustning?.length ? el("div", {}, el("dt", {}, "Startutrustning"), el("dd", {}, yrke.startutrustning.join(" · "), el("span", { class: "hjalp" }, " (gratis)"))) : null)),
     el("div", { class: "rutor" },

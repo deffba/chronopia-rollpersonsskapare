@@ -103,13 +103,13 @@ const medYrke = (rp, yrke, yrkesval, fv = {}) => {
 };
 const fardighet = (res, nyckel) => res.fardigheter.find((f) => f.nyckel === nyckel);
 
-test("V&R:s 15 yrken finns bara med V&R, med +3 initiativ och startutrustning", () => {
+test("V&R:s 15 yrken finns bara med V&R, med startutrustning (och inget generellt initiativ)", () => {
   const nya = regler.yrken.lista.filter((y) => y.kalla?.bok === "vr");
   assert.equal(nya.length, 15);
-  assert.ok(nya.every((y) => y.initiativ === 3 && y.startutrustning.length && y.stamning && y.beskrivning));
+  assert.ok(nya.every((y) => !y.initiativ && y.startutrustning.length && y.stamning && y.beskrivning));
   assert.ok(!valbaraYrken(regler, brutus).some((y) => y.kalla));
   assert.match(fel({ ...brutus, yrke: "hyrsvard" }).join(), /Hyrsvärd finns i Vapen & rustningar/);
-  assert.match(yrkesformagaText(regler.yrken.lista.find((y) => y.id === "hyrsvard")), /\+3 på initiativet\.$/);
+  assert.doesNotMatch(yrkesformagaText(regler.yrken.lista.find((y) => y.id === "hyrsvard")), /initiativ/);
 });
 
 test("yrken med rasvillkor (Hedersvakt bara dvärgar)", () => {
@@ -347,4 +347,14 @@ test("startutrustning som kräver detaljerad strid byts mot en vara för grundre
   const ds = { ...rp, valfriaRegler: ["detaljerad-strid"] };
   assert.ok(namn(ds).includes("Axelskydd (par): Dvärgiskt"), namn(ds).join());
   assert.ok(!raknaRollperson(regler, rp).startutrustning.includes("Axelplåt"));
+});
+
+test("grundreglernas och rasens primära färdigheter går före yrkesfärdighet", async () => {
+  const { status } = await import("../regelmotor.js");
+  const { regler: R, las } = await import("./brutus-data.mjs");
+  const RR = { ...R, raser: las("raser"), yrken: las("yrken") };
+  const rp = (ras, yrke, k, rasval = []) => ({ ras, yrke, bocker: ["grund", "vr"], rasval, yrkesfardigheter: [k], extraYrkesfardigheter: [], sarskildaFormagor: {} });
+  assert.equal(status(RR, rp("hoglandare", "krigare", "vapen:Slagsvärd", ["vapen:Slagsvärd"]), "vapen:Slagsvärd"), "primar");
+  assert.equal(status(RR, rp("ljusalv", "jagare", "vapen:Långbåge"), "vapen:Långbåge"), "primar");
+  assert.equal(status(RR, rp("troll", "krigare", "barsarkagang"), "barsarkagang"), "primar");
 });

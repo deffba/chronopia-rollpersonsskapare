@@ -107,6 +107,11 @@ export function bygg(api, recept, { foljRecept = true } = {}) {
       r.valfri = onskad && kan(onskad) ? onskad : R.fardigheter.lista.find((f) => iBocker(f, r) && kan(f.id))?.id ?? "";
     }
 
+    // Ett val av yrkesförmåga (Drakgardist, Alver i Chronopia s. 35): receptets, annars det första
+    if (yrke.yrkesformagaVal) {
+      const alt = yrke.yrkesformagaVal.alternativ;
+      r.yrkesformagaVal = alt.some((a) => a.id === recept.yrkesformagaVal) ? recept.yrkesformagaVal : alt[0].id;
+    }
     // Pierrotens täckyrke (Alver i Chronopia s. 44): receptets yrke och färdigheter, annars de första som går
     if (yrke.tackyrke) {
       const T = yrke.tackyrke;

@@ -104,7 +104,7 @@ export function stegUtrustning(res) {
       el("label", { class: "kryss" },
         el("input", { type: "checkbox", id: "startpaket", checked: S.rp.startpaket.valt, onchange: (e) => { S.rp.startpaket = { valt: e.target.checked, vapen: "" }; uppdatera(); } }),
         el("span", {}, el("strong", {}, "Gratis startpaket"), `: ${U.startpaket.varor.map((v) => v.replace(/ \(.*\)/, "").toLowerCase()).join(", ")}`,
-          res.yrke.startvapen ? ". Inget vapen, eftersom yrket ger vapen i startutrustningen." : ` och ett enkelt vapen (högst ${U.startpaket.vapenMaxPris} sm).`, " Husregel; fråga spelledaren.")),
+          res.yrke.startvapen ? ". Inget vapen, eftersom yrket ger vapen i startutrustningen." : ` och ett enkelt vapen (högst ${U.startpaket.vapenMaxPris} sm).`)),
       S.rp.startpaket.valt && !res.yrke.startvapen ? falt("Startpaketets vapen", gruppLista("startpaket-vapen", S.rp.startpaket.vapen, paketVapen,
         (v) => { S.rp.startpaket = { ...S.rp.startpaket, vapen: v }; uppdatera(); }, "Välj vapen …")) : null)),
     res.yrke.startutrustning?.length ? el("div", { class: "startutrustning", id: "startutrustning" },

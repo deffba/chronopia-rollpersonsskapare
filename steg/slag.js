@@ -53,11 +53,24 @@ export function stegKapital(res) {
     klanBonus(res, "startkapital"),
   ].filter(Boolean);
   const utanTak = S.rp.startkapital.slag + S.rp.startkapital.bp + bonusar.reduce((a, [, v]) => a + v, 0);
-  return slagSteg("sk", "startkapital", "Startkapital", "2T6",
+  // Tabellen för startkapital (s. 33), hopfälld som de andra referenstabellerna
+  const T = S.R.slag.startkapital;
+  const tabell = el("details", { class: "fakta", id: "sk-tabell" }, el("summary", {}, `Tabellen för startkapital (s. ${T.sida})`),
+    el("div", { class: "tabellram" }, el("table", { class: "tabell" },
+      el("thead", {}, el("tr", {}, el("th", {}, "Slag"), el("th", { class: "num" }, "Startkapital"))),
+      el("tbody", {}, T.tabell.map(([grans, v], i) => {
+        const fran = i === 0 ? null : T.tabell[i - 1][0] + 1;
+        const text = grans === null ? `${fran}+` : fran === null ? `${grans} eller lägre` : fran === grans ? `${grans}` : `${fran}–${grans}`;
+        return el("tr", { class: res.slag.skResultat != null && S.rp.startkapital.slag !== null && slagRad(T.tabell, res.slag.skResultat) === i ? "vald" : "" },
+          el("td", {}, text), el("td", { class: "num" }, sm(v)));
+      })))),
+    el("p", { class: "hjalp" }, "Summan multipliceras sedan med åldersbonusen."));
+  return [...slagSteg("sk", "startkapital", "Startkapital", "2T6",
     S.rp.startkapital.slag === null ? inteSlaget() : { rader: [
       `Resultat: ${res.slag.skResultat}${utanTak > res.slag.skResultat ? ` (${utanTak} före taket)` : ""}.`,
       `Åldersbonus: ×${String(alderEff.kapital).replace(".", ",")}.`],
     total: `Totalt startkapital: ${sm(res.slag.startkapital)}` },
     `Slå 2T6 plus lagda BP. Bonusarna nedan läggs på slaget. Resultatet kan inte bli högre än socialt stånd + ${yrke.kapitaltak ?? 10}.`, undefined, bonusar,
-    [`Tak för startkapital: ${res.slag.ssResultat + (yrke.kapitaltak ?? 10)}`]);
+    [`Tak för startkapital: ${res.slag.ssResultat + (yrke.kapitaltak ?? 10)}`]), tabell];
 }
+const slagRad = (tabell, v) => tabell.findIndex(([g]) => g === null || v <= g);

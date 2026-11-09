@@ -76,6 +76,6 @@ export function stegBocker() {
     last ? el("p", { class: "hjalp bok-last" }, "Valet är låst eftersom skapandet har börjat. Börja om med Ny rollperson i menyn för att välja andra böcker.") : null,
     el("div", { class: "bokgrupper" }, S.R.bocker.grupper.map((g) => el("section", { class: "bokgrupp" },
       el("h3", {}, g),
-      el("ul", { class: "boklista" }, S.R.bocker.lista.filter((b) => b.grupp === g).map(rad)))), nivaval, regelval),
+      el("ul", { class: "boklista" }, S.R.bocker.lista.filter((b) => b.grupp === g && !b.alltid).map(rad)))), nivaval, regelval),
   ];
 }

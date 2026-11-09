@@ -166,6 +166,7 @@
 
 /* Sida 3 */
 .rf-sida3 .rf-ram { gap: 4mm; }
+.rf-mer-utrustning { flex: none; margin-top: 0; }
 .rf-block { border: var(--rf-ram-linje); background: var(--rf-papper); }
 .rf-blocktext { padding: 2mm 2.5mm; font: 9.5pt/1.4 "EB Garamond", Georgia, serif; }
 .rf-blocktext p { margin: 0 0 1.5mm; }
@@ -207,3 +208,11 @@
   .rf-textyta { resize: none; }
   .rf-vy .rf-utseende .rf-textyta { background-color: transparent; }
 }
+
+/* Det tomma formuläret: varje ruta är ett ifyllbart fält */
+.rf-vy .rf-ruta-stor input.rf-in { width: 90%; height: 70%; text-align: center; font-weight: 700; }
+.rf-vy .rf-tal.stor input.rf-in { text-align: center; }
+.rf-vy .rf-linje input.rf-in { height: 3.2mm; font-size: 7pt; padding: 0 .4mm; }
+.rf-del-kp { display: inline-flex; align-items: center; gap: .3mm; }
+.rf-vy .rf-del-kp input.rf-in { width: 6mm; height: 3.4mm; text-align: center; font-size: 7pt; }
+.rf-rad.tom .rf-namn input.rf-in { flex: 1; }

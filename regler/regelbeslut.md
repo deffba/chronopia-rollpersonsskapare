@@ -278,3 +278,14 @@ Format per beslut: **Fråga**, **Källor**, **Beslut**, **Motivering**, **Påver
 - **Motivering:** Gaffeln är ett stickande vapen, och stickvapen är den närmaste gruppen.
 - **Påverkar:** Vapenlistan, utrustningssteget.
 - **Beslutat:** 2026-11-03 (tolkning vid importen).
+
+## RB-026 Initiativ och yrkesförmågor i V&R och Alver
+- **Fråga:** Har alla krigaryrken i *Vapen & rustningar* +3 på initiativ, och hur väljer drakgardisten mellan krigarens och gladiatorns yrkesförmåga?
+- **Källor:** *Vapen & rustningar* s. 4–12; *Alver i Chronopia* s. 35; grundreglerna s. 20, 22.
+- **Beslut:**
+  - V&R:s 15 yrken har **inget generellt +3 på initiativ**. Bara det som står i varje yrkes egen yrkesförmåga gäller (t.ex. Dödsdansarens +7/+5, Slaghökens +5 i gatustrid). Krigaryrken som har *krigarens yrkesförmåga* (t.ex. Dvärgars klankrigare) har fortfarande +3.
+  - **Drakgardisten** väljer i steg 4 krigarens (+3 på alla initiativslag) eller gladiatorns yrkesförmåga (+5 på initiativet i dueller, 0 dödspoäng). Valet står på rollformuläret.
+  - Färdigheter som yrkesförmågan ger som **primära** (Vapenmästarens tre vapen, Smidesmästarens Smide, Ökenriddarens Hypnotisera) står i yrkesförmågan och inte en gång till bland yrkesfärdigheterna; på rollformuläret står de bland de primära färdigheterna.
+- **Motivering:** Det står inte i boken (rättat efter den manuella testplanen).
+- **Påverkar:** Yrkessteget, yrkesfärdigheterna, rollformuläret.
+- **Beslutat:** 2026-11-05, Deffba.

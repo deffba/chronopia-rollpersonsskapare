@@ -9,7 +9,29 @@ export const infoKnapp = (text, etikett) => el("button", { type: "button", class
 
 // ------------------------------------------------------------ små kontroller
 // Talfält: ett otillåtet värde ersätts med det närmaste tillåtna mellan det nya och det gamla.
+// Ett sifferfält med ett tydligt minus till vänster och plus till höger, i stället för webbläsarens pilar.
+// Knapparna ändrar värdet ett steg och går genom samma kontroll som när man skriver in ett tal.
 export function tal(id, varde, onchange, { min, max, steg = 1, bred } = {}) {
+  const falt = talfalt(id, varde, onchange, { min, max, steg, bred });
+  const stega = (riktning) => {
+    const fran = falt.value === "" ? (riktning > 0 ? (min ?? 0) - steg : (min ?? 0) + steg) : Number(falt.value);
+    let nytt = fran + riktning * steg;
+    if (min !== undefined) nytt = Math.max(min, nytt);
+    if (max !== undefined) nytt = Math.min(max, nytt);
+    if (String(nytt) === falt.value) return;
+    falt.value = String(nytt);
+    falt.dispatchEvent(new Event("change"));
+  };
+  const nu = varde ?? null;
+  const knapp = (riktning, tecken, namn) => el("button", {
+    type: "button", class: "stegknapp", tabindex: -1, "aria-label": namn, "data-steg-for": id,
+    disabled: nu !== null && (riktning < 0 ? min !== undefined && nu <= min : max !== undefined && nu >= max),
+    onclick: () => stega(riktning),
+  }, tecken);
+  return el("span", { class: "stegare" + (bred ? " bred" : "") }, knapp(-1, "−", "Minska"), falt, knapp(1, "+", "Öka"));
+}
+
+function talfalt(id, varde, onchange, { min, max, steg = 1, bred } = {}) {
   return el("input", {
     type: "number", id, value: varde ?? "", min, max, step: steg, class: bred ? "tal bred" : "tal",
     onchange: (e) => {
@@ -43,7 +65,8 @@ export function tal(id, varde, onchange, { min, max, steg = 1, bred } = {}) {
 export function falt(etikett, kontroll, hjalp) {
   // En grupp valknappar får inte ligga i en label: ett klick på etiketten skulle välja första knappen
   // Detsamma gäller tärningsrutan: ett klick på etiketten skulle slå
-  return el(kontroll?.classList?.contains("valknappar") || kontroll?.classList?.contains("tarningsknapp") ? "div" : "label", { class: "falt" }, el("span", { class: "etikett" }, etikett), kontroll, hjalp ? el("span", { class: "hjalp" }, hjalp) : null);
+  // Och sifferfältets minus- och plusknappar: ett klick på etiketten skulle minska värdet
+  return el(["valknappar", "tarningsknapp", "stegare"].some((k) => kontroll?.classList?.contains(k)) ? "div" : "label", { class: "falt" }, el("span", { class: "etikett" }, etikett), kontroll, hjalp ? el("span", { class: "hjalp" }, hjalp) : null);
 }
 
 export function valLista(id, varde, alternativ, onchange, tomText = "Välj …") {
@@ -91,8 +114,9 @@ export function gruppLista(id, varde, grupper, onchange, tomText = "Välj …") 
 // Färgar ett talfält grönt eller rött när värdet ligger över eller under utgångsvärdet
 // (grundvärde 10 för grundegenskaper, baschansen för färdigheter)
 export function markera(falt, varde, bas) {
-  if (varde > bas) falt.classList.add("upp");
-  else if (varde < bas) falt.classList.add("ner");
+  const ruta = falt.matches?.(".stegare") ? falt.querySelector("input") : falt;
+  if (varde > bas) ruta.classList.add("upp");
+  else if (varde < bas) ruta.classList.add("ner");
   return falt;
 }
 

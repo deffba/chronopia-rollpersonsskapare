@@ -14,10 +14,15 @@ const rulltid = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? 
 const T20_FORM = '<polygon points="12,2 20.7,7 20.7,17 12,22 3.3,17 3.3,7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>'
   + '<polygon points="12,5.5 18.2,16.2 5.8,16.2" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round" opacity=".55"/>';
 const T20_KANTER = '<path d="M12 2v3.5M20.7 7l-2.5 9.2M3.3 7l2.5 9.2M12 22l-6.2-5.8M12 22l6.2-5.8M3.3 17l2.5-.8M20.7 17l-2.5-.8M3.3 7L12 5.5M20.7 7L12 5.5" stroke="currentColor" stroke-width=".8" opacity=".45"/>';
+// T10 ritas som en drake (femhörnig trapezoeder sedd uppifrån), T100 som två T10 bredvid varandra
+const drake = (cx, cy, b, h) => `<polygon points="${cx},${cy - h} ${cx + b},${cy - h / 4} ${cx},${cy + h} ${cx - b},${cy - h / 4}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>`;
+const T10_KANTER = '<path d="M12 4.5v15M4.5 10.4l7.5 3.3 7.5-3.3" stroke="currentColor" stroke-width=".8" fill="none" opacity=".45"/>';
 export const tarningsIkon = (sidor = 6) => {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", "tarning"); svg.setAttribute("aria-hidden", "true");
   if (sidor === 20) { svg.innerHTML = T20_FORM + T20_KANTER; return svg; }
+  if (sidor === 10) { svg.innerHTML = drake(12, 12, 8.5, 10) + T10_KANTER; return svg; }
+  if (sidor === 100) { svg.innerHTML = drake(8, 12.5, 6.5, 8.5) + drake(16, 11.5, 6.5, 8.5); return svg; }
   svg.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
     + [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="currentColor"/>`).join("");
   return svg;
@@ -35,11 +40,14 @@ const PRICKAR = { 1: [[12, 12]], 2: [[8, 8], [16, 16]], 3: [[7, 7], [12, 12], [1
 const tarningsSida = (v, sidor = 6) => {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("class", sidor === 6 ? "tarning sida" : "tarning sida t20"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", String(v));
-  svg.innerHTML = sidor === 6
+  const siffra = (y) => `<text x="12" y="${y}" text-anchor="middle" font-size="${v > 9 ? 9 : 10}" font-weight="700" fill="currentColor" font-family="sans-serif">${v}</text>`;
+  svg.innerHTML = sidor === 10
+    ? drake(12, 12, 9.5, 11) + siffra(14.6)
+    : sidor === 6
     ? '<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>'
       + PRICKAR[v].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.8" fill="currentColor"/>`).join("")
     : '<polygon points="12,1.5 21,6.75 21,17.25 12,22.5 3,17.25 3,6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
-      + `<text x="12" y="15.6" text-anchor="middle" font-size="${v > 9 ? 9 : 10}" font-weight="700" fill="currentColor" font-family="sans-serif">${v}</text>`;
+      + siffra(15.6);
   return svg;
 };
 // Tärningsrutan ligger i slagfältet. Vid klick snurrar tärningen medan "Slår …" pulserar;
@@ -93,14 +101,14 @@ export const inteSlaget = () => (S.manuellaSlag ? "Skriv in slaget och bekräfta
 // så att siffran inte flyttar sig.
 export const lastFalt = (id, varde) => el("input", { type: typeof varde === "number" ? "number" : "text", id, class: "tal last", value: varde, readonly: true, "aria-readonly": "true", tabindex: -1 });
 // Tärningsrutan när slaget har landat: tärningen ligger kvar på samma plats och slaget står bredvid den.
-// Slaget visas som tärningar: T6 med prickar, T20 med siffran. Bonusar (lagda BP, ras, yrke …) står var för sig
+// Slaget visas som tärningar: T6 med prickar, T10 och T20 med siffran. Bonusar (lagda BP, ras, yrke …) står var för sig
 // efter tärningarna, t.ex. ⚃ + ⚁ + 2 + 4. Saknas tärningarna (slag sparat före den här versionen) delas summan upp.
-// Andra tärningar (T3, T4 …) visas som summan.
+// Andra tärningar (T3, T4, T100 …) visas som summan, med en tärningsikon av rätt sort.
 export function landatSlag(id, varde, text, { tarningar = null, bonusar = [], sidor = 6, antal = 2 } = {}) {
   bonusar = bonusar.filter(Boolean);
   const summan = (t) => Array.isArray(t) && t.length === antal && t.every((x) => x >= 1 && x <= sidor) && t.reduce((a, b) => a + b, 0) === varde;
   if (!summan(tarningar) && varde >= antal && varde <= antal * sidor) tarningar = antal === 1 ? [varde] : antal === 2 ? delaSumma(varde, false, sidor) : null;
-  const kanda = (sidor === 6 || sidor === 20) && summan(tarningar);
+  const kanda = (sidor === 6 || sidor === 10 || sidor === 20) && summan(tarningar);
   const bonusText = bonusar.map((b) => (b > 0 ? ` + ${b}` : ` − ${-b}`)).join("");
   const innehall = kanda ? el("span", { class: "slagvarde tarningsrad" }, tarningar.flatMap((t, i) => [i ? " + " : null, tarningsSida(t, sidor)]), bonusText)
     : rutText(`${varde}${bonusText}`, text, "slagvarde");
