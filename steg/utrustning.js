@@ -131,6 +131,8 @@ export function stegUtrustning(res) {
           el("span", {}, x.antal),
           el("button", { type: "button", class: "knapp liten", disabled: x.pris > u.kvar, "aria-label": `En ${x.namn} till`, onclick: () => andra(x.namn, 1) }, "+"),
           el("button", { type: "button", class: "knapp liten ta-bort", "aria-label": `Ta bort ${x.namn}`, title: "Ta bort ur packningen", onclick: () => andra(x.namn, -x.antal) }, "✕")) : null,
+        el("span", { class: "num hjalp packvikt", title: x.kategori === "Kläder" ? "Kläder räknas inte i bördan" : x.kategori === "Rustning" ? "En rustning man bär räknas som halva vikten i bördan" : null },
+          `${kg(x.vikt)} kg`),
         el("span", { class: "num hjalp packpris" }, x.yrke ? "gratis (yrket)" : x.gratis ? "gratis" : sm(x.pris * x.antal)));
     }))] : null,
   ];

@@ -74,7 +74,7 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   // Startutrustning: hederssvärdet och vimplarna ligger gratis i packningen, hästen står kvar som text
   const utr = await p.locator('#startutrustning').textContent();
   ok('startutrustningen visar vad som ligger i packningen', utr.includes('Hederssvärd (ligger i packningen)') && utr.includes('Högländsk stridshäst') && !utr.includes('stridshäst (ligger'), utr);
-  const packning = await p.locator('.packning').textContent();
+  const packning = (await p.locator('.packning li').evaluateAll((l) => l.map((x) => [...x.children].filter((c) => !c.classList.contains('packvikt')).map((c) => c.textContent).join('')))).join('');
   ok('packningen: hederssvärdet gratis från yrket', packning.includes('Hederssvärdgratis (yrket)') && packning.includes('Heraldiska vimplargratis (yrket)'), packning);
   ok('packningen: köpta V&R-rustningar', packning.includes('Ordenskrigarhjälm') && packning.includes('Axelskydd (par): Högländskt'), packning);
 
