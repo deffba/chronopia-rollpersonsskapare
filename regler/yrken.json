@@ -1999,6 +1999,15 @@
         },
         "stridskonster",
         {
+          "fardighet": "vapentekniker",
+          "antal": 1,
+          "maste": [
+            "Kejsarens hand"
+          ],
+          "kraverBok": "vr",
+          "annars": null
+        },
+        {
           "fardighet": "vapen",
           "antal": 3
         }
@@ -3090,12 +3099,7 @@
           "fardighet": "hantverk",
           "antal": 1
         },
-        {
-          "valEn": [
-            "stridskonster",
-            "vapentekniker"
-          ]
-        },
+        "stridskonster",
         "taktik",
         {
           "fardighet": "vapen",
@@ -3515,7 +3519,9 @@
           "antal": 1,
           "maste": [
             "Ceriansk svärdsdans"
-          ]
+          ],
+          "kraverBok": "vr",
+          "annars": "stridskonster"
         },
         {
           "fardighet": "vapen",
@@ -3611,12 +3617,7 @@
         "dra-vapen",
         "hantera-fallor",
         "lasdyrkning",
-        {
-          "valEn": [
-            "stridskonster",
-            "vapentekniker"
-          ]
-        },
+        "stridskonster",
         "tva-vapen",
         {
           "fardighet": "vapen",
