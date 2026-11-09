@@ -79,3 +79,18 @@ test("medianerna stämmer med utrustningslistan", () => {
   };
   assert.deepEqual(WRETLER.median, { narstrid: median("Närstridsvapen"), avstand: median("Avståndsvapen"), kast: median("Kastvapen"), skold: median("Sköldar"), rustning: median("Rustning") });
 });
+
+test("särskilda förmågor som ger pengar slås om", async () => {
+  const { sarskildFormaga } = await import("../regelmotor.js");
+  const { wretlerSlaOm } = await import("../wretler.js");
+  const tabeller = regler["sarskilda-formagor"].tabeller;
+  const rader = tabeller.flatMap((t) => t.rader.map((r) => ({ ...r, tabell: t.id })));
+  const omslag = rader.filter((r) => wretlerSlaOm({ wretler: true }, r)).map((r) => `${r.tabell}:${r.namn}`);
+  assert.deepEqual(omslag.sort(), ["alver:Arvinge", "alver:Ädling", "dvargar:Arvinge", "grund:Arv", "magi:Arvinge", "vr:Arvinge", "vr:Gravplundrare"]);
+  assert.equal(wretlerSlaOm({ wretler: false }, rader.find((r) => r.namn === "Arv")), false);
+  // Arv är 43 på grundreglernas tabell (2T20 + BP)
+  const rp = { ...ww(), sarskildaFormagor: { bp: 3, slag: 40, val: [], avstar: false } };
+  const svar = sarskildFormaga(regler, rp);
+  assert.equal(svar.perSlag[0].formaga.namn, "Arv");
+  assert.ok(svar.perSlag[0].slaOm && svar.fel.some((f) => /slå om/.test(f)));
+});

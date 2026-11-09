@@ -4,9 +4,10 @@
 //   - alla inlagda böcker, lägsta erfarenhetsnivån, Syn och hörsel och Detaljerad strid; inte
 //     Kejserliga vapen och förbjudna varor (sätts när knappen trycks, och steg 0 låses),
 //   - socialt stånd Knapadel, som räknas som lägre medelklass, utan slag (steg 9),
-//   - startkapitalet är ett lån på 5 000 sm minus värdet på yrkets startutrustning, utan slag (steg 10),
+//   - startkapitalet är ett lån på 5 000 sm minus värdet på yrkets startutrustning, utan slag och med en fast text (steg 10),
 //     och skulden står under Pengar på rollformuläret,
-//   - inget gratis startpaket (steg 12).
+//   - inget gratis startpaket (steg 12),
+//   - särskilda förmågor som ger pengar (Arv, Arvinge, Gravplundrare, Ädling …) slås om i tysthet (steg 7).
 //
 // Läget ersätts av kampanjer med användarkonton. Ta då bort det så här:
 //   1. den här filen och bilden bilder/wretler-adam.webp,
@@ -74,11 +75,12 @@ export const WRETLER = {
     eldsfurste: { "Ett gott handvapen (+1 skada, +2 BV)": ["narstrid"], "Lättare rustning": ["rustning"] },
     hamnare: { "Vapen": ["narstrid"] },
   },
+  // Särskilda förmågor som ger pengar eller bara påverkar slagen för stånd och startkapital. Också förmågor
+  // med regeln "kapital" eller en slagbonus på startkapitalet räknas hit.
+  slaOmFormagor: ["Arv", "Arvinge", "Gravplundrare", "Ädling"],
   texter: {
     stand: "Du må vara en ädling, men din ätt är irrelevant och nära nog glömd och ditt stånds privilegier och din opåkallade stolthet är allt som skiljer dig från den fattiga, smutsiga pöbeln.",
-    kapital: "Som knapadelsman anser du dig förtjäna bara det bästa som världen kan bjuda. Du lever över de få tillgångar ditt hus ännu befinner dig och har nödgats låna 5000 sm för att ens kunna hålla fasaden utåt - en tunn fernissa över din sanna fattigdom.",
-    kapitalMinskat: "Av detta lån har en icke försumbar del gått till att vidmakthålla vad du har i väg av vapen, rustning och usla, slitna persedlar.",
-    kapitalSlut: "Detta lån har du redan lyckats förslösa på din utrustning.",
+    kapital: "Som knapadelsman faller det sig naturligt för dig att leva över dina tillgångar. Din natur, din släkts historik och era familjetraditioner gör något annat helt otänkbart. Din ätt har sedan länge förlorat sina besittningar, intecknat sina livegna och slösat bort sina penningar. Senast har du lånat 5000 sm, av vilka en icke obetydlig del - kanske allt! - har gått till ditt uppehälle och att hålla dina usla persedlar i något sånär brukbart skick.",
   },
 };
 
@@ -123,6 +125,10 @@ export function wretlerUtrustning(regler, rp) {
   return { poster, summa: poster.reduce((a, x) => a + x.pris, 0) };
 }
 
+// Om en särskild förmåga ska slås om: den ger pengar, och pengar utöver lånet gäller inte
+export const wretlerSlaOm = (rp, formaga) => wretlerAktiv(rp) && Boolean(formaga) && (WRETLER.slaOmFormagor.includes(formaga.namn)
+  || (formaga.regel ?? []).some((d) => d.typ === "kapital" || (d.typ === "slagbonus" && d.startkapital)));
+
 // Slagen i steg 9 och 10 ersätts: Knapadel räknas som lägre medelklass, och startkapitalet är lånet minus startutrustningen
 export function wretlerSlag(regler, rp, slag) {
   const tabell = regler.slag.socialtStand.tabell;
@@ -160,11 +166,7 @@ export const wretlerStand = () => [
 ];
 
 // Steg 10 Startkapital
-export function wretlerKapital(res) {
-  const w = res.slag.wretler;
-  const tillagg = !w?.utrustning.summa ? null : res.slag.startkapital > 0 ? WRETLER.texter.kapitalMinskat : WRETLER.texter.kapitalSlut;
-  return [el("p", { class: "wretler-citat", id: "wretler-kapital" }, WRETLER.texter.kapital, tillagg ? ` ${tillagg}` : null)];
-}
+export const wretlerKapital = () => [el("p", { class: "wretler-citat", id: "wretler-kapital" }, WRETLER.texter.kapital)];
 
 // Raden under Pengar på rollformuläret
 export const wretlerSkuld = (rp) => (wretlerAktiv(rp) ? `Skuld om ${WRETLER.lan} sm` : null);

@@ -51,7 +51,7 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
     }
     ok('Socialt stånd: Knapadel och texten, utan slag', /Din rollperson har det sociala ståndet Knapadel\./.test(sett['Socialt stånd'] ?? '')
       && /Du må vara en ädling/.test(sett['Socialt stånd']) && !/2T6|Slå/.test(sett['Socialt stånd']), (sett['Socialt stånd'] ?? 'steget visades inte').slice(0, 120));
-    ok('Startkapital: lånetexten, utan slag eller bonusar', /har nödgats låna 5000 sm/.test(sett.Startkapital ?? '') && !/2T6|Tak för startkapital|Av detta lån|förslösa/.test(sett.Startkapital),
+    ok('Startkapital: lånetexten, utan slag eller bonusar', /Senast har du lånat 5000 sm, av vilka en icke obetydlig del - kanske allt! -/.test(sett.Startkapital ?? '') && !/2T6|Tak för startkapital/.test(sett.Startkapital),
       (sett.Startkapital ?? 'steget visades inte').slice(0, 120));
     ok('Utrustning nådd', Boolean(sett.Utrustning));
     ok('inget startpaket', await p.locator('#startpaket').count() === 0);

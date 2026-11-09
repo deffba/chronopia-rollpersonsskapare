@@ -185,7 +185,8 @@ function fyllFormaga(api, autoDelval, anvanda, slag) {
       for (let forsok = 0; forsok < 50; forsok++) {
         satt({ ...hamta(), slag: slaT(n, sidor), val: [] });
         hamta().formaga = api.rakna().sarskildaFormagorna?.[nr]?.namn;
-        if (sfFor(R, api.motorIndata()).perSlag[nr]?.dubblett === undefined) break;
+        const svar = sfFor(R, api.motorIndata()).perSlag[nr];
+        if (svar?.dubblett === undefined && !svar?.slaOm) break; // slaOm: Widunder och Wretler (wretler.js)
       }
     }
     const sf = api.rakna().sarskildaFormagorna?.[nr];

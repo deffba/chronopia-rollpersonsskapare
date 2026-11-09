@@ -5,6 +5,7 @@ import { S, motorIndata, uppdatera } from "../tillstand.js";
 import { el, slaT } from "../ui/dom.js";
 import { falt, valLista } from "../ui/kontroller.js";
 import { inteSlaget, landatSlag, lastFalt, rullar, slagKontroll, slagSteg, valjFardighet } from "../ui/tarningar.js";
+import { wretlerAktiv, wretlerSlaOm } from "../wretler.js";
 
 // Vilken tabell som visas i förmågekorten (flikarna) och vilket kort som är uppfällt. Ligger utanför rollpersonen,
 // så att de står kvar när steget ritas om (t.ex. när BP ändras).
@@ -74,8 +75,17 @@ export function stegFormagor() {
   const tolkning = s.avstar ? (antal > 1 ? `Rollpersonen får ingen särskild förmåga ${plats + 1}.` : "Rollpersonen får ingen särskild förmåga.") :
     !s.bp && !gratis ? `Lägg minst 1 BP för att få slå (högst ${maxBP}), eller kryssa i rutan om du inte vill lägga BP här.` :
     oslaget ? inteSlaget() :
+    svar?.slaOm ? [`Resultat: ${s.slag + tillagg}.`, "Slå om."] :
     svar?.dubblett !== undefined ? [`Resultat: ${s.slag + tillagg}.`, `${sf?.namn}, som rollpersonen redan har (förmåga ${svar.dubblett + 1}). Slå om.`] :
     [`Resultat: ${s.slag + tillagg}.`, `${sf?.namn}: ${sf?.effekt} (${sf ? sidaFor(tabell, sf) : ""})`];
+  // Widunder och Wretler: ett slag som ger en förmåga med pengar görs om innan det visas (wretler.js)
+  const godtaSlag = (summa) => {
+    const nu = hamta(); const fore = nu.slag;
+    nu.slag = summa;
+    const ny = sfFor(S.R, motorIndata()).perSlag[plats];
+    nu.slag = fore;
+    return !wretlerSlaOm(S.rp, ny?.formaga);
+  };
   // Byts förmågan ut gäller inte de gamla valen längre. BP här betyder att spelaren inte längre avstår.
   const nollstall = () => {
     const nu = hamta();
@@ -250,7 +260,7 @@ export function stegFormagor() {
       gratis ? `${motorSlag.yrke}: ett extra slag på ${tabell?.namn ?? "tabellen"} utan BP, med +${motorSlag.bonus} (Alver i Chronopia s. 69).`
         : `Lägg 1–${maxBP} BP och slå ${tabell?.tarning ?? "2T20"}. Summan avgör förmågan. SL får justera resultatet.`, nollstall,
       gratis ? [[`${motorSlag.yrke} (gratis)`, motorSlag.bonus]] : [], [],
-      { fore: tabellval, kanSla: gratis ? !s.avstar : !!s.bp, under: avsta, bpLast: gratis }),
+      { fore: tabellval, kanSla: gratis ? !s.avstar : !!s.bp, under: avsta, bpLast: gratis, godta: wretlerAktiv(S.rp) ? godtaSlag : null }),
     // Valen står i modalen så länge den är öppen (samma id får inte finnas två gånger)
     delar.length && !visaModal ? [el("h3", {}, "Val för förmågan"), el("ul", { class: "yrkeslista" }, delar)] : null,
     sf && !sf.regel ? el("p", { class: "hjalp" }, ingaVarden) : null,

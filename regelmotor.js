@@ -10,7 +10,7 @@ export const STANDARDVARDEN = () => Object.fromEntries(GRUNDEGENSKAPER.map((g) =
 export const paborjad = (nyckel) => !nyckel || nyckel.endsWith(":") || nyckel.endsWith("+");
 
 // Slår upp i en tabell av [övre gräns, värde]; null som gräns betyder "och uppåt".
-import { wretlerAktiv, wretlerSlag } from "./wretler.js"; // Widunder och Wretler, tillfälligt
+import { wretlerAktiv, wretlerSlag, wretlerSlaOm } from "./wretler.js"; // Widunder och Wretler, tillfälligt
 
 export function slaUpp(tabell, varde) {
   for (const [grans, ...resten] of tabell) {
@@ -1290,6 +1290,8 @@ export function sarskildFormaga(regler, rp) {
     svar.bp += sl.bp ?? 0;
     svar.formagor.push(r.formaga);
     if (dubblett >= 0) { svar.fel.push(`${pre}samma förmåga som förmåga ${dubblett + 1} (${r.formaga.namn}); slå om`); return; }
+    // Widunder och Wretler: förmågor som ger pengar slås om (i appen sker det utan att spelaren ser det)
+    if (wretlerSlaOm(rp, r.formaga)) { r.slaOm = true; svar.fel.push(`${pre}slå om`); return; }
     svar.fel.push(...r.fel.map((t) => pre + t));
     svar.saknas.push(...r.saknas.map((t) => pre + t));
     lagTill(r, r.formaga?.namn);

@@ -134,7 +134,7 @@ const bpFaltet = (etikett, kontroll) => { const f = falt(etikett, kontroll); f.c
 // under = det som står direkt under raden med slaget, bpLast = BP-fältet går inte att ändra (ett gratisslag).
 // nyckel är namnet på slaget i rollpersonen (t.ex. "svardshand") eller en funktion som ger slaget
 // (t.ex. ett av de fler slagen för särskilda förmågor).
-export function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = [], { fore = null, kanSla = true, under = null, bpLast = false } = {}) {
+export function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = () => {}, fastaBonusar = [], extraRader = [], { fore = null, kanSla = true, under = null, bpLast = false, godta = null } = {}) {
   const hamta = typeof nyckel === "function" ? nyckel : () => S.rp[nyckel];
   const s = hamta();
   const bonusar = [s.bp > 0 ? ["BP lagda", s.bp] : null, ...fastaBonusar].filter(Boolean);
@@ -157,7 +157,14 @@ export function slagSteg(id, nyckel, titel, tarning, tolkning, hjalp, efter = ()
     ];
   }
   // Varje tärning sparas också, så att den kan visas med sina prickar (ett inskrivet slag delas upp på två tärningar)
-  const sla = () => { const t = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sidor)); hamta().tarningar = t; return t.reduce((a, b) => a + b, 0); };
+  // godta(summa) kan låta ett slag göras om i tysthet (Widunder och Wretler: förmågor som ger pengar), högst 100 gånger
+  const sla = () => {
+    for (let forsok = 0; ; forsok++) {
+      const t = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sidor));
+      const summa = t.reduce((a, b) => a + b, 0);
+      if (!godta || godta(summa) || forsok >= 100) { hamta().tarningar = t; return summa; }
+    }
+  };
   const { slagfalt, knapp } = slagKontroll(id, `Slag (${tarning})`, `Slå ${tarning}`, n, n * sidor, (v) => { if (S.manuellaSlag) hamta().tarningar = delaSumma(v, true, sidor); satt("slag", v); }, sla, sidor);
   if (!kanSla) for (const e of [slagfalt, knapp].filter(Boolean)) for (const k of e.matches("button, input") ? [e] : e.querySelectorAll("button, input")) k.disabled = true;
   const bpFalt = rullar === id || bpLast ? lastFalt(`${id}-bp`, s.bp ?? 0) : tal(`${id}-bp`, s.bp, (v) => satt("bp", Math.max(0, v ?? 0)), { min: 0 });
