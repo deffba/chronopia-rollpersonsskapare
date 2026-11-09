@@ -1,7 +1,7 @@
 // Widunder och Wretler: ett tillfälligt läge med husregler för Deffbas kampanj.
 // Läget slås på med den stora knappen Widunder och Wretler i steg 0 och sparas i rollpersonen (rp.wretler).
 // Husreglerna visas inte som en lista för spelaren; de gäller bara när rollpersonen skapas:
-//   - alla inlagda böcker, lägsta erfarenhetsnivån och Syn och hörsel; inte Detaljerad strid eller
+//   - alla inlagda böcker, lägsta erfarenhetsnivån, Syn och hörsel och Detaljerad strid; inte
 //     Kejserliga vapen och förbjudna varor (sätts när knappen trycks, och steg 0 låses),
 //   - socialt stånd Knapadel, som räknas som lägre medelklass, utan slag (steg 9),
 //   - startkapitalet är ett lån på 5 000 sm minus värdet på yrkets startutrustning, utan slag (steg 10),
@@ -22,11 +22,11 @@ export const WRETLER = {
   namn: "Widunder och Wretler",
   stand: { namn: "Knapadel", raknasSom: "Lägre medelklass" },
   lan: 5000,
-  valfriaRegler: ["syn-och-horsel"],
-  // Medianpriset i utrustningslistan (steg 12) per sorts vapen och rustning, med alla böcker men utan
-  // kejserliga och förbjudna varor och utan det som kräver Detaljerad strid. Används för startutrustning
+  valfriaRegler: ["syn-och-horsel", "detaljerad-strid"],
+  // Medianpriset i utrustningslistan (steg 12) per sorts vapen och rustning, med alla böcker och
+  // Detaljerad strid men utan kejserliga och förbjudna varor. Används för startutrustning
   // som inte finns i listan. test/wretler.test.mjs kontrollerar att värdena stämmer med listan.
-  median: { narstrid: 650, avstand: 750, kast: 100, skold: 875, rustning: 1250 },
+  median: { narstrid: 650, avstand: 750, kast: 100, skold: 875, rustning: 1150 },
   // Yrkenas startutrustning som inte finns i utrustningslistan och som är vapen, sköld eller rustning.
   // Värdet är medianen för sorten, eller priset för en namngiven vara i listan ({ vara }). Allt annat
   // som inte finns i listan får rollpersonen gratis.
@@ -88,7 +88,7 @@ const SORT_AV_VAPEN = { narstrid: "narstrid", projektil: "avstand", kast: "kast"
 export const wretlerAktiv = (rp) => Boolean(rp?.wretler);
 
 // Slår på eller av läget. Det går bara medan böckerna går att välja, alltså innan en ras är vald.
-// På: alla inlagda böcker, lägsta erfarenhetsnivån, Syn och hörsel och inget startpaket. Av: som en ny rollperson.
+// På: alla inlagda böcker, lägsta erfarenhetsnivån, Syn och hörsel, Detaljerad strid och inget startpaket. Av: som en ny rollperson.
 export function valjWretler(regler, rp, pa) {
   if (rp.ras) return false;
   rp.wretler = Boolean(pa);

@@ -14,12 +14,12 @@ const ww = (yrke = "krigare") => {
   return { ...rp, ras: brutus.ras };
 };
 
-test("knappen: alla inlagda böcker, lägsta nivån och bara Syn och hörsel", () => {
+test("knappen: alla inlagda böcker, lägsta nivån, Syn och hörsel och Detaljerad strid", () => {
   const rp = { ...brutus, ras: "", niva: 2, valfriaRegler: ["detaljerad-strid", "kejserliga-varor"], startpaket: { valt: true, vapen: "Dolk" } };
   assert.ok(valjWretler(regler, rp, true));
   assert.deepEqual(rp.bocker, ["grund", "vr", "magi", "dvargar", "alver"]);
   assert.equal(rp.niva, 0);
-  assert.deepEqual(rp.valfriaRegler, ["syn-och-horsel"]);
+  assert.deepEqual(rp.valfriaRegler, ["syn-och-horsel", "detaljerad-strid"]);
   assert.equal(rp.startpaket.valt, false);
   assert.ok(valjWretler(regler, rp, false));
   assert.deepEqual([rp.wretler, rp.bocker, rp.valfriaRegler], [false, ["grund"], []]);
@@ -42,8 +42,8 @@ test("krigaren har ingen startutrustning: hela lånet", () => {
 test("startutrustning i listan dras från lånet", () => {
   const rp = ww("hedersvakt");
   const u = wretlerUtrustning(regler, rp);
-  assert.equal(u.summa, 900 + 1350 + 80); // Hedersyxa, Armskydd (par): Metall i stället för axelplåten, Skäggkam
-  assert.equal(raknaRollperson(regler, rp).slag.startkapital, 5000 - 2330);
+  assert.equal(u.summa, 900 + 1800 + 80); // Hedersyxa, Axelskydd (par): Dvärgiskt (Detaljerad strid), Skäggkam
+  assert.equal(raknaRollperson(regler, rp).slag.startkapital, 5000 - 2780);
 });
 
 test("vapen och rustning utanför listan kostar medianen, annat är gratis", () => {

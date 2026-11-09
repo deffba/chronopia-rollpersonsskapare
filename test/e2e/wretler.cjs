@@ -30,7 +30,7 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
     ok('knappen går direkt till steg 1', (await rubrik()) === 'Ras', await rubrik());
     let r = await rp();
     ok('alla inlagda böcker', JSON.stringify(r.bocker) === '["grund","vr","magi","dvargar","alver"]', JSON.stringify(r.bocker));
-    ok('lägsta nivån och bara Syn och hörsel', r.niva === 0 && JSON.stringify(r.valfriaRegler) === '["syn-och-horsel"]' && r.wretler === true);
+    ok('lägsta nivån, Syn och hörsel och Detaljerad strid', r.niva === 0 && JSON.stringify(r.valfriaRegler) === '["syn-och-horsel","detaljerad-strid"]' && r.wretler === true);
     await p.click('.steg-knapp >> nth=0');
     ok('böcker, nivå och valfria regler är låsta', await p.locator('[data-bok]:not([disabled]), [data-niva]:not([disabled]), [data-regel]:not([disabled])').count() === 0);
     ok('ingen lista med husregler', !/husregl/i.test(await p.locator('.steg-innehall').first().textContent()));
