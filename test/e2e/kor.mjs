@@ -43,6 +43,7 @@ const TESTER = [
   { namn: "logg", ok: passFail },
   { namn: "info", ok: passFail },
   { namn: "formular", args: ["Dimalv-arkemagiker.json"], ok: passFail },
+  { namn: "formular-layout", ok: passFail },
   { namn: "pdf", args: ["Dimalv-arkemagiker.json", "$UT"], ok: passFail, kraver: "pdfinfo" },
   { namn: "magi", ok: ingaFel },
   { namn: "magislag", ok: ingaFel },
