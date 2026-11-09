@@ -12,6 +12,8 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
   const nasta = async () => {
     await alderKlar();
     if (await p.locator('#sf-modal-fortsatt:not([disabled])').count()) await p.click('#sf-modal-fortsatt');
+    // Autofyll lägger aldrig BP på särskilda förmågor: avstå, annars är Nästa spärrad
+    if (await p.locator('#sf-avsta:not([disabled]):not(:checked)').count() && !(await rp()).sarskildaFormagor.bp) { await p.check('#sf-avsta'); await p.waitForTimeout(150); }
     await p.locator('.steg-fot .primar').click(); await p.waitForTimeout(250);
   };
   try {
@@ -56,6 +58,7 @@ const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? '
     ok('Utrustning nådd', Boolean(sett.Utrustning));
     ok('inget startpaket', await p.locator('#startpaket').count() === 0);
     ok('startkapitalet är hela lånet', /5\s000 sm/.test(await p.locator('.steg-innehall').first().textContent()));
+    ok('gratis saker i packningen saknar knappar', await p.locator('.packning li:not([data-vara]) button').count() === 0);
     r = await rp();
     ok('inga slag för stånd och kapital', r.socialtStand.slag === null && r.startkapital.slag === null);
     ok('låst efter ras: knappen visar läget', await p.click('.steg-knapp >> nth=0').then(() => ww.isDisabled()) && (await ww.getAttribute('aria-pressed')) === 'true');
