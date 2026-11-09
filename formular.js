@@ -2,6 +2,7 @@
 // Värden som reglerna räknar fram (grundegenskaper, FV, KP) visas som text och ändras i stegen.
 // Det spelaren skriver under spel (erf, hjältepoäng, pengar, egen utrustning) sparas i rp.spel.
 import { GRUNDEGENSKAPER, egenskapsvarde, slaUpp, fardighetAv, yrkesformagaText, bNivaText } from "./regelmotor.js";
+import { wretlerSkuld } from "./wretler.js";
 
 // Rader per lista. Får inte allt plats fortsätter listan på sida 3.
 const RADER = { formagor: 6, primar: 25, yrke: 12, sprak: 11, sekundar: 33, vapen: 6, besvarjelser: 12, utrustning: 8 };
@@ -253,7 +254,8 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
             ["bors", "bank"].map((var_) => el("div", { class: "rf-rad" }, el("span", { class: "rf-cell rf-namn" }, var_ === "bors" ? "i börs" : "på bank"),
               ["gm", "sm", "km"].map((m) => el("span", { class: "rf-cell rf-tal" }, pengarFalt(var_, m))))),
             el("div", { class: "rf-rad rf-juveler" }, el("span", { class: "rf-cell rf-namn" }, "Juveler",
-              inmatning(pengar.juveler, (v) => { spel.pengar ??= structuredClone(pengar); spel.pengar.juveler = v; }, { "aria-label": "Juveler" })))),
+              inmatning(pengar.juveler, (v) => { spel.pengar ??= structuredClone(pengar); spel.pengar.juveler = v; }, { "aria-label": "Juveler" }))),
+            !tom && wretlerSkuld(rp) ? el("div", { class: "rf-rad rf-juveler rf-skuld" }, el("span", { class: "rf-cell rf-namn" }, wretlerSkuld(rp))) : null),
           detaljeradStrid,
           magiRuta,
           alvRuta,

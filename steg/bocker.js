@@ -4,7 +4,7 @@
 import { nivaer, valfriaRegler } from "../regelmotor.js";
 import { S, uppdatera } from "../tillstand.js";
 import { el } from "../ui/dom.js";
-import { wretlerKnapp } from "../wretler.js";
+import { wretlerAktiv, wretlerKnapp } from "../wretler.js";
 
 export const bokAv = (id) => S.R.bocker.lista.find((b) => b.id === id);
 export const lastaBocker = () => Boolean(S.rp.ras);
@@ -27,7 +27,8 @@ export function valjBok(id, pa) {
 }
 
 export function stegBocker() {
-  const last = lastaBocker();
+  // Med Widunder och Wretler är böckerna, nivån och de valfria reglerna bestämda (wretler.js)
+  const last = lastaBocker() || wretlerAktiv(S.rp);
   const valda = new Set(S.rp.bocker);
   const kravsAv = (id) => S.R.bocker.lista.filter((b) => valda.has(b.id) && b.kraver.includes(id)).map((b) => b.namn);
   const rad = (bok) => {
@@ -72,10 +73,10 @@ export function stegBocker() {
           el("span", { class: "bok-status niva-text" }, v.beskrivning)));
     }))) : null;
   return [
-    wretlerKnapp(),
+    wretlerKnapp({ R: S.R, rp: S.rp, uppdatera, tillSteg1: () => { S.aktivtSteg = "ras"; uppdatera(); window.scrollTo(0, 0); } }),
     el("p", { class: "hjalp" }, "Välj vilka böcker rollpersonen ska skapas med. Spelledaren bestämmer vilka böcker som gäller i kampanjen. ",
       "Grundreglerna är alltid med. Expansionerna läggs in i appen efter hand."),
-    last ? el("p", { class: "hjalp bok-last" }, "Valet är låst eftersom skapandet har börjat. Börja om med Ny rollperson i menyn för att välja andra böcker.") : null,
+    lastaBocker() ? el("p", { class: "hjalp bok-last" }, "Valet är låst eftersom skapandet har börjat. Börja om med Ny rollperson i menyn för att välja andra böcker.") : null,
     el("div", { class: "bokgrupper" }, S.R.bocker.grupper.map((g) => el("section", { class: "bokgrupp" },
       el("h3", {}, g),
       el("ul", { class: "boklista" }, S.R.bocker.lista.filter((b) => b.grupp === g).map(rad)))), nivaval, regelval),

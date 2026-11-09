@@ -16,7 +16,7 @@ const HAR = path.dirname(fileURLToPath(import.meta.url));
 const ROT = path.resolve(HAR, "../..");
 
 const TYPER = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json",
-  ".ttf": "font/ttf", ".otf": "font/otf", ".woff2": "font/woff2", ".png": "image/png", ".svg": "image/svg+xml", ".pdf": "application/pdf" };
+  ".ttf": "font/ttf", ".otf": "font/otf", ".woff2": "font/woff2", ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml", ".pdf": "application/pdf" };
 
 // Kontroller av utskriften
 const passFail = (ut) => !/^FAIL/m.test(ut) && /^PASS/m.test(ut);
@@ -27,6 +27,7 @@ const allaKombinationer = (ut) => { const rader = ut.split("\n").filter((r) => r
 const TESTER = [
   { namn: "kontroll", ok: passFail },
   { namn: "startsida", args: ["$UT"], ok: passFail },
+  { namn: "wretler", ok: passFail },
   { namn: "fixar", ok: passFail },
   { namn: "formagor", ok: passFail },
   { namn: "vr", ok: passFail },

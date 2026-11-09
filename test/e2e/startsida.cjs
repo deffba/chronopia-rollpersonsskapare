@@ -68,25 +68,6 @@ const NAMN = new RegExp(Buffer.from('bmljbGFzfGRlIGZhaXJl', 'base64').toString()
     await p.goForward(); await p.waitForTimeout(200);
     ok('framåtknappen går till startsidan igen', await p.locator('#start-skapa').isVisible());
 
-    // Widunder och Wretler (wretler.js): den stora knappen i steg 0, läget följer rollpersonen och låses med böckerna
-    const wwSpar = () => p.evaluate(() => JSON.parse(localStorage.getItem('chronopia-rollperson-v2')).rp.wretler);
-    ok('ingen Wretler-knapp på startsidan', await p.locator('#start-vy').getByText('Wretler').count() === 0);
-    await p.evaluate(() => localStorage.clear()); await p.reload(); await p.click('#start-skapa');
-    const ww = p.locator('#wretler-knapp');
-    ok('steg 0 har knappen Widunder och Wretler', await ww.isVisible() && /^Widunder och Wretler/.test(await ww.textContent()) && (await ww.getAttribute('aria-pressed')) === 'false');
-    ok('knappen har texten och bilden', /Väl mött! Skapa en rollperson enligt den gode Adams anvisningar och anmaningar\./.test(await ww.textContent())
-      && await ww.locator('img.wretler-bild').evaluate(i => i.complete && i.naturalWidth > 0));
-    await ww.click();
-    ok('knappen slår på läget', (await ww.getAttribute('aria-pressed')) === 'true' && await p.locator('#wretler-knapp.vald').count() === 1);
-    await ww.click();
-    ok('knappen slår av läget igen', (await ww.getAttribute('aria-pressed')) === 'false');
-    await ww.click();
-    await p.click('#nasta-steg'); await p.click('.raskort >> nth=0'); await p.waitForTimeout(200);
-    ok('läget sparas i rollpersonen', (await wwSpar()) === true);
-    await p.click('.steg-knapp >> nth=0');
-    ok('knappen låses med böckerna och visar läget', await ww.isDisabled() && (await ww.getAttribute('aria-pressed')) === 'true');
-    await p.click('#hem');
-
     // Regelresonemang
     await p.click('#start-regler');
     await p.waitForSelector('.rr-md h3');

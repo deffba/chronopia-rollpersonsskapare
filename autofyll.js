@@ -135,8 +135,8 @@ export function fyllSteg(api, autoDelval, steg, { slag = true } = {}) {
     // Tärningarna sparas var för sig, som när spelaren slår, så att de kan visas med prickar
     const t2T6 = () => { const tarningar = [slaT(1, 6), slaT(1, 6)]; return { tarningar, slag: tarningar[0] + tarningar[1] }; };
     if (steg === "svardshand" && rp.svardshand.slag === null) rp.svardshand = { ...rp.svardshand, ...t2T6() };
-    if (steg === "stand" && rp.socialtStand.slag === null && !rp.socialtStand.valt) rp.socialtStand = { ...rp.socialtStand, ...t2T6() };
-    if (steg === "kapital" && rp.startkapital.slag === null) rp.startkapital = { ...rp.startkapital, ...t2T6() };
+    if (steg === "stand" && !rp.wretler && rp.socialtStand.slag === null && !rp.socialtStand.valt) rp.socialtStand = { ...rp.socialtStand, ...t2T6() };
+    if (steg === "kapital" && !rp.wretler && rp.startkapital.slag === null) rp.startkapital = { ...rp.startkapital, ...t2T6() };
     // Syn och hörsel (valfri regel, V&R s. 3): 1T6 per sinne i steg 6
     if (steg === "egenskaper" && (rp.valfriaRegler ?? []).includes("syn-och-horsel")) {
       for (const id of ["syn", "horsel"]) if (rp.sinnen?.[id]?.slag == null) { const t = slaT(1, 6); rp.sinnen = { ...rp.sinnen, [id]: { bp: rp.sinnen?.[id]?.bp ?? 0, tarningar: [t], slag: t } }; }

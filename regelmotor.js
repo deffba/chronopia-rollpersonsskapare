@@ -10,6 +10,8 @@ export const STANDARDVARDEN = () => Object.fromEntries(GRUNDEGENSKAPER.map((g) =
 export const paborjad = (nyckel) => !nyckel || nyckel.endsWith(":") || nyckel.endsWith("+");
 
 // Slår upp i en tabell av [övre gräns, värde]; null som gräns betyder "och uppåt".
+import { wretlerAktiv, wretlerSlag } from "./wretler.js"; // Widunder och Wretler, tillfälligt
+
 export function slaUpp(tabell, varde) {
   for (const [grans, ...resten] of tabell) {
     if (grans === null || varde <= grans) return resten.length === 1 ? resten[0] : resten;
@@ -550,7 +552,8 @@ export function raknaSlag(regler, rp, ras, yrke, alderEff) {
     rp.startkapital.slag + rp.startkapital.bp + Math.ceil(rp.socialtStand.bp / 2) + skBonus, tak);
   // Ädling (V&R s. 12): minst 100 000 sm (RB-004)
   const silver = Math.max(slaUpp(t.startkapital.tabell, skResultat) * alderEff.kapital + (rp.arv ?? 0), yrke.kapitalMinst ?? 0);
-  return { svardshand, socialtStand: stand, standsklass: klass, ssResultat, skResultat, startkapital: silver };
+  const slag = { svardshand, socialtStand: stand, standsklass: klass, ssResultat, skResultat, startkapital: silver };
+  return wretlerAktiv(rp) ? wretlerSlag(regler, rp, slag) : slag; // Widunder och Wretler: Knapadel och ett lån
 }
 
 // Lägsta slagresultat som ger ett visst socialt stånd.
@@ -1091,6 +1094,7 @@ function raknaUtrustning(regler, rp, varden, startkapital, fel) {
     if (vara) saker.push({ namn, antal, pris: 0, kategori: vara.kategori ?? "Närstridsvapen", gratis: true, yrke: true, vikt: Math.round((vara.vikt ?? 0) * antal * 10) / 10 });
   }
   const paket = rp.startpaket;
+  if (paket?.valt && wretlerAktiv(rp)) fel.push("Inget gratis startpaket med Widunder och Wretler");
   if (paket?.valt) {
     for (const namn of U.startpaket.varor) {
       const vara = katalog.find((x) => x.namn === namn);

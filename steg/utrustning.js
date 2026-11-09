@@ -6,6 +6,7 @@ import { el, kg, sm } from "../ui/dom.js";
 import { falt, gruppLista } from "../ui/kontroller.js";
 import { sakNamn } from "../ui/sammanfattning.js";
 import { fmtMod } from "./alder.js";
+import { wretlerAktiv } from "../wretler.js";
 
 let utrustningsKategori = "Äventyrarutrustning";
 let utrustningsUnder = null; // vald underkategori i en stor kategori (null = den första)
@@ -100,7 +101,7 @@ export function stegUtrustning(res) {
       u.belastning.mod === null ? u.belastning.text
         : `Bördan på ${kg(u.borda)} kg ger ${fmtMod(u.belastning.mod)} på förflyttning, SMI och CL i SMI-baserade färdigheter. ${u.belastning.text} Kläder räknas inte, och en rustning man bär räknas som halva vikten (s. 100).`,
       u.handlingar ? ` I detaljerad strid ger bördan dessutom ${u.handlingar} ${u.handlingar === -1 ? "handling" : "handlingar"} per stridsrunda (${kallText(S.R, U.bordaHandlingar)}).` : null) : null,
-    el("div", { class: "rutor" }, el("div", {},
+    wretlerAktiv(S.rp) ? null : el("div", { class: "rutor" }, el("div", {}, // Widunder och Wretler: inget startpaket
       el("label", { class: "kryss" },
         el("input", { type: "checkbox", id: "startpaket", checked: S.rp.startpaket.valt, onchange: (e) => { S.rp.startpaket = { valt: e.target.checked, vapen: "" }; uppdatera(); } }),
         el("span", {}, el("strong", {}, "Gratis startpaket"), `: ${U.startpaket.varor.map((v) => v.replace(/ \(.*\)/, "").toLowerCase()).join(", ")}`,
