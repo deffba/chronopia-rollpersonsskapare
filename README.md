@@ -37,6 +37,8 @@ Rollpersonerna byggs med samma regler och automatik som stegen (`utvecklarlage.j
 
 **Poängloggen** nere till vänster visar varje post som ger eller tar BP, EP eller pengar: steg, vad som hände, ändringen och vad som är kvar efter raden. Den kan också visa grundegenskapernas delar (ras, ålder, grundvärde, förmåga) med slutvärdet, tärningsslagen, den burna vikten mot bärförmågan och ändringar som regelkontrollen stoppade (i rött). Slag och vikt är avkryssade från början. Den räknas fram på nytt ur rollpersonen vid varje ändring, så ett val som byts ut försvinner ur loggen. BP, EP och Guld kan filtreras med kryssrutor, loggen kan dras högre i överkanten (aldrig lägre än standardstorleken), fällas ihop och visas i helskärm, och raderna kan kopieras som text. Stämmer loggens summa inte med det som visas på sidan säger den till (`poanglogg.js`).
 
+**Kommentera** (knappen nere till höger, eller Alt+K) är till för att märka upp det som ska snyggas till, t.ex. inför en designgenomgång. När det är på reagerar sidan inte på klick: ett klick på något öppnar en ruta där man skriver en anteckning (Större del markerar det som ligger runt omkring; Ctrl+Enter sparar, Escape stänger). Kommentaren sparas i webbläsaren med en CSS-väljare, elementets text, steget eller vyn, stilen och fönsterbredden, och en numrerad markör visar var den sitter. Markören öppnar kommentaren för att ändra eller ta bort den. Knappen Kommentarer listar alla, med en kommentar om hela vyn, och ger listan som text eller JSON att kopiera och klistra in till Claude (`kommentarer.js`).
+
 ## Kör lokalt
 
 Sidan är helt statisk men läser reglerna med `fetch`, så den behöver en enkel webbserver:
@@ -62,7 +64,7 @@ Versionsnumret i `version.json` (`version`) höjs för hand enligt semver: tredj
 - `texter.js`: stegens namn och förklarande texter.
 - `formular.js`, `formular.css`: rollformuläret för utskrift.
 - `formularpdf.js`: gör rollformuläret till en PDF-fil med pdf-lib (`vendor/`) och typsnitten i `typsnitt/`. Formuläret ritas i en dold kopia och mäts upp, så layouten finns bara i `formular.js` och `formular.css`.
-- `utvecklarlage.js`, `testrollpersoner.js`, `autofyll.js`, `poanglogg.js`: utvecklarläget med testrollpersoner, autofyll och poänglogg.
+- `utvecklarlage.js`, `testrollpersoner.js`, `autofyll.js`, `poanglogg.js`, `kommentarer.js`: utvecklarläget med testrollpersoner, autofyll, poänglogg och kommentarer.
 - `sparformat.js`: filformatet för sparade rollpersoner (version 2).
 - `utveckling.js`: regellogiken efter skapandet. Räknar fram den utvecklade rollpersonen ur loggen och kontrollerar varje post.
 - `spelmote.js`: gränssnittet för spelmöten, träning, förbättring och logg.
