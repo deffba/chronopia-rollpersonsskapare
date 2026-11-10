@@ -364,7 +364,9 @@ class Ritare {
       for (let i = 0; i < antal; i++) {
         const rad = { left: r.left, right: r.right, width: r.width, top: r.top + i * radhojd, bottom: r.top + (i + 1) * radhojd, height: radhojd };
         const sista = i === antal - 1 ? rader.slice(i).join(" ") : rader[i];
-        await this.ettFalt({ ...s, textAlign: s.textAlign }, rad, `${forsta} rad ${i + 1}`, false, sista ?? "");
+        // Stilen skickas som den är. En kopia med {...s} är tom i Safari och Firefox (egenskaperna sitter inte på
+        // själva objektet där), och då gick det inte att skapa PDF:en alls.
+        await this.ettFalt(s, rad, `${forsta} rad ${i + 1}`, false, sista ?? "");
       }
       return;
     }

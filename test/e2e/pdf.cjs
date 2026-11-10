@@ -5,8 +5,22 @@ const { chromium, devices } = require('playwright');
 const fs = require('fs');
 const res = []; const ok = (namn, villkor, info = '') => res.push(`${villkor ? 'PASS' : 'FAIL'} ${namn}${info ? ' — ' + info : ''}`);
 const ut = process.argv[3] || '.';
-async function kor(b, namn, opts, medRegler = false, blacksnal = false) {
+// I Safari och Firefox sitter stilens egenskaper (fontFamily m.fl.) inte på själva objektet från getComputedStyle,
+// så en kopia med {...stil} blir tom. I Chromium följer de med. Med likaSafari ger getComputedStyle här ett objekt
+// som beter sig som i Safari och Firefox, så att Chromium-testet hittar sådana fel (PDF:en gick inte att skapa där).
+const SAFARISTIL = () => {
+  const vanlig = window.getComputedStyle;
+  window.getComputedStyle = function (...a) {
+    const stil = vanlig.apply(this, a);
+    return new Proxy(stil, {
+      get: (_, k) => { const v = stil[k]; return typeof v === 'function' ? v.bind(stil) : v; },
+      ownKeys: () => [], getOwnPropertyDescriptor: () => undefined,
+    });
+  };
+};
+async function kor(b, namn, opts, medRegler = false, blacksnal = false, likaSafari = false) {
   const ctx = await b.newContext({ ...opts, acceptDownloads: true });
+  if (likaSafari) await ctx.addInitScript(SAFARISTIL);
   const p = await ctx.newPage();
   const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
   let printad = false;
@@ -44,6 +58,7 @@ async function kor(b, namn, opts, medRegler = false, blacksnal = false) {
   await kor(b, 'iphone', { ...devices['iPhone 13'] });
   await kor(b, 'regler', { viewport: { width: 1300, height: 900 } }, true);
   await kor(b, 'blacksnal', { viewport: { width: 1300, height: 900 } }, false, true);
+  await kor(b, 'safari', { viewport: { width: 1300, height: 900 } }, false, false, true);
   await b.close();
   console.log(res.join('\n'));
   console.log(`${res.filter(r => r.startsWith('PASS')).length}/${res.length}`);
