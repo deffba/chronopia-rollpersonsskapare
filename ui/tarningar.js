@@ -85,8 +85,9 @@ function bekraftaSlag(id, min, max, satt, sidor = 6) {
   const falt = el("input", {
     type: "number", id: `${id}-slag`, class: "tal", min, max, step: 1, value: utkastSlag[id] ?? "",
     title: `${min}–${max}`,
-    oninput: (e) => { utkastSlag[id] = e.target.value === "" ? null : Number(e.target.value); knapp.disabled = !giltigt(utkastSlag[id]); },
-    onkeydown: (e) => { if (e.key === "Enter" && !knapp.disabled) knapp.click(); },
+    // Knappen hämtas i sidan: ritas steget om står den knapp som redan fanns kvar (morfa)
+    oninput: (e) => { utkastSlag[id] = e.target.value === "" ? null : Number(e.target.value); (document.getElementById(`${id}-sla`) ?? knapp).disabled = !giltigt(utkastSlag[id]); },
+    onkeydown: (e) => { const k = document.getElementById(`${id}-sla`) ?? knapp; if (e.key === "Enter" && !k.disabled) k.click(); },
   });
   return { falt, knapp };
 }

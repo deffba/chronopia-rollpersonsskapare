@@ -2,6 +2,7 @@
 // Spelmöten, träning och förbättringar förs in som poster i loggen (utveckling.js). Varje post
 // kontrolleras mot reglerna innan den förs in, så att rollpersonen aldrig hamnar i ett otillåtet läge.
 // Byggstenarna (el, falt, tärningsrutor …) kommer från app.js, som för rollformuläret (formular.js).
+import { svTal } from "./ui/dom.js";
 import { GRUNDEGENSKAPER, fardighetAv, status, epPerFV, besvarjelsePris, slaUpp, skolFV, formagetabell } from "./regelmotor.js";
 import {
   kravdaHpSlag, psyOkning, psyMod, traning, traningsdagar, borsen, besvarjelseAv, laggTill,
@@ -306,7 +307,7 @@ function traningVy(ctx) {
       t.metod === "ensam"
         ? el("p", { class: "hjalp" }, besv ? `Ensam lär man sig en besvärjelse ur en magisk kodex, 20–30 sidor handskriven text om den. Slaget är ett Medelsvårt INT-slag med +1 på tärningen för varje INT under ${E.besvarjelseEnsam.modPerIntUnder}, och ett lyckat slag ger ${E.besvarjelseEnsam.ep} EP (s. 75).`
           : "Ensamträning är långsam: slå ett Medelsvårt grundegenskapsslag varje vecka. Lyckas det får rollpersonen 1T4 EP, annars var veckan bortkastad (s. 74).")
-        : el("p", { class: "hjalp" }, `En lärare måste vara mästare, minst FV ${E.larare.minFV} (B4), ha INT ${E.larare.minINT} eller mer och ha högre FV än eleven. Eleven slår två slag i veckan; varje FV över 18 hos läraren ger −2 på slagen, och en ensam elev får −5 men betalar dubbelt. Läraren kostar ${E.larare.kostnadPerVecka.toLocaleString("sv-SE")} sm i veckan, ${E.larare.kostnadMagi.toLocaleString("sv-SE")} sm för magi (s. 74).`),
+        : el("p", { class: "hjalp" }, `En lärare måste vara mästare, minst FV ${E.larare.minFV} (B4), ha INT ${E.larare.minINT} eller mer och ha högre FV än eleven. Eleven slår två slag i veckan; varje FV över 18 hos läraren ger −2 på slagen, och en ensam elev får −5 men betalar dubbelt. Läraren kostar ${svTal(E.larare.kostnadPerVecka)} sm i veckan, ${svTal(E.larare.kostnadMagi)} sm för magi (s. 74).`),
       t.metod !== "ensam" ? el("div", { class: "rad" },
         ctx.falt("Lärarens FV", siffra(ctx, "traning-lararfv", t.lararFV, (n) => { t.lararFV = n; }, { min: 1, max: 99 })),
         kryss(ctx, "traning-lararint", t.lararInt, `Läraren har INT ${E.larare.minINT} eller mer`, (v) => { t.lararInt = v; })) : null,
@@ -315,7 +316,7 @@ function traningVy(ctx) {
       el("div", { class: "rad" },
         ctx.falt("Timmar om dagen", ctx.valLista("traning-timmar", String(t.timmar), [["8", "8 timmar"], ["6", "6 timmar"], ["4", "4 timmar"]], (v) => { t.timmar = Number(v || 8); ctx.rita(); })),
         ctx.falt("Träningsveckor", siffra(ctx, "traning-veckor", t.antal, (n) => { t.antal = n; }, { min: 1, max: 52 }))),
-      el("p", { class: "hjalp" }, `${slagText} Tid: ${traningsdagar(R, t.antal, t.timmar)} dagar${t.timmar < 8 ? " (färre timmar om dagen förlänger tiden)" : ""}. Kostnad: ${kostnad ? `${kostnad.toLocaleString("sv-SE")} sm` : "inget"}.`),
+      el("p", { class: "hjalp" }, `${slagText} Tid: ${traningsdagar(R, t.antal, t.timmar)} dagar${t.timmar < 8 ? " (färre timmar om dagen förlänger tiden)" : ""}. Kostnad: ${kostnad ? `${svTal(kostnad)} sm` : "inget"}.`),
       kostnad > (smNu ?? 0) ? el("p", { class: "hjalp felrad" }, `Rollpersonen har ${smNu ?? "?"} sm i börsen och har inte råd. Lägg till pengar under Spelmöte (till exempel växlade guldmynt) eller träna färre veckor.`) : null,
       el("div", { class: "rad" }, el("button", { type: "button", class: "knapp", id: "traning-sla", onclick: slaAlla }, ctx.tarningsIkon(), el("span", {}, `Slå för ${t.antal === 1 ? "veckan" : `alla ${t.antal} veckor`}`))),
       el("div", { class: "tabellram" }, el("table", { class: "tabell", id: "traning-tabell" },

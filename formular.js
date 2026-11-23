@@ -1,6 +1,7 @@
 // Rollformuläret i bokens layout (s. 11–12), för utskrift och för att fylla i under spel.
 // Värden som reglerna räknar fram (grundegenskaper, FV, KP) visas som text och ändras i stegen.
 // Det spelaren skriver under spel (erf, hjältepoäng, pengar, egen utrustning) sparas i rp.spel.
+import { svTal } from "./ui/dom.js";
 import { GRUNDEGENSKAPER, egenskapsvarde, slaUpp, fardighetAv, yrkesformagaText, bNivaText, vapengrupp } from "./regelmotor.js";
 import { wretlerSkuld } from "./wretler.js";
 
@@ -159,7 +160,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
       el("span", { class: "rf-cell rf-tal" }, v.bv ?? ""),
       el("span", { class: "rf-cell rf-tal" }, v.langd ?? ""),
       el("span", { class: "rf-cell rf-tal" }, v.rackvidd ?? ""),
-      el("span", { class: "rf-cell rf-tal" }, v.vikt ? `${v.vikt.toLocaleString("sv-SE")}` : ""));
+      el("span", { class: "rf-cell rf-tal" }, v.vikt ? `${svTal(v.vikt)}` : ""));
   });
 
   // Rustning per kroppsdel från köpt rustning (s. 91–93); flera lager visas tillsammans med högsta absorberingen
@@ -188,7 +189,7 @@ export function rollformularSidor({ R, rp, res: raknat, el, sakNamn, andrat, med
 
   // Utrustning: köpta saker först, sedan rader spelaren själv skriver i
   const kopta = [...(tom ? [] : res.startutrustning ?? []).map((t) => ({ namn: t, vikt: "", last: true })),
-    ...res.utrustning.saker.map((x) => ({ namn: sakNamn(x), vikt: x.vikt ? x.vikt.toLocaleString("sv-SE") : "", last: true }))];
+    ...res.utrustning.saker.map((x) => ({ namn: sakNamn(x), vikt: x.vikt ? svTal(x.vikt) : "", last: true }))];
   const egnaPlatser = Math.max(4, utrustningsrader * 2 - kopta.length);
   const egna = Array.from({ length: Math.max(egnaPlatser, spel.utrustning.length + 1) }, (_, i) => ({ ...(spel.utrustning[i] ?? { namn: "", vikt: "" }), i }));
   const sattEgen = (i, falt_, v) => {

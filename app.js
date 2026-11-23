@@ -24,7 +24,7 @@ import { stegYrke } from "./steg/yrke.js";
 import { stegExtra } from "./steg/yrkesfardigheter.js";
 import { LARDOMSFORSLAG, STEG } from "./texter.js";
 import { S, FILER, fyllUt, harLogg, LAGRING, motorIndata, rakna, raknaFor, spara, TOM, uppdatera, vaxladeBp, yrkesNycklar } from "./tillstand.js";
-import { $, el, slaT } from "./ui/dom.js";
+import { $, el, morfa, slaT, svTal } from "./ui/dom.js";
 import { falt, fardighetsVal, gruppLista, info, infoKnapp, valLista } from "./ui/kontroller.js";
 import { magiGorOm, magiMisslyckat, magiModal, magiPlatser, MAGISLAG, oppnaMagiModal } from "./ui/magimodal.js";
 import { rollformular, sakNamn } from "./ui/sammanfattning.js";
@@ -114,7 +114,7 @@ function ritaVy() {
   const oppna = Math.min(grans, S.langst);
   const tillagg = ejTillagd(S.aktivtSteg);
   const rail = $("#steg");
-  rail.replaceChildren(...STEG.map((s, i) => el("li", {},
+  morfa(rail, STEG.map((s, i) => el("li", {},
     el("button", { type: "button", class: "steg-knapp" + (s.id === S.aktivtSteg ? " aktiv" : ""), "aria-current": s.id === S.aktivtSteg ? "step" : null,
       disabled: i > oppna, title: i > oppna ? "Gör klart de tidigare stegen först" : null,
       onclick: () => {
@@ -137,7 +137,8 @@ function ritaVy() {
   // Är magiförmågeslaget det enda som återstår i steget öppnar Nästa-knappen modalen med slaget
   const baraMagi = kvar.length > 0 && kvar.every((t) => t === MAGISLAG) && index === grans;
   const synligKvar = kvar.filter((t) => t !== MAGISLAG);
-  $("#arbetsyta").replaceChildren(
+  // Steget ritas om vid varje ändring; morfa behåller det som inte har ändrats, så att sidan inte hoppar
+  morfa($("#arbetsyta"), [
     el("header", { class: "steg-huvud" },
       el("div", { class: "steg-titel" },
         el("span", { class: "eyebrow" }, `Steg ${index} av ${STEG.length - 1}${steg.sida === "–" ? "" : ` · s. ${steg.sida}`}`),
@@ -148,7 +149,7 @@ function ritaVy() {
         el("div", { class: res.ep.kvar < 0 ? "over" : "" }, el("dt", {}, "EP kvar", info("EP")), el("dd", {}, res.ep.kvar)),
         // I steg där pengar spenderas visas också kvarvarande pengar av startkapitalet
         steg.id === "utrustning" ? el("div", { class: res.utrustning.kvar < 0 ? "over" : "", id: "pengar-kvar" },
-          el("dt", {}, "Pengar kvar (sm)"), el("dd", {}, `${res.utrustning.kvar.toLocaleString("sv-SE")}/${res.slag.startkapital.toLocaleString("sv-SE")}`)) : null)),
+          el("dt", {}, "Pengar kvar (sm)"), el("dd", {}, `${svTal(res.utrustning.kvar)}/${svTal(res.slag.startkapital)}`)) : null)),
     el("div", { class: "steg-innehall" }, innehall),
     synligKvar.length ? el("div", { class: "saknaslista" }, el("strong", {}, "Gör klart innan du går vidare"), el("ul", {}, synligKvar.map((t) => el("li", {}, t)))) : el("span"),
     baraMagi ? el("p", { class: "hjalp magi-ledning" }, "Rollpersonen har en magiskola men är inte magiker. När du går vidare avgör ett magiförmågeslag om rollpersonen kan lära sig magi.") : el("span"),
@@ -160,8 +161,8 @@ function ritaVy() {
         if (baraMagi) { oppnaMagiModal(STEG[index + 1].id); return; }
         S.aktivtSteg = STEG[index + 1].id; uppdatera();
       } }, baraMagi ? "MAGIFÖRMÅGESLAG" : `${STEG[index + 1].namn} →`)) : magiGorOm(steg.id) ?? el("span")),
-    efterFot ?? el("span"));
-  $("#formular").replaceChildren(rollformular(res));
+    efterFot ?? el("span")]);
+  morfa($("#formular"), rollformular(res));
   if (S.ritatSteg !== null && S.ritatSteg !== S.aktivtSteg) skrollaUpp();
   S.ritatSteg = S.aktivtSteg;
   // Dialogen visas först när tärningen har landat
@@ -249,7 +250,7 @@ function ritaSpelvy(res) {
       el("div", { class: "rad" },
         el("button", { type: "button", class: "knapp", onclick: visaFormular }, "Rollformulär"),
         el("button", { type: "button", class: "knapp primar", onclick: laddaNer }, `Ladda ner ${filnamn()}`))));
-  $("#formular").replaceChildren(rollformular(res));
+  morfa($("#formular"), rollformular(res));
   const nu = `spel-${aktiv.id}`;
   if (S.ritatSteg !== null && S.ritatSteg !== nu) skrollaUpp();
   S.ritatSteg = nu;

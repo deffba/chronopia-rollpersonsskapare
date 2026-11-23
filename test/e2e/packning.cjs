@@ -51,6 +51,22 @@ const BAS = process.env.E2E_BAS || 'http://localhost:8766';
   if (!(await p.isChecked('#startpaket'))) { await p.check('#startpaket'); await p.waitForTimeout(150); }
   const gratis = p.locator('.packning li:has(.packpris:text-is("gratis"))');
   ok('startpaketets saker saknar knappar', await gratis.count() > 0 && await gratis.locator('button').count() === 0, String(await gratis.count()));
+  // Steget ritas om på plats (morfa): sökningen och flikarna ska fungera efter en omritning
+  await p.fill('#varusok', 'rep'); await p.waitForTimeout(80);
+  const repRad = p.locator('.varutabell tbody tr:not([hidden])').first();
+  await repRad.locator('button[aria-label$=" till"]').click(); await p.waitForTimeout(150);
+  await p.fill('#varusok', 'fackla'); await p.waitForTimeout(80);
+  const facklor = await p.locator('.varutabell tbody tr:not([hidden])').evaluateAll((r) => r.map((x) => x.dataset.namn));
+  ok('sökningen fungerar efter en omritning', facklor.length > 0 && facklor.every((n) => n.includes('fackla')), facklor.join(','));
+  await p.fill('#varusok', ''); await p.waitForTimeout(80);
+  const flik = await p.locator('#varuflikar button.vald').textContent();
+  const kategorier = await p.locator('.varutabell tbody tr').evaluateAll((r) => [...new Set(r.map((x) => x.querySelector('.varukategori').textContent.replace(' · ', '')))]);
+  ok('tom sökning visar vald kategori igen', kategorier.length === 1 && kategorier[0] === flik, `${flik}: ${kategorier.join(',')}`);
+  const andraFlik = p.locator('#varuflikar button:not(.vald)').first();
+  const andraNamn = await andraFlik.textContent();
+  await andraFlik.click(); await p.waitForTimeout(150);
+  const kat2 = await p.locator('.varutabell tbody tr').evaluateAll((r) => [...new Set(r.map((x) => x.querySelector('.varukategori').textContent.replace(' · ', '')))]);
+  ok('byte av flik visar den kategorin', kat2.length === 1 && kat2[0] === andraNamn, `${andraNamn}: ${kat2.join(',')}`);
   ok('inga konsolfel', !p.errs.length, p.errs.join(' | '));
   await p.close();
 
