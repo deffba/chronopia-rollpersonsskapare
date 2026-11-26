@@ -9,6 +9,7 @@ import { rasAv, yrkeAv, fardighetAv, skolFV, kanAnvandaVapen, vapenVillkor, varu
 import { TESTROLLPERSONER } from "./testrollpersoner.js";
 import { startaPoanglogg } from "./poanglogg.js";
 import { startaAutofyll } from "./autofyll.js";
+import { startaKommentarer } from "./kommentarer.js";
 
 // Var en inläst testrollperson öppnas, utöver stegen
 const VYER = [
@@ -337,6 +338,7 @@ export function starta(api) {
   document.head.append(el("style", {}, STIL));
   document.body.append(el("div", { class: "dev-markering", "aria-hidden": "true" }, "UTVECKLARLÄGE"));
   api.tillatOmslag(); // knappen Lås upp bredvid gjorda tärningsslag
+  startaKommentarer(api); // Kommentera: anteckningar på sidan inför designgenomgången (kommentarer.js)
 
   // Autofyll och poänglogg (autofyll.js, poanglogg.js). Växlarna finns både i menyn och i loggen.
   const autofyll = startaAutofyll(api, autoDelval);
