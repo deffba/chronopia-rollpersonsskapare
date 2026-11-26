@@ -4,13 +4,14 @@
 // ut eller ångras försvinner ur loggen (byts rasen syns bara den nya rasen). Summan av posterna jämförs
 // med det som visas på sidan, och stämmer de inte överens sägs det till längst ned i loggen.
 // Undantaget är ändringar som regelkontrollen stoppade: de är händelser och sparas medan sidan är öppen.
+import { morfa, svTal } from "./ui/dom.js";
 import { GRUNDEGENSKAPER, rasAv, yrkeAv, fardighetAv, namnFor, alderseffekter, slaUpp, sarskildFormaga, formageslag, formagetabell } from "./regelmotor.js";
 
 // [typ, text i filtret, ikryssad från början, etikett på raden]
 const TYPER = [["BP", "BP", true, "BP"], ["EP", "EP", true, "EP"], ["Guld", "Guld", true, "sm"], ["GE", "GE", true, "GE"],
   ["Slag", "Slag", false, "T"], ["Vikt", "Vikt", false, "kg"], ["Nekad", "Stopp", true, "!"]];
 const ENHET = { BP: "BP", EP: "EP", Guld: "sm", Vikt: "kg" };
-const kgText = (n) => (Math.round(n * 10) / 10).toLocaleString("sv-SE");
+const kgText = (n) => svTal(Math.round(n * 10) / 10);
 const LAGRING = "chronopia-dev-logg";
 
 // ------------------------------------------------------------ posterna
@@ -160,7 +161,7 @@ export function poster(api) {
   const gratis = res.utrustning.saker.filter((x) => x.gratis);
   if (gratis.length) lagg("utrustning", "Guld", "startpaket", `Startpaket (gratis): ${gratis.map((x) => x.namn).join(", ")}`, 0);
   for (const x of res.utrustning.saker.filter((y) => !y.gratis)) {
-    lagg("utrustning", "Guld", `u-${x.namn}`, `Köp: ${x.antal} × ${x.namn} (${x.pris.toLocaleString("sv-SE")} sm/st)`, -x.pris * x.antal);
+    lagg("utrustning", "Guld", `u-${x.namn}`, `Köp: ${x.antal} × ${x.namn} (${svTal(x.pris)} sm/st)`, -x.pris * x.antal);
   }
 
   // Vikten som bärs (s. 100): kläder räknas inte och en buren rustning väger hälften. Bärförmågan är STY kg.
@@ -254,7 +255,7 @@ body.dev-logg .dev-markering { display: none; }
 @media print { .poanglogg { display: none; } }
 `;
 
-const tecken = (n) => (n > 0 ? `+${n.toLocaleString("sv-SE")}` : n < 0 ? `−${(-n).toLocaleString("sv-SE")}` : "±0");
+const tecken = (n) => (n > 0 ? `+${svTal(n)}` : n < 0 ? `−${svTal(-n)}` : "±0");
 
 export function startaPoanglogg(api, { autofyllKnapp } = {}) {
   const { el } = api;
@@ -359,13 +360,14 @@ export function startaPoanglogg(api, { autofyllKnapp } = {}) {
   let senast = null; // id → ändring vid förra ritningen, för att lysa upp det som är nytt eller ändrat
   let aktuellt = { lista: [] };
   const andringText = (p) => p.visa ?? `${p.typ === "Vikt" ? `+${kgText(p.andring)}` : tecken(p.andring)} ${p.enhet ?? ENHET[p.typ]}`;
-  const kvarText = (p) => p.kvarText ?? (typeof p.kvar === "number" ? `kvar ${p.kvar.toLocaleString("sv-SE")}` : "");
+  const kvarText = (p) => p.kvarText ?? (typeof p.kvar === "number" ? `kvar ${svTal(p.kvar)}` : "");
   const alla = () => [...aktuellt.lista, ...nekade];
   const nyckel = (p) => `${p.andring}|${p.visa ?? ""}|${p.text}`;
   function ritaLogg() {
     const synliga = alla().filter((p) => inst.filter[p.typ]);
     const nya = [];
-    rader.replaceChildren(...synliga.map((p) => {
+    // Raderna som inte har ändrats står kvar (morfa); nya och ändrade rader byts ut så att markeringen syns
+    morfa(rader, synliga.map((p) => {
       const ny = senast !== null && senast.get(p.id) !== nyckel(p);
       const tecknet = typeof p.andring !== "number" || p.typ === "Vikt" ? "noll" : p.andring > 0 ? "plus" : p.andring < 0 ? "minus" : "noll";
       const rad = el("li", { class: `pl-rad ${tecknet}${p.varning ? " varning" : ""}${p.typ === "Nekad" ? " nekad" : ""}${ny ? " ny" : ""}`, "data-typ": p.typ },
@@ -375,7 +377,7 @@ export function startaPoanglogg(api, { autofyllKnapp } = {}) {
         el("span", { class: "pl-kvar", title: p.typ === "GE" ? "Slutvärdet" : p.typ === "Vikt" ? "Buren vikt hittills av bärförmågan" : "Kvar efter raden" }, kvarText(p)));
       if (ny) nya.push(rad);
       return rad;
-    }));
+    }), { ersatt: (n) => n.classList?.contains("ny") });
     if (!synliga.length) rader.append(el("li", { class: "pl-tom" }, "Inga rader. Kryssa i en typ ovan."));
     // Den första nya raden skrollas fram i loggen (bara inne i loggen, sidan står still)
     if (nya.length) {
@@ -396,13 +398,14 @@ export function startaPoanglogg(api, { autofyllKnapp } = {}) {
     let utfall;
     try { utfall = poster(api); } catch (e) { console.error("Poängloggen kunde inte räknas fram", e); return; }
     aktuellt = utfall;
-    for (const typ of Object.keys(saldoText)) saldoText[typ].textContent = utfall.saldo[typ].toLocaleString("sv-SE");
+    // Platsen läses först, innan loggen ändras, så att sidan bara behöver räknas ut en gång till (för skrollningen i ritaLogg)
+    placera();
+    for (const typ of Object.keys(saldoText)) saldoText[typ].textContent = svTal(utfall.saldo[typ]);
     ritaLogg();
     // Loggen säger bara till när summan inte stämmer med det som visas på sidan
     fot.hidden = !utfall.avvikelser.length;
     fot.textContent = `Stämmer inte med sidan: ${utfall.avvikelser.join("; ")}`;
     senast = new Map(alla().map((p) => [p.id, nyckel(p)]));
-    placera();
   });
 
   return {

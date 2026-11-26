@@ -2,7 +2,7 @@
 import { kanAnvandaVapen, varukatalog, kallText, vapenVillkor, startvaror, underkategori, underkategoriOrdning, forbjudenVara } from "../regelmotor.js";
 import { rita } from "../app.js";
 import { S, uppdatera } from "../tillstand.js";
-import { el, kg, sm } from "../ui/dom.js";
+import { el, kg, morfa, sm, svTal } from "../ui/dom.js";
 import { falt, gruppLista } from "../ui/kontroller.js";
 import { sakNamn } from "../ui/sammanfattning.js";
 import { fmtMod } from "./alder.js";
@@ -44,49 +44,59 @@ export function stegUtrustning(res) {
   const finns = new Set(iKategori.map((x) => underkategori(S.R, x)));
   const underlista = iKategori.length > grans ? underkategoriOrdning(S.R, utrustningsKategori).filter((n) => finns.has(n)) : [];
   if (underlista.length && !underlista.includes(utrustningsUnder)) utrustningsUnder = underlista[0];
-  const rader = katalog.map((x) => el("tr", { class: antal(x.namn) ? "vald" : "", "data-kategori": x.kategori, "data-under": underkategori(S.R, x) ?? "", "data-namn": x.namn.toLowerCase() },
+  // Raderna byggs först när de visas (katalogen kan ha flera hundra varor, och allt ritas om vid varje köp)
+  const byggdaRader = new Map();
+  const radFor = (x) => {
+    if (!byggdaRader.has(x)) byggdaRader.set(x, byggRad(x));
+    return byggdaRader.get(x);
+  };
+  const byggRad = (x) => el("tr", { class: antal(x.namn) ? "vald" : "", "data-kategori": x.kategori, "data-under": underkategori(S.R, x) ?? "", "data-namn": x.namn.toLowerCase() },
     el("td", {}, x.namn, x.absorbering != null ? el("span", { class: "hjalp" }, ` abs. ${x.absorbering}${x.skyddar ? ` (${x.skyddar})` : ""}`) : x.skada ? el("span", { class: "hjalp" }, ` ${x.skada}`) : null,
       el("span", { class: "hjalp varukategori" }, ` · ${x.kategori}`),
       x.kejserligt ? el("span", { class: "varutagg forbjuden", "data-tip": S.R.vapen.kejserligt.text, tabindex: 0 }, "kejserligt") : null,
       x.atkomlighet ? el("span", { class: "varutagg" + (/\bX\b/.test(x.atkomlighet) ? " forbjuden" : ""), "data-tip": `Åtkomlighet: ${atkText(x.atkomlighet)}`, tabindex: 0 }, x.atkomlighet) : null,
       x.not ? el("span", { class: "hjalp varunot" }, x.not) : null),
-    el("td", { class: "num" }, x.vikt == null ? "–" : `${x.vikt.toLocaleString("sv-SE")} kg`),
+    el("td", { class: "num" }, x.vikt == null ? "–" : `${svTal(x.vikt)} kg`),
     el("td", { class: "num" }, x.prisText ? el("span", { title: `Priset varierar (${x.prisText}); lägsta priset räknas` }, `${sm(x.pris)}+`) : sm(x.pris)),
     el("td", { class: "num antal" },
       el("button", { type: "button", class: "knapp liten", disabled: !antal(x.namn), "aria-label": `En ${x.namn} mindre`, onclick: () => andra(x.namn, -1) }, "−"),
       el("span", {}, antal(x.namn)),
-      el("button", { type: "button", class: "knapp liten", disabled: x.pris > u.kvar, "aria-label": `En ${x.namn} till`, onclick: () => andra(x.namn, 1) }, "+"))));
+      el("button", { type: "button", class: "knapp liten", disabled: x.pris > u.kvar, "aria-label": `En ${x.namn} till`, onclick: () => andra(x.namn, 1) }, "+")));
+  const radkropp = el("tbody");
   const ingenTraff = el("p", { class: "hjalp", id: "inga-varor", role: "status" });
-  const tabell = el("div", { class: "tabellram" }, el("table", { class: "tabell varutabell" },
+  const tabell = el("div", { class: "tabellram", id: "varutabell" }, el("table", { class: "tabell varutabell" },
     el("thead", {}, el("tr", {}, el("th", {}, "Vara"), el("th", { class: "num" }, "Vikt"), el("th", { class: "num" }, "Pris"), el("th", { class: "num" }, "Antal"))),
-    el("tbody", {}, rader)));
-  const flikar = el("div", { class: "flikar", role: "tablist" }, kategorier.map((k) => el("button", {
+    radkropp));
+  const flikar = el("div", { class: "flikar", id: "varuflikar", role: "tablist" }, kategorier.map((k) => el("button", {
     type: "button", class: "valknapp" + (k === utrustningsKategori ? " vald" : ""), role: "tab", "aria-selected": k === utrustningsKategori ? "true" : "false",
     onclick: () => { utrustningsKategori = k; utrustningsUnder = null; S.utrustningsFilter = ""; rita(); },
   }, k)));
-  const underflikar = underlista.length ? el("div", { class: "flikar underflikar", role: "tablist", "aria-label": `Underkategorier i ${utrustningsKategori}` },
+  const underflikar = underlista.length ? el("div", { class: "flikar underflikar", id: "varuunderflikar", role: "tablist", "aria-label": `Underkategorier i ${utrustningsKategori}` },
     underlista.map((n) => el("button", {
       type: "button", class: "valknapp" + (n === utrustningsUnder ? " vald" : ""), role: "tab", "aria-selected": n === utrustningsUnder ? "true" : "false", "data-under": n,
       onclick: () => { utrustningsUnder = n; S.utrustningsFilter = ""; rita(); },
     }, `${n} (${iKategori.filter((x) => underkategori(S.R, x) === n).length})`))) : null;
-  const filtrera = () => {
+  // När man skriver i sökfältet är steget redan ritat, och delarna som står i sidan kan vara de som fanns
+  // innan förra omritningen (morfa behåller dem), så de hämtas i sidan
+  const iSidan = (e) => (e && !e.isConnected && e.id ? document.getElementById(e.id) ?? e : e);
+  const filtrera = (iDom) => {
     const text = S.utrustningsFilter.trim().toLowerCase();
-    let synliga = 0;
-    for (const rad of rader) {
-      rad.hidden = text ? !rad.dataset.namn.includes(text)
-        : rad.dataset.kategori !== utrustningsKategori || (underlista.length > 0 && rad.dataset.under !== utrustningsUnder);
-      if (!rad.hidden) synliga++;
-    }
-    tabell.classList.toggle("sokning", !!text);
-    flikar.classList.toggle("sokning", !!text);
-    underflikar?.classList.toggle("sokning", !!text);
-    tabell.hidden = !synliga;
-    ingenTraff.hidden = !!synliga;
-    ingenTraff.textContent = synliga ? "" : `Inga varor matchar ”${S.utrustningsFilter.trim()}”.`;
+    const visas = katalog.filter((x) => (text ? x.namn.toLowerCase().includes(text)
+      : x.kategori === utrustningsKategori && (underlista.length === 0 || (underkategori(S.R, x) ?? "") === utrustningsUnder)));
+    const [tab, fl, ufl, inga] = [tabell, flikar, underflikar, ingenTraff].map((e) => (iDom ? iSidan(e) : e));
+    if (tab === tabell) radkropp.replaceChildren(...visas.map(radFor));
+    else morfa(tab.querySelector("tbody"), visas.map(radFor));
+    const synliga = visas.length;
+    tab.classList.toggle("sokning", !!text);
+    fl.classList.toggle("sokning", !!text);
+    ufl?.classList.toggle("sokning", !!text);
+    tab.hidden = !synliga;
+    inga.hidden = !!synliga;
+    inga.textContent = synliga ? "" : `Inga varor matchar ”${S.utrustningsFilter.trim()}”.`;
   };
   const sok = el("input", {
     type: "search", id: "varusok", class: "sokfalt", value: S.utrustningsFilter, placeholder: "Sök bland alla varor …", "aria-label": "Sök utrustning",
-    oninput: (e) => { S.utrustningsFilter = e.target.value; filtrera(); },
+    oninput: (e) => { S.utrustningsFilter = e.target.value; filtrera(true); },
   });
   filtrera();
   return [

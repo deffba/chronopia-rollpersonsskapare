@@ -394,8 +394,19 @@ export const paketNamn = (regler, paket) => paket.namn
 
 // Nycklarna som varje yrkesfärdighetspost i yrket blev, efter spelarens val i rp.yrkesval.
 // Används för egenskaper som hör till en viss post (startFV, primar, takStart, utanMagiformagaslag).
+// Anropas för varje färdighet flera gånger per uträkning, så svaret sparas per rollperson (objektet) så länge
+// böckerna, yrket och yrkesvalen är desamma.
+const yrkesPosterSparade = new WeakMap();
 export function yrkesPoster(regler, rp) {
   tillampaBocker(regler, rp);
+  const nyckel = `${regler.yrken?.lista?._bocker}|${rp.yrke}|${JSON.stringify(rp.yrkesval ?? null)}`;
+  const sparad = yrkesPosterSparade.get(rp);
+  if (sparad?.regler === regler && sparad.nyckel === nyckel) return sparad.poster;
+  const poster = raknaYrkesPoster(regler, rp);
+  yrkesPosterSparade.set(rp, { regler, nyckel, poster });
+  return poster;
+}
+function raknaYrkesPoster(regler, rp) {
   const yrke = yrkeAv(regler, rp.yrke);
   if (!yrke) return [];
   const val = rp.yrkesval ?? {};
@@ -440,17 +451,30 @@ export const harTekniker = (f) => f?.id === "stridskonster" || f?.id === "vapent
 // Stilens tekniker: svärdsskolans paket eller spelarens egna
 export const stilensTekniker = (regler, rp, nyckel) => svardsskolaFor(regler, nyckel)?.tekniker ?? rp.sarskildaFormagor?.tekniker?.[nyckel] ?? rp.stridskonstTekniker?.[nyckel] ?? [];
 
+// Uppslag på id görs tusentals gånger per uträkning, så varje lista får ett index (id → första posten med id:t).
+// Listorna ändras inte efter inläsningen; ändras längden ändå byggs indexet om.
+const index = new WeakMap();
+function hittaId(lista, id) {
+  let i = index.get(lista);
+  if (!i || i.langd !== lista.length) {
+    i = { langd: lista.length, karta: new Map() };
+    for (const x of lista) if (!i.karta.has(x.id)) i.karta.set(x.id, x);
+    index.set(lista, i);
+  }
+  return i.karta.get(id);
+}
+
 export function rasAv(regler, id) {
-  return regler.raser.find((r) => r.id === id);
+  return hittaId(regler.raser, id);
 }
 
 export function yrkeAv(regler, id) {
-  return regler.yrken.lista.find((y) => y.id === id);
+  return hittaId(regler.yrken.lista, id);
 }
 
 export function fardighetAv(regler, nyckel) {
-  const [id] = nyckel.split(":");
-  return regler.fardigheter.lista.find((f) => f.id === id);
+  const kolon = nyckel.indexOf(":");
+  return hittaId(regler.fardigheter.lista, kolon < 0 ? nyckel : nyckel.slice(0, kolon));
 }
 
 // Ålderskategori (s. 16) för en ras och ålder i år.
